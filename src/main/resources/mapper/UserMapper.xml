@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.UserDAO">
+         <resultMap id="BaseResultMap" type="cn.financial.model.User">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+    </resultMap>    
+ 
+         <insert id="insertUser" parameterType="User" keyProperty="id">
+             insert into user( id,  state,nickname)values (#{id},#{state},#{nickname})
+         </insert>
+       
+        <select id="selectUserById" parameterType="int" resultMap="BaseResultMap">
+             SELECT * FROM user WHERE id = #{userId}
+         </select>
+          
+</mapper>
