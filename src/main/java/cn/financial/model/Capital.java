@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Capital {
 	
-     private int id;   //资金表id
+     private String id;   //资金表id
 	 
      private String oId; //组织id
 	 
@@ -22,11 +22,13 @@ public class Capital {
 	 
 	 private int month; //月份
 
-	public int getId() {
+	 
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

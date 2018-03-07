@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Organization {
 	
-	 private int id;   //组织架构表id
+	 private String id;   //组织架构表id
 	 
 	 private String parentId; //父id
 	 
@@ -16,11 +16,13 @@ public class Organization {
 	 
 	 private String uId;        //提交人id
 	 
-	 public int getId() {
+	 
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

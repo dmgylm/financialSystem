@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Budget {
 	
-	 private int id;   //预算表id
+	 private String id;   //预算表id
 	 
 	 private String oId; //组织id
 	 
@@ -22,11 +22,13 @@ public class Budget {
 	 
 	 private int month; //月份
 
-	public int getId() {
+	 
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
