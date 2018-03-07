@@ -14,14 +14,24 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class MainController {
-    //login
+    /**
+     * login
+     * @param request
+     * @param respons
+     * @return
+     */
     @RequestMapping(value="/manage/login")
     public ModelAndView login(HttpServletRequest request,HttpServletResponse respons){
         ModelAndView andView=new ModelAndView();
         andView.setViewName("manage/login");
         return andView;
     }
-    //index
+    /**
+     * index
+     * @param request
+     * @param respons
+     * @return
+     */
 	@RequestMapping(value="/manage/index")
     public ModelAndView index(HttpServletRequest request,HttpServletResponse respons){
     	ModelAndView andView=new ModelAndView();
