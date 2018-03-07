@@ -18,10 +18,8 @@ public class UserController {
     UserServiceImpl userService;
     @RequestMapping(value="/user/index")
     public void getUser(HttpServletRequest request,HttpServletResponse respons){
-	Integer userId=1;
-   	User u=userService.selectUserById(userId);
-   	System.out.println(u.getName());
-       }
-  
-   
+    	Integer userId=1;
+       	User u=userService.selectUserById(userId);
+       	System.out.println(u.getName());
+    }
 }
