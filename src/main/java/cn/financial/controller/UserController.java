@@ -16,7 +16,7 @@ import cn.financial.service.impl.UserServiceImpl;
 public class UserController {
     @Autowired
     UserServiceImpl userService;
-    @RequestMapping(value="/manage/index")
+    @RequestMapping(value="/user/index")
     public void getUser(HttpServletRequest request,HttpServletResponse respons){
 	Integer userId=1;
    	User u=userService.selectUserById(userId);
