@@ -5,13 +5,22 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
         
         <!-- 命名空间 -->
-    <typeAliases>
+    <!-- <typeAliases>
          <typeAlias alias="User" type="cn.financial.model.User"/> 
-    </typeAliases>
+    </typeAliases> -->
+    <typeAliases>
+		<!--批量扫描配置别名，别名就是类名-->
+		<package name="cn.financial.model"/>
+	</typeAliases>
  
     <!-- 映射map -->
-    <mappers>
-    </mappers>
+    <!-- <mappers>
+    </mappers> -->
+    
+    <!--批量加载mapper,这里的mapper.java必须和mapper.xml名称相同-->
+	<mappers>
+		<package name="cn.financial.dao"/>
+	</mappers>
 </configuration>
 
 
