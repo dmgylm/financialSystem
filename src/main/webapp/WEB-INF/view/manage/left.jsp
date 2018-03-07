@@ -59,6 +59,12 @@
               <li><a href="calendar.html">Calendar</a></li> -->
             </ul>
           </li>
+          <li><a><i class="fa fa-table"></i> 系统管理 <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="tables.html">员工</a></li>
+              <li><a href="tables_dynamic.html">组织架构</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
 
