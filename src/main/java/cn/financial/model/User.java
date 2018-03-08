@@ -65,12 +65,12 @@ public class User {
     	public void setUpdateTime(Date updateTime) {
     		this.updateTime = updateTime;
     	}
-    
-    	public String getoId() {
-    		return oId;
-    	}
-    
-    	public void setoId(String oId) {
-    		this.oId = oId;
-    	}
+
+        public Organization getoId() {
+            return oId;
+        }
+
+        public void setoId(Organization oId) {
+            this.oId = oId;
+        }
 }
