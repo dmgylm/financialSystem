@@ -60,10 +60,10 @@ public class OrganizationController {
             int i = organizationService.saveOrganization(map);
             if (i == 1) {
                 dataMap.put("resultCode", 200);
-                dataMap.put("result", "新增成功!");
+                dataMap.put("resultDesc", "新增成功!");
             } else {
                 dataMap.put("resultCode", 200);
-                dataMap.put("result", "新增失败!");
+                dataMap.put("resultDesc", "新增失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
