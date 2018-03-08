@@ -1,6 +1,7 @@
 package cn.financial.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Organization {
 	
@@ -14,7 +15,7 @@ public class Organization {
     	 
     	 private Date updateTime; //更新时间
     	 
-    	 private String uId;        //提交人id
+    	 private List<User> uId;        //提交人id
     	 
     	 
     

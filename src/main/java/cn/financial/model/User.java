@@ -16,7 +16,7 @@ public class User {
     	 
     	 private Date updateTime; //更新时间
     	 
-    	 private String oId; //组织id
+    	 private Organization oId; //组织id
     
     	public String getId() {
     		return id;
