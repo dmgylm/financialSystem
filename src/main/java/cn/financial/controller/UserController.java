@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,13 +64,13 @@ public class UserController {
     @RequestMapping(value = "/user/insert")
     Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse respons){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String name = request.getParameter("name");
-        String pwd = request.getParameter("pwd");
-        Integer privilege = Integer.parseInt(request.getParameter("privilege"));
-        String cTime = request.getParameter("createTime");
-        String uTime = request.getParameter("updateTime");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String pwd = request.getParameter("pwd");
+            Integer privilege = Integer.parseInt(request.getParameter("privilege"));
+            String cTime = request.getParameter("createTime");
+            String uTime = request.getParameter("updateTime");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
@@ -88,6 +89,8 @@ public class UserController {
             }
             
         } catch (ParseException e) {
+            this.logger.error(e.getMessage(), e);
+        } catch (UnsupportedEncodingException e) {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
