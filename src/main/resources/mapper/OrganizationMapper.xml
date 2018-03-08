@@ -29,7 +29,7 @@
 			jdbcType="DATE"></result>
 		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
 			jdbcType="DATE"></result>
-		<collection property="user" resultMap="userResultMap"> </collection>
+		<collection property="users" resultMap="userResultMap"> </collection>
 		  
 	</resultMap>
 
