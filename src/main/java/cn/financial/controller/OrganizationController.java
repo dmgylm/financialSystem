@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import cn.financial.model.Organization;
-import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.UuidUtil;
 
@@ -84,21 +83,6 @@ public class OrganizationController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             List<Organization> list = organizationService.listOrganization();
-            for (Organization organization : list) {
-                System.out.println(organization.getId() + "---------------------------------------------"
-                        + organization.getOrgName() + "---------------------------------------------"
-                        + organization.getParentId() + "---------------------------------------------"
-                        + organization.getCreateTime() + "---------------------------------------------"
-                        + organization.getUpdateTime() + "---------------------------------------------");
-                List<User> users = organization.getUsers();
-                for (User user : users) {
-                    System.out.println(user.getId() + "---------------------------------------------" + user.getName()
-                            + "---------------------------------------------" + user.getPrivilege()
-                            + "---------------------------------------------" + user.getPwd()
-                            + "---------------------------------------------" + user.getCreateTime()
-                            + "---------------------------------------------" + user.getUpdateTime());
-                }
-            }
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -122,13 +106,6 @@ public class OrganizationController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             List<Organization> list = organizationService.listOrganizationBy(map);
-            for (Organization organization : list) {
-                System.out.println(organization.getId() + "---------------------------------------------"
-                        + organization.getOrgName() + "---------------------------------------------"
-                        + organization.getParentId() + "---------------------------------------------"
-                        + organization.getCreateTime() + "---------------------------------------------"
-                        + organization.getUpdateTime());
-            }
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -152,13 +129,6 @@ public class OrganizationController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Organization organization = organizationService.getOrganization(id);
-            System.out
-                    .println(organization.getId()
-                            + "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-                            + organization.getOrgName() + "---------------------------------------------"
-                            + organization.getParentId() + "---------------------------------------------"
-                            + organization.getCreateTime() + "---------------------------------------------"
-                            + organization.getUpdateTime());
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", organization);
