@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 组织结构 -->
+<mapper namespace="cn.financial.dao.OrganizationDAO">
+
+	<!-- 用户POJO对应数据库字段 -->
+	<resultMap type="User" id="userResultMap">
+		<id property="id" column="usid" javaType="string" jdbcType="VARCHAR" />
+		<result property="name" column="name" javaType="string"
+			jdbcType="VARCHAR" />
+		<result property="pwd" column="pwd" javaType="string" jdbcType="VARCHAR" />
+		<result property="privilege" column="privilege" javaType="int"
+			jdbcType="INTEGER" />
+		<result property="createTime" column="createTime" javaType="java.sql.Date"
+			jdbcType="DATE" />
+		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
+			jdbcType="DATE" />
+	</resultMap>
+
+	<!-- 组织架构POJO对应数据库字段 -->
+	<resultMap type="Organization" id="organizationResultMap">
+		<id property="id" column="id" jdbcType="VARCHAR"></id>
+		<result property="parentId" column="parentId" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="orgName" column="orgName" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="createTime" column="createTime" javaType="java.sql.Date"
+			jdbcType="DATE"></result>
+		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
+			jdbcType="DATE"></result>
+		<collection property="users" resultMap="userResultMap"></collection>
+	</resultMap>
+
+	<!-- 新增组织结构节点信息 -->
+	<insert id="saveOrganization" parameterType="Organization"
+		keyProperty="id">
+		insert into organization (
+		id,
+		parentId,
+		orgName,
+		createTime,
+		updateTime,
+		uId
+		)
+		values
+		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 查询所有的组织结构 -->
+	<select id="listOrganization" resultMap="organizationResultMap">
+		select
+		org.*,us.id usid,
+		us.name,
+		us.pwd,
+		us.createTime,
+		us.updateTime,
+		us.privilege,
+		us.oId
+		from
+		organization org, user us
+		where
+		org.uId = us.id
+	</select>
+
+	<!-- 根据条件查询组织结构信息 -->
+	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
+		select
+		*
+		from
+		organization
+		where
+		1 = 1
+		<include refid="query_organization_where"></include>
+	</select>
+
+	<!-- 根据ID查询组织结构信息 -->
+	<select id="getOrganization" parameterType="java.lang.String"
+		resultType="Organization">
+		select
+		*
+		from
+		organization
+		where
+		id =
+		#{_parameter,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 根据条件更新组织结构信息 -->
+	<update id="updateOrganization" parameterType="map">
+		update organization
+		<trim prefix="set" suffixOverrides=",">
+			<if test="parentId!=null and parentId!=''">
+				parentId = #{parentId,jdbcType=VARCHAR}
+			</if>
+			<if test="orgName!=null and orgName!=''">
+				orgName = #{orgName,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime!=null and createTime!=''">
+				createTime = #{createTime,jdbcType=DATE}
+			</if>
+			<if test="updateTime!=null and updateTime!=''">
+				updateTime = #{updateTime,jdbcType=DATE}
+			</if>
+			<if test="uId!=null and uId!=''">
+				uId = #{uId,jdbcType=VARCHAR}
+			</if>
+		</trim>
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据条件删除组织结构信息 -->
+	<delete id="deleteOrganization" parameterType="java.lang.String">
+		delete
+		from
+		organization
+		where
+		id = #{_parameter,jdbcType=VARCHAR}
+	</delete>
+
+	<!--定义一个sql片段 -->
+	<sql id="query_organization_where">
+		<if test="id!=null and id!=''">
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="parentId!=null and parentId!=''">
+			and parentId = #{parentId,jdbcType=VARCHAR}
+		</if>
+		<if test="orgName!=null and orgName!=''">
+			and orgName = #{orgName,jdbcType=VARCHAR}
+		</if>
+		<if test="createTime!=null and createTime!=''">
+			and createTime = #{createTime,jdbcType=DATE}
+		</if>
+		<if test="updateTime!=null and updateTime!=''">
+			and updateTime = #{updateTime,jdbcType=DATE}
+		</if>
+		<if test="uId!=null and uId!=''">
+			and uId = #{uId,jdbcType=VARCHAR}
+		</if>
+	</sql>
+
+</mapper>
