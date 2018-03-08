@@ -1,19 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
- PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.UserDAO">
-         <resultMap id="BaseResultMap" type="cn.financial.model.User">
-        <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="name" property="name" jdbcType="VARCHAR" />
-    </resultMap>    
- 
-         <insert id="insertUser" parameterType="User" keyProperty="id">
-             insert into user( id,  state,nickname)values (#{id},#{state},#{nickname})
-         </insert>
-       
-        <select id="selectUserById" parameterType="int" resultMap="BaseResultMap">
-             SELECT * FROM user WHERE id = #{userId}
-         </select>
-          
+    <resultMap type="cn.financial.model.User" id="user" >
+	   <id column="id" property="id" jdbcType="VARCHAR" />
+	   <result column="name" property="name" jdbcType="VARCHAR" />
+	   <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+	   <result column="privilege" property="privilege" jdbcType="INTEGER" />
+	   <result column="createTime" property="createTime" jdbcType="DATE" />
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	   <result column="oId" property="oId" jdbcType="VARCHAR" /> 
+	   <!--多对一  -->
+	   <!-- <association property="oId" javaType="Organization">  
+            <id column="id" property="id" jdbcType="VARCHAR"/>  
+            <result column="parentId" property="parentId" jdbcType="VARCHAR"/>  
+            <result column="orgName" property="orgName" jdbcType="VARCHAR"/>  
+            <result column="createTime" property="createTime" jdbcType="DATE" />
+	        <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	        <result column="uId" property="uId" jdbcType="VARCHAR" /> 
+       </association> -->
+	</resultMap>    
+	<!--查询全部用户-->
+    <select id="listUser" resultMap="user">
+        SELECT id,name,pwd,privilege,createTime,updateTime,oId from user
+    </select>
+    <!--新增用户-->
+    <insert id="insertUser" parameterType="user">
+        insert into user(id,name,pwd,privilege,createTime,updateTime,oId) values (#{id},#{name},#{pwd},#{privilege},#{createTime},#{updateTime},#{oId})
+    </insert>
+    <!--根据id查询用户-->  
+    <select id="listUserById" parameterType="string" resultType="INTEGER">
+         SELECT COUNT(name) FROM user WHERE name=#{name}
+    </select>
+    <!--修改用户-->
+    <update id="updateUser" parameterType="user">
+         UPDATE user
+		 <trim prefix="set" suffixOverrides=",">
+		  <if test="name!=null">name=#{name},</if>
+		  <if test="pwd!=null">pwd=#{pwd},</if>
+		  <if test="privilege!=null">privilege=#{privilege},</if>
+		  <if test="createTime!=null">createTime=#{createTime},</if>
+		  <if test="updateTime!=null">updateTime=#{updateTime},</if>
+		  <if test="oId!=null">oId=#{oId},</if>
+		 </trim>
+		 WHERE id=#{id}
+    </update>
+    <!--删除用户-->
+    <delete id="deleteUser" parameterType="string">
+         DELETE FROM user WHERE id = #{userId}
+    </delete>
 </mapper>
