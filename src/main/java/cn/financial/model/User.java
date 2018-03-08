@@ -16,7 +16,7 @@ public class User {
 
     private Date updateTime; // 更新时间
 
-    private Organization oId; // 组织id
+    private String oId; // 组织id
 
     public String getId() {
         return id;
@@ -66,12 +66,12 @@ public class User {
         this.updateTime = updateTime;
     }
 
-    public Organization getoId() {
+    public String getoId() {
         return oId;
     }
 
-    public void setoId(Organization oId) {
+    public void setoId(String oId) {
         this.oId = oId;
     }
-
+    
 }
