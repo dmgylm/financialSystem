@@ -34,7 +34,10 @@
     </select>
     <!--根据name查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
-         SELECT COUNT(name) FROM user WHERE name=#{name}
+         SELECT COUNT(name) FROM user WHERE name=#{name} and status=1
+         <if test="pwd!=null and pwd!=''">
+            and pwd=#{pwd}
+         </if>
     </select>
     <!--修改用户-->
     <update id="updateUser" parameterType="user">
