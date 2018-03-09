@@ -57,15 +57,15 @@ public class OrganizationController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", id);
-        map.put("orgName", orgName);
-        map.put("uId", uId);
-        map.put("parentId", parentId);
-        map.put("createTime", createTimeOfDate);
-        map.put("updateTime", updateTimeOfDate);
+        Organization organization = new Organization();
+        organization.setId(id);
+        organization.setOrgName(orgName);
+        organization.setuId(uId);
+        organization.setParentId(parentId);
+        organization.setCreateTime(createTimeOfDate);
+        organization.setUpdateTime(updateTimeOfDate);
         try {
-            Integer i = organizationService.saveOrganization(map);
+            Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "新增成功!");
@@ -148,7 +148,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件修改组织结构信息
+     * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      * 
      * @param request
      * @param map

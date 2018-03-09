@@ -5,15 +5,21 @@ import java.util.Map;
 
 import cn.financial.model.Organization;
 
+/**
+ * 组织结构service接口层
+ * 
+ * @author zlf 2018/3/9
+ *
+ */
 public interface OrganizationService {
 
     /**
      * 接口（新增组织结构）
      * 
-     * @param map
+     * @param organization
      * @return
      */
-    Integer saveOrganization(Map<Object, Object> map);
+    Integer saveOrganization(Organization organization);
 
     /**
      * 接口（查询所有的组织结构）
@@ -25,7 +31,7 @@ public interface OrganizationService {
     /**
      * 接口（条件查询组织结构信息）
      * 
-     * @param id
+     * @param map
      * @return
      */
     List<Organization> listOrganizationBy(Map<Object, Object> map);
@@ -39,9 +45,9 @@ public interface OrganizationService {
     Organization getOrganization(String id);
 
     /**
-     * 接口（根据条件修改组织结构信息）
+     * 接口（根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id）
      * 
-     * @param id
+     * @param map
      * @return
      */
     Integer updateOrganization(Map<Object, Object> map);
