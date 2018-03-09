@@ -11,13 +11,13 @@ public interface UserService {
      * 查询所有用户
      * @return
      */
-    List<User> listUser();
+    List<User> listUser(Integer status);
     /**
      * 根据name查询用户
      * @param name
      * @return
      */
-    int countUserName(String name);
+    Integer countUserName(String name);
     /**
      * 根据id查询用户
      * @param userId
@@ -34,7 +34,7 @@ public interface UserService {
      * @param oId
      * @return
      */
-    int insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    Integer insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
     /**
      * 修改用户
      * @param name
@@ -45,12 +45,13 @@ public interface UserService {
      * @param oId
      * @return
      */
-    int updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    Integer updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
     /**
      * 删除用户
      * @param userId
      * @return
      */
-    int deleteUser(String userId);
+    //Integer deleteUser(String userId);
+    Integer deleteUser(String userId);
 	 
 }
