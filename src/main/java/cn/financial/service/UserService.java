@@ -1,9 +1,8 @@
 package cn.financial.service;
 
-import java.awt.List;
 import java.util.Date;
+import java.util.List;
 
-import cn.financial.model.Organization;
 import cn.financial.model.User;
 
 
@@ -12,13 +11,19 @@ public interface UserService {
      * 查询所有用户
      * @return
      */
-    java.util.List<User> listUser();
+    List<User> listUser();
     /**
      * 根据name查询用户
      * @param name
      * @return
      */
-    int listUserById(String name);
+    int countUserName(String name);
+    /**
+     * 根据id查询用户
+     * @param userId
+     * @return
+     */
+    User getUserById(String userId);
     /**
      * 新增用户
      * @param name
@@ -29,7 +34,7 @@ public interface UserService {
      * @param oId
      * @return
      */
-    int insertUser(String name, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    int insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
     /**
      * 修改用户
      * @param name
@@ -40,7 +45,7 @@ public interface UserService {
      * @param oId
      * @return
      */
-    int updateUser(String userId, String name, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    int updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
     /**
      * 删除用户
      * @param userId
