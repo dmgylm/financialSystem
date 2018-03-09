@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import cn.financial.model.User;
 
 /**
- * 
+ * 用户
  * @author gs
  * 2018/3/7
  */
@@ -56,6 +56,5 @@ public interface UserDAO {
      * @param userId
      * @return
      */
-    //Integer deleteUser(String userId);
-    Integer deleteUser(Integer status, String userId);
+    Integer deleteUser(String userId);
 }
