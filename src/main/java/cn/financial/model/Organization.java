@@ -2,6 +2,8 @@ package cn.financial.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Organization {
 
     private String id; // 组织架构表id
@@ -10,8 +12,10 @@ public class Organization {
 
     private String orgName; // 组织架构名
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime; // 创建时间
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updateTime; // 更新时间
 
     private String uId; // 提交人id
