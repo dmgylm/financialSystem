@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class StatementServiceImpl implements StatementService{
             /**
              * 修改损益数据
              */
-            @Override
-            public Integer updateStatement(Statement statement) {
-                // TODO Auto-generated method stub
+            public Integer updateStatement(String id,String oId,String info,Date createTime,Date updateTime,
+                    String typeId,String uId,Integer year,Integer month,Integer status) {
+                Statement statement=new Statement(id, oId,info, createTime, updateTime,typeId, uId, year, month, status);
                 return statementDao.updateStatement(statement);
             }
 
@@ -63,6 +64,15 @@ public class StatementServiceImpl implements StatementService{
             public List<Statement> listStatementBy(Map<Object, Object> map) {
                 // TODO Auto-generated method stub
                 return statementDao.listStatementBy(map);
+            }
+
+            /**
+             * 删除损益数据
+             */
+            @Override
+            public Integer deleteStatement(String id) {
+                // TODO Auto-generated method stub
+                return statementDao.deleteStatement(id);
             }
             
 }

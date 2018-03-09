@@ -19,6 +19,13 @@ public interface StatementDao {
     Integer insertStatement(Statement statement);
     
     /**
+     * 删除损益数据 （status=0）
+     * @param statement
+     * @return
+     */
+    Integer deleteStatement(String id);
+    
+    /**
      * 修改损益表数据
      * @param statement
      * @return

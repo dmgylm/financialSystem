@@ -4,7 +4,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.StatementDao">
      
-       <resultMap id="StatementMap" type="Statement">
+       <resultMap id="statement" type="cn.financial.model.Statement">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
@@ -20,19 +20,19 @@
        </resultMap> 
           
        <!--新增损益数据 -->
-       <insert id="insertStatement" parameterType="Statement" keyProperty="id">
+       <insert id="insertStatement" parameterType="statement" keyProperty="id">
             insert into income_statement(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
             values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
       
        <!-- 查询所有的损益数据 -->
-       <select id="getAll" resultMap="StatementMap">  
+       <select id="getAll" resultMap="statement">  
         select * from  income_statement where status=1
        </select>
        
       <!--  根据id查询损益数据 -->
-       <select id="selectStatementById" parameterType="String" resultMap="StatementMap" >
+       <select id="selectStatementById" parameterType="String" resultMap="statement" >
            SELECT * FROM income_statement WHERE id = #{id} and status=1
        </select>
        
@@ -43,41 +43,27 @@
        </select>
        
        <!-- 根据条件修改损益数据 -->
-      <update id="updateStatement" parameterType="map">
+      <update id="updateStatement" parameterType="statement">
         update income_statement
         <trim prefix="set" suffixOverrides=",">
-            <if test=" oId!=null and oId!=''">
-                oId = #{oId}
-            </if>
-            <if test="info!=null and info!=''">
-                info = #{info}
-            </if>
-            <if test="createTime!=null and createTime!=''">
-                createTime = #{createTime}
-            </if>
-            <if test="updateTime!=null and updateTime!=''">
-                updateTime = #{updateTime}
-            </if>
-            <if test="typeId !=null and typeId!=''">
-                typeId = #{typeId}
-            </if>
-            <if test="uId!=null and uId!=''">
-                uId = #{uId}
-            </if>
-            <if test="year !=null and year!=''">
-                year = #{year}
-            </if>
-            <if test="month!=null and month!=''">
-                month = #{month}
-            </if>
-            <if test="status!=null and status!=''">
-                status = #{status}
-            </if>
+            <if test=" oId!=null and oId!=''">oId = #{oId},</if>
+            <if test="info!=null and info!=''">info = #{info},</if>
+            <if test="createTime!=null and createTime!=''">createTime = #{createTime},</if>
+            <if test="updateTime!=null and updateTime!=''">updateTime = #{updateTime},</if>
+            <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
+            <if test="uId!=null and uId!=''">uId = #{uId},</if>
+            <if test="year !=null and year!=''">year = #{year},</if>
+            <if test="month!=null and month!=''">month = #{month},</if>
+            <if test="status!=null and status!=''"> status = #{status}</if>
         </trim>
-        where
-        id = #{id} and  status=1
+         where id = #{id}
       </update>
       
+      <!-- 删除用户  status=0 -->
+      <update id="deleteStatement">
+        UPDATE income_statement SET status=0 WHERE id=#{id}
+      </update>
+    
       <!--sql-->
      <sql id="query_income_statement_where">
         <if test="id!=null and id!=''">

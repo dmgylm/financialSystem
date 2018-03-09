@@ -36,7 +36,7 @@ public class StatementController {
          * @param request
          * @param response
          */
-        @RequestMapping(value="/statement/list", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/list", method = RequestMethod.POST)
         public Map<String, Object> getAllStatement(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -60,7 +60,7 @@ public class StatementController {
          *            
          * @return
          */
-        @RequestMapping(value="/statement/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/listBy", method = RequestMethod.POST)
         public Map<String, Object> listStatementBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -84,7 +84,7 @@ public class StatementController {
          *           
          * @return
          */
-        @RequestMapping(value="/statement/listById", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/listById", method = RequestMethod.POST)
         public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -106,7 +106,7 @@ public class StatementController {
          * @param response
          * @return
          */
-        @RequestMapping(value="/statement/insert", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/insert", method = RequestMethod.POST)
         public Map<String, Object> insertStatement(HttpServletRequest request, HttpServletResponse response){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
@@ -153,7 +153,7 @@ public class StatementController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/statement/update", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/update", method = RequestMethod.POST)
         public Map<String, Object> updateStatement(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -168,18 +168,8 @@ public class StatementController {
                 Integer month=Integer.parseInt(request.getParameter("month"));
                 Integer status=Integer.parseInt(request.getParameter("status"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(status);
-                Integer i = statementService.updateStatement(statement);
+                Integer i = statementService.updateStatement(id, oId, info,sdf.parse(createTime),sdf.parse(updateTime),
+                        typeId, uId, year, month, status);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "修改成功!");
@@ -200,32 +190,12 @@ public class StatementController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/statement/delete", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
+            String id = request.getParameter("id");
             try {
-                String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(0);
-                Integer i = statementService.updateStatement(statement);
+                Integer i =statementService.deleteStatement(id);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");

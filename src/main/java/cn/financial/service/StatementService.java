@@ -1,5 +1,6 @@
 package cn.financial.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +20,19 @@ public interface StatementService {
     Integer insertStatement(Statement statement);
     
     /**
+     * 删除损益数据 （status=0）
+     * @param statement
+     * @return
+     */
+    Integer deleteStatement(String id);
+    
+    /**
      * 修改损益表数据
      * @param statement
      * @return
      */
-    Integer updateStatement(Statement statement);  
+    Integer updateStatement(String id,String oId,String info,Date createTime,Date updateTime,
+            String typeId,String uId,Integer year,Integer month,Integer status);  
    
     /**
      * 查询损益表所有的数据

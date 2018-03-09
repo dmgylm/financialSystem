@@ -29,8 +29,24 @@ public class Statement {
         
         private Integer status; //状态
     
-    	 
-    
+        public Statement() {
+            super();
+        }
+        
+        public  Statement(String id,String oId,String info,Date createTime,Date updateTime,
+                String typeId,String uId,Integer year,Integer month,Integer status){
+            this.id=id;
+            this.oId=oId;
+            this.info=info;
+            this.createTime=createTime;
+            this.updateTime=updateTime;
+            this.typeId=typeId;
+            this.uId=uId;
+            this.year=year;
+            this.month=month;
+            this.status=status;
+        }
+         
     	public String getId() {
     		return id;
     	}
