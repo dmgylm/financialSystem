@@ -2,6 +2,11 @@ package cn.financial.model;
 
 import java.util.Date;
 
+/**
+ * 损益表model
+ * @author lmn
+ *
+ */
 public class Statement {
 	
         private String id;   //损益表id

@@ -2,6 +2,11 @@ package cn.financial.model;
 
 import java.util.Date;
 
+/**
+ * 预算表model
+ * @author lmn
+ *
+ */
 public class Budget {
 	
     	 private String id;   //预算表id
@@ -18,10 +23,11 @@ public class Budget {
     	 
     	 private String  uId;    //提交人id
     	
-         private int year;   //年份
+         private Integer year;   //年份
     	 
-    	 private int month; //月份
-    
+    	 private Integer month; //月份
+         
+    	 private Integer status; //状态
     	 
     
     	public String getId() {
@@ -79,21 +85,29 @@ public class Budget {
     	public void setuId(String uId) {
     		this.uId = uId;
     	}
-    
-    	public int getYear() {
-    		return year;
-    	}
-    
-    	public void setYear(int year) {
-    		this.year = year;
-    	}
-    
-    	public int getMonth() {
-    		return month;
-    	}
-    
-    	public void setMonth(int month) {
-    		this.month = month;
-    	}
-    	 
+
+        public Integer getYear() {
+            return year;
+        }
+
+        public void setYear(Integer year) {
+            this.year = year;
+        }
+
+        public Integer getMonth() {
+            return month;
+        }
+
+        public void setMonth(Integer month) {
+            this.month = month;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+       
 }

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.financial.dao.StatementDao">
+<mapper namespace="cn.financial.dao.CapitalDao">
      
-       <resultMap id="StatementMap" type="Statement">
+       <resultMap id="CapitalMap" type="Capital">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
@@ -17,34 +17,33 @@
            <result column="status" property="status" jdbcType="INTEGER"/> 
            
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
-       </resultMap> 
-          
-       <!--新增损益数据 -->
-       <insert id="insertStatement" parameterType="Statement" keyProperty="id">
-            insert into income_statement(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
+       </resultMap>    
+ 
+        <!-- 新增资金数据 -->
+       <insert id="insertCapital" parameterType="Capital" keyProperty="id">
+            insert into capital(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
             values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
-      
-       <!-- 查询所有的损益数据 -->
-       <select id="getAll" resultMap="StatementMap">  
-        select * from  income_statement where status=1
+       <!-- 查询所有的资金数据 -->
+       <select id="getAllCapital" resultMap="CapitalMap">  
+        select * from capital where status=1
        </select>
        
-      <!--  根据id查询损益数据 -->
-       <select id="selectStatementById" parameterType="String" resultMap="StatementMap" >
-           SELECT * FROM income_statement WHERE id = #{id} and status=1
+       <!--根据id查询资金数据 -->
+       <select id="selectCapitalById" parameterType="String" resultMap="CapitalMap" >
+           SELECT * FROM capital WHERE id = #{id} and status=1
        </select>
        
-       <!-- 根据条件查询损益数据 -->
-       <select id="listStatementBy" parameterType="map" resultType="Statement">
-         SELECT * FROM income_statement WHERE status=1 
-        <include refid="query_income_statement_where"></include>
+       <!-- 根据条件查询资金数据-->
+       <select id="listCapitalBy" parameterType="map" resultType="Capital">
+         SELECT * FROM capital WHERE status=1 
+        <include refid="query_capital_where"></include>
        </select>
        
-       <!-- 根据条件修改损益数据 -->
-      <update id="updateStatement" parameterType="map">
-        update income_statement
+       <!-- 根据条件修改资金数据-->
+      <update id="updateCapital" parameterType="map">
+        update capital
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">
                 oId = #{oId}
@@ -78,8 +77,8 @@
         id = #{id} and  status=1
       </update>
       
-      <!--sql-->
-     <sql id="query_income_statement_where">
+      <!--定义一个sql -->
+     <sql id="query_capital_where">
         <if test="id!=null and id!=''">
             and id = #{id}
         </if>

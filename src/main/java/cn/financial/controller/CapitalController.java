@@ -12,35 +12,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import cn.financial.model.Statement;
-import cn.financial.service.StatementService;
+import cn.financial.model.Capital;
+import cn.financial.service.CapitalService;
 import cn.financial.util.UuidUtil;
 
 /**
- * 损益表Controller
+ * 资金表Controller
  * @author lmn
  *
  */
 @Controller
-public class StatementController {
+public class CapitalController {
  
     
         @Autowired
-        private  StatementService statementService;
+        private  CapitalService capitalService;
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
       
         /**
-         * 查询所有的损益数据
+         * 查询所有的资金数据
          * 
          * @param request
          * @param response
          */
-        @RequestMapping(value="/statement/list", method = RequestMethod.GET)
-        public Map<String, Object> getAllStatement(HttpServletRequest request, HttpServletResponse response) {
+        @RequestMapping(value="/capital/list", method = RequestMethod.GET)
+        public Map<String, Object> getAllCapital(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                List<Statement> list = statementService.getAll();
+                List<Capital> list = capitalService.getAllCapital();
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
@@ -53,18 +53,18 @@ public class StatementController {
         }
 
         /**
-         * 根据条件查损益数据
+         * 根据条件查资金数据
          * 
          * @param request
          * @param map
          *            
          * @return
          */
-        @RequestMapping(value="/statement/listBy", method = RequestMethod.GET)
-        public Map<String, Object> listStatementBy(HttpServletRequest request, Map<Object, Object> map) {
+        @RequestMapping(value="/capital/listBy", method = RequestMethod.GET)
+        public Map<String, Object> listCapitalBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                List<Statement> list = statementService.listStatementBy(map);
+                List<Capital> list = capitalService.listCapitalBy(map);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
@@ -77,21 +77,21 @@ public class StatementController {
         }
         
         /**
-         * 根据id查询损益数据
+         * 根据id查询资金数据
          * 
          * @param request
          * @param id
          *           
          * @return
          */
-        @RequestMapping(value="/statement/listById", method = RequestMethod.GET)
-        public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
+        @RequestMapping(value="/capital/listById", method = RequestMethod.GET)
+        public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                Statement  statement=statementService.selectStatementById(id);
+                Capital  Capital=capitalService.selectCapitalById(id);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
-                dataMap.put("resultData", statement);
+                dataMap.put("resultData", Capital);
             } catch (Exception e) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询失败!");
@@ -101,13 +101,13 @@ public class StatementController {
         }
         
         /**
-         * 新增损益数据
+         * 新增资金数据
          * @param request
          * @param response
          * @return
          */
-        @RequestMapping(value="/statement/insert", method = RequestMethod.GET)
-        public Map<String, Object> insertStatement(HttpServletRequest request, HttpServletResponse response){
+        @RequestMapping(value="/capital/insert", method = RequestMethod.GET)
+        public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
                 String id = UuidUtil.getUUID();
@@ -121,18 +121,18 @@ public class StatementController {
                 Integer month=Integer.parseInt(request.getParameter("month"));
                 Integer status=Integer.parseInt(request.getParameter("status"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(status);
-                Integer i = statementService.insertStatement(statement);
+                Capital capital =new Capital();
+                capital.setId(id);
+                capital.setoId(oId);
+                capital.setInfo(info);
+                capital.setCreateTime(sdf.parse(createTime));
+                capital.setUpdateTime(sdf.parse(updateTime));
+                capital.setTypeId(typeId);
+                capital.setuId(uId);
+                capital.setYear(year);
+                capital.setMonth(month);
+                capital.setStatus(status);
+                Integer i = capitalService.insertCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("result", "新增成功!");
@@ -149,15 +149,15 @@ public class StatementController {
         }
         
         /**
-         * 修改损益数据
+         * 修改资金数据
          * @param request
          * @return
          */
-        @RequestMapping(value="/statement/update", method = RequestMethod.GET)
-        public Map<String, Object> updateStatement(HttpServletRequest request) {
+        @RequestMapping(value="/capital/update", method = RequestMethod.GET)
+        public Map<String, Object> updateCapital(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                String id = request.getParameter("id");
+                String id = UuidUtil.getUUID();
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
@@ -168,18 +168,18 @@ public class StatementController {
                 Integer month=Integer.parseInt(request.getParameter("month"));
                 Integer status=Integer.parseInt(request.getParameter("status"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(status);
-                Integer i = statementService.updateStatement(statement);
+                Capital capital =new Capital();
+                capital.setId(id);
+                capital.setoId(oId);
+                capital.setInfo(info);
+                capital.setCreateTime(sdf.parse(createTime));
+                capital.setUpdateTime(sdf.parse(updateTime));
+                capital.setTypeId(typeId);
+                capital.setuId(uId);
+                capital.setYear(year);
+                capital.setMonth(month);
+                capital.setStatus(status);
+                Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "修改成功!");
@@ -196,11 +196,11 @@ public class StatementController {
         }
         
         /**
-         * 删除损益数据 （修改Status为0）
+         * 删除资金数据 （修改Status为0）
          * @param request
          * @return
          */
-        @RequestMapping(value="/statement/delete", method = RequestMethod.GET)
+        @RequestMapping(value="/Capital/delete", method = RequestMethod.GET)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             try {
@@ -214,18 +214,18 @@ public class StatementController {
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(0);
-                Integer i = statementService.updateStatement(statement);
+                Capital capital =new Capital();
+                capital.setId(id);
+                capital.setoId(oId);
+                capital.setInfo(info);
+                capital.setCreateTime(sdf.parse(createTime));
+                capital.setUpdateTime(sdf.parse(updateTime));
+                capital.setTypeId(typeId);
+                capital.setuId(uId);
+                capital.setYear(year);
+                capital.setMonth(month);
+                capital.setStatus(0);
+                Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");

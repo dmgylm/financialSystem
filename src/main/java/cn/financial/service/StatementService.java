@@ -5,19 +5,43 @@ import java.util.Map;
 
 import cn.financial.model.Statement;
 
+/**
+ * 损益表Service
+ * @author lmn
+ *
+ */
 public interface StatementService {
-    //新增
+    /**
+     * 新增损益表数据
+     * @param statement
+     * @return 
+     */
     Integer insertStatement(Statement statement);
     
-    //改  
+    /**
+     * 修改损益表数据
+     * @param statement
+     * @return
+     */
     Integer updateStatement(Statement statement);  
    
-    //查询损益表所有数据
+    /**
+     * 查询损益表所有的数据
+     * @return
+     */
     List<Statement> getAll();
      
-     //根据id查询数据
+    /**
+     * 根据id查询损益表数据
+     * @param id
+     * @return
+     */
     Statement selectStatementById(String id);
      
-    //根据调价查询
-    List<Statement> listStatementBy(Map<Object, Object> map);
+    /**
+     * 根据条件查询损益表数据
+     * @param map
+     * @return
+     */
+    List<Statement> listStatementBy(Map<Object, Object> map);  
 }
