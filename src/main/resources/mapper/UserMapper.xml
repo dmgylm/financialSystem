@@ -5,6 +5,7 @@
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <result column="name" property="name" jdbcType="VARCHAR" />
 	   <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+	   <result column="status" property="status" jdbcType="INTEGER" />
 	   <result column="privilege" property="privilege" jdbcType="INTEGER" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
@@ -18,20 +19,21 @@
 	        <result column="uId" property="uId" jdbcType="VARCHAR" /> 
        </association> -->
 	</resultMap>    
-	<!--查询全部用户-->
-    <select id="listUser" resultMap="user">
-        SELECT id,name,realName,pwd,privilege,createTime,updateTime,oId from user
+	<!--根据status查询全部用户-->
+    <select id="listUser" parameterType="INTEGER" resultType="user">
+        SELECT id,name,realName,pwd,privilege,createTime,updateTime,oId FROM user WHERE status=#{status}
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
-        insert into user(id,name,realName,pwd,privilege,createTime,updateTime,oId) values (#{id},#{name},#{realName},#{pwd},#{privilege},#{createTime},#{updateTime},#{oId})
+        insert into user(id,name,realName,pwd,privilege,createTime,updateTime,oId) 
+        values (#{id},#{name},#{realName},#{pwd},#{privilege},#{createTime},#{updateTime},#{oId})
     </insert>
     <!--根据id查询用户-->  
-    <select id="getUserById" parameterType="string" resultType="user">
+    <select id="getUserById" parameterType="STRING" resultType="user">
          SELECT id,name,realName,pwd,privilege,createTime,updateTime,oId FROM user WHERE id=#{id}
     </select>
     <!--根据name查询用户-->  
-    <select id="countUserName" parameterType="string" resultType="INTEGER">
+    <select id="countUserName" parameterType="STRING" resultType="INTEGER">
          SELECT COUNT(name) FROM user WHERE name=#{name}
     </select>
     <!--修改用户-->
@@ -49,7 +51,41 @@
 		 WHERE id=#{id}
     </update>
     <!--删除用户-->
-    <delete id="deleteUser" parameterType="string">
+    <!-- <delete id="deleteUser" parameterType="STRING">
          DELETE FROM user WHERE id = #{userId}
-    </delete>
+    </delete> -->
+    <update id="deleteUser">
+        UPDATE user SET status=#{0} WHERE id=#{1}
+    </update>
+    
+    <!--定义一个sql片段 -->
+    <sql id="query_user_where">
+        <if test="id!=null and id!=''">
+            and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+            and name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="realName!=null and realName!=''">
+            and realName = #{realName,jdbcType=VARCHAR}
+        </if>
+        <if test="pwd!=null and pwd!=''">
+            and pwd = #{pwd,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null and status!=''">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="privilege!=null and privilege!=''">
+            and privilege = #{privilege,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+            and createTime = #{createTime,jdbcType=DATE}
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+            and updateTime = #{updateTime,jdbcType=DATE}
+        </if>
+        <if test="oId!=null and oId!=''">
+            and oId = #{oId,jdbcType=VARCHAR}
+        </if>
+    </sql>
 </mapper>
