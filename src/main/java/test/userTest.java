@@ -42,7 +42,7 @@ public class userTest {
         String cTime="2018-03-06";
         String uTime="2018-03-08";
         try {
-            System.out.println(service.updateUser("e9d469047d12493eb7db4b5d5290c08b", "44", "小莉44", "", 2, formatter.parse(cTime), formatter.parse(uTime), ""));
+            System.out.println(service.updateUser("a6c920ed8c8a4d149869d19088945205", "1", "55", "", 2, formatter.parse(cTime), formatter.parse(uTime), ""));
         } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
@@ -50,12 +50,13 @@ public class userTest {
     //删除
     @Test
     public void deleteTest() {   
-        System.out.println(service.deleteUser("33333"));
+        //System.out.println(service.deleteUser("33333"));
+        System.out.println(service.deleteUser("2"));
     }
     //查询全部
     @Test
     public void ListUserTest() {
-        List<User> user = service.listUser();
+        List<User> user = service.listUser(1);
         for(User list:user){
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +" privilege: "+list.getPrivilege() +
                     " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+formatter.format(list.getUpdateTime()) +" oId: "+list.getoId()+"\n"); 
@@ -65,7 +66,7 @@ public class userTest {
     //根据name查询
     @Test
     public void ListNameTest() {
-        int flag = service.countUserName("a");
+        Integer flag = service.countUserName("a");
         System.out.println(flag);
     }
     //根据id查询
