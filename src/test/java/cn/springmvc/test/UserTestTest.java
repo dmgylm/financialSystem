@@ -31,11 +31,9 @@ public class UserTestTest {
 
     /**
      * 新增组织结构
-     * 
-     * @throws UnsupportedEncodingException
      */
     @Test
-    public void saveOrganization() throws UnsupportedEncodingException {
+    public void saveOrganization() {
         String orgName = "任意字符串";
         try {
             orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
@@ -51,6 +49,7 @@ public class UserTestTest {
         organization.setParentId("1");
         organization.setCreateTime(new Date());
         organization.setUpdateTime(new Date());
+        organization.setStatus(1);
         Integer i = service.saveOrganization(organization);
         System.out.println(i);
     }
@@ -112,19 +111,19 @@ public class UserTestTest {
     @Test
     public void updateOrganization() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "b87ca89056394a6faf4af96fd9d95e3e");
+        map.put("id", "802384ed9ac642fc95736eda006d3c57");
         map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
         Integer i = service.updateOrganization(map);
         System.out.println(i);
     }
 
     /**
-     * 根据条件删除组织结构信息
+     * 伪删除（根据条件删除组织结构信息）
      */
     @Test
     public void deleteOrganization() {
-        String id = "b87ca89056394a6faf4af96fd9d95e3e";
-        Integer i = service.deleteOrganization(id);
+        String id = "802384ed9ac642fc95736eda006d3c57";
+        Integer i = service.deleteOrganizationByStatus(id);
         System.out.println(i);
     }
 
