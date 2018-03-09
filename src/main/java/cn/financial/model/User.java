@@ -19,6 +19,20 @@ public class User {
     private Date updateTime; // 更新时间
 
     private String oId; // 组织id
+    
+    
+    public User(String id, String name, String realName, String pwd, int privilege, Date createTime, Date updateTime,
+            String oId) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.realName = realName;
+        this.pwd = pwd;
+        this.privilege = privilege;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.oId = oId;
+    }
 
     public String getId() {
         return id;
