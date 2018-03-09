@@ -7,6 +7,8 @@ public class User {
     private String id; // 用户表id
 
     private String name; // 用户名
+    
+    private String realName;//真实姓名
 
     private String pwd; // 密码
 
@@ -32,6 +34,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public String getPwd() {
