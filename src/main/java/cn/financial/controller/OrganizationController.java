@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,8 @@ public class OrganizationController {
 
     @Autowired
     private OrganizationService organizationService;
+
+    protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
     /**
      * 新增组织结构
@@ -76,6 +80,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -97,6 +102,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -120,6 +126,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -143,6 +150,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -170,6 +178,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -197,6 +206,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
@@ -225,6 +235,7 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
