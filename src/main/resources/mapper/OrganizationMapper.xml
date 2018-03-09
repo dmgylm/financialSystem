@@ -4,19 +4,13 @@
 <!-- 组织结构 -->
 <mapper namespace="cn.financial.dao.OrganizationDAO">
 
-	<!-- 用户POJO对应数据库字段 -->
-	<resultMap type="User" id="userResultMap">
-		<id property="id" column="usid" javaType="string" jdbcType="VARCHAR" />
-		<result property="name" column="name" javaType="string"
-			jdbcType="VARCHAR" />
-		<result property="pwd" column="pwd" javaType="string" jdbcType="VARCHAR" />
-		<result property="privilege" column="privilege" javaType="int"
-			jdbcType="INTEGER" />
-		<result property="createTime" column="createTime" javaType="java.sql.Date"
-			jdbcType="DATE" />
-		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
-			jdbcType="DATE" />
-	</resultMap>
+	<!-- 用户POJO对应数据库字段 <resultMap type="User" id="userResultMap"> <id property="id" 
+		column="usid" javaType="string" jdbcType="VARCHAR" /> <result property="name" 
+		column="name" javaType="string" jdbcType="VARCHAR" /> <result property="pwd" 
+		column="pwd" javaType="string" jdbcType="VARCHAR" /> <result property="privilege" 
+		column="privilege" javaType="int" jdbcType="INTEGER" /> <result property="createTime" 
+		column="createTime" javaType="java.sql.Date" jdbcType="DATE" /> <result property="updateTime" 
+		column="updateTime" javaType="java.sql.Date" jdbcType="DATE" /> </resultMap> -->
 
 	<!-- 组织架构POJO对应数据库字段 -->
 	<resultMap type="Organization" id="organizationResultMap">
@@ -29,8 +23,9 @@
 			jdbcType="DATE"></result>
 		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
 			jdbcType="DATE"></result>
-		<collection property="users" resultMap="userResultMap"> </collection>
-		  
+		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<!-- <collection property="users" resultMap="userResultMap"> </collection> -->
+
 	</resultMap>
 
 	<!-- 新增组织结构节点信息 -->
@@ -49,19 +44,11 @@
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
-	<select id="listOrganization" resultMap="organizationResultMap">
+	<select id="listOrganization" resultType="Organization">
 		select
-		org.*,us.id usid,
-		us.name,
-		us.pwd,
-		us.createTime,
-		us.updateTime,
-		us.privilege,
-		us.oId
+		*
 		from
-		organization org, user us
-		where
-		org.uId = us.id
+		organization
 	</select>
 
 	<!-- 根据条件查询组织结构信息 -->
