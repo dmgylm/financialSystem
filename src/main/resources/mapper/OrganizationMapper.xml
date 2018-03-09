@@ -24,6 +24,8 @@
 		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
 			jdbcType="DATE"></result>
 		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<result property="status" column="status" javaType="int"
+			jdbcType="INTEGER"></result>
 		<!-- <collection property="users" resultMap="userResultMap"> </collection> -->
 
 	</resultMap>
@@ -37,10 +39,11 @@
 		orgName,
 		createTime,
 		updateTime,
-		uId
+		uId,
+		status
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
@@ -49,6 +52,8 @@
 		*
 		from
 		organization
+		where
+		status = 1
 	</select>
 
 	<!-- 根据条件查询组织结构信息 -->
@@ -58,7 +63,7 @@
 		from
 		organization
 		where
-		1 = 1
+		status = 1
 		<include refid="query_organization_where"></include>
 	</select>
 
@@ -72,6 +77,8 @@
 		where
 		id =
 		#{_parameter,jdbcType=VARCHAR}
+		and
+		status = 1
 	</select>
 
 	<!-- 根据条件更新组织结构信息 -->
@@ -96,6 +103,8 @@
 		</trim>
 		where
 		id = #{id,jdbcType=VARCHAR}
+		and
+		status = 1
 	</update>
 
 	<!-- 根据条件删除组织结构信息 -->
@@ -106,6 +115,18 @@
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
+
+	<!-- 伪删除 （根据组织结构ID修改状态为0，即已删除） -->
+	<update id="deleteOrganizationByStatus" parameterType="java.lang.String">
+		update
+		organization
+		set
+		status = 0
+		where
+		id = #{_parameter,jdbcType=VARCHAR}
+		and
+		status = 1
+	</update>
 
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
