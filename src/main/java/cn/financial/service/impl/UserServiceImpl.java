@@ -49,11 +49,8 @@ public class UserServiceImpl implements  UserService{
     /**
      * 删除用户
      */
-    /*public Integer deleteUser(String userId) {
-        return userDao.deleteUser(userId);
-    }*/
     public Integer deleteUser(String userId){
-        return userDao.deleteUser(0, userId);
+        return userDao.deleteUser(userId);
     }
 }
  
