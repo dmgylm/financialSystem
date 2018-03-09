@@ -11,7 +11,7 @@ public interface UserService {
      * 查询所有用户
      * @return
      */
-    List<User> listUser(Integer status);
+    List<User> listUser();
     /**
      * 根据name查询用户
      * @param name
