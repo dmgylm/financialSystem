@@ -59,4 +59,12 @@ public interface OrganizationDAO {
      */
     Integer deleteOrganization(String id);
 
+    /**
+     * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）
+     * 
+     * @param id
+     * @return
+     */
+    Integer deleteOrganizationByStatus(String id);
+
 }

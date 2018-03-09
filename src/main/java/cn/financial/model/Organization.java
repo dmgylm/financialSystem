@@ -16,6 +16,8 @@ public class Organization {
 
     private String uId; // 提交人id
 
+    private Integer status; // 状态（是否已删除，1表示还存在，0表示已删除）
+
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
     public String getId() {
@@ -66,10 +68,18 @@ public class Organization {
         this.uId = uId;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Organization [id=" + id + ", parentId=" + parentId + ", orgName=" + orgName + ", createTime="
-                + createTime + ", updateTime=" + updateTime + ", uId=" + uId + "]";
+                + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status + "]";
     }
 
     // public List<User> getUsers() {

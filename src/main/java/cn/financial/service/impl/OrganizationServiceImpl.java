@@ -63,4 +63,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     public Integer deleteOrganization(String id) {
         return organizationDAO.deleteOrganization(id);
     }
+
+    /**
+     * 伪删除 <根据组织结构ID修改状态为0，即已删除>
+     */
+    public Integer deleteOrganizationByStatus(String id) {
+        return organizationDAO.deleteOrganizationByStatus(id);
+    }
 }

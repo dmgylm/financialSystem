@@ -64,6 +64,7 @@ public class OrganizationController {
         organization.setParentId(parentId);
         organization.setCreateTime(createTimeOfDate);
         organization.setUpdateTime(updateTimeOfDate);
+        organization.setStatus(1);
         try {
             Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
@@ -166,6 +167,33 @@ public class OrganizationController {
             } else {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改失败!");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常!");
+        }
+        return dataMap;
+    }
+
+    /**
+     * 伪删除 <根据组织结构ID修改状态为0，即已删除>
+     * 
+     * @param request
+     * @param id
+     *            传入的组织结构id
+     * @return
+     */
+    @RequestMapping("/organization/deletebystatus")
+    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request, String id) {
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        try {
+            Integer i = organizationService.deleteOrganizationByStatus(id);
+            if (Integer.valueOf(1).equals(i)) {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "删除成功!");
+            } else {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "删除失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
