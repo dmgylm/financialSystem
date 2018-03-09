@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -117,40 +119,32 @@ public class OrganizationController {
      * 
      * @param request
      * @param response
+     * @param id
+     *            组织结构id
+     * @param orgName
+     *            组织架构名
+     * @param uId
+     *            提交人id
+     * @param parentId
+     *            父id
+     * @param createTime
+     *            创建时间
+     * @param updateTime
+     *            更新时间
      * @return
      */
     @RequestMapping("/organization/listBy")
-    public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response, String id,
+            String orgName, String uId, String parentId, Date createTime, Date updateTime) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
-        String id = request.getParameter("id");
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
-        String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Map<Object, Object> map = new HashMap<>(6);
         try {
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
-            }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
+            Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
             map.put("orgName", orgName);
             map.put("uId", uId);
             map.put("parentId", parentId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            map.put("createTime", createTime);
+            map.put("updateTime", updateTime);
             List<Organization> list = organizationService.listOrganizationBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
@@ -193,40 +187,33 @@ public class OrganizationController {
      * 
      * @param request
      * @param response
+     * @param id
+     *            组织结构id（required = true，必须存在）
+     * @param orgName
+     *            组织架构名
+     * @param uId
+     *            提交人id
+     * @param parentId
+     *            父id
+     * @param createTime
+     *            创建时间
+     * @param updateTime
+     *            更新时间
      * @return
      */
     @RequestMapping("/organization/update")
-    public Map<String, Object> updateOrganization(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> updateOrganization(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "id", required = true) String id, String orgName, String uId, String parentId,
+            Date createTime, Date updateTime) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
-        String id = request.getParameter("id");
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
-        String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Map<Object, Object> map = new HashMap<>(6);
         try {
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
-            }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
+            Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
             map.put("orgName", orgName);
             map.put("uId", uId);
             map.put("parentId", parentId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            map.put("createTime", createTime);
+            map.put("updateTime", updateTime);
             Integer i = organizationService.updateOrganization(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -300,6 +287,17 @@ public class OrganizationController {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
+    }
+
+    /**
+     * 格式化controller方法的参数接收的日期类型
+     * @param binder
+     */
+    @org.springframework.web.bind.annotation.InitBinder
+    public void InitBinder(ServletRequestDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
     }
 
 }
