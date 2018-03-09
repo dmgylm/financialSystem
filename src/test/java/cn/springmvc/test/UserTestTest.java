@@ -36,22 +36,22 @@ public class UserTestTest {
      */
     @Test
     public void saveOrganization() throws UnsupportedEncodingException {
-        String str = "任意字符串";
+        String orgName = "任意字符串";
         try {
-            str = new String(str.getBytes("ISO-8859-1"), "UTF-8");
+            orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println(str);
+        System.out.println(orgName);
         String id = UuidUtil.getUUID();
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", id);
-        map.put("orgName", new String(str.getBytes("ISO-8859-1"), "UTF-8"));
-        map.put("uId", "1");
-        map.put("parentId", "0");
-        map.put("createTime", new Date());
-        map.put("updateTime", new Date());
-        int i = service.saveOrganization(map);
+        Organization organization = new Organization();
+        organization.setId(id);
+        organization.setOrgName(orgName);
+        organization.setuId("2");
+        organization.setParentId("1");
+        organization.setCreateTime(new Date());
+        organization.setUpdateTime(new Date());
+        Integer i = service.saveOrganization(organization);
         System.out.println(i);
     }
 
@@ -84,7 +84,8 @@ public class UserTestTest {
                     + organization.getOrgName() + "---------------------------------------------"
                     + organization.getParentId() + "---------------------------------------------"
                     + organization.getCreateTime() + "---------------------------------------------"
-                    + organization.getUpdateTime());
+                    + organization.getUpdateTime() + "---------------------------------------------"
+                    + organization.getuId());
         }
     }
 
@@ -101,18 +102,19 @@ public class UserTestTest {
                         + organization.getOrgName() + "---------------------------------------------"
                         + organization.getParentId() + "---------------------------------------------"
                         + organization.getCreateTime() + "---------------------------------------------"
-                        + organization.getUpdateTime());
+                        + organization.getUpdateTime() + "---------------------------------------------"
+                        + organization.getuId());
     }
 
     /**
-     * 根据条件修改组织结构信息
+     * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
     @Test
     public void updateOrganization() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "7963dbc544024729927c41ce8238db40");
-        map.put("orgName", "bb");
-        int i = service.updateOrganization(map);
+        map.put("id", "b87ca89056394a6faf4af96fd9d95e3e");
+        map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
+        Integer i = service.updateOrganization(map);
         System.out.println(i);
     }
 
@@ -121,9 +123,9 @@ public class UserTestTest {
      */
     @Test
     public void deleteOrganization() {
-        String id = "1";
-        int i = service.deleteOrganization(id);
-        System.out.println(1);
+        String id = "b87ca89056394a6faf4af96fd9d95e3e";
+        Integer i = service.deleteOrganization(id);
+        System.out.println(i);
     }
 
 }
