@@ -17,13 +17,13 @@ public class UserServiceImpl implements  UserService{
     /**
      * 查询全部
      */
-    public java.util.List<User> listUser() {
-        return userDao.listUser();
+    public java.util.List<User> listUser(Integer status) {
+        return userDao.listUser(status);
     }
     /**
      * 根据name查询
      */
-    public int countUserName(String name) {
+    public Integer countUserName(String name) {
         return userDao.countUserName(name);
     }
     /**
@@ -35,23 +35,25 @@ public class UserServiceImpl implements  UserService{
     /**
      * 新增用户
      */
-    public int insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
+    public Integer insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
         User user = new User(UuidUtil.getUUID(), name, realName, pwd, privilege, createTime, updateTime, oId);
         return userDao.insertUser(user);
     }
     /**
      * 修改用户
      */
-    public int updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
+    public Integer updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
         User user = new User(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
         return userDao.updateUser(user);
     }
     /**
      * 删除用户
      */
-    public int deleteUser(String userId) {
+    /*public Integer deleteUser(String userId) {
         return userDao.deleteUser(userId);
+    }*/
+    public Integer deleteUser(String userId){
+        return userDao.deleteUser(0, userId);
     }
-    
 }
  
