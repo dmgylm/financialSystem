@@ -38,11 +38,13 @@ public class UserController {
     Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse respons){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<User> user = userService.listUser();
+            List<User> user = userService.listUser(1);
             dataMap.put("userList", user);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
         } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
@@ -64,6 +66,8 @@ public class UserController {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
         } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
             e.printStackTrace();
         }
         return dataMap;
@@ -93,7 +97,7 @@ public class UserController {
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
-            int flag = userService.countUserName(name);//查询用户名是否存在(真实姓名可以重复)
+            Integer flag = userService.countUserName(name);//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名已存在");
@@ -109,6 +113,8 @@ public class UserController {
             }
             
         } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -139,7 +145,7 @@ public class UserController {
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
-            int user = userService.updateUser(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
+            Integer user = userService.updateUser(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
             if(user>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功");
@@ -148,6 +154,8 @@ public class UserController {
                 dataMap.put("resultDesc", "修改失败");
             }
         } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -163,7 +171,8 @@ public class UserController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String userId = request.getParameter("userId");
         try {
-            int user = userService.deleteUser(userId);
+            //Integer user = userService.deleteUser(userId);
+            Integer user = userService.deleteUser(userId);
             if(user>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功");
@@ -172,6 +181,8 @@ public class UserController {
                 dataMap.put("resultDesc", "删除失败");
             }
         } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
