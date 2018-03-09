@@ -2,6 +2,8 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.User;
 
 /**
@@ -14,13 +16,13 @@ public interface UserDAO {
      * 查询所有用户
      * @return
      */
-    List<User> listUser();
+    List<User> listUser(Integer status);
     /**
      * 根据name查询用户
      * @param name
      * @return
      */
-    int countUserName(String name);
+    Integer countUserName(String name);
     /**
      * 根据id查询用户
      * @param userId
@@ -37,7 +39,7 @@ public interface UserDAO {
      * @param oId
      * @return
      */
-    int insertUser(User user);
+    Integer insertUser(User user);
     /**
      * 修改用户
      * @param name
@@ -48,11 +50,12 @@ public interface UserDAO {
      * @param oId
      * @return
      */
-    int updateUser(User user);
+    Integer updateUser(User user);
     /**
      * 删除用户
      * @param userId
      * @return
      */
-    int deleteUser(String userId);
+    //Integer deleteUser(String userId);
+    Integer deleteUser(Integer status, String userId);
 }
