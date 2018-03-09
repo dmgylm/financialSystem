@@ -11,18 +11,23 @@ public class User {
     private String realName;//真实姓名
 
     private String pwd; // 密码
+    
+    private Integer status;//状态 
 
-    private int privilege; // 权限级别
+    private Integer privilege; // 权限级别
+
+    public User() {
+        super();
+    }
 
     private Date createTime; // 创建时间
 
     private Date updateTime; // 更新时间
 
     private String oId; // 组织id
-    
-    
-    public User(String id, String name, String realName, String pwd, int privilege, Date createTime, Date updateTime,
-            String oId) {
+
+    public User(String id, String name, String realName, String pwd, Integer privilege, Date createTime,
+            Date updateTime, String oId) {
         super();
         this.id = id;
         this.name = name;
@@ -66,11 +71,19 @@ public class User {
         this.pwd = pwd;
     }
 
-    public int getPrivilege() {
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getPrivilege() {
         return privilege;
     }
 
-    public void setPrivilege(int privilege) {
+    public void setPrivilege(Integer privilege) {
         this.privilege = privilege;
     }
 
@@ -97,5 +110,5 @@ public class User {
     public void setoId(String oId) {
         this.oId = oId;
     }
-    
+
 }
