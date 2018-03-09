@@ -1,7 +1,6 @@
 package cn.financial.dao;
 
-import java.awt.List;
-import java.util.Date;
+import java.util.List;
 
 import cn.financial.model.User;
 
@@ -15,13 +14,19 @@ public interface UserDAO {
      * 查询所有用户
      * @return
      */
-    java.util.List<User> listUser();
+    List<User> listUser();
     /**
      * 根据name查询用户
      * @param name
      * @return
      */
-    int listUserById(String name);
+    int countUserName(String name);
+    /**
+     * 根据id查询用户
+     * @param userId
+     * @return
+     */
+    User getUserById(String userId);
     /**
      * 新增用户
      * @param name
