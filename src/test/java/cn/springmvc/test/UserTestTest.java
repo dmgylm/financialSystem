@@ -66,15 +66,8 @@ public class UserTestTest {
                     + organization.getOrgName() + "---------------------------------------------"
                     + organization.getParentId() + "---------------------------------------------"
                     + organization.getCreateTime() + "---------------------------------------------"
-                    + organization.getUpdateTime() + "---------------------------------------------");
-            List<User> users = organization.getUsers();
-            for (User user : users) {
-                System.out.println(user.getId() + "---------------------------------------------" + user.getName()
-                        + "---------------------------------------------" + user.getPrivilege()
-                        + "---------------------------------------------" + user.getPwd()
-                        + "---------------------------------------------" + user.getCreateTime()
-                        + "---------------------------------------------" + user.getUpdateTime());
-            }
+                    + organization.getUpdateTime() + "---------------------------------------------"
+                    + organization.getuId());
         }
     }
 
