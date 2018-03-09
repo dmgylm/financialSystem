@@ -2,6 +2,7 @@ package cn.springmvc.test;
 
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,13 +31,22 @@ public class UserTestTest {
 
     /**
      * 新增组织结构
+     * 
+     * @throws UnsupportedEncodingException
      */
     @Test
-    public void saveOrganization() {
+    public void saveOrganization() throws UnsupportedEncodingException {
+        String str = "任意字符串";
+        try {
+            str = new String(str.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(str);
         String id = UuidUtil.getUUID();
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("id", id);
-        map.put("orgName", "aa");
+        map.put("orgName", new String(str.getBytes("ISO-8859-1"), "UTF-8"));
         map.put("uId", "1");
         map.put("parentId", "0");
         map.put("createTime", new Date());
