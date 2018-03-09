@@ -30,10 +30,11 @@ public class UuidUtil {
     /**
      * user
      */
-    public static User strToUser(String userId, String name, String pwd, Integer privilege, Date createTime, Date updateTime, String oId){
+    public static User strToUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId){
         User user = new User();
         user.setId(userId);
         user.setName(name);
+        user.setRealName(realName);
         user.setPwd(pwd);
         user.setPrivilege(privilege);
         user.setCreateTime(createTime);
