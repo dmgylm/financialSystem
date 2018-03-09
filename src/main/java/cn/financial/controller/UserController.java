@@ -14,9 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.User;
 import cn.financial.service.impl.UserServiceImpl;
+import cn.financial.util.FileUtil;
+import net.sf.json.JSONObject;
 
 /**
  * 用户
@@ -30,12 +33,41 @@ public class UserController {
     
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     /**
+     * 登录
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+    public void getUserName(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String pwd = request.getParameter("pwd");
+            Integer user = userService.countUserName(name, pwd);
+            if(user>0){
+                dataMap.put("userName", user);
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "查询成功");
+                request.getSession().setAttribute("username", name);
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "用户名或密码不匹配");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+    }
+    /**
      * 查询所有用户
      * @param request
-     * @param respons
+     * @param response
      */
-    @RequestMapping(value = "/user/index")
-    Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse respons){
+    @RequestMapping(value = "/user/index", method = RequestMethod.POST)
+    public void listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<User> user = userService.listUser();
@@ -47,17 +79,17 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-    	return dataMap;
+    	FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
      * 根据id查询
      * @param request
-     * @param respons
+     * @param response
      * @param id
      * @return
      */
-    @RequestMapping(value = "/user/userById")
-    Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse respons){
+    @RequestMapping(value = "/user/userById", method = RequestMethod.POST)
+    public void getUserById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String userId = request.getParameter("userId");
         try {
@@ -70,12 +102,12 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             e.printStackTrace();
         }
-        return dataMap;
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
      * 新增用户
      * @param request
-     * @param respons
+     * @param response
      * @param name
      * @param pwd
      * @param privilege
@@ -83,8 +115,8 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
-    @RequestMapping(value = "/user/insert")
-    Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse respons){
+    @RequestMapping(value = "/user/insert", method = RequestMethod.POST)
+    public void insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
@@ -97,7 +129,7 @@ public class UserController {
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
-            Integer flag = userService.countUserName(name);//查询用户名是否存在(真实姓名可以重复)
+            Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名已存在");
@@ -117,12 +149,12 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
      * 修改用户
      * @param request
-     * @param respons
+     * @param response
      * @param name
      * @param pwd
      * @param privilege
@@ -130,8 +162,8 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
-    @RequestMapping(value = "/user/update")
-    Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse respons){
+    @RequestMapping(value = "/user/update", method = RequestMethod.POST)
+    public void updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String userId = request.getParameter("userId");
@@ -158,16 +190,16 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
      * 删除用户
      * @param request
-     * @param respons
+     * @param response
      * @param userId
      */
-    @RequestMapping(value = "/user/delete")
-    Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse respons){
+    @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
+    public void deleteUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String userId = request.getParameter("userId");
         try {
@@ -185,6 +217,6 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }  
-        return dataMap;
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
 }
