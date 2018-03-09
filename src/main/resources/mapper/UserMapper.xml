@@ -55,7 +55,7 @@
          DELETE FROM user WHERE id = #{userId}
     </delete> -->
     <update id="deleteUser">
-        UPDATE user SET status=#{0} WHERE id=#{1}
+        UPDATE user SET status=0 WHERE id=#{userId}
     </update>
     
     <!--定义一个sql片段 -->
