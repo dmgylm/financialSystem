@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,13 @@ public class OrganizationController {
             String parentId, Date createTimeOfDate, Date updateTimeOfDate) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String id = UuidUtil.getUUID();
+        try {
+            orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
+            uId = new String(uId.getBytes("ISO-8859-1"), "UTF-8");
+            parentId = new String(parentId.getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("id", id);
         map.put("orgName", orgName);
