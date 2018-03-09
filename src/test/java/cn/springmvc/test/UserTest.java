@@ -13,7 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import cn.financial.model.User;
 import cn.financial.service.impl.UserServiceImpl;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:conf/spring-test.xml")
+@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
 /**
  * 用户测试
  * @author gs
