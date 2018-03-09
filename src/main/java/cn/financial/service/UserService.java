@@ -51,7 +51,6 @@ public interface UserService {
      * @param userId
      * @return
      */
-    //Integer deleteUser(String userId);
     Integer deleteUser(String userId);
 	 
 }
