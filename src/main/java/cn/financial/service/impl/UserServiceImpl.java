@@ -1,6 +1,5 @@
 package cn.financial.service.impl;
 import java.util.Date;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,8 @@ public class UserServiceImpl implements  UserService{
     /**
      * 根据name查询
      */
-    public Integer countUserName(String name) {
-        return userDao.countUserName(name);
+    public Integer countUserName(String name, String pwd) {
+        return userDao.countUserName(name, pwd);
     }
     /**
      * 根据id查询
