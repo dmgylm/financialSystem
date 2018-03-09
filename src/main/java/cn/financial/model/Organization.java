@@ -67,6 +67,12 @@ public class Organization {
         this.uId = uId;
     }
 
+    @Override
+    public String toString() {
+        return "Organization [id=" + id + ", parentId=" + parentId + ", orgName=" + orgName + ", createTime="
+                + createTime + ", updateTime=" + updateTime + ", uId=" + uId + "]";
+    }
+
     // public List<User> getUsers() {
     // return users;
     // }
