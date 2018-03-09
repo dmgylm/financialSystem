@@ -203,13 +203,14 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件删除组织结构信息
+     * 根据条件删除组织结构信息 （这个方法已标记为过时，请使用deleteOrganizationByStatus方法来删除）
      * 
      * @param request
      * @param id
      *            传入的组织结构id
      * @return
      */
+    @Deprecated
     @RequestMapping("/organization/delete")
     public Map<Object, Object> deleteOrganization(HttpServletRequest request, String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
