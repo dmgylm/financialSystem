@@ -1,7 +1,5 @@
 package cn.financial.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,11 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.service.UserService;
 import cn.financial.service.impl.UserServiceImpl;
-import cn.financial.util.UuidUtil;
 
 /**
  * 用户
@@ -40,15 +35,38 @@ public class UserController {
      * @param respons
      */
     @RequestMapping(value = "/user/index")
-    Map<String, Object> ListUser(HttpServletRequest request,HttpServletResponse respons){
+    Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse respons){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<User> user = userService.listUser();
             dataMap.put("userList", user);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功");
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
+    }
+    /**
+     * 根据id查询
+     * @param request
+     * @param respons
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/user/userById")
+    Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse respons){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        String userId = request.getParameter("userId");
+        try {
+            User user = userService.getUserById(userId);
+            dataMap.put("userById", user);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataMap;
     }
     /**
      * 新增用户
@@ -66,6 +84,7 @@ public class UserController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
             String pwd = request.getParameter("pwd");
             Integer privilege = Integer.parseInt(request.getParameter("privilege"));
             String cTime = request.getParameter("createTime");
@@ -74,23 +93,22 @@ public class UserController {
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
-            int flag = userService.listUserById(name);//查询用户名是否存在
+            int flag = userService.countUserName(name);//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
-                System.out.println("用户名已存在");
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "用户名已存在");
             }else{
-                int user = userService.insertUser(name, pwd, privilege, createTime, updateTime, oId);
+                int user = userService.insertUser(name, realName, pwd, privilege, createTime, updateTime, oId);
                 if(user>0){
                     dataMap.put("resultCode", 200);
-                    dataMap.put("insertUser", "新增成功");
+                    dataMap.put("resultDesc", "新增成功");
                 }else{
                     dataMap.put("resultCode", 400);
-                    dataMap.put("insertUser", "新增失败");
+                    dataMap.put("resultDesc", "新增失败");
                 }
             }
             
-        } catch (ParseException e) {
-            this.logger.error(e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -109,26 +127,27 @@ public class UserController {
     @RequestMapping(value = "/user/update")
     Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse respons){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = request.getParameter("userId");
-        String name = request.getParameter("name");
-        String pwd = request.getParameter("pwd");
-        Integer privilege = Integer.parseInt(request.getParameter("privilege"));
-        String cTime = request.getParameter("createTime");
-        String uTime = request.getParameter("updateTime");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            String userId = request.getParameter("userId");
+            String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
+            String pwd = request.getParameter("pwd");
+            Integer privilege = Integer.parseInt(request.getParameter("privilege"));
+            String cTime = request.getParameter("createTime");
+            String uTime = request.getParameter("updateTime");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date createTime = formatter.parse(cTime);
             Date updateTime = formatter.parse(uTime);
             String oId = request.getParameter("oId");
-            int user = userService.updateUser(userId, name, pwd, privilege, createTime, updateTime, oId);
+            int user = userService.updateUser(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
             if(user>0){
                 dataMap.put("resultCode", 200);
-                dataMap.put("updateUser", "修改成功");
+                dataMap.put("resultDesc", "修改成功");
             }else{
                 dataMap.put("resultCode", 400);
-                dataMap.put("updateUser", "修改失败");
+                dataMap.put("resultDesc", "修改失败");
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -147,10 +166,10 @@ public class UserController {
             int user = userService.deleteUser(userId);
             if(user>0){
                 dataMap.put("resultCode", 200);
-                dataMap.put("deleteUser", "删除成功");
+                dataMap.put("resultDesc", "删除成功");
             }else{
                 dataMap.put("resultCode", 400);
-                dataMap.put("deleteUser", "删除失败");
+                dataMap.put("resultDesc", "删除失败");
             }
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
