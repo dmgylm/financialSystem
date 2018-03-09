@@ -17,7 +17,7 @@ public interface UserService {
      * @param name
      * @return
      */
-    Integer countUserName(String name);
+    Integer countUserName(String name ,String pwd);
     /**
      * 根据id查询用户
      * @param userId
