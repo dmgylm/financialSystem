@@ -13,7 +13,7 @@ public interface OrganizationService {
      * @param map
      * @return
      */
-    int saveOrganization(Map<Object, Object> map);
+    Integer saveOrganization(Map<Object, Object> map);
 
     /**
      * 接口（查询所有的组织结构）
@@ -44,7 +44,7 @@ public interface OrganizationService {
      * @param id
      * @return
      */
-    int updateOrganization(Map<Object, Object> map);
+    Integer updateOrganization(Map<Object, Object> map);
 
     /**
      * 接口（根据条件删除组织结构信息）
@@ -52,6 +52,6 @@ public interface OrganizationService {
      * @param id
      * @return
      */
-    int deleteOrganization(String id);
+    Integer deleteOrganization(String id);
 
 }

@@ -15,7 +15,9 @@ public class Organization {
 
     private Date updateTime; // 更新时间
 
-    private List<User> users; // 提交人id（一对多，组织结构为一）
+    private String uId; // 提交人id
+
+    // private List<User> users; // 提交人id（一对多，组织结构为一）
 
     public String getId() {
         return id;
@@ -57,12 +59,20 @@ public class Organization {
         this.updateTime = updateTime;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public String getuId() {
+        return uId;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setuId(String uId) {
+        this.uId = uId;
     }
+
+    // public List<User> getUsers() {
+    // return users;
+    // }
+    //
+    // public void setUsers(List<User> users) {
+    // this.users = users;
+    // }
 
 }

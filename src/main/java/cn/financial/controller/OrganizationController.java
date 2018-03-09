@@ -65,8 +65,8 @@ public class OrganizationController {
         map.put("createTime", createTimeOfDate);
         map.put("updateTime", updateTimeOfDate);
         try {
-            int i = organizationService.saveOrganization(map);
-            if (i == 1) {
+            Integer i = organizationService.saveOrganization(map);
+            if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "新增成功!");
             } else {
@@ -159,8 +159,8 @@ public class OrganizationController {
     public Map<String, Object> updateOrganization(HttpServletRequest request, Map<Object, Object> map) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            int i = organizationService.updateOrganization(map);
-            if (i == 1) {
+            Integer i = organizationService.updateOrganization(map);
+            if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功!");
             } else {
@@ -186,8 +186,8 @@ public class OrganizationController {
     public Map<Object, Object> deleteOrganization(HttpServletRequest request, String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            int i = organizationService.deleteOrganization(id);
-            if (i == 1) {
+            Integer i = organizationService.deleteOrganization(id);
+            if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功!");
             } else {

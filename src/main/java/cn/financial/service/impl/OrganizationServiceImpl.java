@@ -19,7 +19,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 新增组织结构
      */
-    public int saveOrganization(Map<Object, Object> map) {
+    public Integer saveOrganization(Map<Object, Object> map) {
         return organizationDAO.saveOrganization(map);
     }
 
@@ -47,14 +47,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据条件修改组织结构信息
      */
-    public int updateOrganization(Map<Object, Object> map) {
+    public Integer updateOrganization(Map<Object, Object> map) {
         return organizationDAO.updateOrganization(map);
     }
 
     /**
      * 根据条件删除组织结构信息
      */
-    public int deleteOrganization(String id) {
+    public Integer deleteOrganization(String id) {
         return organizationDAO.deleteOrganization(id);
     }
 }
