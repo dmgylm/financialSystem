@@ -2,6 +2,8 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.User;
 
 /**
@@ -20,7 +22,7 @@ public interface UserDAO {
      * @param name
      * @return
      */
-    Integer countUserName(String name);
+    Integer countUserName(@Param("name")String name, @Param("pwd")String pwd);
     /**
      * 根据id查询用户
      * @param userId
