@@ -2,8 +2,6 @@ package cn.financial.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import cn.financial.model.User;
 
 /**
@@ -16,7 +14,7 @@ public interface UserDAO {
      * 查询所有用户
      * @return
      */
-    List<User> listUser(Integer status);
+    List<User> listUser();
     /**
      * 根据name查询用户
      * @param name
