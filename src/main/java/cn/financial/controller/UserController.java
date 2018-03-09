@@ -38,7 +38,7 @@ public class UserController {
     Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse respons){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<User> user = userService.listUser(1);
+            List<User> user = userService.listUser();
             dataMap.put("userList", user);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
