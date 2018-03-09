@@ -1,6 +1,6 @@
 package cn.financial.controller;
 
-import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
@@ -37,38 +38,42 @@ public class OrganizationController {
      * 新增组织结构
      * 
      * @param request
-     * @param orgName
-     *            组织架构名
-     * @param uId
-     *            提交人id
-     * @param parentId
-     *            父id
-     * @param createTimeOfDate
-     *            创建时间
-     * @param updateTimeOfDate
-     *            更新时间
+     * @param response
      * @return
      */
     @RequestMapping("/organization/save")
-    public Map<String, Object> saveOrganization(HttpServletRequest request, String orgName, String uId,
-            String parentId, Date createTimeOfDate, Date updateTimeOfDate) {
+    public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 组织结构id
         String id = UuidUtil.getUUID();
+        // 组织架构名
+        String orgName = request.getParameter("orgName");
+        // 提交人id
+        String uId = request.getParameter("uId");
+        // 父id
+        String parentId = request.getParameter("parentId");
+        // 创建时间
+        String createTime = request.getParameter("createTime");
+        // 更新时间
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
             orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-            uId = new String(uId.getBytes("ISO-8859-1"), "UTF-8");
-            parentId = new String(parentId.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        Organization organization = new Organization();
-        organization.setId(id);
-        organization.setOrgName(orgName);
-        organization.setuId(uId);
-        organization.setParentId(parentId);
-        organization.setCreateTime(createTimeOfDate);
-        organization.setUpdateTime(updateTimeOfDate);
-        try {
+            Organization organization = new Organization();
+            organization.setId(id);
+            organization.setOrgName(orgName);
+            organization.setuId(uId);
+            organization.setParentId(parentId);
+            organization.setCreateTime(createTimeOfDate);
+            organization.setUpdateTime(updateTimeOfDate);
             Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -111,14 +116,41 @@ public class OrganizationController {
      * 根据条件查询组织结构信息
      * 
      * @param request
-     * @param map
-     *            根据传入的map查询相应的组织结构
+     * @param response
      * @return
      */
     @RequestMapping("/organization/listBy")
-    public Map<String, Object> listOrganizationBy(HttpServletRequest request, Map<Object, Object> map) {
+    public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 组织结构id
+        String id = request.getParameter("id");
+        // 组织架构名
+        String orgName = request.getParameter("orgName");
+        // 提交人id
+        String uId = request.getParameter("uId");
+        // 父id
+        String parentId = request.getParameter("parentId");
+        // 创建时间
+        String createTime = request.getParameter("createTime");
+        // 更新时间
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<Object, Object> map = new HashMap<>(6);
         try {
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
+            map.put("id", id);
+            map.put("orgName", orgName);
+            map.put("uId", uId);
+            map.put("parentId", parentId);
+            map.put("createTime", createTimeOfDate);
+            map.put("updateTime", updateTimeOfDate);
             List<Organization> list = organizationService.listOrganizationBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
@@ -140,7 +172,8 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping("/organization/get")
-    public Map<String, Object> getOrganization(HttpServletRequest request, String id) {
+    public Map<String, Object> getOrganization(HttpServletRequest request,
+            @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Organization organization = organizationService.getOrganization(id);
@@ -159,14 +192,41 @@ public class OrganizationController {
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      * 
      * @param request
-     * @param map
-     *            传递的map必须包含有组织结构的ID
+     * @param response
      * @return
      */
     @RequestMapping("/organization/update")
-    public Map<String, Object> updateOrganization(HttpServletRequest request, Map<Object, Object> map) {
+    public Map<String, Object> updateOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 组织结构id
+        String id = request.getParameter("id");
+        // 组织架构名
+        String orgName = request.getParameter("orgName");
+        // 提交人id
+        String uId = request.getParameter("uId");
+        // 父id
+        String parentId = request.getParameter("parentId");
+        // 创建时间
+        String createTime = request.getParameter("createTime");
+        // 更新时间
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<Object, Object> map = new HashMap<>(6);
         try {
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
+            map.put("id", id);
+            map.put("orgName", orgName);
+            map.put("uId", uId);
+            map.put("parentId", parentId);
+            map.put("createTime", createTimeOfDate);
+            map.put("updateTime", updateTimeOfDate);
             Integer i = organizationService.updateOrganization(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -192,7 +252,8 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping("/organization/deletebystatus")
-    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request, String id) {
+    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request,
+            @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
             Integer i = organizationService.deleteOrganizationByStatus(id);
@@ -221,7 +282,8 @@ public class OrganizationController {
      */
     @Deprecated
     @RequestMapping("/organization/delete")
-    public Map<Object, Object> deleteOrganization(HttpServletRequest request, String id) {
+    public Map<Object, Object> deleteOrganization(HttpServletRequest request,
+            @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
             Integer i = organizationService.deleteOrganization(id);
