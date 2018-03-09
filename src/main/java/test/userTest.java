@@ -30,7 +30,7 @@ public class userTest {
         String cTime="2018-03-05";
         String uTime="2018-03-07";
         try {
-            System.out.println(service.insertUser("雯雯", "小芳", "b", 2, formatter.parse(cTime), formatter.parse(uTime), "3"));
+            System.out.println(service.insertUser("eee", "ccc", "b", 2, formatter.parse(cTime), formatter.parse(uTime), "355"));
         } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
@@ -42,7 +42,7 @@ public class userTest {
         String cTime="2018-03-06";
         String uTime="2018-03-08";
         try {
-            System.out.println(service.updateUser("72dee616075f4a42acf444fe729161a6", "222", "小莉", "", 2, formatter.parse(cTime), formatter.parse(uTime), ""));
+            System.out.println(service.updateUser("e9d469047d12493eb7db4b5d5290c08b", "44", "小莉44", "", 2, formatter.parse(cTime), formatter.parse(uTime), ""));
         } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
