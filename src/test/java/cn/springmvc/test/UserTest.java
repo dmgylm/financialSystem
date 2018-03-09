@@ -57,7 +57,7 @@ public class UserTest {
     //查询全部
     @Test
     public void ListUserTest() {
-        List<User> user = service.listUser(1);
+        List<User> user = service.listUser();
         for(User list:user){
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +" privilege: "+list.getPrivilege() +
                     " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+formatter.format(list.getUpdateTime()) +" oId: "+list.getoId()+"\n"); 
