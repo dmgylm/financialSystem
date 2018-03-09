@@ -39,11 +39,10 @@
 		orgName,
 		createTime,
 		updateTime,
-		uId,
-		status
+		uId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
@@ -124,8 +123,6 @@
 		status = 0
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
-		and
-		status = 1
 	</update>
 
 	<!--定义一个sql片段 -->
