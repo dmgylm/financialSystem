@@ -64,10 +64,10 @@ public class UserTest {
         }
         
     }
-    //根据name查询
+    //根据name,pwd查询
     @Test
     public void ListNameTest() {
-        Integer flag = service.countUserName("a");
+        Integer flag = service.countUserName("李四","444");
         System.out.println(flag);
     }
     //根据id查询
