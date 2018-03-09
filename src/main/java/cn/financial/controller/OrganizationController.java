@@ -64,7 +64,6 @@ public class OrganizationController {
         organization.setParentId(parentId);
         organization.setCreateTime(createTimeOfDate);
         organization.setUpdateTime(updateTimeOfDate);
-        organization.setStatus(1);
         try {
             Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
