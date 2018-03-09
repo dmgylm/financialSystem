@@ -127,24 +127,33 @@ public class OrganizationController {
      *            提交人id
      * @param parentId
      *            父id
-     * @param createTime
-     *            创建时间
-     * @param updateTime
-     *            更新时间
      * @return
      */
     @RequestMapping("/organization/listBy")
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response, String id,
-            String orgName, String uId, String parentId, Date createTime, Date updateTime) {
+            String orgName, String uId, String parentId) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 创建时间
+        String createTime = request.getParameter("createTime");
+        // 更新时间
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
             Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
             map.put("orgName", orgName);
             map.put("uId", uId);
             map.put("parentId", parentId);
-            map.put("createTime", createTime);
-            map.put("updateTime", updateTime);
+            map.put("createTime", createTimeOfDate);
+            map.put("updateTime", updateTimeOfDate);
             List<Organization> list = organizationService.listOrganizationBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
@@ -195,25 +204,33 @@ public class OrganizationController {
      *            提交人id
      * @param parentId
      *            父id
-     * @param createTime
-     *            创建时间
-     * @param updateTime
-     *            更新时间
      * @return
      */
     @RequestMapping("/organization/update")
     public Map<String, Object> updateOrganization(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(value = "id", required = true) String id, String orgName, String uId, String parentId,
-            Date createTime, Date updateTime) {
+            @RequestParam(value = "id", required = true) String id, String orgName, String uId, String parentId) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 创建时间
+        String createTime = request.getParameter("createTime");
+        // 更新时间
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
             Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
             map.put("orgName", orgName);
             map.put("uId", uId);
             map.put("parentId", parentId);
-            map.put("createTime", createTime);
-            map.put("updateTime", updateTime);
+            map.put("createTime", createTimeOfDate);
+            map.put("updateTime", updateTimeOfDate);
             Integer i = organizationService.updateOrganization(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -288,16 +305,4 @@ public class OrganizationController {
         }
         return dataMap;
     }
-
-    /**
-     * 格式化controller方法的参数接收的日期类型
-     * @param binder
-     */
-    @org.springframework.web.bind.annotation.InitBinder
-    public void InitBinder(ServletRequestDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
-    }
-
 }
