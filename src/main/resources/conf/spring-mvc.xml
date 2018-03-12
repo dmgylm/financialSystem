@@ -27,8 +27,14 @@
    <!-- 对模型视图添加前后缀 -->
      <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
       p:prefix="/WEB-INF/view/" p:suffix=".jsp"/>
-</beans>
-
-
-
+    
+    <!-- 拦截器 -->    
+    <mvc:interceptors>
+       <mvc:interceptor>
+           <mvc:mapping path="/**"/>
+           <mvc:exclude-mapping path="/user/login"/>
+           <bean id="loginInterceptor" class="com.suncar.common.interceptor.LoginInterceptor"/>
+        </mvc:interceptor> 
+    </mvc:interceptors> 
+</beans>   
 <!-- mvc配置文件 -->
