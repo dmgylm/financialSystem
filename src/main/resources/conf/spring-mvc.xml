@@ -33,7 +33,7 @@
        <mvc:interceptor>
            <mvc:mapping path="/**"/>
            <mvc:exclude-mapping path="/manage/login"/>
-           <bean id="loginInterceptor" class="com.suncar.common.interceptor.LoginInterceptor"/>
+           <bean id="loginInterceptor" class="cn.financial.util.LoginInterceptor"/>
         </mvc:interceptor> 
     </mvc:interceptors> 
 </beans>   
