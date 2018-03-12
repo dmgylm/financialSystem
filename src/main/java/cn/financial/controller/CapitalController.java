@@ -200,7 +200,7 @@ public class CapitalController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/statement/delete", method = RequestMethod.POST)
+        @RequestMapping(value="/capital/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
