@@ -44,9 +44,8 @@ public class UserController {
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String pwd = request.getParameter("pwd");
-            Integer user = userService.countUserName(name, pwd);
-            if(user>0){
-                dataMap.put("userName", user);
+            Integer flag = userService.countUserName(name, pwd);
+            if(flag>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功");
                 request.getSession().setAttribute("username", name);
