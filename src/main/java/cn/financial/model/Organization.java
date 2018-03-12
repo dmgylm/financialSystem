@@ -2,8 +2,6 @@ package cn.financial.model;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 public class Organization {
 
     private String id; // 组织架构表id
