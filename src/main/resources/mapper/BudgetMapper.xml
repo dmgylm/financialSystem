@@ -4,7 +4,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.BudgetDao">
      
-       <resultMap id="BudgetMap" type="Budget">
+       <resultMap id="budget" type="cn.financial.model.Budget">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
@@ -27,12 +27,12 @@
       
       
        <!-- 查询所有的预算数据 -->
-       <select id="getAllBudget" resultMap="BudgetMap">  
+       <select id="getAllBudget" resultMap="budget">  
         select * from  budget where status=1
        </select>
        
       <!--  根据id查询预算数据 -->
-       <select id="selectBudgetById" parameterType="String" resultMap="BudgetMap" >
+       <select id="selectBudgetById" parameterType="String" resultMap="budget" >
            SELECT * FROM budget WHERE id = #{id} and status=1
        </select>
        
@@ -43,39 +43,43 @@
        </select>
        
        <!-- 根据条件修改预算数据 -->
-      <update id="updateBudget" parameterType="map">
+      <update id="updateBudget" parameterType="budget">
         update budget
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">
-                oId = #{oId}
+                oId = #{oId},
             </if>
             <if test="info!=null and info!=''">
-                info = #{info}
+                info = #{info},
             </if>
             <if test="createTime!=null and createTime!=''">
-                createTime = #{createTime}
+                createTime = #{createTime},
             </if>
             <if test="updateTime!=null and updateTime!=''">
-                updateTime = #{updateTime}
+                updateTime = #{updateTime},
             </if>
             <if test="typeId !=null and typeId!=''">
-                typeId = #{typeId}
+                typeId = #{typeId},
             </if>
             <if test="uId!=null and uId!=''">
-                uId = #{uId}
+                uId = #{uId},
             </if>
             <if test="year !=null and year!=''">
-                year = #{year}
+                year = #{year},
             </if>
             <if test="month!=null and month!=''">
-                month = #{month}
+                month = #{month},
             </if>
             <if test="status!=null and status!=''">
                 status = #{status}
             </if>
         </trim>
-        where
-        id = #{id} and  status=1
+        where id = #{id}
+      </update>
+      
+       <!-- 删除 status=0 -->
+      <update id="deleteBudget">
+        update budget set status=0 where id=#{id}
       </update>
       
       <!--sql-->
@@ -84,31 +88,31 @@
             and id = #{id}
         </if>
         <if test=" oId!=null and oId!=''">
-            oId = #{oId}
+            and oId = #{oId}
         </if>
         <if test="info!=null and info!=''">
-            info = #{info}
+            and info = #{info}
         </if>
         <if test="createTime!=null and createTime!=''">
-            createTime = #{createTime}
+            and createTime = #{createTime}
         </if>
         <if test="updateTime!=null and updateTime!=''">
-            updateTime = #{updateTime}
+            and updateTime = #{updateTime}
         </if>
         <if test="typeId !=null and typeId!=''">
-            typeId = #{typeId}
+            and typeId = #{typeId}
         </if>
         <if test="uId!=null and uId!=''">
-            uId = #{uId}
+            and uId = #{uId}
         </if>
         <if test="year !=null and year!=''">
-            year = #{year}
+            and year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            month = #{month}
+            and month = #{month}
          </if>
          <if test="status!=null and status!=''">
-            status = #{status}
+            and status = #{status}
          </if>
     </sql>
     

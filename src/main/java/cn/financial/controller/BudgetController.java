@@ -36,7 +36,7 @@ public class BudgetController {
          * @param request
          * @param response
          */
-        @RequestMapping(value="/budget/list", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/list", method = RequestMethod.POST)
         public Map<String, Object> getAllbudget(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -60,7 +60,7 @@ public class BudgetController {
          *            
          * @return
          */
-        @RequestMapping(value="/budget/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/listBy", method = RequestMethod.POST)
         public Map<String, Object> listbudgetBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -84,7 +84,7 @@ public class BudgetController {
          *           
          * @return
          */
-        @RequestMapping(value="/budget/listById", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/listById", method = RequestMethod.POST)
         public Map<String, Object> selectbudgetById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -106,7 +106,7 @@ public class BudgetController {
          * @param response
          * @return
          */
-        @RequestMapping(value="/budget/insert", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/insert", method = RequestMethod.POST)
         public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
@@ -114,8 +114,8 @@ public class BudgetController {
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
@@ -153,7 +153,7 @@ public class BudgetController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/budget/update", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/update", method = RequestMethod.POST)
         public Map<String, Object> updatebudget(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -161,8 +161,8 @@ public class BudgetController {
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
@@ -200,32 +200,12 @@ public class BudgetController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/budget/delete", method = RequestMethod.GET)
+        @RequestMapping(value="/budget/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             try {
                 String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Budget budget =new Budget();
-                budget.setId(id);
-                budget.setoId(oId);
-                budget.setInfo(info);
-                budget.setCreateTime(sdf.parse(createTime));
-                budget.setUpdateTime(sdf.parse(updateTime));
-                budget.setTypeId(typeId);
-                budget.setuId(uId);
-                budget.setYear(year);
-                budget.setMonth(month);
-                budget.setStatus(0);
-                Integer i = budgetService.updateBudget(budget);
+                Integer i = budgetService.deleteBudget(id);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");

@@ -70,31 +70,31 @@
             and id = #{id}
         </if>
         <if test=" oId!=null and oId!=''">
-            oId = #{oId}
+            and oId = #{oId}
         </if>
         <if test="info!=null and info!=''">
-            info = #{info}
+            and info = #{info}
         </if>
         <if test="createTime!=null and createTime!=''">
-            createTime = #{createTime}
+            and createTime = #{createTime}
         </if>
         <if test="updateTime!=null and updateTime!=''">
-            updateTime = #{updateTime}
+            and updateTime = #{updateTime}
         </if>
         <if test="typeId !=null and typeId!=''">
-            typeId = #{typeId}
+            and typeId = #{typeId}
         </if>
         <if test="uId!=null and uId!=''">
-            uId = #{uId}
+            and uId = #{uId}
         </if>
         <if test="year !=null and year!=''">
-            year = #{year}
+            and year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            month = #{month}
+            and month = #{month}
          </if>
          <if test="status!=null and status!=''">
-            status = #{status}
+            and status = #{status}
          </if>
     </sql>
     

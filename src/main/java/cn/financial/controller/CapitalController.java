@@ -36,7 +36,7 @@ public class CapitalController {
          * @param request
          * @param response
          */
-        @RequestMapping(value="/capital/list", method = RequestMethod.GET)
+        @RequestMapping(value="/capital/list", method = RequestMethod.POST)
         public Map<String, Object> getAllCapital(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -60,7 +60,7 @@ public class CapitalController {
          *            
          * @return
          */
-        @RequestMapping(value="/capital/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/capital/listBy", method = RequestMethod.POST)
         public Map<String, Object> listCapitalBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -84,7 +84,7 @@ public class CapitalController {
          *           
          * @return
          */
-        @RequestMapping(value="/capital/listById", method = RequestMethod.GET)
+        @RequestMapping(value="/capital/listById", method = RequestMethod.POST)
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -106,7 +106,7 @@ public class CapitalController {
          * @param response
          * @return
          */
-        @RequestMapping(value="/capital/insert", method = RequestMethod.GET)
+        @RequestMapping(value="/capital/insert", method = RequestMethod.POST)
         public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
@@ -114,8 +114,8 @@ public class CapitalController {
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
@@ -153,16 +153,16 @@ public class CapitalController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/capital/update", method = RequestMethod.GET)
+        @RequestMapping(value="/capital/update", method = RequestMethod.POST)
         public Map<String, Object> updateCapital(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                String id = UuidUtil.getUUID();
+                String id = request.getParameter("id");
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
@@ -196,36 +196,16 @@ public class CapitalController {
         }
         
         /**
-         * 删除资金数据 （修改Status为0）
+         * 删除损益数据 （修改Status为0）
          * @param request
          * @return
          */
-        @RequestMapping(value="/Capital/delete", method = RequestMethod.GET)
+        @RequestMapping(value="/statement/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
+            String id = request.getParameter("id");
             try {
-                String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Capital capital =new Capital();
-                capital.setId(id);
-                capital.setoId(oId);
-                capital.setInfo(info);
-                capital.setCreateTime(sdf.parse(createTime));
-                capital.setUpdateTime(sdf.parse(updateTime));
-                capital.setTypeId(typeId);
-                capital.setuId(uId);
-                capital.setYear(year);
-                capital.setMonth(month);
-                capital.setStatus(0);
-                Integer i = capitalService.updateCapital(capital);
+                Integer i =capitalService.deleteCapital(id);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");

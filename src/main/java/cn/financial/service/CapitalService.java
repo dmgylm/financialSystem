@@ -19,6 +19,13 @@ public interface CapitalService {
     Integer insertCapital(Capital capital);
     
     /**
+     * 删除资金数据 （status=0）
+     * @param statement
+     * @return
+     */
+    Integer deleteCapital(String id);
+    
+    /**
      * 修改资金表数据
      * @param capital
      * @return

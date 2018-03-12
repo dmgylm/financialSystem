@@ -4,7 +4,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.CapitalDao">
      
-       <resultMap id="CapitalMap" type="Capital">
+       <resultMap id="capital" type="cn.financial.model.Capital">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
@@ -20,18 +20,18 @@
        </resultMap>    
  
         <!-- 新增资金数据 -->
-       <insert id="insertCapital" parameterType="Capital" keyProperty="id">
+       <insert id="insertCapital" parameterType="capital" keyProperty="id">
             insert into capital(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
             values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
        <!-- 查询所有的资金数据 -->
-       <select id="getAllCapital" resultMap="CapitalMap">  
+       <select id="getAllCapital" resultMap="capital">  
         select * from capital where status=1
        </select>
        
        <!--根据id查询资金数据 -->
-       <select id="selectCapitalById" parameterType="String" resultMap="CapitalMap" >
+       <select id="selectCapitalById" parameterType="String" resultMap="capital" >
            SELECT * FROM capital WHERE id = #{id} and status=1
        </select>
        
@@ -42,40 +42,27 @@
        </select>
        
        <!-- 根据条件修改资金数据-->
-      <update id="updateCapital" parameterType="map">
-        update capital
+      <update id="updateCapital" parameterType="capital">
+         UPDATE capital
         <trim prefix="set" suffixOverrides=",">
-            <if test=" oId!=null and oId!=''">
-                oId = #{oId}
-            </if>
-            <if test="info!=null and info!=''">
-                info = #{info}
-            </if>
-            <if test="createTime!=null and createTime!=''">
-                createTime = #{createTime}
-            </if>
-            <if test="updateTime!=null and updateTime!=''">
-                updateTime = #{updateTime}
-            </if>
-            <if test="typeId !=null and typeId!=''">
-                typeId = #{typeId}
-            </if>
-            <if test="uId!=null and uId!=''">
-                uId = #{uId}
-            </if>
-            <if test="year !=null and year!=''">
-                year = #{year}
-            </if>
-            <if test="month!=null and month!=''">
-                month = #{month}
-            </if>
-            <if test="status!=null and status!=''">
-                status = #{status}
-            </if>
+            <if test=" oId!=null and oId!=''">oId = #{oId},</if>
+            <if test="info!=null and info!=''">info = #{info},</if>
+            <if test="createTime!=null and createTime!=''">createTime = #{createTime},</if>
+            <if test="updateTime!=null and updateTime!=''">updateTime = #{updateTime},</if>
+            <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
+            <if test="uId!=null and uId!=''">uId = #{uId},</if>
+            <if test="year !=null and year!=''">year = #{year},</if>
+            <if test="month!=null and month!=''">month = #{month},</if>
+            <if test="status!=null and status!=''"> status = #{status}</if>
         </trim>
-        where
-        id = #{id} and  status=1
+         where id = #{id}
       </update>
+      
+       <!-- 删除用户  status=0 -->
+      <update id="deleteCapital">
+        update capital set status=0 where id=#{id}
+      </update>
+    
       
       <!--定义一个sql -->
      <sql id="query_capital_where">
@@ -83,31 +70,31 @@
             and id = #{id}
         </if>
         <if test=" oId!=null and oId!=''">
-            oId = #{oId}
+            and oId = #{oId}
         </if>
         <if test="info!=null and info!=''">
-            info = #{info}
+            and info = #{info}
         </if>
         <if test="createTime!=null and createTime!=''">
-            createTime = #{createTime}
+            and createTime = #{createTime}
         </if>
         <if test="updateTime!=null and updateTime!=''">
-            updateTime = #{updateTime}
+            and updateTime = #{updateTime}
         </if>
         <if test="typeId !=null and typeId!=''">
-            typeId = #{typeId}
+            and typeId = #{typeId}
         </if>
         <if test="uId!=null and uId!=''">
-            uId = #{uId}
+            and uId = #{uId}
         </if>
         <if test="year !=null and year!=''">
-            year = #{year}
+            and year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            month = #{month}
+            and month = #{month}
          </if>
          <if test="status!=null and status!=''">
-            status = #{status}
+            and status = #{status}
          </if>
     </sql>
     

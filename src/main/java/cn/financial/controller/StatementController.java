@@ -114,8 +114,8 @@ public class StatementController {
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
@@ -161,15 +161,25 @@ public class StatementController {
                 String oId=request.getParameter("oId");
                 String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
                 String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("");
-                String typeId=request.getParameter("updateTime");
+                String updateTime=request.getParameter("updateTime");
+                String typeId=request.getParameter("typeId");
                 String uId=request.getParameter("uId");
                 Integer year=Integer.parseInt(request.getParameter("year"));
                 Integer month=Integer.parseInt(request.getParameter("month"));
                 Integer status=Integer.parseInt(request.getParameter("status"));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Integer i = statementService.updateStatement(id, oId, info,sdf.parse(createTime),sdf.parse(updateTime),
-                        typeId, uId, year, month, status);
+                Statement statement =new Statement();
+                statement.setId(id);
+                statement.setoId(oId);
+                statement.setInfo(info);
+                statement.setCreateTime(sdf.parse(createTime));
+                statement.setUpdateTime(sdf.parse(updateTime));
+                statement.setTypeId(typeId);
+                statement.setuId(uId);
+                statement.setYear(year);
+                statement.setMonth(month);
+                statement.setStatus(status);
+                Integer i = statementService.updateStatement(statement);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "修改成功!");

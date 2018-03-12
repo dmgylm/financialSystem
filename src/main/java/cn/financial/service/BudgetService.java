@@ -18,6 +18,13 @@ public interface BudgetService {
     Integer insertBudget(Budget budget);
     
     /**
+     * 删除预算表数据
+     * @param id
+     * @return
+     */
+    Integer deleteBudget(String id);
+    
+    /**
      * 修改预算表数据
      * @param budget
      * @return

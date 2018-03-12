@@ -2,7 +2,6 @@ package cn.financial.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.financial.dao.CapitalDao;
@@ -62,6 +61,15 @@ public class CapitalServiceImpl implements CapitalService{
     public List<Capital> listCapitalBy(Map<Object, Object> map) {
         // TODO Auto-generated method stub
         return capitalDao.listCapitalBy(map);
+    }
+
+    /**
+     * 修改资金表数据 
+     */
+    @Override
+    public Integer deleteCapital(String id) {
+        // TODO Auto-generated method stub
+        return capitalDao.deleteCapital(id);
     }
 
     

@@ -1,6 +1,5 @@
 package cn.financial.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +30,7 @@ public interface StatementService {
      * @param statement
      * @return
      */
-    Integer updateStatement(String id,String oId,String info,Date createTime,Date updateTime,
-            String typeId,String uId,Integer year,Integer month,Integer status);  
+    Integer updateStatement(Statement statement);  
    
     /**
      * 查询损益表所有的数据
