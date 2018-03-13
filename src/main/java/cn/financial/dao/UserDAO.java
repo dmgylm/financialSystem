@@ -33,7 +33,6 @@ public interface UserDAO {
      * 新增用户
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
@@ -44,7 +43,6 @@ public interface UserDAO {
      * 修改用户
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
