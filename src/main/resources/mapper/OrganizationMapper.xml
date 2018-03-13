@@ -67,7 +67,7 @@
 	</select>
 
 	<!-- 根据ID查询组织结构信息 -->
-	<select id="getOrganization" parameterType="java.lang.String"
+	<select id="getOrganizationById" parameterType="java.lang.String"
 		resultType="Organization">
 		select
 		*
@@ -80,8 +80,8 @@
 		status = 1
 	</select>
 
-	<!-- 根据条件更新组织结构信息 -->
-	<update id="updateOrganization" parameterType="map">
+	<!-- 根据Id更新组织结构信息 -->
+	<update id="updateOrganizationById" parameterType="map">
 		update organization
 		<trim prefix="set" suffixOverrides=",">
 			<if test="parentId!=null and parentId!=''">
@@ -107,7 +107,7 @@
 	</update>
 
 	<!-- 根据条件删除组织结构信息 -->
-	<delete id="deleteOrganization" parameterType="java.lang.String">
+	<delete id="deleteOrganizationById" parameterType="java.lang.String">
 		delete
 		from
 		organization

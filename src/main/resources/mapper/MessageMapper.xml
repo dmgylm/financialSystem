@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 消息表 -->
+<mapper namespace="cn.financial.dao.MessageDAO">
+
+	<!-- 消息POJO对应数据库字段 -->
+	<resultMap type="Message" id="messageResultMap">
+		<id property="id" column="id" javaType="string" jdbcType="VARCHAR"></id>
+		<result property="status" column="status" javaType="int"
+			jdbcType="INTEGER"></result>
+		<result property="theme" column="theme" javaType="int"
+			jdbcType="INTEGER"></result>
+		<result property="content" column="content" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<result property="createTime" column="createTime" javaType="java.sql.Date"
+			jdbcType="DATE"></result>
+		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
+			jdbcType="DATE"></result>
+
+	</resultMap>
+
+	<!-- 新增 消息 节点信息 -->
+	<insert id="saveMessage" parameterType="Message" keyProperty="id">
+		insert into message (
+		id,
+		status,
+		theme,
+		content,
+		uId,
+		createTime,
+		updateTime
+		)
+		values
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE})
+	</insert>
+
+	<!-- 查询所有的消息 -->
+	<select id="listMessage" resultMap="messageResultMap">
+		select
+		*
+		from
+		message
+	</select>
+
+	<!-- 根据条件查询消息 -->
+	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
+		select
+		*
+		from
+		message
+		where
+		1 = 1
+		<include refid="query_message_where"></include>
+	</select>
+
+	<!-- 根据ID查询消息 -->
+	<select id="getMessageById" parameterType="java.lang.String"
+		resultMap="messageResultMap">
+		select
+		*
+		from
+		message
+		where
+		id =
+		#{_parameter,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 根据条件更新消息 -->
+	<update id="updateMessageById" parameterType="map">
+		update message
+		<trim prefix="set" suffixOverrides=",">
+			<if test="status!=null and status!=''">
+				status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="theme!=null and theme!=''">
+				theme = #{theme,jdbcType=INTEGER}
+			</if>
+			<if test="content!=null and content!=''">
+				content = #{content,jdbcType=VARCHAR}
+			</if>
+			<if test="uId!=null and uId!=''">
+				uId = #{uId,jdbcType=VARCHAR}
+			</if>
+			<if test="createTime!=null and createTime!=''">
+				createTime = #{createTime,jdbcType=DATE}
+			</if>
+			<if test="updateTime!=null and updateTime!=''">
+				updateTime = #{updateTime,jdbcType=DATE}
+			</if>
+		</trim>
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据Id删除消息 -->
+	<delete id="deleteMessageById" parameterType="java.lang.String">
+		delete
+		from
+		message
+		where
+		id = #{_parameter,jdbcType=VARCHAR}
+	</delete>
+
+	<!--定义一个sql片段 -->
+	<sql id="query_message_where">
+		<if test="id!=null and id!=''">
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null and status!=''">
+			and status = #{status,jdbcType=INTEGER}
+		</if>
+		<if test="theme!=null and theme!=''">
+			and theme = #{theme,jdbcType=INTEGER}
+		</if>
+		<if test="content!=null and content!=''">
+			and content = #{content,jdbcType=VARCHAR}
+		</if>
+		<if test="uId!=null and uId!=''">
+			and uId = #{uId,jdbcType=VARCHAR}
+		</if>
+		<if test="createTime!=null and createTime!=''">
+			and createTime = #{createTime,jdbcType=DATE}
+		</if>
+		<if test="updateTime!=null and updateTime!=''">
+			and updateTime = #{updateTime,jdbcType=DATE}
+		</if>
+	</sql>
+
+</mapper>
