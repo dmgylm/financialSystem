@@ -15,36 +15,42 @@ public class UserServiceImpl implements  UserService{
     /**
      * 查询全部
      */
+    @Override
     public java.util.List<User> listUser() {
         return userDao.listUser();
     }
     /**
      * 根据name查询
      */
+    @Override
     public Integer countUserName(String name, String pwd) {
         return userDao.countUserName(name, pwd);
     }
     /**
      * 根据id查询
      */
+    @Override
     public User getUserById(String userId){
         return userDao.getUserById(userId);
     }
     /**
      * 新增用户
      */
+    @Override
     public Integer insertUser(User user) {
         return userDao.insertUser(user);
     }
     /**
      * 修改用户
      */
+    @Override
     public Integer updateUser(User user) {
         return userDao.updateUser(user);
     }
     /**
      * 删除用户
      */
+    @Override
     public Integer deleteUser(String userId){
         return userDao.deleteUser(userId);
     }
