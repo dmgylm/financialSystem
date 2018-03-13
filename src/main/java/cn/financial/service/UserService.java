@@ -1,6 +1,5 @@
 package cn.financial.service;
 
-import java.util.Date;
 import java.util.List;
 
 import cn.financial.model.User;
@@ -34,7 +33,7 @@ public interface UserService {
      * @param oId
      * @return
      */
-    Integer insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    Integer insertUser(User user);
     /**
      * 修改用户
      * @param name
@@ -45,7 +44,7 @@ public interface UserService {
      * @param oId
      * @return
      */
-    Integer updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId);
+    Integer updateUser(User user);
     /**
      * 删除用户
      * @param userId
