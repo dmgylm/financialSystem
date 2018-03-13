@@ -91,9 +91,8 @@ public class UserController {
     @RequestMapping(value = "/user/userById", method = RequestMethod.POST)
     public void getUserById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = request.getParameter("userId");
         try {
-            User user = userService.getUserById(userId);
+            User user = userService.getUserById(request.getParameter("userId"));
             dataMap.put("userById", user);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
@@ -121,20 +120,7 @@ public class UserController {
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
-            String pwd = request.getParameter("pwd");
-            String jobNumber = request.getParameter("jobNumber");
-            String cTime = request.getParameter("createTime");
-            String uTime = request.getParameter("updateTime");
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date createTime = null;
-            Date updateTime = null;
             String oId = request.getParameter("oId");
-            if(cTime != null && !"".equals(cTime)){
-                createTime = formatter.parse(cTime);
-            }
-            if(uTime != null && !"".equals(uTime)){
-                updateTime = formatter.parse(uTime);
-            }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
@@ -144,10 +130,9 @@ public class UserController {
                 user.setId(UuidUtil.getUUID());
                 user.setName(name);
                 user.setRealName(realName);
-                user.setPwd(pwd);
-                user.setJobNumber(jobNumber);
-                user.setCreateTime(createTime);
-                user.setUpdateTime(updateTime);
+                user.setPwd(request.getParameter("pwd"));
+                user.setJobNumber(request.getParameter("jobNumber"));
+                user.setCreateTime(new Date());
                 user.setoId(oId);
                 int userList = userService.insertUser(user);
                 if(userList>0){
@@ -184,28 +169,14 @@ public class UserController {
             String userId = request.getParameter("userId");
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
-            String pwd = request.getParameter("pwd");
-            String jobNumber = request.getParameter("jobNumber");
-            String cTime = request.getParameter("createTime");
-            String uTime = request.getParameter("updateTime");
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date createTime = null;
-            Date updateTime = null;
             String oId = request.getParameter("oId");
-            if(cTime != null && !"".equals(cTime)){
-                createTime = formatter.parse(cTime);
-            }
-            if(uTime != null && !"".equals(uTime)){
-                updateTime = formatter.parse(uTime);
-            }
             User user = new User();
             user.setId(userId);
             user.setName(name);
             user.setRealName(realName);
-            user.setPwd(pwd);
-            user.setJobNumber(jobNumber);
-            user.setCreateTime(createTime);
-            user.setUpdateTime(updateTime);
+            user.setPwd(request.getParameter("pwd"));
+            user.setJobNumber(request.getParameter("jobNumber"));
+            user.setUpdateTime(new Date());
             user.setoId(oId);
             Integer userList = userService.updateUser(user);
             if(userList>0){
@@ -231,9 +202,8 @@ public class UserController {
     @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
     public void deleteUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = request.getParameter("userId");
         try {
-            Integer flag = userService.deleteUser(userId);
+            Integer flag = userService.deleteUser(request.getParameter("userId"));
             if(flag>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功");
