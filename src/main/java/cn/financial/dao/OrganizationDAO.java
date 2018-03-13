@@ -41,7 +41,7 @@ public interface OrganizationDAO {
      * @param id
      * @return
      */
-    Organization getOrganization(String id);
+    Organization getOrganizationById(String id);
 
     /**
      * 接口（根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id）
@@ -49,15 +49,15 @@ public interface OrganizationDAO {
      * @param map
      * @return
      */
-    Integer updateOrganization(Map<Object, Object> map);
+    Integer updateOrganizationById(Map<Object, Object> map);
 
     /**
-     * 接口（根据条件删除组织结构信息）
+     * 接口（根据ID删除组织结构信息）
      * 
      * @param id
      * @return
      */
-    Integer deleteOrganization(String id);
+    Integer deleteOrganizationById(String id);
 
     /**
      * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）

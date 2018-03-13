@@ -46,22 +46,22 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据ID查询组织结构信息
      */
-    public Organization getOrganization(String id) {
-        return organizationDAO.getOrganization(id);
+    public Organization getOrganizationById(String id) {
+        return organizationDAO.getOrganizationById(id);
     }
 
     /**
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
-    public Integer updateOrganization(Map<Object, Object> map) {
-        return organizationDAO.updateOrganization(map);
+    public Integer updateOrganizationById(Map<Object, Object> map) {
+        return organizationDAO.updateOrganizationById(map);
     }
 
     /**
-     * 根据条件删除组织结构信息
+     * 根据ID删除组织结构信息
      */
-    public Integer deleteOrganization(String id) {
-        return organizationDAO.deleteOrganization(id);
+    public Integer deleteOrganizationById(String id) {
+        return organizationDAO.deleteOrganizationById(id);
     }
 
     /**

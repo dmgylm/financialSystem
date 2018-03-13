@@ -12,53 +12,55 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import cn.financial.model.Organization;
-import cn.financial.service.OrganizationService;
+import cn.financial.model.Message;
+import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
 
 /**
- * 组织结构相关操作
+ * 消息相关操作
  * 
- * @author zlf 2018/3/9
+ * @author zlf 2018/03/13
  *
  */
-@Controller
-public class OrganizationController {
+public class MessageController {
 
     @Autowired
-    private OrganizationService organizationService;
+    private MessageService messageService;
 
-    protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
+    protected Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     /**
-     * 新增组织结构
+     * 新增 消息
      * 
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/save", method = RequestMethod.POST)
-    public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/message/save", method = RequestMethod.POST)
+    public Map<String, Object> saveMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
+        // 消息id
         String id = UuidUtil.getUUID();
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
+        // 消息状态
+        String statusStr = request.getParameter("status");
+        // 消息主题
+        String themeStr = request.getParameter("theme");
+        // 消息内容
+        String content = request.getParameter("content");
+        // 消息来源
         String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
         // 创建时间
         String createTime = request.getParameter("createTime");
         // 更新时间
         String updateTime = request.getParameter("updateTime");
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
+        int status = 0;
+        int theme = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             if (createTime != null && !"".equals(createTime)) {
@@ -67,15 +69,22 @@ public class OrganizationController {
             if (updateTime != null && !"".equals(updateTime)) {
                 updateTimeOfDate = dateFormat.parse(updateTime);
             }
-            orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-            Organization organization = new Organization();
-            organization.setId(id);
-            organization.setOrgName(orgName);
-            organization.setuId(uId);
-            organization.setParentId(parentId);
-            organization.setCreateTime(createTimeOfDate);
-            organization.setUpdateTime(updateTimeOfDate);
-            Integer i = organizationService.saveOrganization(organization);
+            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+            if (statusStr != null && !"".equals(statusStr)) {
+                status = Integer.parseInt(statusStr);
+            }
+            if (themeStr != null && !"".equals(themeStr)) {
+                theme = Integer.parseInt(themeStr);
+            }
+            Message message = new Message();
+            message.setId(id);
+            message.setStatus(status);
+            message.setTheme(theme);
+            message.setContent(content);
+            message.setuId(uId);
+            message.setCreateTime(createTimeOfDate);
+            message.setUpdateTime(updateTimeOfDate);
+            Integer i = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "新增成功!");
@@ -92,16 +101,16 @@ public class OrganizationController {
     }
 
     /**
-     * 查询所有的组织结构信息
+     * 查询所有的消息
      * 
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/organization/list", method = RequestMethod.POST)
-    public Map<String, Object> listOrganization(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/message/list", method = RequestMethod.POST)
+    public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            List<Organization> list = organizationService.listOrganization();
+            List<Message> list = messageService.listMessage();
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -114,48 +123,57 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件查询组织结构信息
+     * 根据条件查询 消息
      * 
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/listBy", method = RequestMethod.POST)
-    public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/message/listBy", method = RequestMethod.POST)
+    public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
+        // 消息id
         String id = request.getParameter("id");
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
+        // 消息状态
+        String statusStr = request.getParameter("status");
+        // 消息主题
+        String themeStr = request.getParameter("theme");
+        // 消息内容
+        String content = request.getParameter("content");
+        // 消息来源
         String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
         // 创建时间
         String createTime = request.getParameter("createTime");
         // 更新时间
         String updateTime = request.getParameter("updateTime");
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
+        int status = 0;
+        int theme = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (orgName != null && !"".equals(orgName)) {
-                orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-            }
             if (createTime != null && !"".equals(createTime)) {
                 createTimeOfDate = dateFormat.parse(createTime);
             }
             if (updateTime != null && !"".equals(updateTime)) {
                 updateTimeOfDate = dateFormat.parse(updateTime);
             }
+            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+            if (statusStr != null && !"".equals(statusStr)) {
+                status = Integer.parseInt(statusStr);
+            }
+            if (themeStr != null && !"".equals(themeStr)) {
+                theme = Integer.parseInt(themeStr);
+            }
             Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
-            map.put("orgName", orgName);
+            map.put("status", status);
+            map.put("theme", theme);
+            map.put("content", content);
             map.put("uId", uId);
-            map.put("parentId", parentId);
             map.put("createTime", createTimeOfDate);
             map.put("updateTime", updateTimeOfDate);
-            List<Organization> list = organizationService.listOrganizationBy(map);
+            List<Message> list = messageService.listMessageBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -168,22 +186,22 @@ public class OrganizationController {
     }
 
     /**
-     * 根据ID查询组织结构信息
+     * 根据ID查询消息
      * 
      * @param request
      * @param id
-     *            要查询组织结构的ID（required = true，必须存在）
+     *            要查询消息表的ID（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/getbyid", method = RequestMethod.POST)
-    public Map<String, Object> getOrganizationById(HttpServletRequest request,
+    @RequestMapping(value = "/message/getbyid", method = RequestMethod.POST)
+    public Map<String, Object> getMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            Organization organization = organizationService.getOrganizationById(id);
+            Message message = messageService.getMessageById(id);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
-            dataMap.put("resultData", organization);
+            dataMap.put("resultData", message);
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
@@ -193,49 +211,58 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
+     * 根据条件修改消息表,这里是根据id来修改其他项,所以map中必须包含id
      * 
      * @param request
      * @param response
      * @param id
-     *            组织结构id（required = true，必须存在）
+     *            消息id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/updatebyid", method = RequestMethod.POST)
-    public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response,
+    @RequestMapping(value = "/message/updatebyid", method = RequestMethod.POST)
+    public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
+        // 消息状态
+        String statusStr = request.getParameter("status");
+        // 消息主题
+        String themeStr = request.getParameter("theme");
+        // 消息内容
+        String content = request.getParameter("content");
+        // 消息来源
         String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
         // 创建时间
         String createTime = request.getParameter("createTime");
         // 更新时间
         String updateTime = request.getParameter("updateTime");
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
+        int status = 0;
+        int theme = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (orgName != null && !"".equals(orgName)) {
-                orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-            }
             if (createTime != null && !"".equals(createTime)) {
                 createTimeOfDate = dateFormat.parse(createTime);
             }
             if (updateTime != null && !"".equals(updateTime)) {
                 updateTimeOfDate = dateFormat.parse(updateTime);
             }
+            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+            if (statusStr != null && !"".equals(statusStr)) {
+                status = Integer.parseInt(statusStr);
+            }
+            if (themeStr != null && !"".equals(themeStr)) {
+                theme = Integer.parseInt(themeStr);
+            }
             Map<Object, Object> map = new HashMap<>(6);
             map.put("id", id);
-            map.put("orgName", orgName);
+            map.put("status", status);
+            map.put("theme", theme);
+            map.put("content", content);
             map.put("uId", uId);
-            map.put("parentId", parentId);
             map.put("createTime", createTimeOfDate);
             map.put("updateTime", updateTimeOfDate);
-            Integer i = organizationService.updateOrganizationById(map);
+            Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功!");
@@ -252,49 +279,19 @@ public class OrganizationController {
     }
 
     /**
-     * 伪删除 <根据组织结构ID修改状态为0，即已删除>
+     * 根据ID删除消息表信息
      * 
      * @param request
      * @param id
-     *            传入的组织结构id（required = true，必须存在）
+     *            传入的消息表id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/deletebystatus", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request,
+    @RequestMapping(value = "/message/deletebyid", method = RequestMethod.POST)
+    public Map<Object, Object> deleteMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            Integer i = organizationService.deleteOrganizationByStatus(id);
-            if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功!");
-            } else {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除失败!");
-            }
-        } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-
-    /**
-     * 根据条件删除组织结构信息 （这个方法已标记为过时，请使用deleteOrganizationByStatus方法来删除）
-     * 
-     * @param request
-     * @param id
-     *            传入的组织结构id（required = true，必须存在）
-     * @return
-     */
-    @Deprecated
-    @RequestMapping(value = "/organization/deletebyid", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationById(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        try {
-            Integer i = organizationService.deleteOrganizationById(id);
+            Integer i = messageService.deleteMessageById(id);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功!");
