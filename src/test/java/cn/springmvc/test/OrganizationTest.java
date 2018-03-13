@@ -43,7 +43,6 @@ public class OrganizationTest {
         organization.setuId("we12wqsas3121312sasq21qw");
         organization.setParentId("wsdvf2jkil6yytgfgfd2");
         organization.setCreateTime(new Date());
-        organization.setUpdateTime(new Date());
         Integer i = service.saveOrganization(organization);
         System.out.println(i);
     }
@@ -70,7 +69,7 @@ public class OrganizationTest {
     @Test
     public void listOrganizationBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("uId", "we12wqsas3121312sasq21qw");
+        map.put("id", "35d883977eea4ddb94c1482349b61461");
         List<Organization> list = service.listOrganizationBy(map);
         for (Organization organization : list) {
             System.out.println(organization.getId() + "---------------------------------------------"
@@ -87,7 +86,7 @@ public class OrganizationTest {
      */
     @Test
     public void getOrganizationById() {
-        String id = "7963dbc544024729927c41ce8238db40";
+        String id = "35d883977eea4ddb94c1482349b61461";
         Organization organization = service.getOrganizationById(id);
         System.out
                 .println(organization.getId()
@@ -105,8 +104,9 @@ public class OrganizationTest {
     @Test
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "0e75886cb018445f9a202e58b4123ed1");
+        map.put("id", "35d883977eea4ddb94c1482349b61461");
         map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
+        map.put("updateTime", new Date());
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -116,7 +116,7 @@ public class OrganizationTest {
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "0e75886cb018445f9a202e58b4123ed1";
+        String id = "35d883977eea4ddb94c1482349b61461";
         Integer i = service.deleteOrganizationByStatus(id);
         System.out.println(i);
     }

@@ -36,7 +36,6 @@ public class MessageTest {
         message.setContent("dasdasd");
         message.setuId("7963dbc544024729927c41ce8238db40");
         message.setCreateTime(new Date());
-        message.setUpdateTime(new Date());
         Integer i = service.saveMessage(message);
         System.out.println(i);
     }
@@ -63,7 +62,7 @@ public class MessageTest {
     @Test
     public void listMessageBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "95c6ce175c1d480585fc664d53ae9333");
+        map.put("id", "bcb5aab96cb84d4fa8dc9bbb99eace9f");
         //map.put("createTime", new Date());
         List<Message> list = service.listMessageBy(map);
         for (Message message : list) {
@@ -81,7 +80,7 @@ public class MessageTest {
      */
     @Test
     public void getMessageById() {
-        String id = "95c6ce175c1d480585fc664d53ae9333";
+        String id = "bcb5aab96cb84d4fa8dc9bbb99eace9f";
         Message message = service.getMessageById(id);
         System.out.println(message.getId() + "---------------------------------------------" + message.getStatus()
                 + "---------------------------------------------" + message.getTheme()
@@ -97,7 +96,7 @@ public class MessageTest {
     @Test
     public void updateMessageById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "95c6ce175c1d480585fc664d53ae9333");
+        map.put("id", "bcb5aab96cb84d4fa8dc9bbb99eace9f");
         map.put("uId", "kjdashkdaskdakjdkasjk");
         Integer i = service.updateMessageById(map);
         System.out.println(i);
@@ -108,7 +107,7 @@ public class MessageTest {
      */
     @Test
     public void deleteMessaageById() {
-        String id = "95c6ce175c1d480585fc664d53ae9333";
+        String id = "bcb5aab96cb84d4fa8dc9bbb99eace9f";
         Integer i = service.deleteMessageById(id);
         System.out.println(i);
     }
