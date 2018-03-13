@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.RoleDAO">
+    <resultMap type="cn.financial.model.Role" id="role" >
+	   <id column="id" property="id" jdbcType="VARCHAR" />
+	   <result column="roleName" property="roleName" jdbcType="VARCHAR" />
+	   <result column="status" property="status" jdbcType="INTEGER" />
+	   <result column="createTime" property="createTime" jdbcType="DATE" />
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	</resultMap>    
+	<!--查询全部角色-->
+    <select id="listRole" resultType="role">
+        SELECT id,roleName,createTime,updateTime FROM role WHERE status = 1
+    </select>
+    <!--新增角色-->
+    <insert id="insertRole" parameterType="role">
+        insert into role(id,roleName,createTime) values (#{id},#{roleName},#{createTime})
+    </insert>
+    <!--根据id查询角色-->  
+    <select id="getRoleById" parameterType="STRING" resultType="role">
+         SELECT id,roleName,createTime,updateTime FROM role WHERE id=#{id}
+    </select>
+    <!--修改角色-->
+    <update id="updateRole" parameterType="role">
+         UPDATE role
+		 <trim prefix="set" suffixOverrides=",">
+		  <if test="roleName!=null and roleName!=''">roleName=#{roleName},</if>
+		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
+		 </trim>
+		 WHERE id=#{id}
+    </update>
+    <!--删除角色（状态为0，即已删除）-->
+    <update id="deleteRole">
+        UPDATE role SET status=0 WHERE id=#{roleId}
+    </update>
+</mapper>

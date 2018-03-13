@@ -25,8 +25,8 @@
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
-        insert into user(id,name,realName,pwd,jobNumber,createTime,updateTime,oId) 
-        values (#{id},#{name},#{realName},#{pwd},#{jobNumber},#{createTime},#{updateTime},#{oId})
+        insert into user(id,name,realName,pwd,jobNumber,createTime,oId) 
+        values (#{id},#{name},#{realName},#{pwd},#{jobNumber},#{createTime},#{oId})
     </insert>
     <!--根据id查询用户-->  
     <select id="getUserById" parameterType="STRING" resultType="user">
@@ -47,7 +47,6 @@
 		  <if test="realName!=null and realName!=''">realName=#{realName},</if>
 		  <if test="pwd!=null and pwd!=''">pwd=#{pwd},</if>
 		  <if test="jobNumber!=null and jobNumber!=''">jobNumber=#{jobNumber},</if>
-		  <if test="createTime!=null and createTime!=''">createTime=#{createTime},</if>
 		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
 		  <if test="oId!=null and oId!=''">oId=#{oId},</if>
 		 </trim>

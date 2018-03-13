@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.UserRoleDAO">
+    <resultMap type="cn.financial.model.UserRole" id="userRole" >
+	   <id column="id" property="id" jdbcType="VARCHAR" />
+	   <id column="uid" property="uid" jdbcType="VARCHAR" />
+	   <id column="rid" property="rid" jdbcType="VARCHAR" />
+	   <result column="createTime" property="createTime" jdbcType="DATE" />
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	</resultMap>    
+	<!--查询全部-->
+    <select id="listUserRole" resultType="userRole">
+        SELECT id,rId,uId,createTime,updateTime FROM user_role_mapping
+    </select>
+    <!--新增-->
+    <insert id="insertUserRole" parameterType="userRole">
+        insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},#{createTime})
+    </insert>
+    <!--根据id查询-->  
+    <select id="getUserRoleById" parameterType="STRING" resultType="userRole">
+         SELECT id,rId,uId,createTime,updateTime FROM user_role_mapping WHERE id=#{id}
+    </select>
+</mapper>
