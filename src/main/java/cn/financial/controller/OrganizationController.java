@@ -45,36 +45,17 @@ public class OrganizationController {
     @RequestMapping(value = "/organization/save", method = RequestMethod.POST)
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
-        String id = UuidUtil.getUUID();
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
-        String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
+            String orgName = request.getParameter("orgName");
+            if (orgName != null && !"".equals(orgName)) {
+                orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
-            orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             Organization organization = new Organization();
-            organization.setId(id);
-            organization.setOrgName(orgName);
-            organization.setuId(uId);
-            organization.setParentId(parentId);
-            organization.setCreateTime(createTimeOfDate);
-            organization.setUpdateTime(updateTimeOfDate);
+            organization.setId(UuidUtil.getUUID());// 组织结构id
+            organization.setOrgName(orgName);// 组织架构名
+            organization.setuId(request.getParameter("uId"));// 提交人id
+            organization.setParentId(request.getParameter("parentId"));// 父id
+            organization.setCreateTime(new Date());// 创建时间
             Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -123,22 +104,13 @@ public class OrganizationController {
     @RequestMapping(value = "/organization/listBy", method = RequestMethod.POST)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织结构id
-        String id = request.getParameter("id");
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
-        String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            String orgName = request.getParameter("orgName");
+            String createTime = request.getParameter("createTime");
+            String updateTime = request.getParameter("updateTime");
+            Date createTimeOfDate = null;
+            Date updateTimeOfDate = null;
             if (orgName != null && !"".equals(orgName)) {
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             }
@@ -148,13 +120,13 @@ public class OrganizationController {
             if (updateTime != null && !"".equals(updateTime)) {
                 updateTimeOfDate = dateFormat.parse(updateTime);
             }
-            Map<Object, Object> map = new HashMap<>(6);
-            map.put("id", id);
-            map.put("orgName", orgName);
-            map.put("uId", uId);
-            map.put("parentId", parentId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", request.getParameter("id")); // 组织结构id
+            map.put("orgName", orgName);// 组织架构名
+            map.put("uId", request.getParameter("uId"));// 提交人id
+            map.put("parentId", request.getParameter("parentId"));// 父id
+            map.put("createTime", createTimeOfDate);// 创建时间
+            map.put("updateTime", updateTimeOfDate);// 更新时间
             List<Organization> list = organizationService.listOrganizationBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
@@ -205,36 +177,17 @@ public class OrganizationController {
     public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 组织架构名
-        String orgName = request.getParameter("orgName");
-        // 提交人id
-        String uId = request.getParameter("uId");
-        // 父id
-        String parentId = request.getParameter("parentId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            String orgName = request.getParameter("orgName");
             if (orgName != null && !"".equals(orgName)) {
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
-            }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
-            Map<Object, Object> map = new HashMap<>(6);
-            map.put("id", id);
-            map.put("orgName", orgName);
-            map.put("uId", uId);
-            map.put("parentId", parentId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);// 组织id
+            map.put("orgName", orgName);// 组织架构名
+            map.put("uId", request.getParameter("uId"));// 提交人id
+            map.put("parentId", request.getParameter("parentId"));// 父id
+            map.put("updateTime", new Date());// 更新时间
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);

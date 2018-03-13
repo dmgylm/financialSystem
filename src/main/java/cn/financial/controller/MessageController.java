@@ -43,33 +43,15 @@ public class MessageController {
     @RequestMapping(value = "/message/save", method = RequestMethod.POST)
     public Map<String, Object> saveMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 消息id
-        String id = UuidUtil.getUUID();
-        // 消息状态
-        String statusStr = request.getParameter("status");
-        // 消息主题
-        String themeStr = request.getParameter("theme");
-        // 消息内容
-        String content = request.getParameter("content");
-        // 消息来源
-        String uId = request.getParameter("uId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
-        int status = 0;
-        int theme = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
+            String statusStr = request.getParameter("status");
+            String themeStr = request.getParameter("theme");
+            String content = request.getParameter("content");
+            int status = 0;
+            int theme = 0;
+            if (content != null && !"".equals(content)) {
+                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
-            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
             if (statusStr != null && !"".equals(statusStr)) {
                 status = Integer.parseInt(statusStr);
             }
@@ -77,13 +59,12 @@ public class MessageController {
                 theme = Integer.parseInt(themeStr);
             }
             Message message = new Message();
-            message.setId(id);
-            message.setStatus(status);
-            message.setTheme(theme);
-            message.setContent(content);
-            message.setuId(uId);
-            message.setCreateTime(createTimeOfDate);
-            message.setUpdateTime(updateTimeOfDate);
+            message.setId(UuidUtil.getUUID());// 消息id
+            message.setStatus(status);// 消息状态
+            message.setTheme(theme);// 消息主题
+            message.setContent(content);// 消息内容
+            message.setuId(request.getParameter("uId"));// 消息来源
+            message.setCreateTime(new Date());// 创建时间
             Integer i = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -132,19 +113,10 @@ public class MessageController {
     @RequestMapping(value = "/message/listBy", method = RequestMethod.POST)
     public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 消息id
-        String id = request.getParameter("id");
-        // 消息状态
         String statusStr = request.getParameter("status");
-        // 消息主题
         String themeStr = request.getParameter("theme");
-        // 消息内容
         String content = request.getParameter("content");
-        // 消息来源
-        String uId = request.getParameter("uId");
-        // 创建时间
         String createTime = request.getParameter("createTime");
-        // 更新时间
         String updateTime = request.getParameter("updateTime");
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
@@ -152,27 +124,29 @@ public class MessageController {
         int theme = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
+            if (content != null && !"".equals(content)) {
+                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+            }
             if (createTime != null && !"".equals(createTime)) {
                 createTimeOfDate = dateFormat.parse(createTime);
             }
             if (updateTime != null && !"".equals(updateTime)) {
                 updateTimeOfDate = dateFormat.parse(updateTime);
             }
-            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
             if (statusStr != null && !"".equals(statusStr)) {
                 status = Integer.parseInt(statusStr);
             }
             if (themeStr != null && !"".equals(themeStr)) {
                 theme = Integer.parseInt(themeStr);
             }
-            Map<Object, Object> map = new HashMap<>(6);
-            map.put("id", id);
-            map.put("status", status);
-            map.put("theme", theme);
-            map.put("content", content);
-            map.put("uId", uId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", request.getParameter("id"));// 消息id
+            map.put("status", status);// 消息状态
+            map.put("theme", theme);// 消息主题
+            map.put("content", content);// 消息内容
+            map.put("uId", request.getParameter("uId"));// 消息来源
+            map.put("createTime", createTimeOfDate);// 创建时间
+            map.put("updateTime", updateTimeOfDate);// 更新时间
             List<Message> list = messageService.listMessageBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
@@ -223,45 +197,28 @@ public class MessageController {
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 消息状态
         String statusStr = request.getParameter("status");
-        // 消息主题
         String themeStr = request.getParameter("theme");
-        // 消息内容
         String content = request.getParameter("content");
-        // 消息来源
-        String uId = request.getParameter("uId");
-        // 创建时间
-        String createTime = request.getParameter("createTime");
-        // 更新时间
-        String updateTime = request.getParameter("updateTime");
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
         int status = 0;
         int theme = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
+            if (content != null && !"".equals(content)) {
+                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
-            }
-            content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
             if (statusStr != null && !"".equals(statusStr)) {
                 status = Integer.parseInt(statusStr);
             }
             if (themeStr != null && !"".equals(themeStr)) {
                 theme = Integer.parseInt(themeStr);
             }
-            Map<Object, Object> map = new HashMap<>(6);
-            map.put("id", id);
-            map.put("status", status);
-            map.put("theme", theme);
-            map.put("content", content);
-            map.put("uId", uId);
-            map.put("createTime", createTimeOfDate);
-            map.put("updateTime", updateTimeOfDate);
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);// 消息ID
+            map.put("status", status);// 消息状态
+            map.put("theme", theme);// 消息主题
+            map.put("content", content);// 消息内容
+            map.put("uId", request.getParameter("uId"));// 消息来源
+            map.put("updateTime", new Date());// 更新时间
             Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
