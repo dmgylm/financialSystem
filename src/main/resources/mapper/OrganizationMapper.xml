@@ -38,11 +38,10 @@
 		parentId,
 		orgName,
 		createTime,
-		updateTime,
 		uId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
@@ -85,19 +84,19 @@
 		update organization
 		<trim prefix="set" suffixOverrides=",">
 			<if test="parentId!=null and parentId!=''">
-				parentId = #{parentId,jdbcType=VARCHAR}
+				parentId = #{parentId,jdbcType=VARCHAR},
 			</if>
 			<if test="orgName!=null and orgName!=''">
-				orgName = #{orgName,jdbcType=VARCHAR}
+				orgName = #{orgName,jdbcType=VARCHAR},
 			</if>
 			<if test="createTime!=null and createTime!=''">
-				createTime = #{createTime,jdbcType=DATE}
+				createTime = #{createTime,jdbcType=DATE},
 			</if>
 			<if test="updateTime!=null and updateTime!=''">
-				updateTime = #{updateTime,jdbcType=DATE}
+				updateTime = #{updateTime,jdbcType=DATE},
 			</if>
 			<if test="uId!=null and uId!=''">
-				uId = #{uId,jdbcType=VARCHAR}
+				uId = #{uId,jdbcType=VARCHAR},
 			</if>
 		</trim>
 		where

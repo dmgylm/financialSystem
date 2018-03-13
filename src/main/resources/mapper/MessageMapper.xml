@@ -29,11 +29,10 @@
 		theme,
 		content,
 		uId,
-		createTime,
-		updateTime
+		createTime
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE})
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{createTime,jdbcType=DATE})
 	</insert>
 
 	<!-- 查询所有的消息 -->
@@ -72,22 +71,22 @@
 		update message
 		<trim prefix="set" suffixOverrides=",">
 			<if test="status!=null and status!=''">
-				status = #{status,jdbcType=INTEGER}
+				status = #{status,jdbcType=INTEGER},
 			</if>
 			<if test="theme!=null and theme!=''">
-				theme = #{theme,jdbcType=INTEGER}
+				theme = #{theme,jdbcType=INTEGER},
 			</if>
 			<if test="content!=null and content!=''">
-				content = #{content,jdbcType=VARCHAR}
+				content = #{content,jdbcType=VARCHAR},
 			</if>
 			<if test="uId!=null and uId!=''">
-				uId = #{uId,jdbcType=VARCHAR}
+				uId = #{uId,jdbcType=VARCHAR},
 			</if>
 			<if test="createTime!=null and createTime!=''">
-				createTime = #{createTime,jdbcType=DATE}
+				createTime = #{createTime,jdbcType=DATE},
 			</if>
 			<if test="updateTime!=null and updateTime!=''">
-				updateTime = #{updateTime,jdbcType=DATE}
+				updateTime = #{updateTime,jdbcType=DATE},
 			</if>
 		</trim>
 		where
