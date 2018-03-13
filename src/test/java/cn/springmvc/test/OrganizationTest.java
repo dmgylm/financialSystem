@@ -40,8 +40,8 @@ public class OrganizationTest {
         Organization organization = new Organization();
         organization.setId(id);
         organization.setOrgName(orgName);
-        organization.setuId("2");
-        organization.setParentId("1");
+        organization.setuId("we12wqsas3121312sasq21qw");
+        organization.setParentId("wsdvf2jkil6yytgfgfd2");
         organization.setCreateTime(new Date());
         organization.setUpdateTime(new Date());
         Integer i = service.saveOrganization(organization);
@@ -70,7 +70,7 @@ public class OrganizationTest {
     @Test
     public void listOrganizationBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("uId", "2");
+        map.put("uId", "we12wqsas3121312sasq21qw");
         List<Organization> list = service.listOrganizationBy(map);
         for (Organization organization : list) {
             System.out.println(organization.getId() + "---------------------------------------------"
@@ -86,9 +86,9 @@ public class OrganizationTest {
      * 根据ID查询组织结构信息
      */
     @Test
-    public void getOrganization() {
+    public void getOrganizationById() {
         String id = "7963dbc544024729927c41ce8238db40";
-        Organization organization = service.getOrganization(id);
+        Organization organization = service.getOrganizationById(id);
         System.out
                 .println(organization.getId()
                         + "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -103,11 +103,11 @@ public class OrganizationTest {
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
     @Test
-    public void updateOrganization() {
+    public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "802384ed9ac642fc95736eda006d3c57");
+        map.put("id", "0e75886cb018445f9a202e58b4123ed1");
         map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
-        Integer i = service.updateOrganization(map);
+        Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
 
@@ -115,8 +115,8 @@ public class OrganizationTest {
      * 伪删除（根据条件删除组织结构信息）
      */
     @Test
-    public void deleteOrganization() {
-        String id = "802384ed9ac642fc95736eda006d3c57";
+    public void deleteOrganizationByStatus() {
+        String id = "0e75886cb018445f9a202e58b4123ed1";
         Integer i = service.deleteOrganizationByStatus(id);
         System.out.println(i);
     }
