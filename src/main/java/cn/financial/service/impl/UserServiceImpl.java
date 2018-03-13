@@ -1,5 +1,4 @@
 package cn.financial.service.impl;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +6,6 @@ import org.springframework.stereotype.Service;
 import cn.financial.dao.UserDAO;
 import cn.financial.model.User;
 import cn.financial.service.UserService;
-import cn.financial.util.UuidUtil;
 
 
 @Service("UserServiceImpl")
@@ -35,15 +33,13 @@ public class UserServiceImpl implements  UserService{
     /**
      * 新增用户
      */
-    public Integer insertUser(String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
-        User user = new User(UuidUtil.getUUID(), name, realName, pwd, privilege, createTime, updateTime, oId);
+    public Integer insertUser(User user) {
         return userDao.insertUser(user);
     }
     /**
      * 修改用户
      */
-    public Integer updateUser(String userId, String name, String realName, String pwd, Integer privilege, Date createTime, Date updateTime, String oId) {
-        User user = new User(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
+    public Integer updateUser(User user) {
         return userDao.updateUser(user);
     }
     /**
