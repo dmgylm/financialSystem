@@ -5,8 +5,8 @@
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <result column="name" property="name" jdbcType="VARCHAR" />
 	   <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+	   <result column="jobNumber" property="jobNumber" jdbcType="VARCHAR" />
 	   <result column="status" property="status" jdbcType="INTEGER" />
-	   <result column="privilege" property="privilege" jdbcType="INTEGER" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
 	   <result column="oId" property="oId" jdbcType="VARCHAR" /> 
@@ -21,16 +21,16 @@
 	</resultMap>    
 	<!--查询全部用户-->
     <select id="listUser" resultType="user">
-        SELECT id,name,realName,pwd,privilege,createTime,updateTime,oId FROM user WHERE status = 1
+        SELECT id,name,realName,pwd,jobNumber,createTime,updateTime,oId FROM user WHERE status = 1
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
-        insert into user(id,name,realName,pwd,privilege,createTime,updateTime,oId) 
-        values (#{id},#{name},#{realName},#{pwd},#{privilege},#{createTime},#{updateTime},#{oId})
+        insert into user(id,name,realName,pwd,jobNumber,createTime,updateTime,oId) 
+        values (#{id},#{name},#{realName},#{pwd},#{jobNumber},#{createTime},#{updateTime},#{oId})
     </insert>
     <!--根据id查询用户-->  
     <select id="getUserById" parameterType="STRING" resultType="user">
-         SELECT id,name,realName,pwd,privilege,createTime,updateTime,oId FROM user WHERE id=#{id}
+         SELECT id,name,realName,pwd,jobNumber,createTime,updateTime,oId FROM user WHERE id=#{id}
     </select>
     <!--根据name查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
@@ -46,7 +46,7 @@
 		  <if test="name!=null and name!=''">name=#{name},</if>
 		  <if test="realName!=null and realName!=''">realName=#{realName},</if>
 		  <if test="pwd!=null and pwd!=''">pwd=#{pwd},</if>
-		  <if test="privilege!=null and privilege!=''">privilege=#{privilege},</if>
+		  <if test="jobNumber!=null and jobNumber!=''">jobNumber=#{jobNumber},</if>
 		  <if test="createTime!=null and createTime!=''">createTime=#{createTime},</if>
 		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
 		  <if test="oId!=null and oId!=''">oId=#{oId},</if>
@@ -75,8 +75,8 @@
         <if test="pwd!=null and pwd!=''">
             and pwd = #{pwd,jdbcType=VARCHAR}
         </if>
-        <if test="privilege!=null and privilege!=''">
-            and privilege = #{privilege,jdbcType=INTEGER}
+        <if test="jobNumber!=null and jobNumber!=''">
+            and jobNumber = #{jobNumber,jdbcType=VARCHAR}
         </if>
         <if test="createTime!=null and createTime!=''">
             and createTime = #{createTime,jdbcType=DATE}
