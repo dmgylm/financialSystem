@@ -27,7 +27,6 @@ public interface UserService {
      * 新增用户
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
@@ -38,7 +37,6 @@ public interface UserService {
      * 修改用户
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
