@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.User;
 import cn.financial.service.impl.UserServiceImpl;
 import cn.financial.util.FileUtil;
+import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
 
 /**
@@ -121,20 +122,35 @@ public class UserController {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
             String pwd = request.getParameter("pwd");
-            Integer privilege = Integer.parseInt(request.getParameter("privilege"));
+            String jobNumber = request.getParameter("jobNumber");
             String cTime = request.getParameter("createTime");
             String uTime = request.getParameter("updateTime");
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date createTime = formatter.parse(cTime);
-            Date updateTime = formatter.parse(uTime);
+            Date createTime = null;
+            Date updateTime = null;
             String oId = request.getParameter("oId");
+            if(cTime != null && !"".equals(cTime)){
+                createTime = formatter.parse(cTime);
+            }
+            if(uTime != null && !"".equals(uTime)){
+                updateTime = formatter.parse(uTime);
+            }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名已存在");
             }else{
-                int user = userService.insertUser(name, realName, pwd, privilege, createTime, updateTime, oId);
-                if(user>0){
+                User user = new User();
+                user.setId(UuidUtil.getUUID());
+                user.setName(name);
+                user.setRealName(realName);
+                user.setPwd(pwd);
+                user.setJobNumber(jobNumber);
+                user.setCreateTime(createTime);
+                user.setUpdateTime(updateTime);
+                user.setoId(oId);
+                int userList = userService.insertUser(user);
+                if(userList>0){
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "新增成功");
                 }else{
@@ -169,15 +185,30 @@ public class UserController {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
             String pwd = request.getParameter("pwd");
-            Integer privilege = Integer.parseInt(request.getParameter("privilege"));
+            String jobNumber = request.getParameter("jobNumber");
             String cTime = request.getParameter("createTime");
             String uTime = request.getParameter("updateTime");
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date createTime = formatter.parse(cTime);
-            Date updateTime = formatter.parse(uTime);
+            Date createTime = null;
+            Date updateTime = null;
             String oId = request.getParameter("oId");
-            Integer user = userService.updateUser(userId, name, realName, pwd, privilege, createTime, updateTime, oId);
-            if(user>0){
+            if(cTime != null && !"".equals(cTime)){
+                createTime = formatter.parse(cTime);
+            }
+            if(uTime != null && !"".equals(uTime)){
+                updateTime = formatter.parse(uTime);
+            }
+            User user = new User();
+            user.setId(userId);
+            user.setName(name);
+            user.setRealName(realName);
+            user.setPwd(pwd);
+            user.setJobNumber(jobNumber);
+            user.setCreateTime(createTime);
+            user.setUpdateTime(updateTime);
+            user.setoId(oId);
+            Integer userList = userService.updateUser(user);
+            if(userList>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功");
             }else{
@@ -202,9 +233,8 @@ public class UserController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String userId = request.getParameter("userId");
         try {
-            //Integer user = userService.deleteUser(userId);
-            Integer user = userService.deleteUser(userId);
-            if(user>0){
+            Integer flag = userService.deleteUser(userId);
+            if(flag>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功");
             }else{
