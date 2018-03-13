@@ -35,7 +35,6 @@ public class UserTest {
         user.setPwd("555666");
         user.setJobNumber("743211124420888");
         user.setCreateTime(new Date());
-        user.setUpdateTime(new Date());
         user.setoId("555");
         try {
             System.out.println(service.insertUser(user));
@@ -47,12 +46,11 @@ public class UserTest {
     @Test
     public void updateTest() {
         User user = new User();
-        user.setId("2");
+        user.setId("edff7517f7ae4c1eba20dc8d817e37ee");
         user.setName("听听");
         user.setRealName("拖拖拖");
         user.setPwd("555666");
         user.setJobNumber("7432111244208");
-        user.setCreateTime(new Date());
         user.setUpdateTime(new Date());
         user.setoId("555");
         try {
@@ -71,8 +69,12 @@ public class UserTest {
     public void ListUserTest() {
         List<User> user = service.listUser();
         for(User list:user){
+            String uTime = "";
+            if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
+                uTime = formatter.format(list.getUpdateTime());
+            }
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+formatter.format(list.getUpdateTime()) +" oId: "+list.getoId()+"\n"); 
+                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime +" oId: "+list.getoId()+"\n"); 
         }
         
     }
@@ -86,7 +88,11 @@ public class UserTest {
     @Test
     public void ListByIdTest() {
         User user = service.getUserById("1ccb0f2ca6224f389cbbea57b85d4458");
+        String uTime = "";
+        if(user.getUpdateTime()!=null && !"".equals(user.getUpdateTime())){
+          uTime = formatter.format(user.getUpdateTime());
+        }
         System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
-                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+formatter.format(user.getUpdateTime())+" oId: "+user.getoId());
+                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime+" oId: "+user.getoId());
     }
 }
