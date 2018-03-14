@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.UserRoleDAO">
-    <resultMap type="cn.financial.model.UserRole" id="userRole" >
+   <!--  <resultMap type="cn.financial.model.UserRole" id="userRole" >
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <id column="uid" property="uid" jdbcType="VARCHAR" />
 	   <id column="rid" property="rid" jdbcType="VARCHAR" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
-	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
-	</resultMap>    
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" /> -->
+	   <!-- <collection property="users" ofType="User">
+           <id column="id" property="id" jdbcType="VARCHAR" />
+           <result column="name" property="name" jdbcType="VARCHAR" />
+           <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+           <result column="jobNumber" property="jobNumber" jdbcType="VARCHAR" />
+           <result column="status" property="status" jdbcType="INTEGER" />
+           <result column="createTime" property="createTime" jdbcType="DATE" />
+           <result column="updateTime" property="updateTime" jdbcType="DATE" />
+           <result column="oId" property="oId" jdbcType="VARCHAR" />
+       </collection>
+       <collection property="roles" ofType="Role">
+           <id column="id" property="id" jdbcType="VARCHAR" />
+	       <result column="roleName" property="roleName" jdbcType="VARCHAR" />
+	       <result column="status" property="status" jdbcType="INTEGER" />
+	       <result column="createTime" property="createTime" jdbcType="DATE" />
+	       <result column="updateTime" property="updateTime" jdbcType="DATE" />
+       </collection> -->
+	<!-- </resultMap>     -->
 	<!--查询全部-->
-    <select id="listUserRole" resultType="userRole">
-        SELECT id,rId,uId,createTime,updateTime FROM user_role_mapping
+    <select id="listUserRole" resultType="cn.financial.model.UserRole">
+        SELECT m.id as id,r.id as rid,u.id as uId,r.roleName as roleName,u.realName as realName,u.name as name,
+        u.jobNumber as jobNumber,m.createTime as createTime
+        FROM role r,user u,user_role_mapping m WHERE r.id=m.rId and u.id=m.uId 
+        ORDER BY m.createTime DESC
     </select>
     <!--新增-->
-    <insert id="insertUserRole" parameterType="userRole">
+    <insert id="insertUserRole" parameterType="cn.financial.model.UserRole">
         insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},#{createTime})
     </insert>
-    <!--根据id查询-->  
-    <select id="getUserRoleById" parameterType="STRING" resultType="userRole">
-         SELECT id,rId,uId,createTime,updateTime FROM user_role_mapping WHERE id=#{id}
-    </select>
 </mapper>
