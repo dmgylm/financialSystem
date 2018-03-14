@@ -27,10 +27,10 @@
 	<!-- </resultMap>     -->
 	<!--查询全部-->
     <select id="listUserRole" resultType="cn.financial.model.UserRole">
-        SELECT m.id as id,r.id as rid,u.id as uId,r.roleName as roleName,u.realName as realName,
-        u.name as name,u.jobNumber as jobNumber,m.createTime as createTime
-        FROM role r,user u,user_role_mapping m WHERE r.id=m.rId and u.id=m.uId and r.status=1 and u.status=1
-        ORDER BY m.createTime DESC
+        SELECT r.id as rId,u.id as uId,r.roleName as roleName,u.realName as realName,
+		u.name as name,u.jobNumber as jobNumber,m.createTime as createTime
+		FROM role r inner join user_role_mapping m on r.id=m.rId INNER JOIN user u on u.id=m.uId 
+		WHERE r.status=1 and u.status=1 ORDER BY m.createTime DESC
     </select>
     <!--新增-->
     <insert id="insertUserRole" parameterType="cn.financial.model.UserRole">
