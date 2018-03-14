@@ -30,8 +30,8 @@ public class UserRoleTest {
     public void insertTest() {
         UserRole userRole = new UserRole();
         userRole.setId(UuidUtil.getUUID());
-        userRole.setrId("55555555");
-        userRole.setuId("66666");
+        userRole.setrId("21b4e7dd874040d9afcc5256442031ef");
+        userRole.setuId("2ad46022ada048f1aedd6dc67cf8ac74");
         userRole.setCreateTime(new Date());
         try {
             System.out.println(service.insertUserRole(userRole));
@@ -44,24 +44,10 @@ public class UserRoleTest {
     public void ListUserRoleTest() {
         List<UserRole> role = service.listUserRole();
         for(UserRole list:role){
-            String uTime = "";
-            if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
-                uTime = formatter.format(list.getUpdateTime());
-            }
-            System.out.println("id: "+list.getId() +" rId: "+list.getrId() +" uId: "+list.getuId() +
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime+"\n"); 
+            System.out.println(" rId: "+list.getrId() +" uId: "+list.getuId() +" roleName: "+list.getRoleName()+
+            " jobNumber: "+list.getJobNumber()+" userName:"+list.getName()+" realName: "+list.getRealName()+
+            " createTime: "+formatter.format(list.getCreateTime()) +"\n");
         }
         
-    }
-    //根据id查询
-    @Test
-    public void ListByIdTest() {
-        UserRole role = service.getUserRoleById("d1d0abd15383460bbf48997ed6fd581f");
-        String uTime = "";
-        if(role.getUpdateTime()!=null && !"".equals(role.getUpdateTime())){
-          uTime = formatter.format(role.getUpdateTime());
-        }
-        System.out.println("id: "+role.getId()+" rId: "+role.getrId() +" uId: "+role.getuId() +
-                " createTime: "+formatter.format(role.getCreateTime())+" updateTime: "+uTime);
     }
 }
