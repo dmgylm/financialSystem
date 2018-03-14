@@ -23,14 +23,6 @@ public class UserRoleServiceImpl implements UserRoleService{
         return userRoleDao.listUserRole();
     }
     /**
-     * 根据id查询
-     * @return
-     */
-    @Override
-    public UserRole getUserRoleById(String userId) {
-        return userRoleDao.getUserRoleById(userId);
-    }
-    /**
      * 新增
      * @return
      */
@@ -38,5 +30,6 @@ public class UserRoleServiceImpl implements UserRoleService{
     public Integer insertUserRole(UserRole user) {
         return userRoleDao.insertUserRole(user);
     }
+
 }
  
