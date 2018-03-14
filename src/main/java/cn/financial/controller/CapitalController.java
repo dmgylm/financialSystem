@@ -1,6 +1,6 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,31 +107,12 @@ public class CapitalController {
          * @return
          */
         @RequestMapping(value="/capital/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response){
+        public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response, Capital capital){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
-                String id = UuidUtil.getUUID();
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Capital capital =new Capital();
-                capital.setId(id);
-                capital.setoId(oId);
-                capital.setInfo(info);
-                capital.setCreateTime(sdf.parse(createTime));
-                capital.setUpdateTime(sdf.parse(updateTime));
-                capital.setTypeId(typeId);
-                capital.setuId(uId);
-                capital.setYear(year);
-                capital.setMonth(month);
-                capital.setStatus(status);
+                capital.setId(UuidUtil.getUUID());
+                capital.setCreateTime(new Date());
+                capital.setStatus(1);
                 Integer i = capitalService.insertCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
@@ -154,31 +135,11 @@ public class CapitalController {
          * @return
          */
         @RequestMapping(value="/capital/update", method = RequestMethod.POST)
-        public Map<String, Object> updateCapital(HttpServletRequest request) {
+        public Map<String, Object> updateCapital(HttpServletRequest request,Capital capital) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Capital capital =new Capital();
-                capital.setId(id);
-                capital.setoId(oId);
-                capital.setInfo(info);
-                capital.setCreateTime(sdf.parse(createTime));
-                capital.setUpdateTime(sdf.parse(updateTime));
-                capital.setTypeId(typeId);
-                capital.setuId(uId);
-                capital.setYear(year);
-                capital.setMonth(month);
-                capital.setStatus(status);
+                capital.setCreateTime(new Date());
+                capital.setStatus(1);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);

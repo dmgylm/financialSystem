@@ -21,23 +21,23 @@
  
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
-            insert into capital(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
+            insert into capital(id,oId,info,createTime,typeId,uId,year,month,status)
+            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
        <!-- 查询所有的资金数据 -->
        <select id="getAllCapital" resultMap="capital">  
-        select * from capital where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from capital where status=1
        </select>
        
        <!--根据id查询资金数据 -->
        <select id="selectCapitalById" parameterType="String" resultMap="capital" >
-           SELECT * FROM capital WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM capital WHERE id = #{id} and status=1
        </select>
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT * FROM capital WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM capital WHERE status=1 
         <include refid="query_capital_where"></include>
        </select>
        
@@ -47,7 +47,6 @@
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">oId = #{oId},</if>
             <if test="info!=null and info!=''">info = #{info},</if>
-            <if test="createTime!=null and createTime!=''">createTime = #{createTime},</if>
             <if test="updateTime!=null and updateTime!=''">updateTime = #{updateTime},</if>
             <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
             <if test="uId!=null and uId!=''">uId = #{uId},</if>

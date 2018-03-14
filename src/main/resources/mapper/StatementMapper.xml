@@ -21,24 +21,24 @@
           
        <!--新增损益数据 -->
        <insert id="insertStatement" parameterType="statement" keyProperty="id">
-            insert into income_statement(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
+            insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status)
+            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
       
        <!-- 查询所有的损益数据 -->
        <select id="getAll" resultMap="statement">  
-        select * from  income_statement where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from  income_statement where status=1
        </select>
        
       <!--  根据id查询损益数据 -->
        <select id="selectStatementById" parameterType="String" resultMap="statement" >
-           SELECT * FROM income_statement WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM income_statement WHERE id = #{id} and status=1
        </select>
        
        <!-- 根据条件查询损益数据 -->
        <select id="listStatementBy" parameterType="map" resultType="Statement">
-         SELECT * FROM income_statement WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM income_statement WHERE status=1 
         <include refid="query_income_statement_where"></include>
        </select>
        
@@ -48,7 +48,6 @@
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">oId = #{oId},</if>
             <if test="info!=null and info!=''">info = #{info},</if>
-            <if test="createTime!=null and createTime!=''">createTime = #{createTime},</if>
             <if test="updateTime!=null and updateTime!=''">updateTime = #{updateTime},</if>
             <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
             <if test="uId!=null and uId!=''">uId = #{uId},</if>

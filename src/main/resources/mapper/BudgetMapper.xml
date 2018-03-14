@@ -21,24 +21,24 @@
           
        <!--新增预算数据 -->
        <insert id="insertBudget" parameterType="Budget" keyProperty="id">
-            insert into budget(id,oId,info,createTime,updateTime,typeId,uId,year,month,status)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{updateTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
+            insert into budget(id,oId,info,createTime,typeId,uId,year,month,status)
+            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
        </insert>
       
       
        <!-- 查询所有的预算数据 -->
        <select id="getAllBudget" resultMap="budget">  
-        select * from  budget where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from  budget where status=1
        </select>
        
       <!--  根据id查询预算数据 -->
        <select id="selectBudgetById" parameterType="String" resultMap="budget" >
-           SELECT * FROM budget WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM budget WHERE id = #{id} and status=1
        </select>
        
        <!-- 根据条件查询预算数据 -->
        <select id="listBudgetBy" parameterType="map" resultType="Budget">
-         SELECT * FROM budget WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM budget WHERE status=1 
         <include refid="query_budget_where"></include>
        </select>
        
@@ -51,9 +51,6 @@
             </if>
             <if test="info!=null and info!=''">
                 info = #{info},
-            </if>
-            <if test="createTime!=null and createTime!=''">
-                createTime = #{createTime},
             </if>
             <if test="updateTime!=null and updateTime!=''">
                 updateTime = #{updateTime},

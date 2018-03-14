@@ -1,6 +1,7 @@
 package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.Budget;
+import cn.financial.model.Statement;
 import cn.financial.service.BudgetService;
 import cn.financial.util.UuidUtil;
 
@@ -107,31 +109,12 @@ public class BudgetController {
          * @return
          */
         @RequestMapping(value="/budget/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response){
+        public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response,Budget budget){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
-                String id = UuidUtil.getUUID();
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Budget budget =new Budget();
-                budget.setId(id);
-                budget.setoId(oId);
-                budget.setInfo(info);
-                budget.setCreateTime(sdf.parse(createTime));
-                budget.setUpdateTime(sdf.parse(updateTime));
-                budget.setTypeId(typeId);
-                budget.setuId(uId);
-                budget.setYear(year);
-                budget.setMonth(month);
-                budget.setStatus(status);
+               budget.setId(UuidUtil.getUUID());
+               budget.setCreateTime(new Date());
+               budget.setStatus(1);
                 Integer i = budgetService.insertBudget(budget);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
@@ -154,31 +137,11 @@ public class BudgetController {
          * @return
          */
         @RequestMapping(value="/budget/update", method = RequestMethod.POST)
-        public Map<String, Object> updatebudget(HttpServletRequest request) {
+        public Map<String, Object> updatebudget(HttpServletRequest request,Budget budget) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Budget budget =new Budget();
-                budget.setId(id);
-                budget.setoId(oId);
-                budget.setInfo(info);
-                budget.setCreateTime(sdf.parse(createTime));
-                budget.setUpdateTime(sdf.parse(updateTime));
-                budget.setTypeId(typeId);
-                budget.setuId(uId);
-                budget.setYear(year);
-                budget.setMonth(month);
-                budget.setStatus(status);
+                budget.setCreateTime(new Date());
+                budget.setStatus(1);
                 Integer i = budgetService.updateBudget(budget);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);

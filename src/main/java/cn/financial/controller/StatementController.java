@@ -1,6 +1,6 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,31 +107,12 @@ public class StatementController {
          * @return
          */
         @RequestMapping(value="/statement/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertStatement(HttpServletRequest request, HttpServletResponse response){
+        public Map<String, Object> insertStatement(HttpServletRequest request,Statement statement){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
-                String id = UuidUtil.getUUID();
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(status);
+                statement.setId(UuidUtil.getUUID());
+                statement.setCreateTime(new Date());
+                statement.setStatus(1);
                 Integer i = statementService.insertStatement(statement);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
@@ -154,31 +135,11 @@ public class StatementController {
          * @return
          */
         @RequestMapping(value="/statement/update", method = RequestMethod.POST)
-        public Map<String, Object> updateStatement(HttpServletRequest request) {
+        public Map<String, Object> updateStatement(HttpServletRequest request,Statement statement) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                String id = request.getParameter("id");
-                String oId=request.getParameter("oId");
-                String info=new String(request.getParameter("info").getBytes("ISO-8859-1"), "UTF-8");
-                String createTime=request.getParameter("createTime");
-                String updateTime=request.getParameter("updateTime");
-                String typeId=request.getParameter("typeId");
-                String uId=request.getParameter("uId");
-                Integer year=Integer.parseInt(request.getParameter("year"));
-                Integer month=Integer.parseInt(request.getParameter("month"));
-                Integer status=Integer.parseInt(request.getParameter("status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Statement statement =new Statement();
-                statement.setId(id);
-                statement.setoId(oId);
-                statement.setInfo(info);
-                statement.setCreateTime(sdf.parse(createTime));
-                statement.setUpdateTime(sdf.parse(updateTime));
-                statement.setTypeId(typeId);
-                statement.setuId(uId);
-                statement.setYear(year);
-                statement.setMonth(month);
-                statement.setStatus(status);
+                statement.setUpdateTime(new Date());
+                statement.setStatus(1);
                 Integer i = statementService.updateStatement(statement);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
