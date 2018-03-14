@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,28 +51,6 @@ public class UserRoleController {
             this.logger.error(e.getMessage(), e);
         }
     	FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
-    }
-    /**
-     * 根据id查询
-     * @param request
-     * @param response
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/userRole/userRoleById", method = RequestMethod.POST)
-    public void getUserRoleById(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        try {
-            UserRole role = roleService.getUserRoleById(request.getParameter("userRoleId"));
-            dataMap.put("userById", role);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
-        } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
-            e.printStackTrace();
-        }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
      * 新增
