@@ -38,7 +38,7 @@
 	<!-- 查询所有的消息 -->
 	<select id="listMessage" resultMap="messageResultMap">
 		select
-		*
+		id,theme,content,uId,createTime,updateTime
 		from
 		message
 	</select>
@@ -46,7 +46,7 @@
 	<!-- 根据条件查询消息 -->
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
 		select
-		*
+		id,theme,content,uId,createTime,updateTime
 		from
 		message
 		where
@@ -58,7 +58,7 @@
 	<select id="getMessageById" parameterType="java.lang.String"
 		resultMap="messageResultMap">
 		select
-		*
+		id,theme,content,uId,createTime,updateTime
 		from
 		message
 		where

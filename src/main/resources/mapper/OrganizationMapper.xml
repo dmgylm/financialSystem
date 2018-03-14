@@ -47,7 +47,7 @@
 	<!-- 查询所有的组织结构 -->
 	<select id="listOrganization" resultType="Organization">
 		select
-		*
+		id,parentId,orgName,createTime,updateTime,uId
 		from
 		organization
 		where
@@ -57,7 +57,7 @@
 	<!-- 根据条件查询组织结构信息 -->
 	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
 		select
-		*
+		id,parentId,orgName,createTime,updateTime,uId
 		from
 		organization
 		where
@@ -69,7 +69,7 @@
 	<select id="getOrganizationById" parameterType="java.lang.String"
 		resultType="Organization">
 		select
-		*
+		id,parentId,orgName,createTime,updateTime,uId
 		from
 		organization
 		where
