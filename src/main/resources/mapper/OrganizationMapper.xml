@@ -132,7 +132,7 @@
 		from
 		organization
 		where
-		FIND_IN_SET(id, getChildLst(#{_parameter,jdbcType=VARCHAR}));
+		find_in_set(id, getChildLst(#{_parameter,jdbcType=VARCHAR}));
 	</select>
 
 	<!--定义一个sql片段 -->
