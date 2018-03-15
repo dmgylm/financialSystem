@@ -1,7 +1,10 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import cn.financial.dao.OrganizationDAO;
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
+import cn.financial.util.TreeNode;
 
 /**
  * 组织结构service实现层
@@ -69,5 +73,26 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     public Integer deleteOrganizationByStatus(String id) {
         return organizationDAO.deleteOrganizationByStatus(id);
+    }
+
+    /**
+     * 根据id查询该节点下的所有子节点,构建成树
+     */
+    @Override
+    public String listTreeByOrgId(String id) {
+        List<Organization> list = organizationDAO.listTreeByOrgId(id);
+        List<TreeNode<Organization>> nodes = new ArrayList<>();
+        String jsonStr = "";
+        for (Organization organization : list) {
+            TreeNode<Organization> node = new TreeNode<>();
+            node.setId(organization.getId().toString());
+            node.setParentId(organization.getParentId().toString());
+            node.setText(organization.getOrgName());
+            node.setNodeData(organization);
+            nodes.add(node);
+        }
+        JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+        jsonStr = jsonObject.toString();
+        return jsonStr;
     }
 }

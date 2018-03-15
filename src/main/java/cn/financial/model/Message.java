@@ -12,13 +12,15 @@ public class Message {
 
     String id; // 消息id(uuid)
 
-    int status; // 消息状态(0未读；1已读)
+    Integer status; // 消息状态(0未读；1已读)
 
-    int theme; // 消息主题（0待审批；1修改申请；2审批未通过；3复核未通过；4审核通过）
+    Integer theme; // 消息主题（1系统提醒）
 
     String content; // 消息内容
 
     String uId; // 消息来源(这里指向user的id)
+
+    Integer isTag; // 是否标注（0未标注；1标注）
 
     Date createTime; // 创建时间
 
@@ -32,19 +34,19 @@ public class Message {
         this.id = id;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public int getTheme() {
+    public Integer getTheme() {
         return theme;
     }
 
-    public void setTheme(int theme) {
+    public void setTheme(Integer theme) {
         this.theme = theme;
     }
 
@@ -62,6 +64,14 @@ public class Message {
 
     public void setuId(String uId) {
         this.uId = uId;
+    }
+
+    public Integer getIsTag() {
+        return isTag;
+    }
+
+    public void setIsTag(Integer isTag) {
+        this.isTag = isTag;
     }
 
     public Date getCreateTime() {
@@ -83,7 +93,7 @@ public class Message {
     @Override
     public String toString() {
         return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", uId="
-                + uId + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+                + uId + ", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
     }
 
 }

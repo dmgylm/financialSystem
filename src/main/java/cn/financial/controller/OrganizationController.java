@@ -262,4 +262,26 @@ public class OrganizationController {
         }
         return dataMap;
     }
+
+    /**
+     * 传入一个节点的id，查询所有该节点的子节点,构建tree的string字符串
+     * 
+     * @param request
+     * @param response
+     * @return
+     */
+    public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        try {
+            String jsonTree = organizationService.listTreeByOrgId(request.getParameter("id").toString());
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "删除成功!");
+            dataMap.put("resultData", jsonTree);
+        } catch (Exception e) {
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "删除失败!");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
 }
