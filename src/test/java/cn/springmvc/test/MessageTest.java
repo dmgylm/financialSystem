@@ -62,7 +62,7 @@ public class MessageTest {
     @Test
     public void listMessageBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "bcb5aab96cb84d4fa8dc9bbb99eace9f");
+        map.put("id", "124566cf88564108ac2090263ca31518");
         //map.put("createTime", new Date());
         List<Message> list = service.listMessageBy(map);
         for (Message message : list) {
@@ -96,8 +96,9 @@ public class MessageTest {
     @Test
     public void updateMessageById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "bcb5aab96cb84d4fa8dc9bbb99eace9f");
-        map.put("uId", "kjdashkdaskdakjdkasjk");
+        map.put("id", "02a979f93c3241cfbf8aa6ff18c1a2c8");
+        map.put("status", 4);
+        map.put("updateTime", new Date());
         Integer i = service.updateMessageById(map);
         System.out.println(i);
     }
@@ -107,7 +108,7 @@ public class MessageTest {
      */
     @Test
     public void deleteMessaageById() {
-        String id = "bcb5aab96cb84d4fa8dc9bbb99eace9f";
+        String id = "ab55154719bc458f9985f84e05034196";
         Integer i = service.deleteMessageById(id);
         System.out.println(i);
     }

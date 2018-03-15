@@ -1,6 +1,5 @@
 package cn.springmvc.test;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,17 +28,10 @@ public class OrganizationTest {
      */
     @Test
     public void saveOrganization() {
-        String orgName = "任意字符串";
-        try {
-            orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        System.out.println(orgName);
         String id = UuidUtil.getUUID();
         Organization organization = new Organization();
         organization.setId(id);
-        organization.setOrgName(orgName);
+        organization.setOrgName("任意字符串");
         organization.setuId("we12wqsas3121312sasq21qw");
         organization.setParentId("wsdvf2jkil6yytgfgfd2");
         organization.setCreateTime(new Date());
@@ -119,6 +111,16 @@ public class OrganizationTest {
         String id = "35d883977eea4ddb94c1482349b61461";
         Integer i = service.deleteOrganizationByStatus(id);
         System.out.println(i);
+    }
+
+    /**
+     * 根据id查询该节点下的所有子节点 ,构建成树
+     */
+    @Test
+    public void listTreeByOrgId() {
+        String id = "9300f5feb5004f63896748d6b15e9dd9";
+        String string = service.listTreeByOrgId(id);
+        System.out.println(string);
     }
 
 }
