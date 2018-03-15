@@ -14,6 +14,8 @@
 		<result property="content" column="content" javaType="string"
 			jdbcType="VARCHAR"></result>
 		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<result property="isTag" column="isTag" javaType="int"
+			jdbcType="INTEGER"></result>
 		<result property="createTime" column="createTime" javaType="java.sql.Date"
 			jdbcType="DATE"></result>
 		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
@@ -41,6 +43,8 @@
 		id,theme,content,uId,createTime,updateTime
 		from
 		message
+		order by
+		createTime desc
 	</select>
 
 	<!-- 根据条件查询消息 -->
@@ -52,6 +56,8 @@
 		where
 		1 = 1
 		<include refid="query_message_where"></include>
+		order by
+		createTime desc
 	</select>
 
 	<!-- 根据ID查询消息 -->

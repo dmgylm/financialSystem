@@ -124,6 +124,17 @@
 		id = #{_parameter,jdbcType=VARCHAR}
 	</update>
 
+	<!-- 根据id查询该节点下的所有子节点 ,构建成树 -->
+	<select id="listTreeByOrgId" parameterType="java.lang.String"
+		resultType="Organization">
+		select
+		id,parentId,orgName
+		from
+		organization
+		where
+		FIND_IN_SET(id, getChildLst(#{_parameter,jdbcType=VARCHAR}));
+	</select>
+
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
 		<if test="id!=null and id!=''">
