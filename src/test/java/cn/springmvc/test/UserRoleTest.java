@@ -42,7 +42,7 @@ public class UserRoleTest {
     //查询全部
     @Test
     public void ListUserRoleTest() {
-        List<UserRole> role = service.listUserRole();
+        List<UserRole> role = service.listUserRole("雯雯");
         for(UserRole list:role){
             System.out.println(" rId: "+list.getrId() +" uId: "+list.getuId() +" roleName: "+list.getRoleName()+
             " jobNumber: "+list.getJobNumber()+" userName:"+list.getName()+" realName: "+list.getRealName()+
