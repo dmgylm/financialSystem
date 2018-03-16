@@ -13,10 +13,10 @@ import cn.financial.model.RoleResource;
  */
 public interface RoleResourceDAO {
     /**
-     * 查询所有/根据角色查对应的功能权限
+     * 查询所有/根据角色id查对应的功能权限
      * @return
      */
-    List<RoleResource> listRoleResource(@Param("roleName") String roleName);
+    List<RoleResource> listRoleResource(@Param("rId") String rId);
     /**
      * 新增
      * @param roleResource
