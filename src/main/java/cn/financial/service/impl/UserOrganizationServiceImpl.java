@@ -19,8 +19,8 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     @Override
-    public List<UserOrganization> listUserOrganization() {
-        return userOrganizationDao.listUserOrganization();
+    public List<UserOrganization> listUserOrganization(String uId) {
+        return userOrganizationDao.listUserOrganization(uId);
     }
     /**
      * 新增
