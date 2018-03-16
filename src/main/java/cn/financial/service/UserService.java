@@ -29,7 +29,7 @@ public interface UserService {
      * @param userName
      * @return
      */
-    User getUserByName(String userName);
+    User getUserByName(String name);
     /**
      * 新增用户
      * @param name
