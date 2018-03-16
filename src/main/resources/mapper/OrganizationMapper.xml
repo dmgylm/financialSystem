@@ -15,6 +15,8 @@
 	<!-- 组织架构POJO对应数据库字段 -->
 	<resultMap type="Organization" id="organizationResultMap">
 		<id property="id" column="id" jdbcType="VARCHAR"></id>
+		<result property="code" column="code" javaType="string"
+			jdbcType="VARCHAR"></result>
 		<result property="parentId" column="parentId" javaType="string"
 			jdbcType="VARCHAR"></result>
 		<result property="orgName" column="orgName" javaType="string"
@@ -26,6 +28,8 @@
 		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="status" column="status" javaType="int"
 			jdbcType="INTEGER"></result>
+		<result property="his_permission" column="his_permission"
+			javaType="string" jdbcType="VARCHAR"></result>
 		<!-- <collection property="users" resultMap="userResultMap"> </collection> -->
 
 	</resultMap>
@@ -35,19 +39,20 @@
 		keyProperty="id">
 		insert into organization (
 		id,
+		code,
 		parentId,
 		orgName,
 		createTime,
 		uId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
 	<select id="listOrganization" resultType="Organization">
 		select
-		id,parentId,orgName,createTime,updateTime,uId
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
 		from
 		organization
 		where
@@ -57,7 +62,7 @@
 	<!-- 根据条件查询组织结构信息 -->
 	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
 		select
-		id,parentId,orgName,createTime,updateTime,uId
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
 		from
 		organization
 		where
@@ -69,7 +74,7 @@
 	<select id="getOrganizationById" parameterType="java.lang.String"
 		resultType="Organization">
 		select
-		id,parentId,orgName,createTime,updateTime,uId
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
 		from
 		organization
 		where
@@ -83,6 +88,10 @@
 	<update id="updateOrganizationById" parameterType="map">
 		update organization
 		<trim prefix="set" suffixOverrides=",">
+			updateTime = curdate(),
+			<if test="code!=null and code!=''">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
 			<if test="parentId!=null and parentId!=''">
 				parentId = #{parentId,jdbcType=VARCHAR},
 			</if>
@@ -92,11 +101,11 @@
 			<if test="createTime!=null and createTime!=''">
 				createTime = #{createTime,jdbcType=DATE},
 			</if>
-			<if test="updateTime!=null and updateTime!=''">
-				updateTime = #{updateTime,jdbcType=DATE},
-			</if>
 			<if test="uId!=null and uId!=''">
 				uId = #{uId,jdbcType=VARCHAR},
+			</if>
+			<if test="his_permission!=null and his_permission!=''">
+				his_permission = #{his_permission,jdbcType=VARCHAR},
 			</if>
 		</trim>
 		where
@@ -124,21 +133,26 @@
 		id = #{_parameter,jdbcType=VARCHAR}
 	</update>
 
-	<!-- 根据id查询该节点下的所有子节点 ,构建成树 -->
-	<select id="listTreeByOrgId" parameterType="java.lang.String"
+	<!-- 根据code查询该节点下的所有子节点 ,构建成树 -->
+	<select id="listTreeByOrgCode" parameterType="java.lang.String"
 		resultType="Organization">
 		select
-		id,parentId,orgName
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
 		from
 		organization
 		where
-		find_in_set(id, getChildLst(#{_parameter,jdbcType=VARCHAR}));
+		find_in_set(parentId,getChildLst(#{_parameter,jdbcType=VARCHAR}))
+		and
+		status = 1
 	</select>
 
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
 		<if test="id!=null and id!=''">
 			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="code!=null and code!=''">
+			and code = #{code,jdbcType=VARCHAR}
 		</if>
 		<if test="parentId!=null and parentId!=''">
 			and parentId = #{parentId,jdbcType=VARCHAR}
@@ -154,6 +168,12 @@
 		</if>
 		<if test="uId!=null and uId!=''">
 			and uId = #{uId,jdbcType=VARCHAR}
+		</if>
+		<if test="status!=null and status!=''">
+			and status = #{status,jdbcType=INTEGER}
+		</if>
+		<if test="his_permission!=null and his_permission!=''">
+			and his_permission = #{his_permission,jdbcType=VARCHAR}
 		</if>
 	</sql>
 

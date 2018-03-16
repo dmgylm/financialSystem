@@ -68,11 +68,11 @@ public interface OrganizationDAO {
     Integer deleteOrganizationByStatus(String id);
 
     /**
-     * 根据id查询该节点下的所有子节点,构建成树
+     * 根据code查询该节点下的所有子节点,构建成树
      * 
-     * @param id
+     * @param code
      * @return
      */
-    List<Organization> listTreeByOrgId(String id);
+    List<Organization> listTreeByOrgCode(String code);
 
 }

@@ -6,7 +6,9 @@ public class Organization {
 
     private String id; // 组织架构表id
 
-    private String parentId; // 父id
+    private String code; // 该组织机构节点的序号，两位的，比如（01；0101，0102）
+
+    private String parentId; // 父节点（这里指向code）
 
     private String orgName; // 组织架构名
 
@@ -17,6 +19,8 @@ public class Organization {
     private String uId; // 提交人id
 
     private Integer status; // 状态（是否已删除，1表示还存在，0表示已删除）
+
+    private String his_permission; // 保存历史权限记录
 
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
@@ -76,10 +80,27 @@ public class Organization {
         this.status = status;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getHis_permission() {
+        return his_permission;
+    }
+
+    public void setHis_permission(String his_permission) {
+        this.his_permission = his_permission;
+    }
+
     @Override
     public String toString() {
-        return "Organization [id=" + id + ", parentId=" + parentId + ", orgName=" + orgName + ", createTime="
-                + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status + "]";
+        return "Organization [id=" + id + ", code=" + code + ", parentId=" + parentId + ", orgName=" + orgName
+                + ", createTime=" + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status
+                + ", his_permission=" + his_permission + "]";
     }
 
     // public List<User> getUsers() {

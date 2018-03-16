@@ -80,7 +80,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public String listTreeByOrgId(String id) {
-        List<Organization> list = organizationDAO.listTreeByOrgId(id);
+        Organization organizationById = organizationDAO.getOrganizationById(id);
+        List<Organization> list = organizationDAO.listTreeByOrgCode(organizationById.getCode());
         List<TreeNode<Organization>> nodes = new ArrayList<>();
         String jsonStr = "";
         for (Organization organization : list) {

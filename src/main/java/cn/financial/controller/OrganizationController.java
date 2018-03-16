@@ -52,10 +52,10 @@ public class OrganizationController {
             }
             Organization organization = new Organization();
             organization.setId(UuidUtil.getUUID());// 组织结构id
+            organization.setCode(request.getParameter("code"));// 该组织机构节点的序号
+            organization.setParentId(request.getParameter("parentId"));// 父id
             organization.setOrgName(orgName);// 组织架构名
             organization.setuId(request.getParameter("uId"));// 提交人id
-            organization.setParentId(request.getParameter("parentId"));// 父id
-            organization.setCreateTime(new Date());// 创建时间
             Integer i = organizationService.saveOrganization(organization);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -122,6 +122,7 @@ public class OrganizationController {
             }
             Map<Object, Object> map = new HashMap<>();
             map.put("id", request.getParameter("id")); // 组织结构id
+            map.put("code", request.getParameter("code"));// 该组织机构节点的序号
             map.put("orgName", orgName);// 组织架构名
             map.put("uId", request.getParameter("uId"));// 提交人id
             map.put("parentId", request.getParameter("parentId"));// 父id
@@ -184,10 +185,11 @@ public class OrganizationController {
             }
             Map<Object, Object> map = new HashMap<>();
             map.put("id", id);// 组织id
+            map.put("code", request.getParameter("code"));// 该组织机构节点的序号
             map.put("orgName", orgName);// 组织架构名
             map.put("uId", request.getParameter("uId"));// 提交人id
             map.put("parentId", request.getParameter("parentId"));// 父id
-            map.put("updateTime", new Date());// 更新时间
+            map.put("his_permission", request.getParameter("his_permission"));// 历史权限记录
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -268,12 +270,16 @@ public class OrganizationController {
      * 
      * @param request
      * @param response
+     * @param id
+     *            传入的组织结构id（required = true，必须存在）
      * @return
      */
-    public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/organization/getsubnode", method = RequestMethod.POST)
+    public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            String jsonTree = organizationService.listTreeByOrgId(request.getParameter("id").toString());
+            String jsonTree = organizationService.listTreeByOrgId(id);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "删除成功!");
             dataMap.put("resultData", jsonTree);
