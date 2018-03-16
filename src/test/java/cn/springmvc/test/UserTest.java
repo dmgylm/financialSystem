@@ -2,7 +2,9 @@ package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,12 +47,12 @@ public class UserTest {
     @Test
     public void updateTest() {
         User user = new User();
-        user.setId("edff7517f7ae4c1eba20dc8d817e37ee");
-        user.setName("gggggggggggggggg");
-        user.setRealName("拖拖拖");
+        user.setId("111111");
+        //user.setName("gggggggggggggggg");
+        //user.setRealName("拖拖拖");
         user.setPwd("555666");
-        user.setJobNumber("7432111244208");
-        user.setUpdateTime(new Date());
+        //user.setJobNumber("7432111244208");
+        //user.setUpdateTime(new Date());
         try {
             System.out.println(service.updateUser(user));
         } catch (Exception e) {
@@ -62,16 +64,24 @@ public class UserTest {
     public void deleteTest() {   
         System.out.println(service.deleteUser("2bea324762f74d968d62b6837349dfe0"));
     }
-    //查询全部
+    //查询全部or多条件查询用户列表
     @Test
     public void ListUserTest() {
-        List<User> user = service.listUser();
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        //map.put("name","恩恩");
+        //map.put("realName", "小芳");
+        //map.put("jobNumber", "7432111244208");
+        //map.put("pwd", "555666");
+        map.put("createTime", "2018-03-06");
+        //map.put("updateTime", "");
+        List<User> user = service.listUser(map);
         for(User list:user){
             String uTime = "";
             if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
                 uTime = formatter.format(list.getUpdateTime());
             }
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +
+                    " realName: "+list.getRealName()+" jobNumber: "+list.getJobNumber()+" status: "+list.getStatus()+
                     " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime+"\n"); 
         }
         
