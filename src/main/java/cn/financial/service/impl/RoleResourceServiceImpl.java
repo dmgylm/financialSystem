@@ -19,12 +19,12 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Autowired
     private RoleResourceDAO roleResourceDao;
     /**
-     * 查询所有/根据角色查对应的功能权限
+     * 查询所有/根据角色id查对应的功能权限
      * @return
      */
     @Override
-    public List<RoleResource> listRoleResource(String roleName) {
-        return roleResourceDao.listRoleResource(roleName);
+    public List<RoleResource> listRoleResource(String rId) {
+        return roleResourceDao.listRoleResource(rId);
     }
     /**
      * 新增
