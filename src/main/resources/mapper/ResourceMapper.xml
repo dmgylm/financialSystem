@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.ResourceDAO">
+    <resultMap type="cn.financial.model.Resource" id="resource" >
+	   <id column="id" property="id" jdbcType="VARCHAR" />
+	   <result column="name" property="name" jdbcType="VARCHAR" />
+	   <result column="code" property="code" jdbcType="INTEGER" />
+	   <result column="url" property="url" jdbcType="INTEGER" />
+	   <result column="parentId" property="parentId" jdbcType="INTEGER" />
+	   <result column="permssion" property="permssion" jdbcType="INTEGER" />
+	   <result column="status" property="status" jdbcType="INTEGER" />
+	   <result column="createTime" property="createTime" jdbcType="DATE" />
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	</resultMap>    
+	<!--查询全部-->
+    <select id="listResource" resultType="resource">
+        SELECT id,name,code,url,parentId,permssion,createTime,updateTime FROM resource WHERE status = 1
+        ORDER BY createTime DESC
+    </select>
+    <!--新增-->
+    <insert id="insertResource" parameterType="resource">
+        insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},#{createTime})
+    </insert>
+    <!--根据id查询-->  
+    <select id="getResourceById" parameterType="STRING" resultType="resource">
+         SELECT id,name,code,url,parentId,permssion,createTime,updateTime FROM resource WHERE id=#{id}
+    </select>
+    <!--修改-->
+    <update id="updateResource" parameterType="resource">
+         UPDATE resource
+		 <trim prefix="set" suffixOverrides=",">
+		  <if test="name!=null and name!=''">name=#{name},</if>
+		  <if test="url!=null and url!=''">url=#{url},</if>
+		  <if test="parentId!=null and parentId!=''">parentId=#{parentId},</if>
+		  <if test="permssion!=null and permssion!=''">permssion=#{permssion},</if>
+		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
+		 </trim>
+		 WHERE id=#{id}
+    </update>
+    <!--删除（状态为0，即已删除）-->
+    <update id="deleteResource">
+        UPDATE resource SET status=0 WHERE id=#{resourceId}
+    </update>
+</mapper>

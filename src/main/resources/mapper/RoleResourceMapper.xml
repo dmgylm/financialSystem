@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.RoleResourceDAO">
+	<!--查询全部-->
+    <select id="listRoleResource" resultType="cn.financial.model.RoleResource">
+        SELECT r.id as rId,s.id as sId,r.roleName as roleName,s.name as name,s.code as code,
+		s.url as url,s.parentId as parentId,s.permssion as permssion,m.createTime as createTime
+		FROM role r inner join role_resource_mapping m on r.id=m.rId INNER JOIN resource s on s.id=m.sId 
+		WHERE r.status=1 and s.status=1 ORDER BY m.createTime DESC
+    </select>
+    <!--新增-->
+    <insert id="insertRoleResource" parameterType="cn.financial.model.RoleResource">
+        insert into role_resource_mapping(id,rId,sId,createTime) values (#{id},#{rId},#{sId},#{createTime})
+    </insert>
+</mapper>

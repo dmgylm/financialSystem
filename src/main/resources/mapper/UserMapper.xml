@@ -9,7 +9,6 @@
 	   <result column="status" property="status" jdbcType="INTEGER" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
-	   <result column="oId" property="oId" jdbcType="VARCHAR" /> 
 	   <!-- <association property="oId" javaType="Organization">  
             <id column="id" property="id" jdbcType="VARCHAR"/>  
             <result column="parentId" property="parentId" jdbcType="VARCHAR"/>  
@@ -21,17 +20,17 @@
 	</resultMap>    
 	<!--查询全部用户-->
     <select id="listUser" resultType="user">
-        SELECT id,name,realName,pwd,jobNumber,createTime,updateTime,oId FROM user WHERE status = 1 
+        SELECT id,name,realName,pwd,jobNumber,createTime,updateTime FROM user WHERE status = 1 
         ORDER BY createTime DESC
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
-        insert into user(id,name,realName,pwd,jobNumber,createTime,oId) 
-        values (#{id},#{name},#{realName},#{pwd},#{jobNumber},#{createTime},#{oId})
+        insert into user(id,name,realName,pwd,jobNumber,createTime) 
+        values (#{id},#{name},#{realName},#{pwd},#{jobNumber},#{createTime})
     </insert>
     <!--根据id查询用户-->  
     <select id="getUserById" parameterType="STRING" resultType="user">
-         SELECT id,name,realName,pwd,jobNumber,createTime,updateTime,oId FROM user WHERE id=#{id}
+         SELECT id,name,realName,pwd,jobNumber,createTime,updateTime FROM user WHERE id=#{id} and status = 1
     </select>
     <!--根据name查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
@@ -49,7 +48,6 @@
 		  <if test="pwd!=null and pwd!=''">pwd=#{pwd},</if>
 		  <if test="jobNumber!=null and jobNumber!=''">jobNumber=#{jobNumber},</if>
 		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
-		  <if test="oId!=null and oId!=''">oId=#{oId},</if>
 		 </trim>
 		 WHERE id=#{id}
     </update>
@@ -83,9 +81,6 @@
         </if>
         <if test="updateTime!=null and updateTime!=''">
             and updateTime = #{updateTime,jdbcType=DATE}
-        </if>
-        <if test="oId!=null and oId!=''">
-            and oId = #{oId,jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>
