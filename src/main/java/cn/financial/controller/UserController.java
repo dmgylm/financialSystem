@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ public class UserController {
             if(flag>0){
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功");
-                request.getSession().setAttribute("username", name);
+                request.getSession().setAttribute("userName", name);
             }else{
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名或密码不匹配");
@@ -61,15 +62,75 @@ public class UserController {
         FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
     }
     /**
-     * 查询所有用户
+     * 退出登录
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/user/quit", method = RequestMethod.POST)
+    public String getUserQuit(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("userName");
+        return "/manage/login";
+    }
+    
+    /**
+     * 修改密码
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/user/passWord", method = RequestMethod.POST)
+    public void getUserPwd(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try{
+            User user = new User();
+            user.setId(request.getParameter("userId"));
+            user.setPwd(request.getParameter("pwd"));
+            Integer userList = userService.updateUser(user);
+            if(userList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "修改成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+    }
+    
+    /**
+     * 查询所有用户/多条件查询用户列表
      * @param request
      * @param response
      */
     @RequestMapping(value = "/user/index", method = RequestMethod.POST)
     public void listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	try {
-            List<User> user = userService.listUser();
+    	    String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
+            String createTime = request.getParameter("createTime");
+            String updateTime = request.getParameter("updateTime");
+            Date createTimeOfDate = null;
+            Date updateTimeOfDate = null;
+            if (createTime != null && !"".equals(createTime)) {
+                createTimeOfDate = dateFormat.parse(createTime);
+            }
+            if (updateTime != null && !"".equals(updateTime)) {
+                updateTimeOfDate = dateFormat.parse(updateTime);
+            }
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", request.getParameter("userId"));
+            map.put("name", name);
+            map.put("realName", realName);
+            map.put("pwd",request.getParameter("pwd"));
+            map.put("jobNumber", request.getParameter("jobNumber"));
+            map.put("createTime", createTimeOfDate);
+            map.put("updateTime", updateTimeOfDate);
+            List<User> user = userService.listUser(map);
             dataMap.put("userList", user);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
@@ -119,7 +180,6 @@ public class UserController {
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
-            String oId = request.getParameter("oId");
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
@@ -167,7 +227,6 @@ public class UserController {
             String userId = request.getParameter("userId");
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             String realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");
-            String oId = request.getParameter("oId");
             User user = new User();
             user.setId(userId);
             user.setName(name);
