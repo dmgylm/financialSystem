@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -133,7 +132,6 @@ public class UserController {
                 user.setPwd(request.getParameter("pwd"));
                 user.setJobNumber(request.getParameter("jobNumber"));
                 user.setCreateTime(new Date());
-                user.setoId(oId);
                 int userList = userService.insertUser(user);
                 if(userList>0){
                     dataMap.put("resultCode", 200);
@@ -177,7 +175,6 @@ public class UserController {
             user.setPwd(request.getParameter("pwd"));
             user.setJobNumber(request.getParameter("jobNumber"));
             user.setUpdateTime(new Date());
-            user.setoId(oId);
             Integer userList = userService.updateUser(user);
             if(userList>0){
                 dataMap.put("resultCode", 200);
