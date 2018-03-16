@@ -75,4 +75,12 @@ public interface OrganizationDAO {
      */
     List<Organization> listTreeByOrgCode(String code);
 
+    /**
+     * 根据parentid查询节点信息
+     * 
+     * @param parentId
+     * @return
+     */
+    List<Organization> listCodeByParentId(String parentId);
+
 }

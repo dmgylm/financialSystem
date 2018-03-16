@@ -17,9 +17,10 @@ public interface OrganizationService {
      * 接口（新增组织结构）
      * 
      * @param organization
+     * @param parentOrgId
      * @return
      */
-    Integer saveOrganization(Organization organization);
+    Integer saveOrganization(Organization organization, String parentOrgId);
 
     /**
      * 接口（查询所有的组织结构）
@@ -61,12 +62,20 @@ public interface OrganizationService {
     Integer deleteOrganizationById(String id);
 
     /**
-     * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）
+     * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）,停用(单条停用)
      * 
      * @param id
      * @return
      */
     Integer deleteOrganizationByStatus(String id);
+
+    /**
+     * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）,停用(级联停用，将此节点下的所有子节点停用)
+     * 
+     * @param id
+     * @return
+     */
+    Integer deleteOrganizationByStatusCascade(String id);
 
     /**
      * 根据id查询该节点下的所有子节点,构建成树
@@ -76,4 +85,20 @@ public interface OrganizationService {
      */
     String listTreeByOrgId(String id);
 
+    /**
+     * 根据parentid查询节点信息
+     * 
+     * @param parentId
+     * @return
+     */
+    List<Organization> listCodeByParentId(String parentId);
+
+    /**
+     * 移动组织机构
+     * 
+     * @param id
+     * @param parentOrgId
+     * @return
+     */
+    Integer moveOrganization(String id, String parentOrgId);
 }

@@ -38,6 +38,9 @@ public class OrganizationController {
     /**
      * 新增组织结构
      * 
+     * @ code是根据父节点找到其下子节点，然后根据子节点的序号，往后排。（比如01子节点有0101和0102，那么需要查到这两个，
+     * 然后根据算法生成第三个 ）
+     * 
      * @param request
      * @param response
      * @return
@@ -46,17 +49,18 @@ public class OrganizationController {
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
+            String uuid = UuidUtil.getUUID();
             String orgName = request.getParameter("orgName");
+            String parentOrgId = request.getParameter("parentOrgId");
             if (orgName != null && !"".equals(orgName)) {
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             }
             Organization organization = new Organization();
-            organization.setId(UuidUtil.getUUID());// 组织结构id
-            organization.setCode(request.getParameter("code"));// 该组织机构节点的序号
-            organization.setParentId(request.getParameter("parentId"));// 父id
+            organization.setId(uuid);// 组织结构id
             organization.setOrgName(orgName);// 组织架构名
             organization.setuId(request.getParameter("uId"));// 提交人id
-            Integer i = organizationService.saveOrganization(organization);
+            // 新增的时候这里保存的是此节点的code
+            Integer i = organizationService.saveOrganization(organization, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "新增成功!");
@@ -207,7 +211,7 @@ public class OrganizationController {
     }
 
     /**
-     * 伪删除 <根据组织结构ID修改状态为0，即已删除>
+     * 伪删除 <根据组织结构ID修改状态为0，即已删除>,停用(单条停用)
      * 
      * @param request
      * @param id
@@ -220,6 +224,35 @@ public class OrganizationController {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
             Integer i = organizationService.deleteOrganizationByStatus(id);
+            if (Integer.valueOf(1).equals(i)) {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "删除成功!");
+            } else {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "删除失败!");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+
+    /**
+     * 伪删除 <根据组织结构ID修改状态为0，即已删除>,停用(级联停用，将此节点下的所有子节点停用)
+     * 
+     * @param request
+     * @param id
+     *            传入的组织结构id（required = true，必须存在）
+     * @return
+     */
+    @RequestMapping(value = "/organization/deletebycascade", method = RequestMethod.POST)
+    public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request,
+            @RequestParam(value = "id", required = true) String id) {
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        try {
+            Integer i = organizationService.deleteOrganizationByStatusCascade(id);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除成功!");
@@ -281,13 +314,50 @@ public class OrganizationController {
         try {
             String jsonTree = organizationService.listTreeByOrgId(id);
             dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "删除成功!");
+            dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", jsonTree);
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "删除失败!");
+            dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
     }
+
+    /**
+     * 移动组织机构
+     * 
+     * @ 将要移动的原组织机构极其下所有子节点都停用（status=0），将 要移动到的节点成为父节点，原来组织上的所有节点按原来的架构都新增到该节点下
+     * 
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/organization/move", method = RequestMethod.POST)
+    public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        dataMap.put("resultCode", 200);
+        dataMap.put("resultDesc", "移动失败");
+        String id = request.getParameter("id");
+        String parentOrgId = request.getParameter("parentOrgId");
+        if (id == null && "".equals(id)) {
+            return dataMap;
+        }
+        if (parentOrgId == null && "".equals(parentOrgId)) {
+            return dataMap;
+        }
+        try {
+            Integer i = organizationService.moveOrganization(id, parentOrgId);
+            if (Integer.valueOf(1).equals(i)) {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "移动成功!");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+
 }
