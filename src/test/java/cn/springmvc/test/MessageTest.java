@@ -1,6 +1,5 @@
 package cn.springmvc.test;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,14 +27,12 @@ public class MessageTest {
      */
     @Test
     public void saveMessage() {
-        String id = UuidUtil.getUUID();
         Message message = new Message();
-        message.setId(id);
+        message.setId(UuidUtil.getUUID());
         message.setStatus(1);
         message.setTheme(1);
-        message.setContent("dasdasd");
-        message.setuId("7963dbc544024729927c41ce8238db40");
-        message.setCreateTime(new Date());
+        message.setContent("2018年维修表格需要填写");
+        message.setuId("1ccb0f2ca6224f389cbbea57b85d4458");
         Integer i = service.saveMessage(message);
         System.out.println(i);
     }
@@ -47,12 +44,15 @@ public class MessageTest {
     public void listMessage() {
         List<Message> list = service.listMessage();
         for (Message message : list) {
-            System.out.println(message.getId() + "---------------------------------------------" + message.getStatus()
-                    + "---------------------------------------------" + message.getTheme()
-                    + "---------------------------------------------" + message.getContent()
-                    + "---------------------------------------------" + message.getCreateTime()
-                    + "---------------------------------------------" + message.getUpdateTime()
-                    + "---------------------------------------------" + message.getuId());
+            System.out.println("id:" + message.getId());
+            System.out.println("status:" + message.getStatus());
+            System.out.println("theme:" + message.getTheme());
+            System.out.println("content:" + message.getContent());
+            System.out.println("createTime:" + message.getCreateTime());
+            System.out.println("updateTime:" + message.getUpdateTime());
+            System.out.println("uid:" + message.getuId());
+            System.out.println("isTag:" + message.getIsTag());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 
@@ -62,16 +62,25 @@ public class MessageTest {
     @Test
     public void listMessageBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "124566cf88564108ac2090263ca31518");
-        //map.put("createTime", new Date());
+        //map.put("id", "aa897350206245f4aeac083865d948c3");
+        //map.put("status", 1);
+        //map.put("theme", 1);
+        map.put("content", "2018年金融表格需要填写");
+        //map.put("createTime", "2018-03-16");
+        //map.put("updateTime", "2018-03-16");
+        map.put("uid", "1ccb0f2ca6224f389cbbea57b85d4458");
+        //map.put("isTag", 0);
         List<Message> list = service.listMessageBy(map);
         for (Message message : list) {
-            System.out.println(message.getId() + "---------------------------------------------" + message.getStatus()
-                    + "---------------------------------------------" + message.getTheme()
-                    + "---------------------------------------------" + message.getContent()
-                    + "---------------------------------------------" + message.getCreateTime()
-                    + "---------------------------------------------" + message.getUpdateTime()
-                    + "---------------------------------------------" + message.getuId());
+            System.out.println("id:" + message.getId());
+            System.out.println("status:" + message.getStatus());
+            System.out.println("theme:" + message.getTheme());
+            System.out.println("content:" + message.getContent());
+            System.out.println("createTime:" + message.getCreateTime());
+            System.out.println("updateTime:" + message.getUpdateTime());
+            System.out.println("uid:" + message.getuId());
+            System.out.println("isTag:" + message.getIsTag());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 
@@ -80,14 +89,17 @@ public class MessageTest {
      */
     @Test
     public void getMessageById() {
-        String id = "bcb5aab96cb84d4fa8dc9bbb99eace9f";
+        String id = "aa897350206245f4aeac083865d948c3";
         Message message = service.getMessageById(id);
-        System.out.println(message.getId() + "---------------------------------------------" + message.getStatus()
-                + "---------------------------------------------" + message.getTheme()
-                + "---------------------------------------------" + message.getContent()
-                + "---------------------------------------------" + message.getCreateTime()
-                + "---------------------------------------------" + message.getUpdateTime()
-                + "---------------------------------------------" + message.getuId());
+        System.out.println("id:" + message.getId());
+        System.out.println("status:" + message.getStatus());
+        System.out.println("theme:" + message.getTheme());
+        System.out.println("content:" + message.getContent());
+        System.out.println("createTime:" + message.getCreateTime());
+        System.out.println("updateTime:" + message.getUpdateTime());
+        System.out.println("uid:" + message.getuId());
+        System.out.println("isTag:" + message.getIsTag());
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     /**
@@ -96,9 +108,8 @@ public class MessageTest {
     @Test
     public void updateMessageById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "02a979f93c3241cfbf8aa6ff18c1a2c8");
+        map.put("id", "aa897350206245f4aeac083865d948c3");
         map.put("status", 4);
-        map.put("updateTime", new Date());
         Integer i = service.updateMessageById(map);
         System.out.println(i);
     }

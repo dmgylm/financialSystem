@@ -64,7 +64,6 @@ public class MessageController {
             message.setTheme(theme);// 消息主题
             message.setContent(content);// 消息内容
             message.setuId(request.getParameter("uId"));// 消息来源
-            message.setCreateTime(new Date());// 创建时间
             Integer i = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -145,6 +144,7 @@ public class MessageController {
             map.put("theme", theme);// 消息主题
             map.put("content", content);// 消息内容
             map.put("uId", request.getParameter("uId"));// 消息来源
+            map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
             map.put("createTime", createTimeOfDate);// 创建时间
             map.put("updateTime", updateTimeOfDate);// 更新时间
             List<Message> list = messageService.listMessageBy(map);
@@ -218,7 +218,7 @@ public class MessageController {
             map.put("theme", theme);// 消息主题
             map.put("content", content);// 消息内容
             map.put("uId", request.getParameter("uId"));// 消息来源
-            map.put("updateTime", new Date());// 更新时间
+            map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
             Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
