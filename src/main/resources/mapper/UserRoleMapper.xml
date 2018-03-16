@@ -25,15 +25,20 @@
 	       <result column="updateTime" property="updateTime" jdbcType="DATE" />
        </collection> -->
 	<!-- </resultMap>     -->
-	<!--查询全部-->
-    <select id="listUserRole" resultType="cn.financial.model.UserRole">
+	<!--查询全部/根据用户名查对应角色-->
+    <select id="listUserRole" parameterType="STRING" resultType="cn.financial.model.UserRole">
         SELECT r.id as rId,u.id as uId,r.roleName as roleName,u.realName as realName,
 		u.name as name,u.jobNumber as jobNumber,m.createTime as createTime
 		FROM role r inner join user_role_mapping m on r.id=m.rId INNER JOIN user u on u.id=m.uId 
-		WHERE r.status=1 and u.status=1 ORDER BY m.createTime DESC
+		WHERE r.status=1 and u.status=1 
+		<if test="name!=null and name!=''">
+            and u.name=#{name}
+         </if>
+		ORDER BY m.createTime DESC
     </select>
     <!--新增-->
     <insert id="insertUserRole" parameterType="cn.financial.model.UserRole">
         insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},#{createTime})
     </insert>
+    
 </mapper>
