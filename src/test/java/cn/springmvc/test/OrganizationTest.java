@@ -1,6 +1,5 @@
 package cn.springmvc.test;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +30,10 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization = new Organization();
         organization.setId(id);
-        organization.setOrgName("任意字符串");
-        organization.setuId("we12wqsas3121312sasq21qw");
-        organization.setParentId("wsdvf2jkil6yytgfgfd2");
-        organization.setCreateTime(new Date());
+        organization.setCode("0101010101");
+        organization.setOrgName("本部");
+        organization.setParentId("01010101");
+        organization.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
         Integer i = service.saveOrganization(organization);
         System.out.println(i);
     }
@@ -46,12 +45,15 @@ public class OrganizationTest {
     public void listOrganization() {
         List<Organization> list = service.listOrganization();
         for (Organization organization : list) {
-            System.out.println(organization.getId() + "---------------------------------------------"
-                    + organization.getOrgName() + "---------------------------------------------"
-                    + organization.getParentId() + "---------------------------------------------"
-                    + organization.getCreateTime() + "---------------------------------------------"
-                    + organization.getUpdateTime() + "---------------------------------------------"
-                    + organization.getuId());
+            System.out.println("id:" + organization.getId());
+            System.out.println("code:" + organization.getCode());
+            System.out.println("orgName:" + organization.getOrgName());
+            System.out.println("parentId:" + organization.getParentId());
+            System.out.println("createTime:" + organization.getCreateTime());
+            System.out.println("updateTime:" + organization.getUpdateTime());
+            System.out.println("uId:" + organization.getuId());
+            System.out.println("his_permission:" + organization.getHis_permission());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 
@@ -61,15 +63,25 @@ public class OrganizationTest {
     @Test
     public void listOrganizationBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "35d883977eea4ddb94c1482349b61461");
+        //map.put("id", "22be27739af342e7b10b54d5af1de6f1");
+        map.put("code", "01");
+        //map.put("orgName", "总裁");
+        //map.put("parentId", "0");
+        //map.put("createTime", "2018-03-16");
+        //map.put("updateTime", "");
+        map.put("uId", "1cb54fff435b4fff8aa7c1fa391f519b");
+        //map.put("his_permission", "");
         List<Organization> list = service.listOrganizationBy(map);
         for (Organization organization : list) {
-            System.out.println(organization.getId() + "---------------------------------------------"
-                    + organization.getOrgName() + "---------------------------------------------"
-                    + organization.getParentId() + "---------------------------------------------"
-                    + organization.getCreateTime() + "---------------------------------------------"
-                    + organization.getUpdateTime() + "---------------------------------------------"
-                    + organization.getuId());
+            System.out.println("id:" + organization.getId());
+            System.out.println("code:" + organization.getCode());
+            System.out.println("orgName:" + organization.getOrgName());
+            System.out.println("parentId:" + organization.getParentId());
+            System.out.println("createTime:" + organization.getCreateTime());
+            System.out.println("updateTime:" + organization.getUpdateTime());
+            System.out.println("uId:" + organization.getuId());
+            System.out.println("his_permission:" + organization.getHis_permission());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 
@@ -78,16 +90,17 @@ public class OrganizationTest {
      */
     @Test
     public void getOrganizationById() {
-        String id = "35d883977eea4ddb94c1482349b61461";
+        String id = "22be27739af342e7b10b54d5af1de6f1";
         Organization organization = service.getOrganizationById(id);
-        System.out
-                .println(organization.getId()
-                        + "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-                        + organization.getOrgName() + "---------------------------------------------"
-                        + organization.getParentId() + "---------------------------------------------"
-                        + organization.getCreateTime() + "---------------------------------------------"
-                        + organization.getUpdateTime() + "---------------------------------------------"
-                        + organization.getuId());
+        System.out.println("id:" + organization.getId());
+        System.out.println("code:" + organization.getCode());
+        System.out.println("orgName:" + organization.getOrgName());
+        System.out.println("parentId:" + organization.getParentId());
+        System.out.println("createTime:" + organization.getCreateTime());
+        System.out.println("updateTime:" + organization.getUpdateTime());
+        System.out.println("uId:" + organization.getuId());
+        System.out.println("his_permission:" + organization.getHis_permission());
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     /**
@@ -96,9 +109,8 @@ public class OrganizationTest {
     @Test
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "35d883977eea4ddb94c1482349b61461");
+        map.put("id", "22be27739af342e7b10b54d5af1de6f1");
         map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
-        map.put("updateTime", new Date());
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -108,7 +120,7 @@ public class OrganizationTest {
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "35d883977eea4ddb94c1482349b61461";
+        String id = "22be27739af342e7b10b54d5af1de6f1";
         Integer i = service.deleteOrganizationByStatus(id);
         System.out.println(i);
     }
@@ -118,7 +130,7 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgId() {
-        String id = "9300f5feb5004f63896748d6b15e9dd9";
+        String id = "22be27739af342e7b10b54d5af1de6f1";
         String string = service.listTreeByOrgId(id);
         System.out.println(string);
     }
