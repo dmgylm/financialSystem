@@ -19,6 +19,9 @@
     </select>
     <!--新增-->
     <insert id="insertResource" parameterType="resource">
+         <selectKey keyProperty="code" resultType="INTEGER">
+            select LAST_INSERT_ID()
+         </selectKey>
         insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},#{createTime})
     </insert>
     <!--根据id查询-->  

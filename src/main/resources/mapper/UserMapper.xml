@@ -18,9 +18,10 @@
 	        <result column="uId" property="uId" jdbcType="VARCHAR" /> 
        </association> -->
 	</resultMap>    
-	<!--查询全部用户-->
-    <select id="listUser" resultType="user">
-        SELECT id,name,realName,pwd,jobNumber,createTime,updateTime FROM user WHERE status = 1 
+	<!--查询全部用户/多条件查询用户列表-->
+    <select id="listUser" parameterType="map" resultType="user">
+        SELECT id,name,realName,pwd,jobNumber,status,createTime,updateTime FROM user WHERE status = 1 
+        <include refid="query_user_where"></include>
         ORDER BY createTime DESC
     </select>
     <!--新增用户-->
@@ -30,7 +31,7 @@
     </insert>
     <!--根据id查询用户-->  
     <select id="getUserById" parameterType="STRING" resultType="user">
-         SELECT id,name,realName,pwd,jobNumber,createTime,updateTime FROM user WHERE id=#{id} and status = 1
+         SELECT id,name,realName,pwd,jobNumber,status,createTime,updateTime FROM user WHERE id=#{id} and status = 1
     </select>
     <!--根据name查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
