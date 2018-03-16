@@ -30,12 +30,11 @@ public class UserTest {
     public void insertTest() {
         User user = new User();
         user.setId(UuidUtil.getUUID());
-        user.setName("呜呜呜呜");
-        user.setRealName("凄凄切切");
+        user.setName("llllll");
+        user.setRealName("llllll");
         user.setPwd("555666");
         user.setJobNumber("743211124420888");
         user.setCreateTime(new Date());
-        user.setoId("555");
         try {
             System.out.println(service.insertUser(user));
         } catch (Exception e) {
@@ -47,12 +46,11 @@ public class UserTest {
     public void updateTest() {
         User user = new User();
         user.setId("edff7517f7ae4c1eba20dc8d817e37ee");
-        user.setName("听听");
+        user.setName("gggggggggggggggg");
         user.setRealName("拖拖拖");
         user.setPwd("555666");
         user.setJobNumber("7432111244208");
         user.setUpdateTime(new Date());
-        user.setoId("555");
         try {
             System.out.println(service.updateUser(user));
         } catch (Exception e) {
@@ -62,7 +60,7 @@ public class UserTest {
     //删除
     @Test
     public void deleteTest() {   
-        System.out.println(service.deleteUser("2"));
+        System.out.println(service.deleteUser("2bea324762f74d968d62b6837349dfe0"));
     }
     //查询全部
     @Test
@@ -74,7 +72,7 @@ public class UserTest {
                 uTime = formatter.format(list.getUpdateTime());
             }
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime +" oId: "+list.getoId()+"\n"); 
+                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime+"\n"); 
         }
         
     }
@@ -93,6 +91,6 @@ public class UserTest {
           uTime = formatter.format(user.getUpdateTime());
         }
         System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
-                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime+" oId: "+user.getoId());
+                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime);
     }
 }
