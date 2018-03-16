@@ -42,7 +42,7 @@ public class RoleResourceTest {
     //查询全部
     @Test
     public void ListRoleResourceTest() {
-        List<RoleResource> roleResource = service.listRoleResource("gggg");
+        List<RoleResource> roleResource = service.listRoleResource("732a2b28ea63417fbeceee1ac907fb92");
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
             " name: "+list.getName()+" ParentId:"+list.getParentId()+" Permssion: "+list.getPermssion()+
