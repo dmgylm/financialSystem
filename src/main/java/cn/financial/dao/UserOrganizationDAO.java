@@ -2,6 +2,7 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 
 import cn.financial.model.UserOrganization;
 
@@ -15,7 +16,8 @@ public interface UserOrganizationDAO {
      * 查询所有
      * @return
      */
-    List<UserOrganization> listUserOrganization();
+    List<UserOrganization> listUserOrganization(@Param("uId") String uId);
+    
     /**
      * 新增
      * @param userOrganization
