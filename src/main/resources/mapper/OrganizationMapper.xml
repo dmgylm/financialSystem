@@ -43,10 +43,11 @@
 		parentId,
 		orgName,
 		createTime,
-		uId
+		uId,
+		his_permission
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的组织结构 -->
@@ -88,7 +89,6 @@
 	<update id="updateOrganizationById" parameterType="map">
 		update organization
 		<trim prefix="set" suffixOverrides=",">
-			updateTime = curdate(),
 			<if test="code!=null and code!=''">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
@@ -107,6 +107,7 @@
 			<if test="his_permission!=null and his_permission!=''">
 				his_permission = #{his_permission,jdbcType=VARCHAR},
 			</if>
+			updateTime = curdate()
 		</trim>
 		where
 		id = #{id,jdbcType=VARCHAR}
@@ -128,7 +129,8 @@
 		update
 		organization
 		set
-		status = 0
+		status = 0,
+		updateTime = curdate()
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
 	</update>
@@ -142,6 +144,19 @@
 		organization
 		where
 		find_in_set(parentId,getChildLst(#{_parameter,jdbcType=VARCHAR}))
+		and
+		status = 1
+	</select>
+	
+	<!-- 根据parentid查询节点信息 -->
+	<select id="listCodeByParentId" parameterType="java.lang.String"
+		resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		from
+		organization
+		where
+		parentId = #{_parameter,jdbcType=VARCHAR}
 		and
 		status = 1
 	</select>
