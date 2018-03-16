@@ -10,7 +10,7 @@ public interface UserOrganizationService {
      * 查询所有
      * @return
      */
-    List<UserOrganization> listUserOrganization();
+    List<UserOrganization> listUserOrganization(String uId);
     /**
      * 新增
      * @param userOrganization
