@@ -31,7 +31,7 @@ public class RoleResourceTest {
         RoleResource roleResource = new RoleResource();
         roleResource.setId(UuidUtil.getUUID());
         roleResource.setsId("3333333");
-        roleResource.setrId("c368fdf292da47c28f8c95e9e6c9fc2c");
+        roleResource.setrId("7136b0ba498f465e975705add4643ba3");
         roleResource.setCreateTime(new Date());
         try {
             System.out.println(service.insertRoleResource(roleResource));
@@ -42,7 +42,7 @@ public class RoleResourceTest {
     //查询全部
     @Test
     public void ListUserRoleTest() {
-        List<RoleResource> roleResource = service.listRoleResource();
+        List<RoleResource> roleResource = service.listRoleResource("gggg");
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
             " name: "+list.getName()+" ParentId:"+list.getParentId()+" Permssion: "+list.getPermssion()+
