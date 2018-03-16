@@ -2,13 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.UserOrganizationDAO">
 	<!--查询全部-->
-    <select id="listUserOrganization" resultType="cn.financial.model.UserOrganization">
+    <select id="listUserOrganization" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
         SELECT o.id as oId,u.id as uId,u.realName as realName,u.name as name,u.jobNumber as jobNumber,
 		o.code as code,o.parentId as parentId,o.orgName as orgName,o.his_permission as his_permission,m.createTime as createTime
 		FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId 
-		WHERE o.status=1 and u.status=1 
+		WHERE o.status=1 and u.status=1
+		<if test="uId!=null and uId!=''">
+            and u.id=#{uId}
+         </if> 
 		ORDER BY m.createTime DESC
     </select>
+    
     <!--新增-->
     <insert id="insertUserOrganization" parameterType="cn.financial.model.UserOrganization">
         insert into user_organization_mapping(id,uId,oId,createTime) values (#{id},#{uId},#{oId},#{createTime})
