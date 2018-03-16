@@ -80,17 +80,24 @@ public class UserController {
     @RequestMapping(value = "/user/passWord", method = RequestMethod.POST)
     public void getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        String oldPwd = request.getParameter("oldPwd");
+        String newPwd = request.getParameter("newPwd");
         try{
-            User user = new User();
-            user.setId(request.getParameter("userId"));
-            user.setPwd(request.getParameter("pwd"));
-            Integer userList = userService.updateUser(user);
-            if(userList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
-            }else{
+            if(oldPwd.equals(newPwd)){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultDesc", "新旧密码一致");
+            }else{
+                User user = new User();
+                user.setId(request.getParameter("userId"));
+                user.setPwd(newPwd);
+                Integer userList = userService.updateUser(user);
+                if(userList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                }
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
