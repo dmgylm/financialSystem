@@ -2,6 +2,8 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.RoleResource;
 
 /**
@@ -11,10 +13,10 @@ import cn.financial.model.RoleResource;
  */
 public interface RoleResourceDAO {
     /**
-     * 查询所有
+     * 查询所有/根据角色查对应的功能权限
      * @return
      */
-    List<RoleResource> listRoleResource();
+    List<RoleResource> listRoleResource(@Param("roleName") String roleName);
     /**
      * 新增
      * @param roleResource
