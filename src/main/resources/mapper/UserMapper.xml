@@ -35,7 +35,7 @@
     </select>
     <!--根据name查询用户--> 
     <select id="getUserByName" parameterType="STRING" resultType="user">
-    	SELECT id,name,realName,pwd,jobNumber,createTime,updateTime,oId FROM user WHERE name=#{name}
+    	SELECT id,name,realName,pwd,jobNumber,status,createTime,updateTime FROM user WHERE name=#{name} and status = 1
     </select>
     <!--根据name查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
