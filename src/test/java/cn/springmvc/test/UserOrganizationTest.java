@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.service.impl.UserOrganizationServiceImpl;
 import cn.financial.util.UuidUtil;
@@ -42,7 +43,7 @@ public class UserOrganizationTest {
     //查询全部
     @Test
     public void ListUserOrganizationTest() {
-        List<UserOrganization> role = service.listUserOrganization();
+        List<UserOrganization> role = service.listUserOrganization("1cb54fff435b4fff8aa7c1fa391f519b");
         for(UserOrganization list:role){
             System.out.println(" oId: "+list.getoId() +" uId: "+list.getuId() +" jobNumber: "+list.getJobNumber()+
                     " userName: "+list.getName()+" realName: "+list.getRealName()+" code: "+list.getCode()+
@@ -51,4 +52,5 @@ public class UserOrganizationTest {
         }
         
     }
+    
 }
