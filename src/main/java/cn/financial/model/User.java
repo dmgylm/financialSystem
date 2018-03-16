@@ -19,24 +19,9 @@ public class User {
     private Date createTime; // 创建时间
 
     private Date updateTime; // 更新时间
-
-    private String oId; // 组织id
     
     public User() {
         super();
-    }
-    
-    public User(String id, String name, String realName, String pwd, String jobNumber, Date createTime,
-            Date updateTime, String oId) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.realName = realName;
-        this.pwd = pwd;
-        this.jobNumber = jobNumber;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.oId = oId;
     }
 
     public String getId() {
@@ -102,13 +87,4 @@ public class User {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-
-    public String getoId() {
-        return oId;
-    }
-
-    public void setoId(String oId) {
-        this.oId = oId;
-    }
-    
 }
