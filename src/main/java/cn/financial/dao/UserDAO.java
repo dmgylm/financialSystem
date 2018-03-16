@@ -31,6 +31,12 @@ public interface UserDAO {
      */
     User getUserById(String userId);
     /**
+     * 根据name查询用户
+     * @param userName
+     * @return
+     */
+    User getUserByName(String userName);
+    /**
      * 新增用户
      * @param name
      * @param pwd
