@@ -28,17 +28,26 @@
       
        <!-- 查询所有的损益数据 -->
        <select id="getAll" resultMap="statement">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from  income_statement where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+        from  income_statement 
+        where status=1
+        ORDER BY createTime DESC
        </select>
        
       <!--  根据id查询损益数据 -->
        <select id="selectStatementById" parameterType="String" resultMap="statement" >
-           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM income_statement WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+           FROM income_statement
+           WHERE id = #{id} and status=1
+           ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询损益数据 -->
        <select id="listStatementBy" parameterType="map" resultType="Statement">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM income_statement WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+         FROM income_statement
+         WHERE status=1 
+         ORDER BY createTime DESC
         <include refid="query_income_statement_where"></include>
        </select>
        

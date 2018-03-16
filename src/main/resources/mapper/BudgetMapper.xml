@@ -28,17 +28,26 @@
       
        <!-- 查询所有的预算数据 -->
        <select id="getAllBudget" resultMap="budget">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from  budget where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+        from  budget
+        where status=1
+        ORDER BY createTime DESC
        </select>
        
       <!--  根据id查询预算数据 -->
        <select id="selectBudgetById" parameterType="String" resultMap="budget" >
-           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM budget WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status
+           FROM budget
+           WHERE id = #{id} and status=1
+           ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询预算数据 -->
        <select id="listBudgetBy" parameterType="map" resultType="Budget">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM budget WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+         FROM budget 
+         WHERE status=1 
+         ORDER BY createTime DESC
         <include refid="query_budget_where"></include>
        </select>
        

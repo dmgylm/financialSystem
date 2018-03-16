@@ -27,17 +27,26 @@
       
        <!-- 查询所有的资金数据 -->
        <select id="getAllCapital" resultMap="capital">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status from capital where status=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status
+         from capital 
+         where status=1
+         ORDER BY createTime DESC
        </select>
        
        <!--根据id查询资金数据 -->
        <select id="selectCapitalById" parameterType="String" resultMap="capital" >
-           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM capital WHERE id = #{id} and status=1
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+           FROM capital 
+           WHERE id = #{id} and status=1
+           ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status FROM capital WHERE status=1 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+         FROM capital
+         WHERE status=1 
+         ORDER BY createTime DESC
         <include refid="query_capital_where"></include>
        </select>
        
