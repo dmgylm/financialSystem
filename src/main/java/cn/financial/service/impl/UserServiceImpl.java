@@ -39,8 +39,8 @@ public class UserServiceImpl implements  UserService{
      * 根据name查询
      */
     @Override
-    public User getUserByName(String userName){
-        return userDao.getUserById(userName);
+    public User getUserByName(String name){
+        return userDao.getUserByName(name);
     }
     /**
      * 新增用户
