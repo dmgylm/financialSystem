@@ -41,8 +41,8 @@ public class UserRoleController {
     public void listUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<UserRole> role = roleService.listUserRole();
-            dataMap.put("userList", role);
+            List<UserRole> userRole = roleService.listUserRole(request.getParameter("name"));
+            dataMap.put("userRoleList", userRole);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
         } catch (Exception e) {
