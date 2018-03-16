@@ -41,7 +41,7 @@ public class UserOrganizationController {
     public void listUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization();
+            List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization("uId");
             dataMap.put("userOrganizationList", userOrganization);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
