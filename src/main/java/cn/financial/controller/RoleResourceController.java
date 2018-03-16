@@ -33,7 +33,7 @@ public class RoleResourceController {
     
     protected Logger logger = LoggerFactory.getLogger(RoleResourceController.class);
     /**
-     * 查询所有/根据角色查对应的功能权限
+     * 查询所有/根据角色id查对应的功能权限
      * @param request
      * @param response
      */
@@ -41,7 +41,7 @@ public class RoleResourceController {
     public void listRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<RoleResource> roleResource = roleService.listRoleResource(request.getParameter("roleName"));
+            List<RoleResource> roleResource = roleService.listRoleResource(request.getParameter("rId"));
             dataMap.put("roleResourceList", roleResource);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
