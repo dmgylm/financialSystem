@@ -7,10 +7,10 @@ import cn.financial.model.UserRole;
 
 public interface UserRoleService {
     /**
-     * 查询所有
+     * 查询所有/根据用户查对应角色
      * @return
      */
-    List<UserRole> listUserRole();
+    List<UserRole> listUserRole(String name);
     /**
      * 新增
      * @param user
