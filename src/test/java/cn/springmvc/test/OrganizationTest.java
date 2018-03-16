@@ -30,11 +30,10 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization = new Organization();
         organization.setId(id);
-        organization.setCode("0101010101");
-        organization.setOrgName("本部");
-        organization.setParentId("01010101");
+        organization.setOrgName("测试222");
+        organization.setParentId("01");
         organization.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
-        Integer i = service.saveOrganization(organization);
+        Integer i = service.saveOrganization(organization,"22be27739af342e7b10b54d5af1de6f1");
         System.out.println(i);
     }
 
@@ -63,14 +62,14 @@ public class OrganizationTest {
     @Test
     public void listOrganizationBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        //map.put("id", "22be27739af342e7b10b54d5af1de6f1");
+        // map.put("id", "22be27739af342e7b10b54d5af1de6f1");
         map.put("code", "01");
-        //map.put("orgName", "总裁");
-        //map.put("parentId", "0");
-        //map.put("createTime", "2018-03-16");
-        //map.put("updateTime", "");
+        // map.put("orgName", "总裁");
+        // map.put("parentId", "0");
+        // map.put("createTime", "2018-03-16");
+        // map.put("updateTime", "");
         map.put("uId", "1cb54fff435b4fff8aa7c1fa391f519b");
-        //map.put("his_permission", "");
+        // map.put("his_permission", "");
         List<Organization> list = service.listOrganizationBy(map);
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
@@ -110,7 +109,7 @@ public class OrganizationTest {
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("id", "22be27739af342e7b10b54d5af1de6f1");
-        map.put("uId", "1ccb0f2ca6224f389cbbea57b85d4458");
+        map.put("parentId", "1");
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -120,8 +119,8 @@ public class OrganizationTest {
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "22be27739af342e7b10b54d5af1de6f1";
-        Integer i = service.deleteOrganizationByStatus(id);
+        String id = "be5c0addafc04dd5b7a7455d95466138";
+        Integer i = service.deleteOrganizationByStatusCascade(id);
         System.out.println(i);
     }
 
@@ -130,9 +129,19 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgId() {
-        String id = "22be27739af342e7b10b54d5af1de6f1";
+        String id = "dc435e2de0fa4fc68b650faeddfaccf9";
         String string = service.listTreeByOrgId(id);
         System.out.println(string);
+    }
+
+    /**
+     * 移动组织机构
+     */
+    @Test
+    public void moveOrganization() {
+        String id = "be5c0addafc04dd5b7a7455d95466138";
+        String parentOrgId = "bdd71ae9881e4e6dbc67b337a050a4c7";
+        service.moveOrganization(id, parentOrgId);
     }
 
 }
