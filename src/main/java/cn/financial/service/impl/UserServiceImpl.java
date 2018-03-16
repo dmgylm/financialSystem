@@ -1,5 +1,7 @@
 package cn.financial.service.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,11 @@ public class UserServiceImpl implements  UserService{
     @Autowired
     private UserDAO userDao;
     /**
-     * 查询全部
+     * 查询全部/多条件查询用户列表
      */
     @Override
-    public java.util.List<User> listUser() {
-        return userDao.listUser();
+    public java.util.List<User> listUser(Map<Object, Object> map) {
+        return userDao.listUser(map);
     }
     /**
      * 根据name查询
