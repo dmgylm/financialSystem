@@ -103,4 +103,16 @@ public class UserTest {
         System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
                 " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime);
     }
+    //根据name查询
+    @Test
+    public void ListByNameTest() {
+    	User user = service.getUserByName("55");
+    	String uTime = "";
+    	if( user.getUpdateTime()!=null && "".equals(user.getUpdateTime()) ) {
+    		uTime = formatter.format(user.getUpdateTime());
+    	}
+    	System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
+                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime);
+    	System.out.println("111");
+    }
 }
