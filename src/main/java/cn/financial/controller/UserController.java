@@ -196,7 +196,7 @@ public class UserController {
                 user.setId(UuidUtil.getUUID());
                 user.setName(name);
                 user.setRealName(realName);
-                user.setPwd(request.getParameter("pwd"));
+                user.setPwd(name);//用户新增默认密码为用户名
                 user.setJobNumber(request.getParameter("jobNumber"));
                 user.setCreateTime(new Date());
                 int userList = userService.insertUser(user);
