@@ -109,16 +109,13 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization org = organizationDAO.getOrganizationById(id);
         // 根据该节点的code查询到其下所有子节点信息的集合
         List<Organization> list = organizationDAO.listTreeByOrgCode(org.getCode());
-        Integer i;
+        Integer i = 0;
         Iterator<Organization> iterator = list.iterator();
         while (iterator.hasNext()) {
             Organization orga = iterator.next();
             i = organizationDAO.deleteOrganizationByStatus(orga.getId());
-            if (!Integer.valueOf(1).equals(i)) {
-                return 0;
-            }
         }
-        return organizationDAO.deleteOrganizationByStatus(id);
+        return i;
     }
 
     /**
@@ -132,7 +129,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         String jsonStr = "";
         for (Organization organization : list) {
             TreeNode<Organization> node = new TreeNode<>();
-            node.setId(organization.getId().toString());
+            node.setId(organization.getCode());
             node.setParentId(organization.getParentId().toString());
             node.setText(organization.getOrgName());
             node.setNodeData(organization);
@@ -165,7 +162,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 根据该节点的code查询到其下所有子节点信息的集合
         List<Organization> list = organizationDAO.listTreeByOrgCode(org.getCode());
         // 这里已经是要移动的节点及其子节点的集合
-        list.add(org);
+        //list.add(org);
 
         /*
          * 接下来是将要移动的几点按原来的机构新增到现在的父节点上,
