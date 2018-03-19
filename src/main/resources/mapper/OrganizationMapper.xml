@@ -143,7 +143,7 @@
 		from
 		organization
 		where
-		find_in_set(parentId,getChildLst(#{_parameter,jdbcType=VARCHAR}))
+		find_in_set(code,getChildLst(#{_parameter,jdbcType=VARCHAR}))
 		and
 		status = 1
 	</select>
