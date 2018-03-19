@@ -139,8 +139,8 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "be5c0addafc04dd5b7a7455d95466138";
-        String parentOrgId = "bdd71ae9881e4e6dbc67b337a050a4c7";
+        String id = "ed883ea05ec344e9a898727a16f01859";
+        String parentOrgId = "ad2d83626a1846b68186775a3c1e8068";
         service.moveOrganization(id, parentOrgId);
     }
 
