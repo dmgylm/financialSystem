@@ -1,5 +1,7 @@
 package cn.financial.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
 import cn.financial.service.CapitalService;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONObject;
 
 /**
  * 资金表Controller
@@ -181,4 +185,38 @@ public class CapitalController {
             }
             return dataMap;
         }
+        
+        /***
+         * 导入
+         */
+        @RequestMapping(value="/capital/excelImport",method=RequestMethod.POST)
+        public void excelImport(MultipartFile uploadFile,HttpServletResponse response) throws IOException{
+            boolean boo = false;
+            if(uploadFile.getSize() != 0){  //判断文件大小是否为0
+              try {
+                 Capital capital=new Capital();
+                 //boo= cameraOrderService.saveBatch(list,listVehicle);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    boo=false;
+                }
+                Map<String, Boolean> map=new HashMap<String, Boolean>();
+                map.put("isSuccess", boo);
+                JSONObject json=JSONObject.fromObject(map);
+                String data=json.toString();
+                System.out.println(data);
+                PrintWriter pw=null;
+                try {
+                    pw = response.getWriter();
+                    pw.write(data);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                } finally{
+                    if(pw != null)
+                    pw.close();
+                }
+            }
+        } 
+        
+        
 }
