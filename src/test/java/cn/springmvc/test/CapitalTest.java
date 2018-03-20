@@ -40,7 +40,6 @@ public class CapitalTest {
         capital.setInfo(info);
         capital.setCreateTime(sdf.parse("2018-02-18"));
         capital.setUpdateTime(sdf.parse("2018-03-20"));
-        capital.setTypeId("22222");
         capital.setuId("6fcafcb22adf4c22a509184c96a828db");
         capital.setYear(2018);
         capital.setMonth(3);
@@ -60,7 +59,7 @@ public class CapitalTest {
             System.out.println("第"+(i+1)+"条数据");
             System.out.println(list.get(i).getId()+"--"+list.get(i).getoId()+"--"
                      +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"+list.get(i).getTypeId()+"--"
+                     +sdf.format(list.get(i).getUpdateTime())+"--"
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
@@ -79,7 +78,7 @@ public class CapitalTest {
         for (int i = 0; i < list.size(); i++) {
             System.out.println("开始"+list.get(i).getId()+"--"+list.get(i).getoId()+"--"
                      +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"+list.get(i).getTypeId()+"--"
+                     +sdf.format(list.get(i).getUpdateTime())+"--"
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
@@ -95,7 +94,7 @@ public class CapitalTest {
         Capital capital = capitalServiceImpl.selectCapitalById(id);
         System.out.println("开始"+capital.getId()+"--"+capital.getoId()+"--"
                 +capital.getInfo()+"--"+sdf.format(capital.getCreateTime())+"--"
-                +sdf.format(capital.getUpdateTime())+"--"+capital.getTypeId()+"--"
+                +sdf.format(capital.getUpdateTime())+"--"
                 +capital.getuId()+"--"+capital.getYear()+"--"
                 +capital.getMonth()+"--"+capital.getStatus());
     }
@@ -115,7 +114,6 @@ public class CapitalTest {
         capital.setInfo(info);
         capital.setCreateTime(sdf.parse("2018-02-18"));
         capital.setUpdateTime(sdf.parse("2018-03-20"));
-        capital.setTypeId("1111111111111");
         capital.setuId("9685618f583c416ab835683d1eba09ea");
         capital.setYear(2018);
         capital.setMonth(1);
