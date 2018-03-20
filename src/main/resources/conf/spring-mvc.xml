@@ -81,6 +81,10 @@
         <!-- <property name="prefix" value="/WEB-INF/view/" />   -->
         <property name="suffix" value=".ftl" />  
         <property name="contentType" value="text/html;charset=UTF-8" />  
+        <property name="exposeRequestAttributes" value="true" />  
+        <property name="exposeSessionAttributes" value="true" />  
+        <property name="exposeSpringMacroHelpers" value="true" />  
+        <property name="requestContextAttribute" value="request" />
     </bean>  
     
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
