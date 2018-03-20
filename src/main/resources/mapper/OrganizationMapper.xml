@@ -136,7 +136,7 @@
 	</update>
 
 	<!-- 根据code查询该节点下的所有子节点 ,构建成树 -->
-	<select id="listTreeByOrgCode" parameterType="java.lang.String"
+	<select id="listTreeByCodeForSon" parameterType="java.lang.String"
 		resultType="Organization">
 		select
 		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
@@ -148,8 +148,21 @@
 		status = 1
 	</select>
 	
+	<!-- 根据code查询该节点下的所有父节点-->
+	<select id="listTreeByCodeForParent" parameterType="java.lang.String"
+		resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		from
+		organization
+		where
+		find_in_set(code,getParentList(#{_parameter,jdbcType=VARCHAR}))
+		and
+		status = 1
+	</select>
+	
 	<!-- 根据parentid查询节点信息 -->
-	<select id="listCodeByParentId" parameterType="java.lang.String"
+	<select id="listByParentId" parameterType="java.lang.String"
 		resultType="Organization">
 		select
 		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
