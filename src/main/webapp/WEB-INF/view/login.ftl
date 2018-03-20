@@ -15,8 +15,8 @@
 <body>
    <h1>登录</h1>
    <form id="loginForm" action="./login" method="post" >
-              账号：   <input name="name" id="name">
-            密码：      <input type="pwd" name="passWord" id="pwd">
+              账号：   <input name="username" id="username">
+            密码：      <input type="password" name="passWord" id="password">
             <input type="button" value="登录" onclick="login()"  style="width:70px;height:30px"/>
   </form>
 </body>
