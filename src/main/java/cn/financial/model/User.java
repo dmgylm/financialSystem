@@ -20,6 +20,7 @@ public class User {
 
     private Date updateTime; // 更新时间
     
+    private String salt;  //随机数生成
     public User() {
         super();
     }
@@ -87,4 +88,15 @@ public class User {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public String getCredentialsSalt() {
+		return name + salt;
+	}
 }
