@@ -98,8 +98,8 @@
 
     <!-- 基于Form表单的身份验证过滤器 -->
     <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
-        <property name="usernameParam" value="name"/>
-        <property name="passwordParam" value="pwd"/>
+        <property name="usernameParam" value="username"/>
+        <property name="passwordParam" value="password"/>
         <!-- <property name="rememberMeParam" value="rememberMe"/>  -->
         <property name="loginUrl" value="/login"/>
     </bean>
@@ -132,8 +132,9 @@
                 /login = authc
                 /logout = logout
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
-                /app/**=anon<!--设置接口为游客可访问-->
                 /** = user,sysUser 
+                <!-- /**=authc 表示所有的url都需要认证才能访问 -->
+                /** = authc
             </value>
         </property>
     </bean>
