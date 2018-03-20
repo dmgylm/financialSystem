@@ -73,7 +73,14 @@ public interface OrganizationDAO {
      * @param code
      * @return
      */
-    List<Organization> listTreeByOrgCode(String code);
+    List<Organization> listTreeByCodeForSon(String code);
+
+    /**
+     * 根据code查询该节点下的所有父节点
+     * 
+     * @param code
+     */
+    List<Organization> listTreeByCodeForParent(String code);
 
     /**
      * 根据parentid查询节点信息
@@ -81,6 +88,6 @@ public interface OrganizationDAO {
      * @param parentId
      * @return
      */
-    List<Organization> listCodeByParentId(String parentId);
+    List<Organization> listByParentId(String parentId);
 
 }

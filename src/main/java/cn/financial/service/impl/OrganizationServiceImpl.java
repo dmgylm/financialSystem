@@ -40,7 +40,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 找到父节点信息
         Organization org = organizationDAO.getOrganizationById(parentOrgId);
         // 找到兄弟节点信息
-        List<Organization> list = organizationDAO.listCodeByParentId(org.getCode());
+        List<Organization> list = organizationDAO.listByParentId(org.getCode());
         // 若存在兄弟节点，则兄弟节点的code找到该节点的code
         if (null != list && list.size() != 0) {
             List<String> codes = new ArrayList<String>();
@@ -108,7 +108,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 根据id查询到该节点信息
         Organization org = organizationDAO.getOrganizationById(id);
         // 根据该节点的code查询到其下所有子节点信息的集合
-        List<Organization> list = organizationDAO.listTreeByOrgCode(org.getCode());
+        List<Organization> list = organizationDAO.listTreeByCodeForSon(org.getCode());
         Integer i = 0;
         Iterator<Organization> iterator = list.iterator();
         while (iterator.hasNext()) {
@@ -119,12 +119,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id查询该节点下的所有子节点,构建成树
+     * 根据id,或者name查询该节点下的所有子节点,构建成树
      */
     @Override
-    public String listTreeByOrgId(String id) {
-        Organization organizationById = organizationDAO.getOrganizationById(id);
-        List<Organization> list = organizationDAO.listTreeByOrgCode(organizationById.getCode());
+    public String listTreeByNameOrIdForSon(Map<Object, Object> map) {
+        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+        List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
         List<TreeNode<Organization>> nodes = new ArrayList<>();
         String jsonStr = "";
         for (Organization organization : list) {
@@ -144,8 +144,18 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据parentid查询节点信息
      */
     @Override
-    public List<Organization> listCodeByParentId(String parentId) {
-        return organizationDAO.listCodeByParentId(parentId);
+    public List<Organization> listByParentId(String parentId) {
+        return organizationDAO.listByParentId(parentId);
+    }
+
+    /**
+     * 根据id,或者name查询该节点的所有父节点
+     */
+    @Override
+    public List<Organization> listTreeByNameOrIdForParent(Map<Object, Object> map) {
+        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+        List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
+        return list;
     }
 
     /**
@@ -160,9 +170,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 根据id查询到该节点信息
         Organization org = organizationDAO.getOrganizationById(id);
         // 根据该节点的code查询到其下所有子节点信息的集合
-        List<Organization> list = organizationDAO.listTreeByOrgCode(org.getCode());
+        List<Organization> list = organizationDAO.listTreeByCodeForSon(org.getCode());
         // 这里已经是要移动的节点及其子节点的集合
-        //list.add(org);
+        // list.add(org);
 
         /*
          * 接下来是将要移动的几点按原来的机构新增到现在的父节点上,
@@ -173,7 +183,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 先判断新的父节点下是否有子节点
         Organization orgParent = organizationDAO.getOrganizationById(parentOrgId);
         // 得到新父节点的子节点
-        List<Organization> listSon = organizationDAO.listCodeByParentId(orgParent.getCode());
+        List<Organization> listSon = organizationDAO.listByParentId(orgParent.getCode());
         if (null != listSon && listSon.size() != 0) {
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {

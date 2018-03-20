@@ -78,12 +78,12 @@ public interface OrganizationService {
     Integer deleteOrganizationByStatusCascade(String id);
 
     /**
-     * 根据id查询该节点下的所有子节点,构建成树
+     * 根据id,或者name查询该节点下的所有子节点,构建成树
      * 
-     * @param id
+     * @param map
      * @return
      */
-    String listTreeByOrgId(String id);
+    String listTreeByNameOrIdForSon(Map<Object, Object> map);
 
     /**
      * 根据parentid查询节点信息
@@ -91,7 +91,14 @@ public interface OrganizationService {
      * @param parentId
      * @return
      */
-    List<Organization> listCodeByParentId(String parentId);
+    List<Organization> listByParentId(String parentId);
+
+    /**
+     * 根据id,或者name查询该节点的所有父节点
+     * 
+     * @param map
+     */
+    List<Organization> listTreeByNameOrIdForParent(Map<Object, Object> map);
 
     /**
      * 移动组织机构
@@ -101,4 +108,5 @@ public interface OrganizationService {
      * @return
      */
     Integer moveOrganization(String id, String parentOrgId);
+
 }
