@@ -36,7 +36,7 @@ public class MainController {
         //String exceptionClassName = (String)request.getAttribute("shiroLoginFailure");
         String error = null;
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("name"),request.getParameter("pwd"));
+        UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));
         try {
             subject.login(token);
         } catch (UnknownAccountException e) {
