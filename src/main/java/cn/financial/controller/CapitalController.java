@@ -1,7 +1,10 @@
 package cn.financial.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
 import cn.financial.service.CapitalService;
+import cn.financial.service.OrganizationService;
+import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 
 /**
  * 资金表Controller
@@ -31,6 +35,9 @@ public class CapitalController {
     
         @Autowired
         private  CapitalService capitalService;
+        
+        @Autowired
+        private OrganizationService organizationService;
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
       
@@ -191,32 +198,94 @@ public class CapitalController {
          */
         @RequestMapping(value="/capital/excelImport",method=RequestMethod.POST)
         public void excelImport(MultipartFile uploadFile,HttpServletResponse response) throws IOException{
-            boolean boo = false;
-            if(uploadFile.getSize() != 0){  //判断文件大小是否为0
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if(uploadFile.getSize()!= 0){  //判断文件大小是否为0
               try {
-                 Capital capital=new Capital();
-                 //boo= cameraOrderService.saveBatch(list,listVehicle);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    boo=false;
+                int row=1;
+                Integer a=0;
+                List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);
+                for (int i = 0; i < list.size(); i++){
+                    Capital capital=new Capital();
+                    String[] str=list.get(i);
+                    capital.setId(UuidUtil.getUUID());
+                    
+                    capital.setAccountName(str[6]);
+                    capital.setAccountBank(str[7]);
+                    capital.setAccount(str[8]);
+                    capital.setAccountNature(str[9]);
+                    capital.setTradeTime(sdf.parse(str[10]));
+                    capital.setStartBlack(Integer.parseInt(str[11]));
+                    capital.setIncom(Integer.parseInt(str[12]));
+                    capital.setPay(Integer.parseInt(str[13]));
+                    capital.setEndBlack(Integer.parseInt(str[14]));
+                    capital.setAbstrac(str[15]);
+                    capital.setClassify(str[16]);
+                    capital.setRemarks(str[17]);
+                    a = capitalService.insertCapital(capital);
+                 }
+                if (a == 1) {
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("result", "导入成功!");
+                } else {
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("result", "导入失败!");
                 }
-                Map<String, Boolean> map=new HashMap<String, Boolean>();
-                map.put("isSuccess", boo);
-                JSONObject json=JSONObject.fromObject(map);
-                String data=json.toString();
-                System.out.println(data);
-                PrintWriter pw=null;
-                try {
-                    pw = response.getWriter();
-                    pw.write(data);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                } finally{
-                    if(pw != null)
-                    pw.close();
-                }
+            } catch (Exception e) {
+                dataMap.put("resultCode", 500);
+                dataMap.put("resultDesc", "服务器异常!");
+                this.logger.error(e.getMessage(), e);
             }
         } 
+      }
+        
+        
+        /***
+         * 导出
+         * @param response
+         * @throws Exception 
+         */
+        @RequestMapping(value="/capital/export")
+        public void export(HttpServletRequest request,HttpServletResponse response,Map<Object, Object> map) throws Exception{
+            OutputStream os = null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                List<Capital> list = capitalService.listCapitalBy(map);
+                List<String[]> strList=new ArrayList<>();
+                String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
+                        "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                strList.add(ss);
+                for (int i = 0; i < list.size(); i++) {
+                    String[] str={};
+                    str[6]=list.get(i).getAccountName();
+                    str[7]=list.get(i).getAccountBank();
+                    str[8]=list.get(i).getAccount();
+                    str[9]=list.get(i).getAccountNature();
+                    str[10]=sdf.format(list.get(i).getTradeTime());
+                    str[11]=list.get(i).getStartBlack().toString();
+                    str[12]=list.get(i).getIncom().toString();
+                    str[13]=list.get(i).getPay().toString();
+                    str[14]=list.get(i).getEndBlack().toString();
+                    str[15]=list.get(i).getAbstrac();
+                    str[16]=list.get(i).getClassify();
+                    str[17]=list.get(i).getRemarks();
+                    strList.add(str);
+                }
+                response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                response.setContentType("application/octet-stream");
+                os = response.getOutputStream();
+                ExcelUtil.export(strList, os);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(os != null)
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
         
         
 }

@@ -88,7 +88,7 @@ public class ExcelUtil {
         try {
             workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("sheet");
-            int i = 2;
+            int i = 0;
             for (Object[] item : list) {
                 Row row = sheet.createRow(i);
                 int j = 0;
