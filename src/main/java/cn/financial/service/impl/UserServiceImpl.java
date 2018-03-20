@@ -1,12 +1,19 @@
 package cn.financial.service.impl;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserDAO;
+import cn.financial.dao.UserRoleDAO;
+import cn.financial.model.RoleResource;
 import cn.financial.model.User;
+import cn.financial.model.UserRole;
 import cn.financial.service.UserService;
 
 
@@ -14,6 +21,10 @@ import cn.financial.service.UserService;
 public class UserServiceImpl implements  UserService{
     @Autowired
     private UserDAO userDao;
+    @Autowired
+    private UserRoleDAO userRoleDao;
+    @Autowired
+    private RoleResourceDAO roleResourceDao;
     /**
      * 查询全部/多条件查询用户列表
      */
@@ -63,5 +74,24 @@ public class UserServiceImpl implements  UserService{
     public Integer deleteUser(String userId){
         return userDao.deleteUser(userId);
     }
+    //角色
+    public Set<String> findRoles(String username) {
+        List<UserRole> userRole = userRoleDao.listUserRole(username);
+        Set<String> roles = new HashSet<String>();
+        for(int i=0;i<userRole.size();i++){
+            roles.add(userRole.get(i).getrId());
+        }
+        return roles;
+    }
+    //权限
+    public Set<String> findPermissions(String username) {
+        List<RoleResource> resource = roleResourceDao.listRoleResource(username);
+        Set<String> permissions = new HashSet<String>();
+        for(int i=0;i<resource.size();i++){
+            permissions.add(resource.get(i).getPermssion());
+        }
+        return permissions;
+    }
+    
 }
  
