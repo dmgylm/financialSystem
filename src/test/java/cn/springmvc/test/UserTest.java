@@ -14,10 +14,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.User;
 import cn.financial.service.impl.UserServiceImpl;
+import cn.financial.util.PasswordHelper;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml"})
 /**
  * 用户测试
  * @author gs
@@ -26,6 +28,9 @@ import cn.financial.util.UuidUtil;
 public class UserTest {
     @Autowired
     private UserServiceImpl service;
+    
+    @Autowired
+    private PasswordHelper PasswordHelper;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
@@ -34,9 +39,11 @@ public class UserTest {
         user.setId(UuidUtil.getUUID());
         user.setName("llllll");
         user.setRealName("llllll");
+        //加密密码 
         user.setPwd("555666");
         user.setJobNumber("743211124420888");
         user.setCreateTime(new Date());
+        PasswordHelper.encryptPassword(user);
         try {
             System.out.println(service.insertUser(user));
         } catch (Exception e) {
