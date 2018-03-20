@@ -10,6 +10,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.financial.model.User;
@@ -62,7 +63,14 @@ public class UserRealm extends AuthorizingRealm {
                 //ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
                 getName()  //realm name
         );*/
-        return new SimpleAuthenticationInfo(user.getName(), user.getPwd(), getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+                user.getName(), //用户名
+                user.getPwd(), //密码
+               ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
+                getName()  //realm name
+        );
+        System.out.println( ByteSource.Util.bytes(user.getCredentialsSalt())+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        return authenticationInfo;
     }
 
     @Override
