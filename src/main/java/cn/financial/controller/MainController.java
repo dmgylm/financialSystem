@@ -41,10 +41,10 @@ public class MainController {
             subject.login(token);
         } catch (UnknownAccountException e) {
             System.out.println( "用户名/密码错误");
-            error = "用户名/密码错误";  
+            error = "用户名/密码错误11111";  
         } catch (IncorrectCredentialsException e) { 
             System.out.println( "用户名/密码错误");
-            error = "用户名/密码错误";  
+            error = "用户名/密码错误222";  
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("登录失败多次，账户锁定10分钟");
             error = "登录失败多次，账户锁定10分钟";  
@@ -53,12 +53,13 @@ public class MainController {
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
             error = "其他错误：" + e.getMessage();  
         } 
-        if (error != null) {// 出错了，返回登录页面  
+        /*if (error != null) {// 出错了，返回登录页面  
             request.setAttribute("error", error);  
             return "/login";  
         } else {// 登录成功  
             return "/index";  
-        } 
+        } */
+        return "/login"; 
     }
     /**
      * index
