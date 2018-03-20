@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" id="WebApp_ID" version="2.4">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance
+         http://www.springmodules.org/schema/cache/springmodules-cache.xsd
+         http://www.springmodules.org/schema/cache/springmodules-ehcache.xsd" 
+         xmlns="http://java.sun.com/xml/ns/j2ee" 
+         xmlns:javaee="http://java.sun.com/xml/ns/javaee" 
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" id="WebApp_ID" version="2.4">
 
     <display-name>Archetype Created Web Application</display-name>
  
@@ -7,7 +13,8 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:conf/spring.xml;
-            classpath:conf/spring-mybatis.xml
+            classpath:conf/spring-mybatis.xml;
+            classpath:conf/spring-*.xml
         </param-value>
     </context-param>
     <!-- 设计路径变量值 -->
@@ -68,6 +75,25 @@
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <!-- shiro 安全过滤器 -->
+    <!-- The filter-name matches name of a 'shiroFilter' bean inside applicationContext.xml -->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <!-- Make sure any request you want accessible to Shiro is filtered. /* catches all -->
+    <!-- requests.  Usually this filter mapping is defined first (before all others) to -->
+    <!-- ensure that Shiro works in subsequent filters in the filter chain:             -->
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <!-- 映射js -->
   <servlet-mapping>
     <servlet-name>default</servlet-name>
