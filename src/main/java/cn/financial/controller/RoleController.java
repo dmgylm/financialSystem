@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,29 +17,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.Role;
+import cn.financial.model.RoleResource;
+import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.service.impl.RoleServiceImpl;
-import cn.financial.util.FileUtil;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 
 /**
- * 角色
+ * 角色(角色资源关联表)
  * @author gs
  * 2018/3/13
  */
 @Controller
+@RequestMapping("/role")
 public class RoleController {
     @Autowired
     RoleServiceImpl roleService;
+    @Autowired
+    RoleResourceServiceImpl roleResourceService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     /**
-     * 查询所有用户
+     * 查询所有角色
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/role/index", method = RequestMethod.POST)
-    public void listRole(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("role:view")
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    public Map<String, Object> listRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<Role> role = roleService.listRole();
@@ -50,17 +55,18 @@ public class RoleController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-    	FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+    	return dataMap;
     }
     /**
      * 根据id查询
      * @param request
      * @param response
-     * @param id
+     * @param roleId
      * @return
      */
-    @RequestMapping(value = "/role/roleById", method = RequestMethod.POST)
-    public void getRoleById(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("role:view")
+    @RequestMapping(value = "/roleById", method = RequestMethod.POST)
+    public Map<String, Object> getRoleById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Role role = roleService.getRoleById(request.getParameter("roleId"));
@@ -72,7 +78,7 @@ public class RoleController {
             dataMap.put("resultDesc", "服务器异常");
             e.printStackTrace();
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 新增角色
@@ -82,8 +88,9 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequestMapping(value = "/role/insert", method = RequestMethod.POST)
-    public void insertRole(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("role:create")
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");
@@ -105,7 +112,7 @@ public class RoleController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 修改角色
@@ -115,8 +122,9 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequestMapping(value = "/role/update", method = RequestMethod.POST)
-    public void updateRole(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("role:update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");
@@ -137,7 +145,7 @@ public class RoleController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 删除角色
@@ -145,8 +153,9 @@ public class RoleController {
      * @param response
      * @param roleId
      */
-    @RequestMapping(value = "/role/delete", method = RequestMethod.POST)
-    public void deleteRole(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("role:update")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Integer flag = roleService.deleteRole(request.getParameter("roleId"));
@@ -162,6 +171,63 @@ public class RoleController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }  
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
+    }
+    
+    /**
+     * 查询所有/根据角色id查对应的功能权限(角色资源关联表)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"role:view","resource:view"})
+    @RequestMapping(value = "/roleResource/index", method = RequestMethod.POST)
+    public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            List<RoleResource> roleResource = roleResourceService.listRoleResource(request.getParameter("rId"));
+            dataMap.put("roleResourceList", roleResource);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功");
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 新增(角色资源关联表)
+     * @param request
+     * @param response
+     * @param sid
+     * @param rid
+     * @param createTime
+     * @param updateTime
+     */
+    @RequiresPermissions({"role:create","resource:create"})
+    @RequestMapping(value = "/RoleResource/insert", method = RequestMethod.POST)
+    public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            RoleResource roleResource = new RoleResource();
+            roleResource.setId(UuidUtil.getUUID());
+            roleResource.setsId(request.getParameter("sId"));
+            roleResource.setrId(request.getParameter("rId"));
+            roleResource.setCreateTime(new Date());
+            int roleResourceList = roleResourceService.insertRoleResource(roleResource);
+            if(roleResourceList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "新增成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "新增失败");
+            }
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
     }
 }

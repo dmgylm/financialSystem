@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.Resource;
 import cn.financial.service.impl.ResourceServiceImpl;
-import cn.financial.util.FileUtil;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 
 /**
  * 资源权限表
@@ -27,18 +26,20 @@ import net.sf.json.JSONObject;
  * 2018/3/15
  */
 @Controller
+@RequestMapping("/resource")
 public class ResourceController {
     @Autowired
     ResourceServiceImpl resourceService;
     
     protected Logger logger = LoggerFactory.getLogger(ResourceController.class);
     /**
-     * 查询所有用户
+     * 查询所有
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/resource/index", method = RequestMethod.POST)
-    public void listResource(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("resource:view")
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<Resource> resource = resourceService.listResource();
@@ -50,17 +51,18 @@ public class ResourceController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-    	FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+    	return dataMap;
     }
     /**
      * 根据id查询
      * @param request
      * @param response
-     * @param id
+     * @param resourceId
      * @return
      */
-    @RequestMapping(value = "/resource/resourceById", method = RequestMethod.POST)
-    public void getResourceById(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("resource:view")
+    @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
+    public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Resource resource = resourceService.getResourceById(request.getParameter("resourceId"));
@@ -72,15 +74,16 @@ public class ResourceController {
             dataMap.put("resultDesc", "服务器异常");
             e.printStackTrace();
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
-     * 新增角色
+     * 新增
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/resource/insert", method = RequestMethod.POST)
-    public void insertResource(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("resource:create")
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
@@ -105,15 +108,16 @@ public class ResourceController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
-     * 修改角色
+     * 修改
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/resource/update", method = RequestMethod.POST)
-    public void updateResource(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("resource:update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
@@ -137,16 +141,17 @@ public class ResourceController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
-     * 删除角色
+     * 删除
      * @param request
      * @param response
-     * @param roleId
+     * @param resourceId
      */
-    @RequestMapping(value = "/resource/delete", method = RequestMethod.POST)
-    public void deleteResource(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("resource:update")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Integer flag = resourceService.deleteResource(request.getParameter("resourceId"));
@@ -162,6 +167,6 @@ public class ResourceController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }  
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
 }

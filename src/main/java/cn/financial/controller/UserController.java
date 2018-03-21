@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,68 +18,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
+import cn.financial.model.UserRole;
+import cn.financial.service.impl.UserOrganizationServiceImpl;
+import cn.financial.service.impl.UserRoleServiceImpl;
 import cn.financial.service.impl.UserServiceImpl;
-import cn.financial.util.FileUtil;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 
 /**
- * 用户
+ * 用户(用户角色关联表)(用户组织结构关联表)
  * @author gs
  * 2018/3/7
  */
 @Controller
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     UserServiceImpl userService;
+    @Autowired
+    UserOrganizationServiceImpl userOrganizationService;
+    @Autowired
+    UserRoleServiceImpl userRoleService;
     
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
-    /**
-     * 登录
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
-    public void getUserName(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        try {
-            String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
-            String pwd = request.getParameter("pwd");
-            Integer flag = userService.countUserName(name, pwd);
-            if(flag>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功");
-                request.getSession().setAttribute("userName", name);
-            }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "用户名或密码不匹配");
-            }
-        } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
-            this.logger.error(e.getMessage(), e);
-        }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
-    }
-    /**
-     * 退出登录
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/user/quit", method = RequestMethod.POST)
-    public String getUserQuit(HttpServletRequest request,HttpServletResponse response){
-        request.getSession().removeAttribute("userName");
-        return "/manage/login";
-    }
     
     /**
      * 修改密码
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/user/passWord", method = RequestMethod.POST)
-    public void getUserPwd(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:update")
+    @RequestMapping(value = "/passWord", method = RequestMethod.POST)
+    public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String oldPwd = request.getParameter("oldPwd");
         String newPwd = request.getParameter("newPwd");
@@ -104,7 +75,7 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     
     /**
@@ -112,8 +83,9 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/user/index", method = RequestMethod.POST)
-    public void listUser(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:view")
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	try {
@@ -146,7 +118,7 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-    	FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+    	return dataMap;
     }
     /**
      * 根据id查询
@@ -155,8 +127,9 @@ public class UserController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/user/userById", method = RequestMethod.POST)
-    public void getUserById(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:view")
+    @RequestMapping(value = "/userById", method = RequestMethod.POST)
+    public Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             User user = userService.getUserById(request.getParameter("userId"));
@@ -168,7 +141,7 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             e.printStackTrace();
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 新增用户
@@ -176,13 +149,13 @@ public class UserController {
      * @param response
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
      */
-    @RequestMapping(value = "/user/insert", method = RequestMethod.POST)
-    public void insertUser(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:create")
+    @RequestMapping(value = "/insert")
+    public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
@@ -214,7 +187,7 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 修改用户
@@ -222,13 +195,13 @@ public class UserController {
      * @param response
      * @param name
      * @param pwd
-     * @param privilege
      * @param createTime
      * @param updateTime
      * @param oId
      */
-    @RequestMapping(value = "/user/update", method = RequestMethod.POST)
-    public void updateUser(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String userId = request.getParameter("userId");
@@ -254,7 +227,7 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
     }
     /**
      * 删除用户
@@ -262,8 +235,9 @@ public class UserController {
      * @param response
      * @param userId
      */
-    @RequestMapping(value = "/user/delete", method = RequestMethod.POST)
-    public void deleteUser(HttpServletRequest request,HttpServletResponse response){
+    @RequiresPermissions("user:update")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Integer flag = userService.deleteUser(request.getParameter("userId"));
@@ -279,6 +253,115 @@ public class UserController {
             dataMap.put("resultDesc", "服务器异常");
             this.logger.error(e.getMessage(), e);
         }  
-        FileUtil.write4ajax(JSONObject.fromObject(dataMap).toString(), response);
+        return dataMap;
+    }
+    
+    /**
+     * 查询所有(用户组织结构关联表)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"user:view","organization:view"})
+    @RequestMapping(value = "/userOrganization/index", method = RequestMethod.POST)
+    public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization("uId");
+            dataMap.put("userOrganizationList", userOrganization);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功");
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 新增(用户组织结构关联表)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"user:create","organization:create"})
+    @RequestMapping(value = "/userOrganization/insert", method = RequestMethod.POST)
+    public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            UserOrganization userOrganization = new UserOrganization();
+            userOrganization.setId(UuidUtil.getUUID());
+            userOrganization.setoId(request.getParameter("oId"));
+            userOrganization.setuId(request.getParameter("uId"));
+            userOrganization.setCreateTime(new Date());
+            int userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
+            if(userOrganizationList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "新增成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "新增失败");
+            }
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 查询所有(用户角色关联表)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"user:view","role:view"})
+    @RequestMapping(value = "/userRole/index", method = RequestMethod.POST)
+    public Map<String, Object> listUserRole(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            List<UserRole> userRole = userRoleService.listUserRole(request.getParameter("name"));
+            dataMap.put("userRoleList", userRole);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功");
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 新增(用户角色关联表)
+     * @param request
+     * @param response
+     * @param uid
+     * @param rid
+     * @param createTime
+     * @param updateTime
+     */
+    @RequiresPermissions({"user:create","role:create"})
+    @RequestMapping(value = "/userRole/insert", method = RequestMethod.POST)
+    public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            UserRole userRole = new UserRole();
+            userRole.setId(UuidUtil.getUUID());
+            userRole.setuId(request.getParameter("uId"));
+            userRole.setrId(request.getParameter("rId"));
+            userRole.setCreateTime(new Date());
+            int userRoleList = userRoleService.insertUserRole(userRole);
+            if(userRoleList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "新增成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "新增失败");
+            }
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
     }
 }
