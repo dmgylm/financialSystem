@@ -1,5 +1,7 @@
 package cn.financial.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,10 +12,18 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import cn.financial.model.RoleResource;
+import cn.financial.model.User;
+import cn.financial.model.UserRole;
+import cn.financial.service.impl.RoleResourceServiceImpl;
+import cn.financial.service.impl.UserRoleServiceImpl;
+import cn.financial.util.CurrentUser;
 
 
 
@@ -25,6 +35,11 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class MainController {
+    
+    @Autowired
+    private UserRoleServiceImpl userRoleService;
+    @Autowired
+    private RoleResourceServiceImpl roleResourceService;
     /**
      * login
      * @param request
@@ -58,19 +73,29 @@ public class MainController {
             return "/login";  
         } else {// 登录成功  
             return "/index";  
-        } */
+        }*/
         return "/login"; 
     }
     /**
-     * index
+     * index(根据角色显示对应的功能权限)
      * @param request
      * @param respons
      * @return
      */
 	@RequestMapping(value="/index")
-    public ModelAndView index(HttpServletRequest request,HttpServletResponse respons){
-    	ModelAndView andView=new ModelAndView();
-    	andView.setViewName("index");
-    	return andView;
+    public String index(HttpServletRequest request,HttpServletResponse respons,Model model){
+	    User user = (User) request.getAttribute("user");
+	    String userName = user.getName();
+	    if(userName!=null && !"".equals(userName)){
+	        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
+	        if(userRole.size()>0){
+	            List<RoleResource> roleResource = null;
+	            for(UserRole list:userRole){
+	                roleResource = roleResourceService.listRoleResource(list.getrId());//根据角色id查询对应功能权限信息
+	            }  
+	            model.addAttribute("roleResource",roleResource);
+	        }
+	    }
+    	return "index";
     }
 }
