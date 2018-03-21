@@ -15,6 +15,7 @@ import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.UserService;
+import cn.financial.util.PasswordHelper;
 
 
 @Service("UserServiceImpl")
@@ -25,6 +26,9 @@ public class UserServiceImpl implements  UserService{
     private UserRoleDAO userRoleDao;
     @Autowired
     private RoleResourceDAO roleResourceDao;
+    @Autowired
+    private PasswordHelper passwordHelper;
+    
     /**
      * 查询全部/多条件查询用户列表
      */
@@ -58,6 +62,8 @@ public class UserServiceImpl implements  UserService{
      */
     @Override
     public Integer insertUser(User user) {
+        //加密密码
+        passwordHelper.encryptPassword(user);
         return userDao.insertUser(user);
     }
     /**
@@ -65,6 +71,8 @@ public class UserServiceImpl implements  UserService{
      */
     @Override
     public Integer updateUser(User user) {
+        //加密密码
+        passwordHelper.encryptPassword(user);
         return userDao.updateUser(user);
     }
     /**
