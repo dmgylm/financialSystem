@@ -109,4 +109,12 @@ public interface OrganizationService {
      */
     Integer moveOrganization(String id, String parentOrgId);
 
+    /**
+     * 根据id或者name判断是否该节点存在子节点
+     * 
+     * @param id
+     * @return
+     */
+    Boolean hasOrganizationSon(Map<Object, Object> map);
+
 }

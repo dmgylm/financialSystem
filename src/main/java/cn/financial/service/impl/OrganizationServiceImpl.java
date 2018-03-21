@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -228,6 +229,21 @@ public class OrganizationServiceImpl implements OrganizationService {
             }
         }
         return Integer.valueOf(1);
+    }
+
+    /**
+     * 根据id或者name判断是否该节点存在子节点
+     */
+    @Override
+    public Boolean hasOrganizationSon(Map<Object, Object> map) {
+        Boolean flag = false;
+        // 查询到当前节点
+        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+        List<Organization> list = organizationDAO.listByParentId(organizationByIds.get(0).getCode());
+        if (!CollectionUtils.isEmpty(list)) {
+            flag = true;
+        }
+        return flag;
     }
 
 }
