@@ -38,11 +38,11 @@ public class UserTest {
         User user = new User();
         user.setId(UuidUtil.getUUID());
         user.setName("llllll");
-        user.setRealName("llllll");
-        //加密密码 
+        user.setRealName("llllll");      
         user.setPwd("555666");
         user.setJobNumber("743211124420888");
         user.setCreateTime(new Date());
+        //加密密码 
         PasswordHelper.encryptPassword(user);
         try {
             System.out.println(service.insertUser(user));
@@ -60,6 +60,8 @@ public class UserTest {
         user.setPwd("555666");
         //user.setJobNumber("7432111244208");
         //user.setUpdateTime(new Date());
+        //加密密码
+        PasswordHelper.encryptPassword(user);
         try {
             System.out.println(service.updateUser(user));
         } catch (Exception e) {

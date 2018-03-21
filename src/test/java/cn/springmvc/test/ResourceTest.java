@@ -15,7 +15,8 @@ import cn.financial.service.impl.ResourceServiceImpl;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml"})
 /**
  * 资源权限表测试
  * @author gs
@@ -31,7 +32,7 @@ public class ResourceTest {
         Resource resource = new Resource();
         resource.setId(UuidUtil.getUUID());
         resource.setName("录入中心");
-        resource.setUrl("/urlsss");
+        resource.setUrl("");
         resource.setParentId("44444444");
         resource.setPermssion("333");
         resource.setCreateTime(new Date());
@@ -77,10 +78,11 @@ public class ResourceTest {
         }
         
     }
-    //根据id查询
+    //根据id/name查询
     @Test
     public void ListByIdTest() {
-        Resource resource = service.getResourceById("7d47d7e96d304313834b0c0d4953abe9");
+        //7d47d7e96d304313834b0c0d4953abe9  资源
+        Resource resource = service.getResourceById("35a51fa5b6ed49ad920b30055ea9f4c6","");
         String uTime = "";
         if(resource.getUpdateTime()!=null && !"".equals(resource.getUpdateTime())){
             uTime = formatter.format(resource.getUpdateTime());

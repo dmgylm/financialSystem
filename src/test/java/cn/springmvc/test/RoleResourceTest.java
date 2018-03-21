@@ -15,7 +15,8 @@ import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml"})
 /**
  * 角色资源权限关联表测试
  * @author gs
@@ -39,10 +40,10 @@ public class RoleResourceTest {
             System.out.println(e.getMessage());
         }
     }
-    //查询全部
+    //查询全部or根据角色id查询对应资源权限
     @Test
     public void ListRoleResourceTest() {
-        List<RoleResource> roleResource = service.listRoleResource("732a2b28ea63417fbeceee1ac907fb92");
+        List<RoleResource> roleResource = service.listRoleResource("7136b0ba498f465e975705add4643ba3");
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
             " name: "+list.getName()+" ParentId:"+list.getParentId()+" Permssion: "+list.getPermssion()+
