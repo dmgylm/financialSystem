@@ -1,12 +1,13 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.Budget;
-import cn.financial.model.Statement;
 import cn.financial.service.BudgetService;
 import cn.financial.util.UuidUtil;
 
@@ -24,6 +24,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
+@RequestMapping("/tering")
 public class BudgetController {
  
     
@@ -38,6 +39,7 @@ public class BudgetController {
          * @param request
          * @param response
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/budget/list", method = RequestMethod.POST)
         public Map<String, Object> getAllbudget(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -62,6 +64,7 @@ public class BudgetController {
          *            
          * @return
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/budget/listBy", method = RequestMethod.POST)
         public Map<String, Object> listbudgetBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -86,6 +89,7 @@ public class BudgetController {
          *           
          * @return
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/budget/listById", method = RequestMethod.POST)
         public Map<String, Object> selectbudgetById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -108,6 +112,7 @@ public class BudgetController {
          * @param response
          * @return
          */
+        @RequiresPermissions("tering:create")
         @RequestMapping(value="/budget/insert", method = RequestMethod.POST)
         public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response,Budget budget){
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -136,6 +141,7 @@ public class BudgetController {
          * @param request
          * @return
          */
+        @RequiresPermissions("tering:update")
         @RequestMapping(value="/budget/update", method = RequestMethod.POST)
         public Map<String, Object> updatebudget(HttpServletRequest request,Budget budget) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -163,6 +169,7 @@ public class BudgetController {
          * @param request
          * @return
          */
+        @RequiresPermissions("tering:update")
         @RequestMapping(value="/budget/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();

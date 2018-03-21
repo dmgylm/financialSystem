@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
+@RequestMapping("/tering")
 public class StatementController {
  
     
@@ -36,6 +39,7 @@ public class StatementController {
          * @param request
          * @param response
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/statement/list", method = RequestMethod.POST)
         public Map<String, Object> getAllStatement(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -60,6 +64,7 @@ public class StatementController {
          *            
          * @return
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/statement/listBy", method = RequestMethod.POST)
         public Map<String, Object> listStatementBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -84,6 +89,7 @@ public class StatementController {
          *           
          * @return
          */
+        @RequiresPermissions("tering:view")
         @RequestMapping(value="/statement/listById", method = RequestMethod.POST)
         public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -106,6 +112,7 @@ public class StatementController {
          * @param response
          * @return
          */
+        @RequiresPermissions("tering:create")
         @RequestMapping(value="/statement/insert", method = RequestMethod.POST)
         public Map<String, Object> insertStatement(HttpServletRequest request,Statement statement){
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -134,6 +141,7 @@ public class StatementController {
          * @param request
          * @return
          */
+        @RequiresPermissions("tering:update")
         @RequestMapping(value="/statement/update", method = RequestMethod.POST)
         public Map<String, Object> updateStatement(HttpServletRequest request,Statement statement) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -161,6 +169,7 @@ public class StatementController {
          * @param request
          * @return
          */
+        @RequiresPermissions("tering:update")
         @RequestMapping(value="/statement/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
