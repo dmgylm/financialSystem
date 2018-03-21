@@ -10,5 +10,11 @@
 </head>
 <body>
 	<div>登陆成功</div>
+	<div>欢迎[<@shiro.principal/>]</div>
+	<div>
+	   <#list roleResource as roleResources>
+	       <p>name:${roleResources.name}</p>
+	   </#list>
+    </div>
 </body>
 </html>
