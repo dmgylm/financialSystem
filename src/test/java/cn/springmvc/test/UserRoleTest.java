@@ -15,7 +15,8 @@ import cn.financial.service.impl.UserRoleServiceImpl;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml"})
 /**
  * 用户角色关联表测试
  * @author gs
@@ -42,7 +43,7 @@ public class UserRoleTest {
     //查询全部
     @Test
     public void ListUserRoleTest() {
-        List<UserRole> role = service.listUserRole("雯雯");
+        List<UserRole> role = service.listUserRole("rr");
         for(UserRole list:role){
             System.out.println(" rId: "+list.getrId() +" uId: "+list.getuId() +" roleName: "+list.getRoleName()+
             " jobNumber: "+list.getJobNumber()+" userName:"+list.getName()+" realName: "+list.getRealName()+
