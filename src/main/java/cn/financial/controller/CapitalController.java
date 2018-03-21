@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +32,13 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
+@RequestMapping("/capital")
 public class CapitalController {
  
     
         @Autowired
         private  CapitalService capitalService;
-        
-        @Autowired
-        private OrganizationService organizationService;
+
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
       
@@ -47,7 +48,8 @@ public class CapitalController {
          * @param request
          * @param response
          */
-        @RequestMapping(value="/capital/list", method = RequestMethod.POST)
+        @RequiresPermissions("capital:view")
+        @RequestMapping(value="/list", method = RequestMethod.POST)
         public Map<String, Object> getAllCapital(HttpServletRequest request, HttpServletResponse response) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -71,7 +73,8 @@ public class CapitalController {
          *            
          * @return
          */
-        @RequestMapping(value="/capital/listBy", method = RequestMethod.POST)
+        @RequiresPermissions("capital:view")
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         public Map<String, Object> listCapitalBy(HttpServletRequest request, Map<Object, Object> map) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -95,7 +98,8 @@ public class CapitalController {
          *           
          * @return
          */
-        @RequestMapping(value="/capital/listById", method = RequestMethod.POST)
+        @RequiresPermissions("resource:view")
+        @RequestMapping(value="/listById", method = RequestMethod.POST)
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -117,7 +121,8 @@ public class CapitalController {
          * @param response
          * @return
          */
-        @RequestMapping(value="/capital/insert", method = RequestMethod.POST)
+        @RequiresPermissions("capital:create")
+        @RequestMapping(value="/insert", method = RequestMethod.POST)
         public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response, Capital capital){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
@@ -145,7 +150,8 @@ public class CapitalController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/capital/update", method = RequestMethod.POST)
+        @RequiresPermissions("capital:update")
+        @RequestMapping(value="/update", method = RequestMethod.POST)
         public Map<String, Object> updateCapital(HttpServletRequest request,Capital capital) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -172,7 +178,8 @@ public class CapitalController {
          * @param request
          * @return
          */
-        @RequestMapping(value="/capital/delete", method = RequestMethod.POST)
+        @RequiresPermissions("capital:update")
+        @RequestMapping(value="/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
@@ -196,7 +203,7 @@ public class CapitalController {
         /***
          * 导入
          */
-        @RequestMapping(value="/capital/excelImport",method=RequestMethod.POST)
+        @RequestMapping(value="/excelImport",method=RequestMethod.POST)
         public void excelImport(MultipartFile uploadFile,HttpServletResponse response) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -245,7 +252,7 @@ public class CapitalController {
          * @param response
          * @throws Exception 
          */
-        @RequestMapping(value="/capital/export")
+        @RequestMapping(value="/export")
         public void export(HttpServletRequest request,HttpServletResponse response,Map<Object, Object> map) throws Exception{
             OutputStream os = null;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

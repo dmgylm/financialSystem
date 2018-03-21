@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import cn.financial.util.UuidUtil;
  * @author zlf 2018/03/13
  *
  */
+@RequestMapping("/message")
 public class MessageController {
 
     @Autowired
@@ -40,7 +42,8 @@ public class MessageController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/message/save", method = RequestMethod.POST)
+    @RequiresPermissions("message:create")
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -86,7 +89,8 @@ public class MessageController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/message/list", method = RequestMethod.POST)
+    @RequiresPermissions("capital:view")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -109,7 +113,8 @@ public class MessageController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/message/listBy", method = RequestMethod.POST)
+    @RequiresPermissions("capital:view")
+    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String statusStr = request.getParameter("status");
@@ -167,7 +172,8 @@ public class MessageController {
      *            要查询消息表的ID（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/message/getbyid", method = RequestMethod.POST)
+    @RequiresPermissions("message:view")
+    @RequestMapping(value = "/getbyid", method = RequestMethod.POST)
     public Map<String, Object> getMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -193,7 +199,8 @@ public class MessageController {
      *            消息id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/message/updatebyid", method = RequestMethod.POST)
+    @RequiresPermissions("message:update")
+    @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -243,7 +250,8 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/message/deletebyid", method = RequestMethod.POST)
+    @RequiresPermissions("message:update")
+    @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();

@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
+@RequestMapping("/organization")
 public class OrganizationController {
 
     @Autowired
@@ -45,7 +47,8 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/save", method = RequestMethod.POST)
+    @RequiresPermissions("organization:create")
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -82,7 +85,8 @@ public class OrganizationController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/organization/list", method = RequestMethod.POST)
+    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     public Map<String, Object> listOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -105,7 +109,8 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/listBy", method = RequestMethod.POST)
+    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -152,7 +157,8 @@ public class OrganizationController {
      *            要查询组织结构的ID（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/getbyid", method = RequestMethod.POST)
+    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/getbyid", method = RequestMethod.POST)
     public Map<String, Object> getOrganizationById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -178,7 +184,8 @@ public class OrganizationController {
      *            组织结构id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/updatebyid", method = RequestMethod.POST)
+    @RequiresPermissions("organization:update")
+    @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
     public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -218,7 +225,8 @@ public class OrganizationController {
      *            传入的组织结构id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/deletebystatus", method = RequestMethod.POST)
+    @RequiresPermissions("organization:update")
+    @RequestMapping(value = "/deletebystatus", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -247,7 +255,8 @@ public class OrganizationController {
      *            传入的组织结构id（required = true，必须存在）
      * @return
      */
-    @RequestMapping(value = "/organization/deletebycascade", method = RequestMethod.POST)
+    @RequiresPermissions("organization:update")
+    @RequestMapping(value = "/deletebycascade", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -276,8 +285,9 @@ public class OrganizationController {
      *            传入的组织结构id（required = true，必须存在）
      * @return
      */
+    @RequiresPermissions("organization:update")
     @Deprecated
-    @RequestMapping(value = "/organization/deletebyid", method = RequestMethod.POST)
+    @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -305,7 +315,8 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/getsubnode", method = RequestMethod.POST)
+    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", request.getParameter("id"));// 组织id
@@ -331,7 +342,8 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/getparnode", method = RequestMethod.POST)
+    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/getparnode", method = RequestMethod.POST)
     public Map<Object, Object> getParnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", request.getParameter("id"));// 组织id
@@ -359,7 +371,8 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/organization/move", method = RequestMethod.POST)
+    @RequiresPermissions({"organization:update","organization:create"})
+    @RequestMapping(value = "/move", method = RequestMethod.POST)
     public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         dataMap.put("resultCode", 200);
