@@ -31,8 +31,8 @@ public class RoleResourceTest {
     public void insertTest() {
         RoleResource roleResource = new RoleResource();
         roleResource.setId(UuidUtil.getUUID());
-        roleResource.setsId("ee73bda7f8784285953c94bb2c4f8b2a");
-        roleResource.setrId("7136b0ba498f465e975705add4643ba3");
+        roleResource.setsId("");
+        roleResource.setrId("");
         roleResource.setCreateTime(new Date());
         try {
             System.out.println(service.insertRoleResource(roleResource));
@@ -43,7 +43,7 @@ public class RoleResourceTest {
     //查询全部or根据角色id查询对应资源权限
     @Test
     public void ListRoleResourceTest() {
-        List<RoleResource> roleResource = service.listRoleResource("7136b0ba498f465e975705add4643ba3");
+        List<RoleResource> roleResource = service.listRoleResource("c368fdf292da47c28f8c95e9e6c9fc2c");
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
             " name: "+list.getName()+" ParentId:"+list.getParentId()+" Permssion: "+list.getPermssion()+
