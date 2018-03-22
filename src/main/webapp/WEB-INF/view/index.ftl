@@ -17,9 +17,9 @@
 	   <#list roleResource as roleResources>
 	       <#if (roleResources.parentId == "1") >
 	           <#if (roleResources.name == "系统设置") >
-	               <p onclick="roleClick()">name:${roleResources.name}</p>
+	               <p onclick="roleClick()">${roleResources.name}</p>
 	           <#else>
-	               <p>name:${roleResources.name}</p>
+	               <p>${roleResources.name}</p>
                </#if>
 	       </#if>
 	       
@@ -27,8 +27,8 @@
     </div>
     <div id="tabs" style="display:none">
        <#list roleResource as roles>
-           <#if (roles.parentId == "1/33") >
-               <p>name:${roles.name}</p>
+           <#if (roles.parentId == "1/20") >
+               <p>${roles.name}</p>
            </#if>
        </#list>
     </div>
