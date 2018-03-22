@@ -61,13 +61,6 @@ public class MessageServiceImpl implements MessageService {
     public Integer updateMessageById(Map<Object, Object> map) {
         return messageDao.updateMessageById(map);
     }
-    /**
-     * 根据IsTag更新消息
-     */
-    @Override
-    public Integer updateMessageByIsTag(Map<Object, Object> map) {
-    	return messageDao.updateMessageByIsTag(map);
-    }
 
     /**
      * 根据Id删除消息
