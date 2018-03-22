@@ -225,7 +225,7 @@ public class OrganizationController {
      *            传入的组织结构id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("organization:update")
+    @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebystatus", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -255,7 +255,7 @@ public class OrganizationController {
      *            传入的组织结构id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("organization:update")
+    @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebycascade", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -406,6 +406,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @RequiresPermissions("organization:view")
     @RequestMapping(value = "/hasSon", method = RequestMethod.POST)
     public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> map = new HashMap<>();
