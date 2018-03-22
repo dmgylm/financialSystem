@@ -37,7 +37,7 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("resource:view")
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -60,12 +60,12 @@ public class ResourceController {
      * @param resourceId
      * @return
      */
-    @RequiresPermissions("resource:view")
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            Resource resource = resourceService.getResourceById(request.getParameter("resourceId"));
+            Resource resource = resourceService.getResourceById(request.getParameter("resourceId"),"");
             dataMap.put("resourceById", resource);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
@@ -81,19 +81,25 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("resource:create")
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        try {
+        try { 
             String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
+            String code = request.getParameter("code");//父id
+            Resource parent = resourceService.getResourceById("",code);//根据code查询对应功能权限
             Resource resource = new Resource();
             resource.setId(UuidUtil.getUUID());
             resource.setName(name);
-            resource.setUrl(request.getParameter("url"));
-            resource.setParentId(request.getParameter("parentId"));
-            resource.setPermssion(request.getParameter("permssion"));
             resource.setCreateTime(new Date());
+            resource.setUrl(request.getParameter("url"));
+            resource.setPermssion(request.getParameter("permssion"));
+            if(parent != null && !"".equals(parent)){  
+                resource.setParentId(parent.getParentId());
+            }else{//没数据返回代表不是子节点直接把父节点赋值给parentId
+                resource.setParentId("1"); 
+            }
             int resourceList = resourceService.insertResource(resource);
             if(resourceList>0){
                 dataMap.put("resultCode", 200);
@@ -115,7 +121,7 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("resource:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -149,7 +155,7 @@ public class ResourceController {
      * @param response
      * @param resourceId
      */
-    @RequiresPermissions("resource:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();

@@ -83,7 +83,6 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("user:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -127,7 +126,6 @@ public class UserController {
      * @param id
      * @return
      */
-    @RequiresPermissions("user:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
     public Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -153,7 +151,6 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
-    @RequiresPermissions("user:create")
     @RequestMapping(value = "/insert")
     public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -261,7 +258,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions({"user:view","organization:view"})
+    @RequiresPermissions("organization:view")
     @RequestMapping(value = "/userOrganization/index", method = RequestMethod.POST)
     public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -282,7 +279,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions({"user:create","organization:create"})
+    @RequiresPermissions("organization:create")
     @RequestMapping(value = "/userOrganization/insert", method = RequestMethod.POST)
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -313,7 +310,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions({"user:view","role:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userRole/index", method = RequestMethod.POST)
     public Map<String, Object> listUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -338,7 +335,7 @@ public class UserController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions({"user:create","role:create"})
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/userRole/insert", method = RequestMethod.POST)
     public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();

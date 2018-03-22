@@ -41,7 +41,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("role:view")
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public Map<String, Object> listRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -64,7 +64,7 @@ public class RoleController {
      * @param roleId
      * @return
      */
-    @RequiresPermissions("role:view")
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/roleById", method = RequestMethod.POST)
     public Map<String, Object> getRoleById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -88,7 +88,7 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions("role:create")
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -122,7 +122,7 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions("role:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -153,7 +153,7 @@ public class RoleController {
      * @param response
      * @param roleId
      */
-    @RequiresPermissions("role:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -179,7 +179,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequiresPermissions({"role:view","resource:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/roleResource/index", method = RequestMethod.POST)
     public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -204,7 +204,7 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions({"role:create","resource:create"})
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/RoleResource/insert", method = RequestMethod.POST)
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
