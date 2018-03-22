@@ -3,6 +3,8 @@ package cn.financial.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import cn.financial.model.Message;
 
 /**
@@ -11,6 +13,7 @@ import cn.financial.model.Message;
  * @author zlf 2018/03/13
  *
  */
+@Service
 public interface MessageService {
     /**
      * 新增 消息 节点信息
@@ -21,11 +24,11 @@ public interface MessageService {
     Integer saveMessage(Message message);
 
     /**
-     * 查询所有的消息
+     * 根据消息状态展示消息列表
      * 
      * @return
      */
-    List<Message> listMessage();
+    List<Message> listMessage(Map<Object, Object> map);
 
     /**
      * 根据条件查询消息
@@ -50,7 +53,14 @@ public interface MessageService {
      * @return
      */
     Integer updateMessageById(Map<Object, Object> map);
-
+    /**
+     * 根据IsTag更新消息
+     * 
+     * @param map
+     * @return
+     */
+    Integer updateMessageByIsTag(Map<Object, Object> map);
+    
     /**
      * 根据Id删除消息
      * 
