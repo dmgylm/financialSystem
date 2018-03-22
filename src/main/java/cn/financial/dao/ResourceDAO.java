@@ -2,6 +2,8 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.Resource;
 /**
  * 资源权限表
@@ -15,11 +17,11 @@ public interface ResourceDAO {
      */
     List<Resource> listResource();
     /**
-     * 根据id查询
+     * 根据id/name查询
      * @param resourceId
      * @return
      */
-    Resource getResourceById(String resourceId);
+    Resource getResourceById(@Param("id") String resourceId,@Param("code") String code);
     /**
      * 新增
      * @param resource
