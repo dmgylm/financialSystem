@@ -78,11 +78,11 @@ public class ResourceTest {
         }
         
     }
-    //根据id/name查询
+    //根据id/code查询
     @Test
     public void ListByIdTest() {
-        //7d47d7e96d304313834b0c0d4953abe9  资源
-        Resource resource = service.getResourceById("35a51fa5b6ed49ad920b30055ea9f4c6","");
+        //35a51fa5b6ed49ad920b30055ea9f4c6  1
+        Resource resource = service.getResourceById("","1");
         String uTime = "";
         if(resource.getUpdateTime()!=null && !"".equals(resource.getUpdateTime())){
             uTime = formatter.format(resource.getUpdateTime());
