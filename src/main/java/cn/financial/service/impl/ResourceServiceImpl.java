@@ -22,11 +22,11 @@ public class ResourceServiceImpl implements ResourceService{
         return resourceDao.listResource();
     }
     /**
-     * 根据id查询角色
+     * 根据id/name查询角色
      */
     @Override
-    public Resource getResourceById(String resourceId) {
-        return resourceDao.getResourceById(resourceId);
+    public Resource getResourceById(String resourceId, String code) {
+        return resourceDao.getResourceById(resourceId, code);
     }
     /**
      * 新增角色
