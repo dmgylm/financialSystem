@@ -67,6 +67,7 @@ public class MessageController {
             message.setTheme(theme);// 消息主题
             message.setContent(content);// 消息内容
             message.setuId(request.getParameter("uId"));// 消息来源
+            message.setsuId(request.getParameter("suId"));//消息来源
             Integer i = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -84,7 +85,7 @@ public class MessageController {
     }
 
     /**
-     * 查询所有的消息
+     * 根据消息状态展示消息列表
      * 
      * @param request
      * @param response
@@ -93,8 +94,25 @@ public class MessageController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<Object, Object> map = new HashMap<Object, Object>();
         try {
-            List<Message> list = messageService.listMessage();
+        	if (request.getParameter("status")!=null) {
+        		
+        		String status =request.getParameter("status");
+        		if(status=="2") {
+        			map.put("isTag", '1');
+        		}else {
+        			map.put("status", status);
+        		}
+        	}
+            List<Message> list = messageService.listMessage(map);
+            int unreadmessage=0;
+            for(int i=0;i<list.size();i++) {
+            	if(list.get(i).getStatus()==0) {
+            		unreadmessage+=1;
+            	}
+            }
+            dataMap.put("resultstatus", unreadmessage);//未读的条数
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -204,29 +222,17 @@ public class MessageController {
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String statusStr = request.getParameter("status");
-        String themeStr = request.getParameter("theme");
-        String content = request.getParameter("content");
-        int status = 0;
-        int theme = 0;
         try {
-            if (content != null && !"".equals(content)) {
-                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
-            }
-            if (statusStr != null && !"".equals(statusStr)) {
-                status = Integer.parseInt(statusStr);
-            }
-            if (themeStr != null && !"".equals(themeStr)) {
-                theme = Integer.parseInt(themeStr);
-            }
+           
             Map<Object, Object> map = new HashMap<>();
-            map.put("id", id);// 消息ID
-            map.put("status", status);// 消息状态
-            map.put("theme", theme);// 消息主题
-            map.put("content", content);// 消息内容
-            map.put("uId", request.getParameter("uId"));// 消息来源
-            map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
-            Integer i = messageService.updateMessageById(map);
+            if(request.getParameter("status")!=null) {
+            		map.put("status", request.getParameter("status"));
+            }
+            if(request.getParameter("isTag")!=null) {
+            		map.put("isTag", request.getParameter("isTag"));
+            }
+            map.put("id", id);
+        	Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功!");
