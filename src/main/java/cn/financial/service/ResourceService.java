@@ -16,11 +16,11 @@ public interface ResourceService {
      */
     List<Resource> listResource();
     /**
-     * 根据id查询
+     * 根据id/name查询
      * @param resourceId
      * @return
      */
-    Resource getResourceById(String resourceId);
+    Resource getResourceById(String resourceId, String code);
     /**
      * 新增
      * @param resource
