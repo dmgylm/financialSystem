@@ -53,13 +53,6 @@ public interface MessageService {
      * @return
      */
     Integer updateMessageById(Map<Object, Object> map);
-    /**
-     * 根据IsTag更新消息
-     * 
-     * @param map
-     * @return
-     */
-    Integer updateMessageByIsTag(Map<Object, Object> map);
     
     /**
      * 根据Id删除消息
