@@ -40,24 +40,28 @@ public class OrganizationServiceImpl implements OrganizationService {
         map.put("code", organization.getParentId());
         // 找到父节点信息
         Organization org = organizationDAO.getOrganizationById(parentOrgId);
-        // 找到兄弟节点信息
-        List<Organization> list = organizationDAO.listByParentId(org.getCode());
-        // 若存在兄弟节点，则兄弟节点的code找到该节点的code
-        if (null != list && list.size() != 0) {
-            List<String> codes = new ArrayList<String>();
-            for (Organization orga : list) {
-                codes.add(orga.getCode());
+        if (null != org) {
+            // 找到兄弟节点信息
+            List<Organization> list = organizationDAO.listByParentId(org.getCode());
+            // 若存在兄弟节点，则兄弟节点的code找到该节点的code
+            if (null != list && list.size() != 0) {
+                List<String> codes = new ArrayList<String>();
+                for (Organization orga : list) {
+                    codes.add(orga.getCode());
+                }
+                code = UuidUtil.getCodeByBrother(org.getCode(), codes);
             }
-            code = UuidUtil.getCodeByBrother(org.getCode(), codes);
+            // 若不存在兄弟节点，那code就是父节点的code加上01
+            else {
+                code = org.getCode() + "01";
+            }
+            organization.setParentId(org.getCode());// 父id
+            organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
+            organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
+            return organizationDAO.saveOrganization(organization);
+        } else {
+            return 0;
         }
-        // 若不存在兄弟节点，那code就是父节点的code加上01
-        if (list != null && list.size() == 0) {
-            code = org.getCode() + "01";
-        }
-        organization.setParentId(org.getCode());// 父id
-        organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
-        organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
-        return organizationDAO.saveOrganization(organization);
     }
 
     /**
@@ -125,20 +129,26 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public String listTreeByNameOrIdForSon(Map<Object, Object> map) {
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-        List<TreeNode<Organization>> nodes = new ArrayList<>();
-        String jsonStr = "";
-        for (Organization organization : list) {
-            TreeNode<Organization> node = new TreeNode<>();
-            node.setId(organization.getCode());
-            node.setParentId(organization.getParentId().toString());
-            node.setText(organization.getOrgName());
-            node.setNodeData(organization);
-            nodes.add(node);
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            if (!CollectionUtils.isEmpty(list)) {
+                List<TreeNode<Organization>> nodes = new ArrayList<>();
+                String jsonStr = "";
+                for (Organization organization : list) {
+                    TreeNode<Organization> node = new TreeNode<>();
+                    node.setId(organization.getCode());
+                    node.setParentId(organization.getParentId().toString());
+                    node.setText(organization.getOrgName());
+                    node.setNodeData(organization);
+                    nodes.add(node);
+                }
+                JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+                jsonStr = jsonObject.toString();
+                return jsonStr;
+            }
+            return null;
         }
-        JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
-        jsonStr = jsonObject.toString();
-        return jsonStr;
+        return null;
     }
 
     /**
@@ -155,8 +165,14 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public List<Organization> listTreeByNameOrIdForParent(Map<Object, Object> map) {
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
-        return list;
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
+            if (!CollectionUtils.isEmpty(list)) {
+                return list;
+            }
+            return null;
+        }
+        return null;
     }
 
     /**
