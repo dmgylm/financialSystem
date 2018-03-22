@@ -31,11 +31,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 查询所有的消息
+     * 根据消息状态展示消息列表
      */
     @Override
-    public List<Message> listMessage() {
-        return messageDao.listMessage();
+    public List<Message> listMessage(Map<Object, Object> map) {
+        return messageDao.listMessage(map);
     }
 
     /**
@@ -60,6 +60,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer updateMessageById(Map<Object, Object> map) {
         return messageDao.updateMessageById(map);
+    }
+    /**
+     * 根据IsTag更新消息
+     */
+    @Override
+    public Integer updateMessageByIsTag(Map<Object, Object> map) {
+    	return messageDao.updateMessageByIsTag(map);
     }
 
     /**
