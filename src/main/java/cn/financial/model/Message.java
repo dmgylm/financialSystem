@@ -18,7 +18,9 @@ public class Message {
 
     String content; // 消息内容
 
-    String uId; // 消息来源(这里指向user的id)
+    String uId; // 消息来源(这里指向接收user的id)
+    
+    String suId;//消息来源(这里指向发送用户的id)
 
     Integer isTag; // 是否标注（0未标注；1标注）
 
@@ -65,6 +67,13 @@ public class Message {
     public void setuId(String uId) {
         this.uId = uId;
     }
+    public String getsuId() {
+    	return suId;
+    }
+    
+    public void setsuId(String suId) {
+    	this.suId = suId;
+    }
 
     public Integer getIsTag() {
         return isTag;
@@ -93,7 +102,7 @@ public class Message {
     @Override
     public String toString() {
         return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", uId="
-                + uId + ", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+                + uId + ",suId="+ suId +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
     }
 
 }
