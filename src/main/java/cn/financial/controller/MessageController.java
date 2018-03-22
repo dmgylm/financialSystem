@@ -41,7 +41,7 @@ public class MessageController {
      * @param request
      * @param response
      * @return
-     */
+     *//*
     @RequiresPermissions("message:create")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveMessage(HttpServletRequest request, HttpServletResponse response) {
@@ -82,7 +82,7 @@ public class MessageController {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
-    }
+    }*/
 
     /**
      * 根据消息状态展示消息列表
