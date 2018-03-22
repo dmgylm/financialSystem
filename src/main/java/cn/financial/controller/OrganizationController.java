@@ -371,7 +371,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
-    @RequiresPermissions({"organization:update","organization:create"})
+    @RequiresPermissions({ "organization:update", "organization:create" })
     @RequestMapping(value = "/move", method = RequestMethod.POST)
     public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -394,6 +394,32 @@ public class OrganizationController {
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+
+    /**
+     * 根据id或者name判断是否该节点存在子节点
+     * 
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hasSon", method = RequestMethod.POST)
+    public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
+        Map<Object, Object> map = new HashMap<>();
+        map.put("id", request.getParameter("id"));// 组织id
+        map.put("orgName", request.getParameter("orgName"));// 组织架构名
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        try {
+            Boolean flag = organizationService.hasOrganizationSon(map);
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultData", flag);
+        } catch (Exception e) {
+            dataMap.put("resultCode", 200);
+            dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
