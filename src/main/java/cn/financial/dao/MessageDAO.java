@@ -22,11 +22,11 @@ public interface MessageDAO {
     Integer saveMessage(Message message);
 
     /**
-     * 查询所有的消息
+     * 根据消息状态展示消息列表
      * 
      * @return
      */
-    List<Message> listMessage();
+    List<Message> listMessage(Map<Object, Object> map);
 
     /**
      * 根据条件查询消息
@@ -51,7 +51,14 @@ public interface MessageDAO {
      * @return
      */
     Integer updateMessageById(Map<Object, Object> map);
-
+    
+    /**
+     * 根据isTag更新消息
+     * 
+     * @param map
+     * @return
+     */
+    Integer updateMessageByIsTag(Map<Object, Object> map);
     /**
      * 根据Id删除消息
      * 
