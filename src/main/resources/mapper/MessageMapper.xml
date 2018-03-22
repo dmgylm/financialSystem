@@ -31,13 +31,15 @@
 		theme,
 		content,
 		uId,
+		isTag,
+		suId,
 		createTime
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},curdate())
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{suId,jdbcType=VARCHAR},curdate())
 	</insert>
 
-	<!-- 查询所有的消息 -->
+	<!-- 查询所有的消息
 	<select id="listMessage" resultMap="messageResultMap">
 		select
 		id,status,theme,content,uId,isTag,createTime,updateTime
@@ -45,7 +47,7 @@
 		message
 		order by
 		createTime desc
-	</select>
+	</select> -->
 
 	<!-- 根据条件查询消息 -->
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
@@ -75,24 +77,25 @@
 	<!-- 根据条件更新消息 -->
 	<update id="updateMessageById" parameterType="map">
 		update message
-		<trim prefix="set" suffixOverrides=",">
-			updateTime = curdate(),
+			set updateTime = curdate()
 			<if test="status!=null and status!=''">
-				status = #{status,jdbcType=INTEGER},
+				,status = #{status,jdbcType=INTEGER}
 			</if>
 			<if test="theme!=null and theme!=''">
-				theme = #{theme,jdbcType=INTEGER},
+				,theme = #{theme,jdbcType=INTEGER}
 			</if>
 			<if test="content!=null and content!=''">
-				content = #{content,jdbcType=VARCHAR},
+				,content = #{content,jdbcType=VARCHAR}
 			</if>
 			<if test="uId!=null and uId!=''">
-				uId = #{uId,jdbcType=VARCHAR},
+				,uId = #{uId,jdbcType=VARCHAR}
+			</if>
+			<if test="suId!=null and suId!=''">
+				,suId = #{suId,jdbcType=VARCHAR}
 			</if>
 			<if test="isTag!=null and isTag!=''">
-				isTag = #{isTag,jdbcType=INTEGER},
+				,isTag = #{isTag,jdbcType=INTEGER}
 			</if>
-		</trim>
 		where
 		id = #{id,jdbcType=VARCHAR}
 	</update>
@@ -105,6 +108,21 @@
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
+	<!-- 根据消息状态展示消息列表  -->
+	<select id="listMessage" parameterType="map" resultMap="messageResultMap">
+		select
+			status,theme,content,suId,isTag,createTime
+		from
+		message 
+		where
+		uId=#{uId}
+		<if test="isTag!=null and isTag!=''">
+			and isTag=#{isTag,jdbcType=INTEGER}
+		</if>
+		order by
+		createTime desc
+	</select>
+	
 
 	<!--定义一个sql片段 -->
 	<sql id="query_message_where">
@@ -122,6 +140,9 @@
 		</if>
 		<if test="uId!=null and uId!=''">
 			and uId = #{uId,jdbcType=VARCHAR}
+		</if>
+		<if test="suId!=null and suId!=''">
+			and suId = #{suId,jdbcType=VARCHAR}
 		</if>
 		<if test="createTime!=null and createTime!=''">
 			and createTime = #{createTime,jdbcType=DATE}
