@@ -283,6 +283,7 @@ public class CapitalController {
         public void export(HttpServletRequest request,HttpServletResponse response,String uId,String accountName
                 ,String accountNature,String classify) throws Exception{
             OutputStream os = null;
+            Map<String, Object> dataMap = new HashMap<String, Object>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Map<Object, Object> map =new HashMap<Object, Object>();
             User user = (User) request.getAttribute("user");
@@ -368,7 +369,11 @@ public class CapitalController {
                 response.setContentType("application/octet-stream");
                 os = response.getOutputStream();
                 ExcelUtil.export(strList, os);
+                dataMap.put("resultCode", 200);
+                dataMap.put("result", "导出成功!");
             } catch (IOException e) {
+                dataMap.put("resultCode", 400);
+                dataMap.put("result", "导出失败!");
                 e.printStackTrace();
             } finally {
                 if(os != null)
