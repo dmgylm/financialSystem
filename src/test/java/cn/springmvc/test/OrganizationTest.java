@@ -2,6 +2,7 @@ package cn.springmvc.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -95,15 +96,17 @@ public class OrganizationTest {
     public void getOrganizationById() {
         String id = "22be27739af342e7b10b54d5af1de6f1";
         Organization organization = service.getOrganizationById(id);
-        System.out.println("id:" + organization.getId());
-        System.out.println("code:" + organization.getCode());
-        System.out.println("orgName:" + organization.getOrgName());
-        System.out.println("parentId:" + organization.getParentId());
-        System.out.println("createTime:" + organization.getCreateTime());
-        System.out.println("updateTime:" + organization.getUpdateTime());
-        System.out.println("uId:" + organization.getuId());
-        System.out.println("his_permission:" + organization.getHis_permission());
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        if (organization != null) {
+            System.out.println("id:" + organization.getId());
+            System.out.println("code:" + organization.getCode());
+            System.out.println("orgName:" + organization.getOrgName());
+            System.out.println("parentId:" + organization.getParentId());
+            System.out.println("createTime:" + organization.getCreateTime());
+            System.out.println("updateTime:" + organization.getUpdateTime());
+            System.out.println("uId:" + organization.getuId());
+            System.out.println("his_permission:" + organization.getHis_permission());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
     }
 
     /**
@@ -132,9 +135,28 @@ public class OrganizationTest {
      * 根据id查询该节点下的所有子节点 ,构建成树
      */
     @Test
-    public void listTreeByOrgId() {
-        String string = service.TreeByIdForSon("22be27739af342e7b10b54d5af1de6f1");
+    public void TreeByOrgId() {
+        String string = service.TreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
         System.out.println(string);
+    }
+
+    /**
+     * 根据id查询该节点下的所有子节点 的集合
+     */
+    @Test
+    public void listTreeByOrgId() {
+        List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
+        for (Organization organization : list) {
+            System.out.println("id:" + organization.getId());
+            System.out.println("code:" + organization.getCode());
+            System.out.println("orgName:" + organization.getOrgName());
+            System.out.println("parentId:" + organization.getParentId());
+            System.out.println("createTime:" + organization.getCreateTime());
+            System.out.println("updateTime:" + organization.getUpdateTime());
+            System.out.println("uId:" + organization.getuId());
+            System.out.println("his_permission:" + organization.getHis_permission());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
     }
 
     /**
@@ -184,15 +206,17 @@ public class OrganizationTest {
     @Test
     public void getCompanyNameBySon() {
         Organization organization = service.getCompanyNameBySon("1a7458a2d2f44c17873c2c82aee320dd");
-        System.out.println("id:" + organization.getId());
-        System.out.println("code:" + organization.getCode());
-        System.out.println("orgName:" + organization.getOrgName());
-        System.out.println("parentId:" + organization.getParentId());
-        System.out.println("createTime:" + organization.getCreateTime());
-        System.out.println("updateTime:" + organization.getUpdateTime());
-        System.out.println("uId:" + organization.getuId());
-        System.out.println("his_permission:" + organization.getHis_permission());
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        if (null != organization) {
+            System.out.println("id:" + organization.getId());
+            System.out.println("code:" + organization.getCode());
+            System.out.println("orgName:" + organization.getOrgName());
+            System.out.println("parentId:" + organization.getParentId());
+            System.out.println("createTime:" + organization.getCreateTime());
+            System.out.println("updateTime:" + organization.getUpdateTime());
+            System.out.println("uId:" + organization.getuId());
+            System.out.println("his_permission:" + organization.getHis_permission());
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
     }
 
     // /**
