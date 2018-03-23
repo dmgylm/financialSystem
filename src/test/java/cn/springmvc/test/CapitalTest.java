@@ -32,7 +32,7 @@ public class CapitalTest {
      */
     @Test
     public void insertCapital() throws UnsupportedEncodingException, ParseException {
-        String info="222";
+      /*  String info="222";
         info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
         Capital capital=new Capital();
         capital.setId(UuidUtil.getUUID());
@@ -45,7 +45,7 @@ public class CapitalTest {
         capital.setMonth(3);
         capital.setStatus(1);
         Integer i = capitalServiceImpl.insertCapital(capital);
-        System.out.println(i);
+        System.out.println(i);*/
     }
 
     /**
@@ -53,7 +53,7 @@ public class CapitalTest {
      */
     @Test
     public void getAllCapital() {
-        List<Capital> list = capitalServiceImpl.getAllCapital();
+       /* List<Capital> list = capitalServiceImpl.getAllCapital();
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
             System.out.println("第"+(i+1)+"条数据");
@@ -63,7 +63,7 @@ public class CapitalTest {
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
-        }
+        }*/
     }
 
     /**
@@ -71,7 +71,7 @@ public class CapitalTest {
      */
     @Test
     public void listCapitalBy() {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+      /*  Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("oId", "111");
         List<Capital> list = capitalServiceImpl.listCapitalBy(map);
         System.out.println(list.size());
@@ -82,7 +82,7 @@ public class CapitalTest {
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
-        }
+        }*/
     }
 
     /**
@@ -90,13 +90,13 @@ public class CapitalTest {
      */
     @Test
     public void getCapitalById(){
-        String id = "b5d06e8791de436480d819835e32ab46";
+        /*String id = "b5d06e8791de436480d819835e32ab46";
         Capital capital = capitalServiceImpl.selectCapitalById(id);
         System.out.println("开始"+capital.getId()+"--"+capital.getoId()+"--"
                 +capital.getInfo()+"--"+sdf.format(capital.getCreateTime())+"--"
                 +sdf.format(capital.getUpdateTime())+"--"
                 +capital.getuId()+"--"+capital.getYear()+"--"
-                +capital.getMonth()+"--"+capital.getStatus());
+                +capital.getMonth()+"--"+capital.getStatus());*/
     }
 
     /**
@@ -106,7 +106,7 @@ public class CapitalTest {
      */
     @Test
     public void updateCapital() throws UnsupportedEncodingException, ParseException {
-        String info="111";
+     /*   String info="111";
         info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
         Capital capital=new Capital();
         capital.setId("b5d06e8791de436480d819835e32ab46");
@@ -119,7 +119,7 @@ public class CapitalTest {
         capital.setMonth(1);
         capital.setStatus(1);
         Integer i = capitalServiceImpl.updateCapital(capital);
-            System.out.println("结果"+i);
+            System.out.println("结果"+i);*/
      }
 
     /**

@@ -11,7 +11,17 @@ public class Capital {
 	
          private String id;   //资金表id
     	 
-         private String oId; //组织id
+         private String plate; //板块
+         
+         private String BU; //事业部
+         
+         private String regionName; //大区名称
+         
+         private String province; //省份
+         
+         private String city; //城市
+         
+         private String company; //公司
          
          private String accountName; //账户名
          
@@ -35,8 +45,6 @@ public class Capital {
          
          private String classify; //项目分类
     	 
-    	 private String info;  //内容
-    	 
     	 private Date createTime; //创建时间
     	 
     	 private Date updateTime; //更新时间
@@ -56,11 +64,16 @@ public class Capital {
              super();
          }
          
-         public  Capital(String id,String oId,String accountBank,String accountName,String account,String accountNature,
+         public  Capital(String id,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
                  Date tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
-                 String info,Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
+                 Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
              this.id=id;
-             this.oId=oId;
+             this.plate=plate;
+             this.BU=BU;
+             this.regionName=regionName;
+             this.province=province;
+             this.city=city;
+             this.company=company;
              this.accountName=accountName;
              this.accountBank=accountBank;
              this.account=account;
@@ -72,7 +85,6 @@ public class Capital {
              this.endBlack=endBlack;
              this.abstrac=abstrac;
              this.classify=classify;
-             this.info=info;
              this.createTime=createTime;
              this.updateTime=updateTime;
              this.uId=uId;
@@ -88,22 +100,6 @@ public class Capital {
     
     	public void setId(String id) {
     		this.id = id;
-    	}
-    
-    	public String getoId() {
-    		return oId;
-    	}
-    
-    	public void setoId(String oId) {
-    		this.oId = oId;
-    	}
-    
-    	public String getInfo() {
-    		return info;
-    	}
-    
-    	public void setInfo(String info) {
-    		this.info = info;
     	}
     
     	public Date getCreateTime() {
@@ -248,6 +244,54 @@ public class Capital {
 
         public void setRemarks(String remarks) {
             this.remarks = remarks;
+        }
+
+        public String getPlate() {
+            return plate;
+        }
+
+        public void setPlate(String plate) {
+            this.plate = plate;
+        }
+
+        public String getBU() {
+            return BU;
+        }
+
+        public void setBU(String bU) {
+            BU = bU;
+        }
+
+        public String getRegionName() {
+            return regionName;
+        }
+
+        public void setRegionName(String regionName) {
+            this.regionName = regionName;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getCompany() {
+            return company;
+        }
+
+        public void setCompany(String company) {
+            this.company = company;
         }
 
 }

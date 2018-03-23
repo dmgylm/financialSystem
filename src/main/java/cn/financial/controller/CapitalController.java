@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
+import cn.financial.model.User;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ExcelUtil;
@@ -200,14 +202,15 @@ public class CapitalController {
             return dataMap;
         }
         
+       
         /***
          * 导入
          */
-        @RequestMapping(value="/excelImport",method=RequestMethod.POST)
-        public void excelImport(MultipartFile uploadFile,HttpServletResponse response) throws IOException{
+        @RequestMapping(value="/excelImport",method = RequestMethod.POST)
+        public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if(uploadFile.getSize()!= 0){  //判断文件大小是否为0
+            if(uploadFile.getSize()>0 && uploadFile.getSize()<5242880){  //判断文件大小是否是5M以下的
               try {
                 int row=1;
                 Integer a=0;
@@ -216,7 +219,12 @@ public class CapitalController {
                     Capital capital=new Capital();
                     String[] str=list.get(i);
                     capital.setId(UuidUtil.getUUID());
-                    
+                    capital.setPlate(str[0]);
+                    capital.setBU(str[1]);
+                    capital.setRegionName(str[2]);
+                    capital.setProvince(str[3]);
+                    capital.setCity(str[4]);
+                    capital.setCompany(str[5]);
                     capital.setAccountName(str[6]);
                     capital.setAccountBank(str[7]);
                     capital.setAccount(str[8]);
@@ -229,6 +237,15 @@ public class CapitalController {
                     capital.setAbstrac(str[15]);
                     capital.setClassify(str[16]);
                     capital.setRemarks(str[17]);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(calendar.getTime());
+                    capital.setCreateTime(new Date());
+                    User user = (User) request.getAttribute("user");
+                    String uId = user.getId();
+                    capital.setuId(uId);
+                    capital.setYear(Calendar.YEAR);
+                    capital.setMonth(Calendar.MONTH);
+                    capital.setStatus(1);
                     a = capitalService.insertCapital(capital);
                  }
                 if (a == 1) {
@@ -252,10 +269,26 @@ public class CapitalController {
          * @param response
          * @throws Exception 
          */
-        @RequestMapping(value="/export")
-        public void export(HttpServletRequest request,HttpServletResponse response,Map<Object, Object> map) throws Exception{
+        @RequestMapping(value="/export",method = RequestMethod.POST)
+        public void export(HttpServletRequest request,HttpServletResponse response,String uId,String accountName
+                ,String accountNature,String classify) throws Exception{
             OutputStream os = null;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Map<Object, Object> map =new HashMap<Object, Object>();
+            User user = (User) request.getAttribute("user");
+            uId = user.getId();
+            if(uId!=null&&!uId.equals("")){
+                map.put("uId", uId);
+            }
+            if(accountName!=null&&!accountName.equals("")){
+                map.put("accountName",accountName);
+            }
+            if(accountNature!=null&&!accountNature.equals("")){
+                map.put("accountNature",accountNature);
+            }
+            if(classify!=null&&!classify.equals("")){
+                map.put("classify",classify);
+            }
             try {
                 List<Capital> list = capitalService.listCapitalBy(map);
                 List<String[]> strList=new ArrayList<>();
@@ -263,20 +296,63 @@ public class CapitalController {
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
                 strList.add(ss);
                 for (int i = 0; i < list.size(); i++) {
-                    String[] str={};
-                    str[6]=list.get(i).getAccountName();
-                    str[7]=list.get(i).getAccountBank();
-                    str[8]=list.get(i).getAccount();
-                    str[9]=list.get(i).getAccountNature();
-                    str[10]=sdf.format(list.get(i).getTradeTime());
-                    str[11]=list.get(i).getStartBlack().toString();
-                    str[12]=list.get(i).getIncom().toString();
-                    str[13]=list.get(i).getPay().toString();
-                    str[14]=list.get(i).getEndBlack().toString();
-                    str[15]=list.get(i).getAbstrac();
-                    str[16]=list.get(i).getClassify();
-                    str[17]=list.get(i).getRemarks();
-                    strList.add(str);
+                    String[] str=new String[18];
+                    Capital capital=list.get(i);
+                    if(!capital.getPlate().equals("")){
+                        str[0]=capital.getPlate();
+                     }
+                    if(!capital.getBU().equals("")){
+                        str[1]=capital.getBU();
+                     }
+                    if(!capital.getRegionName().equals("")){
+                        str[2]=capital.getRegionName();
+                     }
+                    if(!capital.getProvince().equals("")){
+                        str[3]=capital.getProvince();
+                     }
+                    if(!capital.getCity().equals("")){
+                        str[4]=capital.getCity();
+                     }
+                    if(!capital.getCompany().equals("")){
+                        str[5]=capital.getCompany();
+                     }
+                    if(!capital.getAccountName().equals("")){
+                       str[6]=capital.getAccountName();
+                    }
+                    if(!capital.getAccountBank().equals("")){
+                       str[7]=capital.getAccountBank();
+                    }
+                    if(!capital.getAccount().equals("")){
+                       str[8]=capital.getAccount();
+                    }
+                    if(!capital.getAccountNature().equals("")){
+                       str[9]=capital.getAccountNature();
+                    }
+                    if(!capital.getTradeTime().equals("")){
+                       str[10]=sdf.format(capital.getTradeTime());
+                    }
+                    if(!capital.getStartBlack().equals("")){
+                       str[11]=capital.getStartBlack().toString();
+                    }
+                    if(!capital.getIncom().equals("")){
+                       str[12]=capital.getIncom().toString();
+                    }
+                    if(!capital.getPay().equals("")){
+                       str[13]=capital.getPay().toString();
+                    }
+                    if(!capital.getEndBlack().equals("")){
+                       str[14]=capital.getEndBlack().toString();
+                    }
+                    if(!capital.getAbstrac().equals("")){
+                        str[15]=capital.getAbstrac();
+                    }
+                    if(!capital.getClassify().equals("")){
+                        str[16]=capital.getClassify();
+                    }
+                    if(!capital.getRemarks().equals("")){
+                        str[17]=capital.getRemarks();
+                    } 
+                        strList.add(str);
                 }
                 response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
                 response.setContentType("application/octet-stream");
@@ -293,6 +369,5 @@ public class CapitalController {
                     }
             }
         }
-        
         
 }
