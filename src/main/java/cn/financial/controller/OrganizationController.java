@@ -309,7 +309,7 @@ public class OrganizationController {
     }
 
     /**
-     * 传入一个节点的id,或者name，查询所有该节点的子节点,构建tree的string字符串
+     * 传入一个节点的id查询所有该节点的子节点,构建tree的string字符串
      * 
      * @param request
      * @param response
@@ -318,12 +318,9 @@ public class OrganizationController {
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("id", request.getParameter("id"));// 组织id
-        map.put("orgName", request.getParameter("orgName"));// 组织架构名
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            String jsonTree = organizationService.listTreeByNameOrIdForSon(map);
+            String jsonTree = organizationService.TreeByIdForSon(request.getParameter("id"));
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", jsonTree);
@@ -336,7 +333,7 @@ public class OrganizationController {
     }
 
     /**
-     * 传入一个节点的id,或者name，查询所有该节点的父节点
+     * 传入一个节点的id查询所有该节点的父节点
      * 
      * @param request
      * @param response
@@ -345,12 +342,9 @@ public class OrganizationController {
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/getparnode", method = RequestMethod.POST)
     public Map<Object, Object> getParnode(HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("id", request.getParameter("id"));// 组织id
-        map.put("orgName", request.getParameter("orgName"));// 组织架构名
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            List<Organization> list = organizationService.listTreeByNameOrIdForParent(map);
+            List<Organization> list = organizationService.listTreeByIdForParent(request.getParameter("id"));
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -400,7 +394,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点
+     * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
      * 
      * @param request
      * @param response

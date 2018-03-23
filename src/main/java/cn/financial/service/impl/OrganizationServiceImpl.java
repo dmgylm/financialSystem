@@ -124,13 +124,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id,或者name查询该节点下的所有子节点,构建成树
+     * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
-    public String listTreeByNameOrIdForSon(Map<Object, Object> map) {
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+    public String TreeByIdForSon(String id) {
+        Organization organizationByIds = organizationDAO.getOrganizationById(id);
+        if (null != organizationByIds) {
+            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 List<TreeNode<Organization>> nodes = new ArrayList<>();
                 String jsonStr = "";
@@ -159,13 +159,28 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id,或者name查询该节点的所有父节点
+     * 根据id查询该节点下的所有子节点集合
      */
     @Override
-    public List<Organization> listTreeByNameOrIdForParent(Map<Object, Object> map) {
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
+    public List<Organization> listTreeByIdForSon(String id) {
+        Organization organizationByIds = organizationDAO.getOrganizationById(id);
+        if (null != organizationByIds) {
+            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.getCode());
+            if (!CollectionUtils.isEmpty(list)) {
+                return list;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 根据id查询该节点的所有父节点
+     */
+    @Override
+    public List<Organization> listTreeByIdForParent(String id) {
+        Organization organizationByIds = organizationDAO.getOrganizationById(id);
+        if (null != organizationByIds) {
+            List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 return list;
             }
@@ -184,11 +199,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     public Integer moveOrganization(String id, String parentOrgId) {
         // 根据id查询到该节点信息
         Organization org = organizationDAO.getOrganizationById(id);
-        // 根据该节点的code查询到其下所有子节点信息的集合
+        if (org == null) {
+            return Integer.valueOf(0);
+        }
+        // 根据该节点的code查询到其下所有子节点信息的集合(要移动的节点及其子节点的集合)
         List<Organization> list = organizationDAO.listTreeByCodeForSon(org.getCode());
-        // 这里已经是要移动的节点及其子节点的集合
-        // list.add(org);
-
         /*
          * 接下来是将要移动的几点按原来的机构新增到现在的父节点上,
          * 先将该节点新增，并修改其code，parentId，his_permission；然后再新增其子节点
@@ -246,7 +261,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点
+     * 根据id判断是否该节点存在子节点根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门；
+     * 其他节点只能通过id查询）
      */
     @Override
     public Boolean hasOrganizationSon(Map<Object, Object> map) {
@@ -268,13 +284,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Organization getCompanyNameBySon(String id) {
         Organization organizationByIds = organizationDAO.getOrganizationById(id);
-        System.out.println(organizationByIds.getOrgName() + "---" + organizationByIds.getCode());
         if (null != organizationByIds) {
             List<Organization> parent = organizationDAO.listTreeByCodeForParent(organizationByIds.getCode());
-            System.out.println(parent.size());
             if (!CollectionUtils.isEmpty(parent)) {
                 for (Organization o : parent) {
-                    System.out.println(o.getOrgName());
                     if (o.getOrgName().contains("公司")) {
                         return o;
                     }
@@ -283,5 +296,4 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return null;
     }
-
 }
