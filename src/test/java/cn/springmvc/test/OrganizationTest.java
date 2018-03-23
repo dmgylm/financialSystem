@@ -33,12 +33,12 @@ public class OrganizationTest {
     @Test
     public void saveOrganization() {
         String id = UuidUtil.getUUID();
-        Organization organization = new Organization();
-        organization.setId(id);
-        organization.setOrgName("测试444");
-        organization.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
-        Integer i = service.saveOrganization(organization, "ad2d83626a1846b68186775a3c1e8068");
-        System.out.println(i);
+        Organization organization2 = new Organization();
+        organization2.setId(id);
+        organization2.setOrgName("2312312");
+        organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
+        Integer i = service.saveOrganization(organization2, "");
+        System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     /**
@@ -129,26 +129,20 @@ public class OrganizationTest {
     }
 
     /**
-     * 根据id或者name查询该节点下的所有子节点 ,构建成树
+     * 根据id查询该节点下的所有子节点 ,构建成树
      */
     @Test
     public void listTreeByOrgId() {
-        Map<Object, Object> map = new HashMap<>();
-        // map.put("id", "22be27739af342e7b10b54d5af1de6f1");// 组织id
-        map.put("orgName", "上市");// 组织架构名
-        String string = service.listTreeByNameOrIdForSon(map);
+        String string = service.TreeByIdForSon("22be27739af342e7b10b54d5af1de6f1");
         System.out.println(string);
     }
 
     /**
-     * 根据id或者name查询该节点下的所有父节点
+     * 根据id查询该节点下的所有父节点
      */
     @Test
     public void listTreeByOrgIdParent() {
-        Map<Object, Object> map = new HashMap<>();
-        // map.put("id", "fd99bcb243b0473f865a243538d3d080");// 组织id
-        map.put("orgName", "本部");// 组织架构名
-        List<Organization> list = service.listTreeByNameOrIdForParent(map);
+        List<Organization> list = service.listTreeByIdForParent("fd99bcb243b0473f865a243538d3d080");
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
@@ -173,7 +167,7 @@ public class OrganizationTest {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点
+     * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
      */
     @Test
     public void hasOrganizationSon() {
@@ -182,6 +176,23 @@ public class OrganizationTest {
         // map.put("orgName", "上市");// 组织架构名
         Boolean boolean1 = service.hasOrganizationSon(map);
         System.out.println(boolean1);
+    }
+
+    /**
+     * 根据公司以下节点的id，查询到该节点所属公司
+     */
+    @Test
+    public void getCompanyNameBySon() {
+        Organization organization = service.getCompanyNameBySon("1a7458a2d2f44c17873c2c82aee320dd");
+        System.out.println("id:" + organization.getId());
+        System.out.println("code:" + organization.getCode());
+        System.out.println("orgName:" + organization.getOrgName());
+        System.out.println("parentId:" + organization.getParentId());
+        System.out.println("createTime:" + organization.getCreateTime());
+        System.out.println("updateTime:" + organization.getUpdateTime());
+        System.out.println("uId:" + organization.getuId());
+        System.out.println("his_permission:" + organization.getHis_permission());
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     // /**
