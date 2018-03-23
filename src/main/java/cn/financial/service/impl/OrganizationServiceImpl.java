@@ -263,16 +263,19 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据公司以下节点的信息，查询到该节点所属公司
+     * 根据公司以下节点的id，查询到该节点所属公司
      */
     @Override
-    public Organization getCompanyNameBySon(Map<Object, Object> map) {
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> parent = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
+    public Organization getCompanyNameBySon(String id) {
+        Organization organizationByIds = organizationDAO.getOrganizationById(id);
+        System.out.println(organizationByIds.getOrgName() + "---" + organizationByIds.getCode());
+        if (null != organizationByIds) {
+            List<Organization> parent = organizationDAO.listTreeByCodeForParent(organizationByIds.getCode());
+            System.out.println(parent.size());
             if (!CollectionUtils.isEmpty(parent)) {
                 for (Organization o : parent) {
-                    if ("公司".equals(o.getOrgName())) {
+                    System.out.println(o.getOrgName());
+                    if (o.getOrgName().contains("公司")) {
                         return o;
                     }
                 }
