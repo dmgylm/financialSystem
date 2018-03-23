@@ -43,6 +43,12 @@ public class CapitalController {
 
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
+        
+        @RequestMapping(value="/excel", method = RequestMethod.GET)
+        public String getexcel(HttpServletRequest request, HttpServletResponse response) {
+            return "cel";
+        }
+
       
         /**
          * 查询所有的资金数据
@@ -215,6 +221,7 @@ public class CapitalController {
                 int row=1;
                 Integer a=0;
                 List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);
+                System.out.println(list.size());
                 for (int i = 0; i < list.size(); i++){
                     Capital capital=new Capital();
                     String[] str=list.get(i);
@@ -252,7 +259,7 @@ public class CapitalController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("result", "导入成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("result", "导入失败!");
                 }
             } catch (Exception e) {
@@ -260,6 +267,9 @@ public class CapitalController {
                 dataMap.put("resultDesc", "服务器异常!");
                 this.logger.error(e.getMessage(), e);
             }
+        }else{
+            dataMap.put("resultCode", 400);
+            dataMap.put("result", "文件大于5M!请重新上传");
         } 
       }
         

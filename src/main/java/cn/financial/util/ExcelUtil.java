@@ -26,7 +26,8 @@ public class ExcelUtil {
             Sheet sheet = workbook.getSheetAt(0);
             int rowLength = sheet.getLastRowNum();
             list = new ArrayList<String[]>(rowLength);
-            for (int i = startRow; i < rowLength; i++) {
+            System.out.println(rowLength);
+            for (int i = startRow; i <= rowLength; i++) {
                 //读取行
                 Row row = sheet.getRow(i);
                 if (row != null) {
