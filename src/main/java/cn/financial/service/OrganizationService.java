@@ -117,4 +117,12 @@ public interface OrganizationService {
      */
     Boolean hasOrganizationSon(Map<Object, Object> map);
 
+    /**
+     * 根据公司以下节点的信息，查询到该节点所属公司
+     * 
+     * @param map
+     * @return
+     */
+    Organization getCompanyNameBySon(Map<Object, Object> map);
+
 }

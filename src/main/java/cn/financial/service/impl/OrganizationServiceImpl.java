@@ -146,7 +146,6 @@ public class OrganizationServiceImpl implements OrganizationService {
                 jsonStr = jsonObject.toString();
                 return jsonStr;
             }
-            return null;
         }
         return null;
     }
@@ -170,7 +169,6 @@ public class OrganizationServiceImpl implements OrganizationService {
             if (!CollectionUtils.isEmpty(list)) {
                 return list;
             }
-            return null;
         }
         return null;
     }
@@ -255,11 +253,32 @@ public class OrganizationServiceImpl implements OrganizationService {
         Boolean flag = false;
         // 查询到当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        List<Organization> list = organizationDAO.listByParentId(organizationByIds.get(0).getCode());
-        if (!CollectionUtils.isEmpty(list)) {
-            flag = true;
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            List<Organization> list = organizationDAO.listByParentId(organizationByIds.get(0).getCode());
+            if (!CollectionUtils.isEmpty(list)) {
+                flag = true;
+            }
         }
         return flag;
+    }
+
+    /**
+     * 根据公司以下节点的信息，查询到该节点所属公司
+     */
+    @Override
+    public Organization getCompanyNameBySon(Map<Object, Object> map) {
+        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            List<Organization> parent = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
+            if (!CollectionUtils.isEmpty(parent)) {
+                for (Organization o : parent) {
+                    if ("公司".equals(o.getOrgName())) {
+                        return o;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }
