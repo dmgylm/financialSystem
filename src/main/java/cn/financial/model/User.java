@@ -1,7 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
-
 public class User {
 
     private String id; // 用户表id
@@ -16,9 +14,9 @@ public class User {
     
     private Integer status;//状态 
 
-    private Date createTime; // 创建时间
+    private String createTime; // 创建时间
 
-    private Date updateTime; // 更新时间
+    private String updateTime; // 更新时间
     
     private String salt;  //随机数生成
     public User() {
@@ -73,22 +71,23 @@ public class User {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+	public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
-	public String getSalt() {
+
+    public String getSalt() {
 		return salt;
 	}
 

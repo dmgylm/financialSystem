@@ -16,7 +16,7 @@ public class RoleResource {
     private String url;//路径
     private String parentId;//父id
     private String permssion;//权限
-    private Date createTime;//创建时间
+    private String createTime;//创建时间
     
     public RoleResource() {
         super();
@@ -89,10 +89,11 @@ public class RoleResource {
         this.permssion = permssion;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
-    public void setCreateTime(Date createTime) {
+
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
     

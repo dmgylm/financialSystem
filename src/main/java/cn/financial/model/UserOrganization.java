@@ -18,7 +18,7 @@ public class UserOrganization {
     private String parentId;//父节点
     private String orgName;//机构名称
     private String his_permission;//保存历史权限记录
-    private Date createTime; //创建时间
+    private String createTime; //创建时间
     
     public UserOrganization() {
         super();
@@ -104,11 +104,11 @@ public class UserOrganization {
         this.his_permission = his_permission;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
     

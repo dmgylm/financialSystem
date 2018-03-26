@@ -1,7 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
-
 public class UserRole {
     
     private String id;//用户角色关联表id
@@ -11,7 +9,7 @@ public class UserRole {
     private String realName;//真实姓名
     private String name;//姓名
     private String jobNumber;//工号
-    private Date createTime; //创建时间
+    private String createTime; //创建时间
     
     public UserRole() {
         super();
@@ -73,11 +71,11 @@ public class UserRole {
         this.jobNumber = jobNumber;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
     

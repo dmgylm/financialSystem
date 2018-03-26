@@ -1,6 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
 /**
  * 资源权限表
  * @author gs
@@ -14,8 +13,8 @@ public class Resource {
     private String parentId;//父id
     private String permssion;//权限
     private Integer status;//删除状态0表示删除1表示存在
-    private Date createTime;//创建时间
-    private Date updateTime;//修改时间
+    private String createTime;//创建时间
+    private String updateTime;//修改时间
  
     public Resource() {
         super();
@@ -77,19 +76,19 @@ public class Resource {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
     
