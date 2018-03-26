@@ -96,32 +96,64 @@ public class MessageController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         List<Message> list = null;
+        
+        String themeStr = request.getParameter("theme");
+        String content = request.getParameter("content");
+        String createTime = request.getParameter("createTime");
+        String updateTime = request.getParameter("updateTime");
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        int theme = 0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         int unreadmessage=0;
         try {
-        	User user = (User) request.getAttribute("user");
-        			map.put("uId", user.getId());
-        			if (request.getParameter("status")!=null) {
+	        	if (content != null && !"".equals(content)) {
+	                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+	            }
+	            if (createTime != null && !"".equals(createTime)) {
+	            	createTimeOfDate = dateFormat.parse(createTime);
+	            	createTime = dateFormat.format(createTimeOfDate);
+	            }
+	            if (updateTime != null && !"".equals(updateTime)) {
+	            	updateTimeOfDate = dateFormat.parse(updateTime);
+	            	updateTime = dateFormat.format(updateTimeOfDate);
+	            }
+	            if (themeStr != null && !"".equals(themeStr)) {
+	                theme = Integer.parseInt(themeStr);
+	            }
+        	
+        		User user = (User) request.getAttribute("user");
+        		map.put("uId", user.getId());
+        		if (request.getParameter("status")!=null) {
                 		
-                		String status =request.getParameter("status");
-                		if(status=="2") {
-                			map.put("isTag", '1');
-                		}else {
-                			map.put("status", status);
-                		}
+                	String status =request.getParameter("status");
+                	if(status=="2") {
+                		map.put("isTag", "1");
+                	}else {
+                		map.put("status", status);
+                		map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
                 	}
-        			
-                    list = messageService.listMessage(map);
+                }
+        		
+        		 map.put("id", request.getParameter("id"));// 消息id
+                 map.put("theme", theme);// 消息主题
+                 map.put("content", content);// 消息内容
+                 map.put("uId", request.getParameter("uId"));// 消息来源
+                 map.put("createTime", createTime);// 创建时间
+                 map.put("updateTime", updateTime);// 更新时间
+                
+                 list = messageService.listMessage(map);
                   
-                    for(int k=0;k<list.size();k++) {
-                    	if(list.get(k).getStatus()==0) {
-                    		unreadmessage+=1;
-                    	}
+                for(int k=0;k<list.size();k++) {
+                    if(list.get(k).getStatus()==0) {
+                    	unreadmessage+=1;
                     }
-            		
-            dataMap.put("resultstatus", unreadmessage);//未读的条数
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
-            dataMap.put("resultData", list);
+                }
+                
+                dataMap.put("resultstatus", unreadmessage);//未读的条数
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultData", list);
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
@@ -137,7 +169,7 @@ public class MessageController {
      * @param response
      * @return
      */
-    @RequiresPermissions("capital:view")
+    /*@RequiresPermissions("capital:view")
     @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -186,7 +218,7 @@ public class MessageController {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
-    }
+    }*/
 
     /**
      * 根据ID查询消息
