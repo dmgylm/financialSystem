@@ -13,7 +13,7 @@
 			jdbcType="INTEGER"></result>
 		<result property="content" column="content" javaType="string"
 			jdbcType="VARCHAR"></result>
-		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<result property="oId" column="oId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="isTag" column="isTag" javaType="int"
 			jdbcType="INTEGER"></result>
 		<result property="createTime" column="createTime" javaType="java.sql.Date"
@@ -30,19 +30,20 @@
 		status,
 		theme,
 		content,
-		uId,
+		oId,
 		isTag,
-		suId,
-		createTime
+		sName,
+		createTime,
+		uId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{suId,jdbcType=VARCHAR},curdate())
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的消息
 	<select id="listMessage" resultMap="messageResultMap">
 		select
-		id,status,theme,content,uId,isTag,createTime,updateTime
+		id,status,theme,content,oId,isTag,createTime,updateTime
 		from
 		message
 		order by
@@ -52,7 +53,7 @@
 	<!-- 根据条件查询消息 -->
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
 		select
-		id,status,theme,content,uId,isTag,createTime,updateTime
+		id,status,theme,content,oId,isTag,createTime,updateTime
 		from
 		message
 		where
@@ -66,7 +67,7 @@
 	<select id="getMessageById" parameterType="java.lang.String"
 		resultMap="messageResultMap">
 		select
-		id,status,theme,content,uId,isTag,createTime,updateTime
+		id,status,theme,content,oId,isTag,createTime,updateTime
 		from
 		message
 		where
@@ -87,11 +88,11 @@
 			<if test="content!=null and content!=''">
 				,content = #{content,jdbcType=VARCHAR}
 			</if>
-			<if test="uId!=null and uId!=''">
-				,uId = #{uId,jdbcType=VARCHAR}
+			<if test="oId!=null and oId!=''">
+				,oId = #{oId,jdbcType=VARCHAR}
 			</if>
-			<if test="suId!=null and suId!=''">
-				,suId = #{suId,jdbcType=VARCHAR}
+			<if test="soId!=null and soId!=''">
+				,sName = #{sName,jdbcType=VARCHAR}
 			</if>
 			<if test="isTag!=null and isTag!=''">
 				,isTag = #{isTag,jdbcType=INTEGER}
@@ -110,12 +111,9 @@
 	</delete>
 	<!-- 根据消息状态展示消息列表  -->
 	<select id="listMessage" parameterType="map" resultMap="messageResultMap">
-		select
-			status,theme,content,suId,isTag,createTime
-		from
-		message 
-		where
-		uId=#{uId}
+		select * from message where oid in
+		(select oid from user_organization_mapping where uid=#{uId}) or uid=#{uId}
+
 		<if test="isTag!=null and isTag!=''">
 			and isTag=#{isTag,jdbcType=INTEGER}
 		</if>
@@ -138,11 +136,11 @@
 		<if test="content!=null and content!=''">
 			and content = #{content,jdbcType=VARCHAR}
 		</if>
-		<if test="uId!=null and uId!=''">
-			and uId = #{uId,jdbcType=VARCHAR}
+		<if test="oId!=null and oId!=''">
+			and oId = #{oId,jdbcType=VARCHAR}
 		</if>
-		<if test="suId!=null and suId!=''">
-			and suId = #{suId,jdbcType=VARCHAR}
+		<if test="sName!=null and sName!=''">
+			and sName = #{sName,jdbcType=VARCHAR}
 		</if>
 		<if test="createTime!=null and createTime!=''">
 			and createTime = #{createTime,jdbcType=DATE}
