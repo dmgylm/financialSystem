@@ -16,14 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
-import cn.financial.service.impl.RoleResourceServiceImpl;
-import cn.financial.service.impl.UserRoleServiceImpl;
-import cn.financial.util.CurrentUser;
+import cn.financial.service.RoleResourceService;
+import cn.financial.service.UserRoleService;
 
 
 
@@ -37,9 +35,9 @@ import cn.financial.util.CurrentUser;
 public class MainController {
     
     @Autowired
-    private UserRoleServiceImpl userRoleService;
+    private UserRoleService userRoleService;
     @Autowired
-    private RoleResourceServiceImpl roleResourceService;
+    private RoleResourceService roleResourceService;
     /**
      * login
      * @param request
@@ -48,32 +46,24 @@ public class MainController {
      */
     @RequestMapping(value="/login")
     public String login(HttpServletRequest request,HttpServletResponse respons ,Model model){
-        //String exceptionClassName = (String)request.getAttribute("shiroLoginFailure");
-        String error = null;
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));
         try {
             subject.login(token);
         } catch (UnknownAccountException e) {
-            System.out.println( "用户名/密码错误");
-            error = "用户名/密码错误11111";  
+            System.out.println( "帐号不存在");
+            model.addAttribute("msg","帐号不存在");
         } catch (IncorrectCredentialsException e) { 
             System.out.println( "用户名/密码错误");
-            error = "用户名/密码错误222";  
+            model.addAttribute("msg","用户名/密码错误"); 
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("登录失败多次，账户锁定10分钟");
-            error = "登录失败多次，账户锁定10分钟";  
+            model.addAttribute("msg","登录失败多次，账户锁定10分钟");
         } catch (AuthenticationException e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            error = "其他错误：" + e.getMessage();  
+            model.addAttribute("msg","其他错误：" + e.getMessage());
         } 
-        /*if (error != null) {// 出错了，返回登录页面  
-            request.setAttribute("error", error);  
-            return "/login";  
-        } else {// 登录成功  
-            return "/index";  
-        }*/
         return "/login"; 
     }
     /**
