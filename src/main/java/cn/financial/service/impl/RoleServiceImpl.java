@@ -15,14 +15,14 @@ public class RoleServiceImpl implements RoleService{
     @Autowired
     private RoleDAO roleDao;
     /**
-     * 查询全部角色
+     * 查询全部角色/根据roleName查询
      */
     @Override
-    public List<Role> listRole() {
-        return roleDao.listRole();
+    public List<Role> listRole(String roleName) {
+        return roleDao.listRole(roleName);
     }
     /**
-     * 根据id查询角色
+     * 根据roleId查询角色
      */
     @Override
     public Role getRoleById(String roleId) {
