@@ -1,6 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
 
 public class Organization {
 
