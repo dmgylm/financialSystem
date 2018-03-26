@@ -23,10 +23,10 @@ import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
 import cn.financial.service.OrganizationService;
-import cn.financial.service.impl.RoleServiceImpl;
-import cn.financial.service.impl.UserOrganizationServiceImpl;
-import cn.financial.service.impl.UserRoleServiceImpl;
-import cn.financial.service.impl.UserServiceImpl;
+import cn.financial.service.RoleService;
+import cn.financial.service.UserOrganizationService;
+import cn.financial.service.UserRoleService;
+import cn.financial.service.UserService;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -38,15 +38,15 @@ import cn.financial.util.UuidUtil;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserServiceImpl userService;
+    private UserService userService;
     @Autowired
     private OrganizationService organizationService;
     @Autowired
-    UserOrganizationServiceImpl userOrganizationService;
+    private UserOrganizationService userOrganizationService;
     @Autowired
-    RoleServiceImpl roleService;
+    private RoleService roleService;
     @Autowired
-    UserRoleServiceImpl userRoleService;
+    private UserRoleService userRoleService;
     
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
@@ -356,7 +356,7 @@ public class UserController {
      * @param response
      */
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/userOrganization/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
     public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -384,7 +384,7 @@ public class UserController {
      * @param response
      */
     @RequiresPermissions("organization:create")
-    @RequestMapping(value = "/userOrganization/insert", method = RequestMethod.POST)
+    @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
