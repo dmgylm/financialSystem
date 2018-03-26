@@ -122,12 +122,16 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public String TreeByIdForSon(String id) {
+        List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            // List<Organization> list =
+            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 List<TreeNode<Organization>> nodes = new ArrayList<>();
                 String jsonStr = "";
@@ -152,17 +156,45 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public List<Organization> listTreeByIdForSon(String id) {
+        List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+        list.add(organizationByIds.get(0));
         if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            // List<Organization> list =
+            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 return list;
             }
         }
-        return null;
+        return list;
+    }
+
+    /**
+     * @Description: 递归查询组织机构
+     * @param @param departList
+     * @param @param departId 设定文件
+     * @return
+     */
+    public void getOrganizationSonList(List<Organization> departList, String departId) {
+        try {
+            Map<Object, Object> map = new HashMap<>();
+            map.put("parentId", departId);
+            List<Organization> list = organizationDAO.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(list)) {
+                Iterator<Organization> iterator = list.iterator();
+                while (iterator.hasNext()) {
+                    Organization organization = iterator.next();
+                    departList.add(organization);
+                    getOrganizationSonList(departList, organization.getCode());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
