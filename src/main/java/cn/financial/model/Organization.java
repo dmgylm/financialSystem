@@ -1,6 +1,11 @@
 package cn.financial.model;
 
-
+/**
+ * 组织架构实体类
+ * 
+ * @author zlf 2018/01/13
+ *
+ */
 public class Organization {
 
     private String id; // 组织架构表id
