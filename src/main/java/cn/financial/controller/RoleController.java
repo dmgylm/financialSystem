@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
@@ -31,9 +34,9 @@ import cn.financial.util.UuidUtil;
 @RequestMapping("/role")
 public class RoleController {
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
     @Autowired
-    RoleResourceService roleResourceService;
+    private RoleResourceService roleResourceService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     /**
@@ -101,15 +104,19 @@ public class RoleController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String roleName = request.getParameter("roleName");
+            String createTime = request.getParameter("createTime");
             if(roleName == null || "".equals(roleName)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "角色名称为空");
+            }else if(createTime == null || "".equals(createTime)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "创建时间为空");
             }else{
                 roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
                 Role role = new Role();
                 role.setId(UuidUtil.getUUID());
                 role.setRoleName(roleName);
-                role.setCreateTime(new Date());
+                role.setCreateTime(createTime);
                 int roleList = roleService.insertRole(role);
                 if(roleList>0){
                     dataMap.put("resultCode", 200);
@@ -141,15 +148,19 @@ public class RoleController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             String roleName = request.getParameter("roleName");
+            String updateTime = request.getParameter("updateTime");
             if(roleName == null || "".equals(roleName)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "角色名称为空");
+            }else if(updateTime == null || "".equals(updateTime)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改时间为空");
             }else{
                 roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
                 Role role = new Role();
                 role.setId(UuidUtil.getUUID());
                 role.setRoleName(roleName);
-                role.setUpdateTime(new Date());
+                role.setUpdateTime(updateTime);
                 Integer roleList = roleService.updateRole(role);
                 if(roleList>0){
                     dataMap.put("resultCode", 200);
@@ -242,18 +253,38 @@ public class RoleController {
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            RoleResource roleResource = new RoleResource();
-            roleResource.setId(UuidUtil.getUUID());
-            roleResource.setsId(request.getParameter("sId"));
-            roleResource.setrId(request.getParameter("rId"));
-            roleResource.setCreateTime(new Date());
-            int roleResourceList = roleResourceService.insertRoleResource(roleResource);
-            if(roleResourceList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
-            }else{
+            String createTime = request.getParameter("creatTime");
+            String resourceId = request.getParameter("resourceId");
+            if(createTime == null || "".equals(createTime)){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultDesc", "创建时间为空");
+            }else if(resourceId == null || "".equals(resourceId)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "资源权限id为空");
+            }else{
+                JSONArray sArray = JSON.parseArray(resourceId);
+                int roleResourceList = 0;
+                RoleResource roleResource = null;
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String resourceIdStr = (String)object.get("resourceId");
+                    System.out.println("resouceId:==="+resourceIdStr);
+                    if(resourceIdStr!=null && !"".equals(resourceIdStr)){
+                        roleResource = new RoleResource();
+                        roleResource.setId(UuidUtil.getUUID());
+                        roleResource.setsId(resourceIdStr);
+                        roleResource.setrId(request.getParameter("rId"));
+                        roleResource.setCreateTime(createTime);
+                        roleResourceList = roleResourceService.insertRoleResource(roleResource);
+                    }
+                }
+                if(roleResourceList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "新增成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "新增失败");
+                } 
             }
             
         } catch (Exception e) {

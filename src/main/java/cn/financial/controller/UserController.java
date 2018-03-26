@@ -17,13 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import cn.financial.model.Organization;
-import cn.financial.model.Role;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
-import cn.financial.service.OrganizationService;
-import cn.financial.service.RoleService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
@@ -40,11 +40,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private OrganizationService organizationService;
-    @Autowired
     private UserOrganizationService userOrganizationService;
-    @Autowired
-    private RoleService roleService;
     @Autowired
     private UserRoleService userRoleService;
     
@@ -217,6 +213,7 @@ public class UserController {
             String name = new String(request.getParameter("name"));
             String realName = new String(request.getParameter("realName"));
             String jobNumber = request.getParameter("jobNumber");
+            String createTime = request.getParameter("createTime");
             if(name == null || "".equals(name)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名为空");
@@ -226,6 +223,9 @@ public class UserController {
             }else if(jobNumber == null || "".equals(jobNumber)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "工号为空");
+            }else if(createTime == null || "".equals(createTime)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "创建时间为空");
             }else{
                 Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
                 if(flag>0){
@@ -240,7 +240,7 @@ public class UserController {
                     user.setRealName(realName);
                     user.setPwd(name);//用户新增默认密码为用户名
                     user.setJobNumber(jobNumber);
-                    user.setCreateTime(new Date());
+                    user.setCreateTime(createTime);
                     int userList = userService.insertUser(user);
                     if(userList>0){
                         dataMap.put("resultCode", 200);
@@ -279,6 +279,7 @@ public class UserController {
             String realName = new String(request.getParameter("realName"));
             String pwd = request.getParameter("pwd");
             String jobNumber = request.getParameter("jobNumber");
+            String updateTime = request.getParameter("updateTime");
             if(name == null || "".equals(name)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户名为空");
@@ -294,6 +295,9 @@ public class UserController {
             }else if(jobNumber == null || "".equals(jobNumber)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "工号为空");
+            }else if(updateTime == null || "".equals(updateTime)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改时间为空");
             }else{
                 name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
                 realName = new String(realName.getBytes("ISO-8859-1"), "UTF-8");
@@ -303,7 +307,7 @@ public class UserController {
                 user.setRealName(realName);
                 user.setPwd(pwd);
                 user.setJobNumber(jobNumber);
-                user.setUpdateTime(new Date());
+                user.setUpdateTime(updateTime);
                 Integer userList = userService.updateUser(user);
                 if(userList>0){
                     dataMap.put("resultCode", 200);
@@ -393,36 +397,42 @@ public class UserController {
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String orgName = request.getParameter("orgName");
+            String orgId = request.getParameter("orgId");
             String uId = request.getParameter("uId");
+            String createTime = request.getParameter("createTime");
             if(uId == null || "".equals(uId)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户id为空"); 
-            }else if (orgName == null || "".equals(orgName)) {
+            }else if (orgId == null || "".equals(orgId)) {
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "组织结构名为空"); 
+                dataMap.put("resultDesc", "组织结构id为空"); 
+            }else if (createTime == null || "".equals(createTime)) {
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "创建时间为空"); 
             }else{
-                orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
-                Map<Object, Object> map = new HashMap<>();
-                map.put("orgName", orgName);// 根据组织架构名查询id
-                List<Organization> list = organizationService.listOrganizationBy(map);
-                if(list.size()>0){
-                    UserOrganization userOrganization = new UserOrganization();
-                    userOrganization.setId(UuidUtil.getUUID());
-                    for(Organization organization:list){
-                        userOrganization.setoId(organization.getId());
-                    }
-                    userOrganization.setuId(uId);
-                    userOrganization.setCreateTime(new Date());
-                    int userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
-                    if(userOrganizationList>0){
-                        dataMap.put("resultCode", 200);
-                        dataMap.put("resultDesc", "新增成功");
-                    }else{
-                        dataMap.put("resultCode", 400);
-                        dataMap.put("resultDesc", "新增失败");
+                JSONArray sArray = JSON.parseArray(orgId);
+                int userOrganizationList = 0;
+                UserOrganization userOrganization = null;
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String orgIdStr =(String)object.get("orgId");
+                    System.out.println("organizationId:==="+orgIdStr);
+                    if(orgIdStr!=null && !"".equals(orgIdStr)){
+                        userOrganization = new UserOrganization();
+                        userOrganization.setId(UuidUtil.getUUID());
+                        userOrganization.setoId(orgIdStr);
+                        userOrganization.setuId(uId);
+                        userOrganization.setCreateTime(createTime);
+                        userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
                     }
                 }
+                if(userOrganizationList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "新增成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "新增失败");
+                } 
             }
             
         } catch (Exception e) {
@@ -475,33 +485,41 @@ public class UserController {
     public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleName = request.getParameter("roleName");
+            String roleId = request.getParameter("roleId");//前台传入的数据是JSON格式
             String uId = request.getParameter("uId");
-            if (roleName == null || "".equals(roleName)) {
+            String createTime = request.getParameter("createTime");
+            if (roleId == null || "".equals(roleId)) {
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "角色名为空"); 
+                dataMap.put("resultDesc", "角色id为空"); 
             }else if(uId == null || "".equals(uId)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "用户id为空"); 
+            }else if(createTime == null || "".equals(createTime)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "创建时间为空"); 
             }else{
-                roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
-                List<Role> roleList= roleService.listRole(roleName);//根据roleName查询角色id
-                if(roleList.size()>0){
-                    UserRole userRole = new UserRole();
-                    userRole.setId(UuidUtil.getUUID());
-                    for(Role list:roleList){
-                        userRole.setrId(list.getId());
+                JSONArray sArray = JSON.parseArray(roleId);
+                int userRoleList = 0;
+                UserRole userRole = null; 
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String roleStr =(String)object.get("roleId");
+                    System.out.println("roleId:==="+roleStr);
+                    if(roleStr!=null && !"".equals(roleStr)){
+                        userRole = new UserRole();
+                        userRole.setId(UuidUtil.getUUID());
+                        userRole.setrId(roleStr);
+                        userRole.setuId(uId);
+                        userRole.setCreateTime(createTime);
+                        userRoleList = userRoleService.insertUserRole(userRole);
                     }
-                    userRole.setuId(uId);
-                    userRole.setCreateTime(new Date());
-                    int userRoleList = userRoleService.insertUserRole(userRole);
-                    if(userRoleList>0){
-                        dataMap.put("resultCode", 200);
-                        dataMap.put("resultDesc", "新增成功");
-                    }else{
-                        dataMap.put("resultCode", 400);
-                        dataMap.put("resultDesc", "新增失败");
-                    }
+                }  
+                if(userRoleList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "新增成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "新增失败");
                 }
             }
             
