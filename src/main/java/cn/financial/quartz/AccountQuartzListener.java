@@ -88,7 +88,7 @@ public class AccountQuartzListener implements ServletContextListener {
 						String job_name = "预算表单消息提示定时器"+i ;
 						
 						try {
-								QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 30 16 * * ? *" , JSONObject
+								QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 1 1 * ?" , JSONObject
 										.fromObject(message));
 						} catch (SchedulerException e) {
 								e.printStackTrace();
@@ -107,7 +107,7 @@ public class AccountQuartzListener implements ServletContextListener {
 					String job_name = "损益表单消息提示定时器"+i ; 
 					
 					try {
-							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 30 16 * * ? *" , JSONObject
+							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 11 * ? *" , JSONObject
 									.fromObject(message));
 					} catch (SchedulerException e) {
 							e.printStackTrace();
@@ -130,7 +130,7 @@ public class AccountQuartzListener implements ServletContextListener {
 					String job_name = "关账消息提示定时器"+i ; 
 					
 					try {
-							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 30 16 * * ? *" , JSONObject
+							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 5 * ? *" , JSONObject
 									.fromObject(message));
 					} catch (SchedulerException e) {
 							e.printStackTrace();
