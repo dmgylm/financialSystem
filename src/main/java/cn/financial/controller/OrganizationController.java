@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
@@ -51,17 +50,25 @@ public class OrganizationController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        String orgName = null;
+        String parentOrgId = null;
+        String uId = null;
         try {
             String uuid = UuidUtil.getUUID();
-            String orgName = request.getParameter("orgName");
-            String parentOrgId = request.getParameter("parentOrgId");
-            if (orgName != null && !"".equals(orgName)) {
+            if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
+                orgName = request.getParameter("orgName");
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            if (null != request.getParameter("parentOrgId") && !"".equals(request.getParameter("parentOrgId"))) {
+                parentOrgId = request.getParameter("parentOrgId");
+            }
+            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
+                uId = request.getParameter("uId");
             }
             Organization organization = new Organization();
             organization.setId(uuid);// 组织结构id
             organization.setOrgName(orgName);// 组织架构名
-            organization.setuId(request.getParameter("uId"));// 提交人id
+            organization.setuId(uId);// 提交人id
             // 新增的时候这里保存的是此节点的code
             Integer i = organizationService.saveOrganization(organization, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
@@ -80,29 +87,6 @@ public class OrganizationController {
     }
 
     /**
-     * 查询所有的组织结构信息
-     * 
-     * @param request
-     * @param response
-     */
-    @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public Map<String, Object> listOrganization(HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        try {
-            List<Organization> list = organizationService.listOrganization();
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
-            dataMap.put("resultData", list);
-        } catch (Exception e) {
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询失败!");
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-
-    /**
      * 根据条件查询组织结构信息
      * 
      * @param request
@@ -113,28 +97,47 @@ public class OrganizationController {
     @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String orgName = null;
+        String createTime = null;
+        String updateTime = null;
+        Date createTimeOfDate = null;
+        Date updateTimeOfDate = null;
+        String id = null;
+        String code = null;
+        String uId = null;
+        String parentId = null;
         try {
-            String orgName = request.getParameter("orgName");
-            String createTime = request.getParameter("createTime");
-            String updateTime = request.getParameter("updateTime");
-            Date createTimeOfDate = null;
-            Date updateTimeOfDate = null;
-            if (orgName != null && !"".equals(orgName)) {
+            if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
+                orgName = request.getParameter("orgName");
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if (createTime != null && !"".equals(createTime)) {
-                createTimeOfDate = dateFormat.parse(createTime);
+            if (null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+                createTime = request.getParameter("createTime");
+                createTimeOfDate = format.parse(createTime);
             }
-            if (updateTime != null && !"".equals(updateTime)) {
-                updateTimeOfDate = dateFormat.parse(updateTime);
+            if (null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+                updateTime = request.getParameter("updateTime");
+                updateTimeOfDate = format.parse(updateTime);
+            }
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            if (null != request.getParameter("code") && !"".equals(request.getParameter("code"))) {
+                code = request.getParameter("code");
+            }
+            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
+                uId = request.getParameter("uId");
+            }
+            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
+                parentId = request.getParameter("parentId");
             }
             Map<Object, Object> map = new HashMap<>();
-            map.put("id", request.getParameter("id")); // 组织结构id
-            map.put("code", request.getParameter("code"));// 该组织机构节点的序号
+            map.put("id", id); // 组织结构id
+            map.put("code", code);// 该组织机构节点的序号
             map.put("orgName", orgName);// 组织架构名
-            map.put("uId", request.getParameter("uId"));// 提交人id
-            map.put("parentId", request.getParameter("parentId"));// 父id
+            map.put("uId", uId);// 提交人id
+            map.put("parentId", parentId);// 父id
             map.put("createTime", createTimeOfDate);// 创建时间
             map.put("updateTime", updateTimeOfDate);// 更新时间
             List<Organization> list = organizationService.listOrganizationBy(map);
@@ -150,57 +153,49 @@ public class OrganizationController {
     }
 
     /**
-     * 根据ID查询组织结构信息
-     * 
-     * @param request
-     * @param id
-     *            要查询组织结构的ID（required = true，必须存在）
-     * @return
-     */
-    @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/getbyid", method = RequestMethod.POST)
-    public Map<String, Object> getOrganizationById(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        try {
-            Organization organization = organizationService.getOrganizationById(id);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
-            dataMap.put("resultData", organization);
-        } catch (Exception e) {
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询失败!");
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-
-    /**
-     * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
+     * 根据id修改组织结构信息,必要参数Id
      * 
      * @param request
      * @param response
-     * @param id
-     *            组织结构id（required = true，必须存在）
      * @return
      */
     @RequiresPermissions("organization:update")
     @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
-    public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(value = "id", required = true) String id) {
+    public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        String orgName = null;
+        String id = null;
+        String code = null;
+        String uId = null;
+        String parentId = null;
+        String his_permission = null;
         try {
-            String orgName = request.getParameter("orgName");
-            if (orgName != null && !"".equals(orgName)) {
+            if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
+                orgName = request.getParameter("orgName");
                 orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            if (null != request.getParameter("code") && !"".equals(request.getParameter("code"))) {
+                code = request.getParameter("code");
+            }
+            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
+                uId = request.getParameter("uId");
+            }
+            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
+                parentId = request.getParameter("parentId");
+            }
+            if (null != request.getParameter("his_permission") && !"".equals(request.getParameter("his_permission"))) {
+                his_permission = request.getParameter("his_permission");
             }
             Map<Object, Object> map = new HashMap<>();
             map.put("id", id);// 组织id
-            map.put("code", request.getParameter("code"));// 该组织机构节点的序号
+            map.put("code", code);// 该组织机构节点的序号
             map.put("orgName", orgName);// 组织架构名
-            map.put("uId", request.getParameter("uId"));// 提交人id
-            map.put("parentId", request.getParameter("parentId"));// 父id
-            map.put("his_permission", request.getParameter("his_permission"));// 历史权限记录
+            map.put("uId", uId);// 提交人id
+            map.put("parentId", parentId);// 父id
+            map.put("his_permission", his_permission);// 历史权限记录
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -218,26 +213,27 @@ public class OrganizationController {
     }
 
     /**
-     * 伪删除 <根据组织结构ID修改状态为0，即已删除>,停用(单条停用)
+     * 停用(单条停用)，根据组织结构ID修改状态为0，即已停用
      * 
      * @param request
-     * @param id
-     *            传入的组织结构id（required = true，必须存在）
      * @return
      */
     @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebystatus", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
+    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        String id = null;
         try {
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
             Integer i = organizationService.deleteOrganizationByStatus(id);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功!");
+                dataMap.put("resultDesc", "停用成功!");
             } else {
                 dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除失败!");
+                dataMap.put("resultDesc", "停用失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
@@ -248,26 +244,27 @@ public class OrganizationController {
     }
 
     /**
-     * 伪删除 <根据组织结构ID修改状态为0，即已删除>,停用(级联停用，将此节点下的所有子节点停用)
+     * 停用(级联停用，将此节点下的所有子节点停用)，根据组织结构ID修改状态为0，即已停用
      * 
      * @param request
-     * @param id
-     *            传入的组织结构id（required = true，必须存在）
      * @return
      */
     @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebycascade", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
+    public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        String id = null;
         try {
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
             Integer i = organizationService.deleteOrganizationByStatusCascade(id);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功!");
+                dataMap.put("resultDesc", "停用成功!");
             } else {
                 dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除失败!");
+                dataMap.put("resultDesc", "停用失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
@@ -278,38 +275,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件删除组织结构信息 （这个方法已标记为过时，请使用deleteOrganizationByStatus方法来删除）
-     * 
-     * @param request
-     * @param id
-     *            传入的组织结构id（required = true，必须存在）
-     * @return
-     */
-    @RequiresPermissions("organization:update")
-    @Deprecated
-    @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationById(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        try {
-            Integer i = organizationService.deleteOrganizationById(id);
-            if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功!");
-            } else {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除失败!");
-            }
-        } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-
-    /**
-     * 传入一个节点的id查询所有该节点的子节点,构建tree的string字符串
+     * 根据id查询所有该节点的子节点,构建tree的string字符串
      * 
      * @param request
      * @param response
@@ -319,8 +285,12 @@ public class OrganizationController {
     @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        String id = null;
         try {
-            String jsonTree = organizationService.TreeByIdForSon(request.getParameter("id"));
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            String jsonTree = organizationService.TreeByIdForSon(id);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", jsonTree);
@@ -333,7 +303,7 @@ public class OrganizationController {
     }
 
     /**
-     * 传入一个节点的id查询所有该节点的父节点
+     * 根据id查询所有该节点的父节点
      * 
      * @param request
      * @param response
@@ -343,8 +313,12 @@ public class OrganizationController {
     @RequestMapping(value = "/getparnode", method = RequestMethod.POST)
     public Map<Object, Object> getParnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        String id = null;
         try {
-            List<Organization> list = organizationService.listTreeByIdForParent(request.getParameter("id"));
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            List<Organization> list = organizationService.listTreeByIdForParent(id);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
@@ -369,21 +343,22 @@ public class OrganizationController {
     @RequestMapping(value = "/move", method = RequestMethod.POST)
     public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        dataMap.put("resultCode", 200);
-        dataMap.put("resultDesc", "移动失败");
-        String id = request.getParameter("id");
-        String parentOrgId = request.getParameter("parentOrgId");
-        if (id == null && "".equals(id)) {
-            return dataMap;
-        }
-        if (parentOrgId == null && "".equals(parentOrgId)) {
-            return dataMap;
-        }
+        String id = null;
+        String parentOrgId = null;
         try {
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
+                parentOrgId = request.getParameter("parentId");
+            }
             Integer i = organizationService.moveOrganization(id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "移动成功!");
+            } else {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "移动失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
@@ -394,7 +369,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
+     * 根据id或者name判断是否该节点存在子节点（这里的name必须是公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
      * 
      * @param request
      * @param response
@@ -403,11 +378,20 @@ public class OrganizationController {
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/hasSon", method = RequestMethod.POST)
     public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("id", request.getParameter("id"));// 组织id
-        map.put("orgName", request.getParameter("orgName"));// 组织架构名
+        String orgName = null;
+        String id = null;
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
+            if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
+                orgName = request.getParameter("orgName");
+                orgName = new String(orgName.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+                id = request.getParameter("id");
+            }
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);
+            map.put("orgName", orgName);
             Boolean flag = organizationService.hasOrganizationSon(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");

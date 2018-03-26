@@ -12,9 +12,9 @@ public class Organization {
 
     private String orgName; // 组织架构名
 
-    private Date createTime; // 创建时间
+    private String createTime; // 创建时间
 
-    private Date updateTime; // 更新时间
+    private String updateTime; // 更新时间
 
     private String uId; // 提交人id
 
@@ -48,19 +48,19 @@ public class Organization {
         this.orgName = orgName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

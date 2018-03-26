@@ -21,27 +21,12 @@ public interface OrganizationDAO {
     Integer saveOrganization(Organization organization);
 
     /**
-     * 接口（查询所有的组织结构）
-     * 
-     * @return
-     */
-    List<Organization> listOrganization();
-
-    /**
      * 接口（条件查询组织结构信息）
      * 
      * @param map
      * @return
      */
     List<Organization> listOrganizationBy(Map<Object, Object> map);
-
-    /**
-     * 接口（根据id查询组织结构信息）
-     * 
-     * @param id
-     * @return
-     */
-    Organization getOrganizationById(String id);
 
     /**
      * 接口（根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id）
@@ -81,13 +66,5 @@ public interface OrganizationDAO {
      * @param code
      */
     List<Organization> listTreeByCodeForParent(String code);
-
-    /**
-     * 根据parentid查询节点信息
-     * 
-     * @param parentId
-     * @return
-     */
-    List<Organization> listByParentId(String parentId);
 
 }
