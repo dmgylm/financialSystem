@@ -18,11 +18,11 @@ public class ResourceServiceImpl implements ResourceService{
      * 查询全部角色
      */
     @Override
-    public List<Resource> listResource() {
+    public List<Resource> listResource(){
         return resourceDao.listResource();
     }
     /**
-     * 根据id/name查询角色
+     * 根据id/code查询角色
      */
     @Override
     public Resource getResourceById(String resourceId, String code) {
