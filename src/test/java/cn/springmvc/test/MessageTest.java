@@ -37,7 +37,7 @@ public class MessageTest {
         message.setTheme(1);
         message.setContent("2018年维修表格需要填写");
         message.setuId("1d9fa5e93ffe46d78bb351ac05e70420");
-        message.setsuId("rr");
+        message.setsName("rr");
         Integer i = service.saveMessage(message);
         System.out.println(i);
     }
@@ -47,34 +47,46 @@ public class MessageTest {
      */
     @Test
     public void listMessage() {
-    	Map<Object, Object> map = new HashMap<Object, Object>();
-    	
-    	map.put("uId","1d9fa5e93ffe46d78bb351ac05e70420" );
-    	map.put("isTag", 0);
-        List<Message> list = service.listMessage(map);
-        int wstatus=0;
-        for(int i=0;i<list.size();i++) {
-        	if(list.get(i).getStatus()==0) {
-        		wstatus+=1;
-        	}
-        }
-        System.out.println(wstatus);
-        for (Message message : list) {
+    	Map<Object,Object> map = new HashMap<Object,Object>();
+    	map.put("uId", "1d9fa5e93ffe46d78bb351ac05e70420");
+		
+		List<Message> list = service.listMessage(map);
+		
+		for (Message message : list) {
             System.out.println("status:" + message.getStatus());
             System.out.println("theme:" + message.getTheme());
             System.out.println("content:" + message.getContent());
-            System.out.println("suId:" + message.getsuId());
+            System.out.println("sName:" + message.getsName());
             System.out.println("createTime:" + message.getCreateTime());
             System.out.println("isTag:" + message.getIsTag());
+            System.out.println("oId:"+message.getoId());
+            System.out.println("uId:"+message.getuId());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
-    }
+            /*int wstatus=0;
+            for(int i=0;i<list.size();i++) {
+            	if(list.get(i).getStatus()==0) {
+            		wstatus+=1;
+            	}
+            }*/
+            //System.out.println("未读消息条数"+wstatus);
+            
+    	}
+    	/*map.put("uId","1d9fa5e93ffe46d78bb351ac05e70420" );
+    	map.put("oId", "");*/
+    	/*Calendar c = Calendar.getInstance();
+    	int month = c.get(Calendar.MONTH)+1;
+    	int year = c.get(Calendar.YEAR);
+    	System.out.println("当前月份"+month);
+    	System.out.println("当前年份"+year);*/
+    	//map.put("isTag", 0);
+    
 
     /**
      * 根据传入的map查询相应的消息表
      */
    
-    public void listMessageBy() {
+   /* public void listMessageBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
         //map.put("id", "aa897350206245f4aeac083865d948c3");
         //map.put("status", 1);
@@ -97,10 +109,10 @@ public class MessageTest {
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
-
+*/
     /**
      * 根据ID查询消息表
-     */
+     *//*
     public void getMessageById() {
         String id = "aa897350206245f4aeac083865d948c3";
         Message message = service.getMessageById(id);
@@ -114,7 +126,7 @@ public class MessageTest {
         System.out.println("isTag:" + message.getIsTag());
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
-
+*/
     /**
      * 根据条件修改消息表,这里是根据id来修改其他项,所以map中必须包含id
      */
@@ -131,9 +143,9 @@ public class MessageTest {
     /**
      * 删除（根据Id删除消息表）
      */
-    public void deleteMessaageById() {
+    /*public void deleteMessaageById() {
         String id = "ab55154719bc458f9985f84e05034196";
         Integer i = service.deleteMessageById(id);
         System.out.println(i);
-    }
+    }*/
 }
