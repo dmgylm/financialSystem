@@ -63,31 +63,36 @@ public class UserController {
         String newPwd = request.getParameter("newPwd");
         String userId = request.getParameter("userId");
         
+        User newuser = (User) request.getAttribute("user");
+        String pwd = userService.getUserById(newuser.getId()).getPwd();
+        
         try{
-            if(oldPwd == null || "".equals(oldPwd)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "旧密码为空");
-            }else if(newPwd == null || "".equals(newPwd)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新密码为空");
-            }else if(userId == null || "".equals(userId)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "用户id为空");
-            }else{
-                if(oldPwd.equals(newPwd)){
+            if(oldPwd.equals(pwd)) {//判断旧密码与原密码是否相等
+            	if(oldPwd == null || "".equals(oldPwd)){
                     dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "新旧密码一致");
+                    dataMap.put("resultDesc", "旧密码为空");
+                }else if(newPwd == null || "".equals(newPwd)){
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "新密码为空");
+                }else if(userId == null || "".equals(userId)){
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "用户id为空");
                 }else{
-                    User user = new User();
-                    user.setId(userId);
-                    user.setPwd(newPwd);
-                    Integer userList = userService.updateUser(user);
-                    if(userList>0){
-                        dataMap.put("resultCode", 200);
-                        dataMap.put("resultDesc", "修改成功");
-                    }else{
+                    if(oldPwd.equals(newPwd)){
                         dataMap.put("resultCode", 400);
-                        dataMap.put("resultDesc", "修改失败");
+                        dataMap.put("resultDesc", "新旧密码一致");
+                    }else{
+                        User user = new User();
+                        user.setId(userId);
+                        user.setPwd(newPwd);
+                        Integer userList = userService.updateUser(user);
+                        if(userList>0){
+                            dataMap.put("resultCode", 200);
+                            dataMap.put("resultDesc", "修改成功");
+                        }else{
+                            dataMap.put("resultCode", 400);
+                            dataMap.put("resultDesc", "修改失败");
+                        }
                     }
                 }
             }
