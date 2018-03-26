@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.financial.model.Message;
+import cn.financial.model.User;
 import cn.financial.service.MessageService;
-import cn.financial.util.UuidUtil;
 
 /**
  * 消息相关操作
@@ -95,23 +95,29 @@ public class MessageController {
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
+        List<Message> list = null;
+        int unreadmessage=0;
         try {
-        	if (request.getParameter("status")!=null) {
-        		
-        		String status =request.getParameter("status");
-        		if(status=="2") {
-        			map.put("isTag", '1');
-        		}else {
-        			map.put("status", status);
-        		}
-        	}
-            List<Message> list = messageService.listMessage(map);
-            int unreadmessage=0;
-            for(int i=0;i<list.size();i++) {
-            	if(list.get(i).getStatus()==0) {
-            		unreadmessage+=1;
-            	}
-            }
+        	User user = (User) request.getAttribute("user");
+        			map.put("uId", user.getId());
+        			if (request.getParameter("status")!=null) {
+                		
+                		String status =request.getParameter("status");
+                		if(status=="2") {
+                			map.put("isTag", '1');
+                		}else {
+                			map.put("status", status);
+                		}
+                	}
+        			
+                    list = messageService.listMessage(map);
+                  
+                    for(int k=0;k<list.size();k++) {
+                    	if(list.get(k).getStatus()==0) {
+                    		unreadmessage+=1;
+                    	}
+                    }
+            		
             dataMap.put("resultstatus", unreadmessage);//未读的条数
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
