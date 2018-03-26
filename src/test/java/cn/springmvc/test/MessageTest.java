@@ -49,6 +49,7 @@ public class MessageTest {
     public void listMessage() {
     	Map<Object,Object> map = new HashMap<Object,Object>();
     	map.put("uId", "1d9fa5e93ffe46d78bb351ac05e70420");
+    	map.put("status","2");
 		
 		List<Message> list = service.listMessage(map);
 		
