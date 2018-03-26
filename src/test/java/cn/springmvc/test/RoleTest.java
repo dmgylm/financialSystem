@@ -11,11 +11,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.Role;
-import cn.financial.service.impl.RoleServiceImpl;
+import cn.financial.service.RoleService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml" })
 /**
  * 角色测试
  * @author gs
@@ -23,7 +24,7 @@ import cn.financial.util.UuidUtil;
  */
 public class RoleTest {
     @Autowired
-    private RoleServiceImpl service;
+    private RoleService service;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
@@ -59,7 +60,7 @@ public class RoleTest {
     //查询全部
     @Test
     public void ListRoleTest() {
-        List<Role> role = service.listRole();
+        List<Role> role = service.listRole("制单员");
         for(Role list:role){
             String uTime = "";
             if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){

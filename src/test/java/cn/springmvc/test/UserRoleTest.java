@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import cn.financial.model.Role;
 import cn.financial.model.UserRole;
-import cn.financial.service.impl.UserRoleServiceImpl;
+import cn.financial.service.RoleService;
+import cn.financial.service.UserRoleService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
@@ -24,16 +26,24 @@ import cn.financial.util.UuidUtil;
  */
 public class UserRoleTest {
     @Autowired
-    private UserRoleServiceImpl service;
+    private UserRoleService service;
+    @Autowired
+    private RoleService roleService;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
     public void insertTest() {
+        List<Role> roleList= roleService.listRole("制单员");//根据roleName查询角色id
         UserRole userRole = new UserRole();
-        userRole.setId(UuidUtil.getUUID());
-        userRole.setrId("21b4e7dd874040d9afcc5256442031ef");
-        userRole.setuId("2ad46022ada048f1aedd6dc67cf8ac74");
-        userRole.setCreateTime(new Date());
+        if(roleList.size()>0){
+            userRole.setId(UuidUtil.getUUID());
+            for(Role list:roleList){
+                userRole.setrId(list.getId());
+                System.out.println("rId:==="+list.getId());
+            }
+            userRole.setuId("b7632238905a48a0b221264b4087ebf8");
+            userRole.setCreateTime(new Date());
+        }
         try {
             System.out.println(service.insertUserRole(userRole));
         } catch (Exception e) {
