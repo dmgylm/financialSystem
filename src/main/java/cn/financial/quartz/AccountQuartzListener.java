@@ -56,9 +56,9 @@ public class AccountQuartzListener implements ServletContextListener {
 		userRoleServiceImpl = (UserRoleServiceImpl) springContext
 				.getBean("UserRoleServiceImpl");
 		
-		if (springContext != null) {
+		if ( springContext != null ) {
 			
-			List<Organization> orglist = organizationService.listOrganization();
+			List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
 			
 			List<UserRole> rolelist = userRoleServiceImpl.listUserRole(null);
 			
@@ -67,14 +67,14 @@ public class AccountQuartzListener implements ServletContextListener {
 			int year = Calendar.getInstance().get(Calendar.YEAR);
 			int month = Calendar.getInstance().get(Calendar.MONTH);
 			
-			for(int i=0;i<orglist.size();i++) {
+			for( int i=0;i<orglist.size();i++ ) {
 				
 				map = new HashMap<Object, Object>();
 				map.put("id", orglist.get(i).getId());
 				
-				if(!organizationService.hasOrganizationSon(map)) {
+				if( !organizationService.hasOrganizationSon(map) ) {
 					
-					if(month+1 == 3) {
+					if( month+1 == 3 ) {
 						
 						Message message = new Message();
 						message.setId(UuidUtil.getUUID());
@@ -114,9 +114,9 @@ public class AccountQuartzListener implements ServletContextListener {
 					}
 				 }
 			}
-			for(int i =0;i<rolelist.size();i++) {
+			for( int i =0;i<rolelist.size();i++ ) {
 				
-				if(rolelist.get(i).getRoleName().equals("制单员")) {
+				if( rolelist.get(i).getRoleName().equals("制单员") ) {
 					
 					Message message = new Message();
 					message.setId(UuidUtil.getUUID());
