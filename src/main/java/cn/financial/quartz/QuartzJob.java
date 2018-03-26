@@ -39,8 +39,6 @@ public class QuartzJob implements Job{
 		if (i == 1) {
 			System.out.println("发送消息成功！");
 		}
-		
-	
-}
+	}
 }
 
