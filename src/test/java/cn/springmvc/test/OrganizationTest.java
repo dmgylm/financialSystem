@@ -35,9 +35,9 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("jshdksakdaj");
-        organization2.setuId("aaa");
-        Integer i = service.saveOrganization(organization2, "433971dcf96a4eb88fbb163f7ab56fce");
+        organization2.setOrgName("aa");
+        organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
+        Integer i = service.saveOrganization(organization2, "135831766bf544e4a7f0f34f058116e7");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -136,7 +136,6 @@ public class OrganizationTest {
             System.out.println("his_permission:" + organization.getHis_permission());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
-        System.out.println(list.size());
     }
 
     /**
@@ -163,8 +162,8 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "092ebe80f0754dc794990662e8cd0eac";
-        String parentOrgId = "465bb26f3b204ddc912ea9d12fb39ef1";
+        String id = "0cdf0dc7db3d4e80b54e64aa7c89402b";
+        String parentOrgId = "8a4efc7d9b1b4ab8965af0fa283457a0";
         service.moveOrganization(id, parentOrgId);
     }
 
