@@ -114,9 +114,7 @@
 		select * from message where oid in
 		(select oid from user_organization_mapping where uid=#{uId}) or uid=#{uId}
 
-		<if test="isTag!=null and isTag!=''">
-			and isTag=#{isTag,jdbcType=INTEGER}
-		</if>
+		<include refid="query_message_where"></include>
 		order by
 		createTime desc
 	</select>
