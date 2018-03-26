@@ -2,6 +2,8 @@ package cn.financial.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.Role;
 /**
  * 角色
@@ -10,12 +12,12 @@ import cn.financial.model.Role;
  */
 public interface RoleDAO {
     /**
-     * 查询所有角色
+     * 查询所有角色/根据roleName查询
      * @return
      */
-    List<Role> listRole();
+    List<Role> listRole(@Param("roleName")String roleName);
     /**
-     * 根据id查询角色
+     * 根据roleId查询角色
      * @param userId
      * @return
      */
