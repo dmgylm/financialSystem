@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -10,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import cn.financial.model.Role;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.UserRole;
-import cn.financial.service.RoleService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,25 +28,29 @@ import cn.financial.util.UuidUtil;
 public class UserRoleTest {
     @Autowired
     private UserRoleService service;
-    @Autowired
-    private RoleService roleService;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
     public void insertTest() {
-        List<Role> roleList= roleService.listRole("制单员");//根据roleName查询角色id
-        UserRole userRole = new UserRole();
-        if(roleList.size()>0){
-            userRole.setId(UuidUtil.getUUID());
-            for(Role list:roleList){
-                userRole.setrId(list.getId());
-                System.out.println("rId:==="+list.getId());
+        String roleIdStr = "[{\"roleId\":\"732a2b28ea63417fbeceee1ac907fb92\"},{\"roleId\":\"c368fdf292da47c28f8c95e9e6c9fc2c\"},{\"roleId\":\"7136b0ba498f465e975705add4643ba3\"},{\"roleId\":\"21b4e7dd874040d9afcc5256442031ef\"}]";
+        JSONArray sArray = JSON.parseArray(roleIdStr);
+        UserRole userRole = null;
+        int number = 0;
+        for (int i = 0; i < sArray.size(); i++) {
+            JSONObject object = (JSONObject) sArray.get(i);
+            String roleId =(String)object.get("roleId");
+            System.out.println("roleId:==="+roleId);
+            if(roleId!=null && !"".equals(roleId)){
+                    userRole = new UserRole();
+                    userRole.setId(UuidUtil.getUUID());
+                    userRole.setrId(roleId);
+                    userRole.setuId("b7632238905a48a0b221264b4087ebf8");
+                    userRole.setCreateTime("2018/3/26");
+                    number = service.insertUserRole(userRole);
             }
-            userRole.setuId("b7632238905a48a0b221264b4087ebf8");
-            userRole.setCreateTime(new Date());
         }
         try {
-            System.out.println(service.insertUserRole(userRole));
+            System.out.println(number);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -10,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.RoleResource;
-import cn.financial.service.impl.RoleResourceServiceImpl;
+import cn.financial.service.RoleResourceService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
@@ -24,18 +27,29 @@ import cn.financial.util.UuidUtil;
  */
 public class RoleResourceTest {
     @Autowired
-    private RoleResourceServiceImpl service;
+    private RoleResourceService service;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
     public void insertTest() {
-        RoleResource roleResource = new RoleResource();
-        roleResource.setId(UuidUtil.getUUID());
-        roleResource.setsId("");
-        roleResource.setrId("");
-        roleResource.setCreateTime(new Date());
+        String resourceIdStr = "[{\"resourceId\":\"0dd6008c6e7f4bce8e1d2ada94341ecf\"},{\"resourceId\":\"c653a61be62d40b3a9b1a69bad184a79\"},{\"resourceId\":\"69105bb7dd0b48e7ace9bc0a0538add9\"},{\"resourceId\":\"a59955f1ce99471ba901f8d7b9218b21\"}]";
+        JSONArray sArray = JSON.parseArray(resourceIdStr);
+        RoleResource roleResource = null;
+        int number = 0;
+        for (int i = 0; i < sArray.size(); i++) {
+            JSONObject object = (JSONObject) sArray.get(i);
+            String resourceId =(String)object.get("resourceId");
+            System.out.println("resouceId:==="+resourceId);
+            roleResource = new RoleResource();
+            roleResource.setId(UuidUtil.getUUID());
+            roleResource.setsId(resourceId);
+            roleResource.setrId("732a2b28ea63417fbeceee1ac907fb92");
+            roleResource.setCreateTime("2018/3/26");
+            number = service.insertRoleResource(roleResource);
+        }
+
         try {
-            System.out.println(service.insertRoleResource(roleResource));
+            System.out.println(number);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class ResourceTest {
         resource.setUrl("");
         resource.setParentId("44444444");
         resource.setPermssion("333");
-        resource.setCreateTime(new Date());
+        resource.setCreateTime("2018/3/26");
         try {
             System.out.println(service.insertResource(resource));
         } catch (Exception e) {
@@ -51,7 +50,7 @@ public class ResourceTest {
         resource.setUrl("/url/ttttt");
         resource.setParentId("6574323111111111");
         resource.setPermssion("76866432");
-        resource.setUpdateTime(new Date());
+        resource.setUpdateTime("2018/3/26");
         try {
             System.out.println(service.updateResource(resource));
         } catch (Exception e) {
@@ -68,13 +67,9 @@ public class ResourceTest {
     public void ListRoleTest() {
         List<Resource> resource = service.listResource();
         for(Resource list:resource){
-            String uTime = "";
-            if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
-                uTime = formatter.format(list.getUpdateTime());
-            }
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" code: "+list.getCode()+
                     " url: "+list.getUrl()+" parentId: "+list.getParentId()+" permssion: "+list.getPermssion()+
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime +"\n"); 
+                    " createTime: "+list.getCreateTime() +" updateTime: "+list.getUpdateTime() +"\n"); 
         }
         
     }
@@ -83,12 +78,8 @@ public class ResourceTest {
     public void ListByIdTest() {
         //35a51fa5b6ed49ad920b30055ea9f4c6  1
         Resource resource = service.getResourceById("","1");
-        String uTime = "";
-        if(resource.getUpdateTime()!=null && !"".equals(resource.getUpdateTime())){
-            uTime = formatter.format(resource.getUpdateTime());
-          }
         System.out.println("id: "+resource.getId()+" name: "+resource.getName()+" code: "+resource.getCode()+
                 " url: "+resource.getUrl()+" parentId: "+resource.getParentId()+" permssion: "+resource.getPermssion()+
-                " createTime: "+formatter.format(resource.getCreateTime())+" updateTime: "+uTime);
+                " createTime: "+resource.getCreateTime()+" updateTime: "+resource.getUpdateTime());
     }
 }

@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class RoleTest {
         Role role = new Role();
         role.setId(UuidUtil.getUUID());
         role.setRoleName("cccc");
-        role.setCreateTime(new Date());
+        role.setCreateTime("2018/3/26");
         try {
             System.out.println(service.insertRole(role));
         } catch (Exception e) {
@@ -45,7 +44,7 @@ public class RoleTest {
         Role role = new Role();
         role.setId("732a2b28ea63417fbeceee1ac907fb92");
         role.setRoleName("aaaaa");
-        role.setUpdateTime(new Date());
+        role.setUpdateTime("2018/3/26");
         try {
             System.out.println(service.updateRole(role));
         } catch (Exception e) {
@@ -60,14 +59,10 @@ public class RoleTest {
     //查询全部
     @Test
     public void ListRoleTest() {
-        List<Role> role = service.listRole("制单员");
+        List<Role> role = service.listRole("");
         for(Role list:role){
-            String uTime = "";
-            if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
-                uTime = formatter.format(list.getUpdateTime());
-            }
             System.out.println("id: "+list.getId() +" roleName: "+list.getRoleName() +
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime +"\n"); 
+                    " createTime: "+list.getCreateTime() +" updateTime: "+list.getUpdateTime() +"\n"); 
         }
         
     }
@@ -75,11 +70,7 @@ public class RoleTest {
     @Test
     public void ListByIdTest() {
         Role role = service.getRoleById("21b4e7dd874040d9afcc5256442031ef");
-        String uTime = "";
-        if(role.getUpdateTime()!=null && !"".equals(role.getUpdateTime())){
-            uTime = formatter.format(role.getUpdateTime());
-          }
         System.out.println("id: "+role.getId()+" roleName: "+role.getRoleName()+
-                " createTime: "+formatter.format(role.getCreateTime())+" updateTime: "+uTime);
+                " createTime: "+role.getCreateTime()+" updateTime: "+role.getUpdateTime());
     }
 }

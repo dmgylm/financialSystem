@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +36,11 @@ public class UserTest {
     public void insertTest() {
         User user = new User();
         user.setId(UuidUtil.getUUID());
-        user.setName("llllll");
-        user.setRealName("llllll");      
-        user.setPwd("555666");
+        user.setName("admin");
+        user.setRealName("ssss");      
+        user.setPwd("admin");
         user.setJobNumber("743211124420888");
-        user.setCreateTime(new Date());
+        user.setCreateTime("2018/3/26");
         //加密密码 
         PasswordHelper.encryptPassword(user);
         try {
@@ -54,12 +53,12 @@ public class UserTest {
     @Test
     public void updateTest() {
         User user = new User();
-        user.setId("111111");
+        user.setId("1ec2ae3b2c2743f6a6a7c428c2550199");
         //user.setName("gggggggggggggggg");
-        //user.setRealName("拖拖拖");
-        user.setPwd("555666");
+        user.setRealName("拖拖拖");
+        user.setPwd("3333");
         //user.setJobNumber("7432111244208");
-        //user.setUpdateTime(new Date());
+        user.setUpdateTime("2018/3/25");
         //加密密码
         PasswordHelper.encryptPassword(user);
         try {
@@ -85,13 +84,9 @@ public class UserTest {
         //map.put("updateTime", "");
         List<User> user = service.listUser(map);
         for(User list:user){
-            String uTime = "";
-            if(list.getUpdateTime()!=null && !"".equals(list.getUpdateTime())){
-                uTime = formatter.format(list.getUpdateTime());
-            }
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" pwd: "+list.getPwd() +
                     " realName: "+list.getRealName()+" jobNumber: "+list.getJobNumber()+" status: "+list.getStatus()+
-                    " createTime: "+formatter.format(list.getCreateTime()) +" updateTime: "+uTime+"\n"); 
+                    " createTime: "+list.getCreateTime() +" updateTime: "+list.getUpdateTime()+"\n"); 
         }
         
     }
@@ -105,22 +100,14 @@ public class UserTest {
     @Test
     public void ListByIdTest() {
         User user = service.getUserById("1ccb0f2ca6224f389cbbea57b85d4458");
-        String uTime = "";
-        if(user.getUpdateTime()!=null && !"".equals(user.getUpdateTime())){
-          uTime = formatter.format(user.getUpdateTime());
-        }
         System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
-                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime);
+                " createTime: "+user.getCreateTime()+" updateTime: "+user.getUpdateTime());
     }
     //根据name查询
     @Test
     public void ListByNameTest() {
     	User user = service.getUserByName("55");
-    	String uTime = "";
-    	if( user.getUpdateTime()!=null && !"".equals(user.getUpdateTime()) ) {
-    		uTime = formatter.format(user.getUpdateTime());
-    	}
     	System.out.println("id: "+user.getId()+" name: "+user.getName()+" realName: "+user.getRealName()+" pwd: "+user.getPwd()+
-                " createTime: "+formatter.format(user.getCreateTime())+" updateTime: "+uTime);
+                " createTime: "+user.getCreateTime()+" updateTime: "+user.getUpdateTime());
     }
 }
