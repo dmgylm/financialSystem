@@ -8,9 +8,12 @@
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
 	</resultMap>    
-	<!--查询全部角色-->
-    <select id="listRole" resultType="role">
+	<!--查询全部角色/根据roleName查询-->
+    <select id="listRole" parameterType="STRING" resultType="role">
         SELECT id,roleName,createTime,updateTime FROM role WHERE status = 1
+        <if test="roleName!=null and roleName!=''">
+            and roleName = #{roleName}
+        </if>
         ORDER BY createTime DESC
     </select>
     <!--新增角色-->
