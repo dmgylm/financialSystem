@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Message {
 
-    String id; // 消息id(uuid)
+    String id; // 消息id(uoId)
 
     Integer status; // 消息状态(0未读；1已读)
 
@@ -18,15 +18,17 @@ public class Message {
 
     String content; // 消息内容
 
-    String uId; // 消息来源(这里指向接收user的id)
+    String oId; // 组织接收信息
     
-    String suId;//消息来源(这里指向发送用户的id)
+    String sName;//消息来源(这里指向发送用户的name)
 
     Integer isTag; // 是否标注（0未标注；1标注）
 
     Date createTime; // 创建时间
 
     Date updateTime; // 修改时间
+    
+    String uId;//用户接收信息
 
     public String getId() {
         return id;
@@ -60,19 +62,19 @@ public class Message {
         this.content = content;
     }
 
-    public String getuId() {
-        return uId;
+    public String getoId() {
+        return oId;
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    public void setoId(String oId) {
+        this.oId = oId;
     }
-    public String getsuId() {
-    	return suId;
+    public String getsName() {
+    	return sName;
     }
     
-    public void setsuId(String suId) {
-    	this.suId = suId;
+    public void setsName(String sName) {
+    	this.sName = sName;
     }
 
     public Integer getIsTag() {
@@ -98,11 +100,19 @@ public class Message {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+    
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
 
     @Override
     public String toString() {
-        return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", uId="
-                + uId + ",suId="+ suId +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+        return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", oId="
+                + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+"]";
     }
 
 }
