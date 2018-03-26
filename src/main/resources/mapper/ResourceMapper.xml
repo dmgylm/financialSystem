@@ -24,7 +24,7 @@
          </selectKey>
         insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},#{createTime})
     </insert>
-    <!--根据id/name查询-->  
+    <!--根据id/code查询-->  
     <select id="getResourceById" parameterType="STRING" resultType="resource">
          SELECT id,name,code,url,parentId,permssion,createTime,updateTime FROM resource 
          WHERE 1 = 1
