@@ -17,7 +17,7 @@ public interface ResourceDAO {
      */
     List<Resource> listResource();
     /**
-     * 根据id/name查询
+     * 根据id/code查询
      * @param resourceId
      * @return
      */
