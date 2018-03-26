@@ -11,12 +11,12 @@ import cn.financial.model.Role;
  */
 public interface RoleService {
     /**
-     * 查询所有角色
+     * 查询所有角色/根据roleName查询
      * @return
      */
-    List<Role> listRole();
+    List<Role> listRole(String roleName);
     /**
-     * 根据id查询角色
+     * 根据roleId查询角色
      * @param userId
      * @return
      */
