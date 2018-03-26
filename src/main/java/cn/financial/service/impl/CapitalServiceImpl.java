@@ -36,14 +36,14 @@ public class CapitalServiceImpl implements CapitalService{
         return capitalDao.updateCapital(capital);
     }
 
-    /**
+  /*  *//**
      * 查询所有的资金表数据
-     */
+     *//*
     @Override
     public List<Capital> getAllCapital() {
         // TODO Auto-generated method stub
         return capitalDao.getAllCapital();
-    }
+    }*/
 
     /**
      * 根据id查询资金表数据
@@ -58,9 +58,9 @@ public class CapitalServiceImpl implements CapitalService{
      * 根据条件资金表数据
      */
     @Override
-    public List<Capital> listCapitalBy(Map<Object, Object> map) {
+    public List<Capital> listCapitalBy(Capital capital) {
         // TODO Auto-generated method stub
-        return capitalDao.listCapitalBy(map);
+        return capitalDao.listCapitalBy(capital);
     }
 
     /**

@@ -32,11 +32,11 @@ public interface CapitalService {
      */
     Integer updateCapital(Capital capital);  
    
-    /**
+  /*  *//**
      * 查询资金表所有的数据
      * @return
-     */
-    List<Capital> getAllCapital();
+     *//*
+    List<Capital> getAllCapital();*/
      
     /**
      * 根据id查询资金表数据
@@ -50,5 +50,5 @@ public interface CapitalService {
      * @param map
      * @return
      */
-    List<Capital> listCapitalBy(Map<Object, Object> map);
+    List<Capital> listCapitalBy(Capital capital);
 }

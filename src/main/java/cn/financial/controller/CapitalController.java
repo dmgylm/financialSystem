@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
 import cn.financial.model.User;
 import cn.financial.service.CapitalService;
-import cn.financial.service.OrganizationService;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
 
@@ -41,7 +39,8 @@ public class CapitalController {
         @Autowired
         private  CapitalService capitalService;
 
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
         @RequestMapping(value="/excel", method = RequestMethod.GET)
@@ -49,32 +48,9 @@ public class CapitalController {
             return "cel";
         }
 
-      
-        /**
-         * 查询所有的资金数据
-         * 
-         * @param request
-         * @param response
-         */
-        @RequiresPermissions("capital:view")
-        @RequestMapping(value="/list", method = RequestMethod.POST)
-        public Map<String, Object> getAllCapital(HttpServletRequest request, HttpServletResponse response) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-            try {
-                List<Capital> list = capitalService.getAllCapital();
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
-                dataMap.put("resultData", list);
-            } catch (Exception e) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询失败!");
-                this.logger.error(e.getMessage(), e);
-            }
-            return dataMap;
-        }
 
         /**
-         * 根据条件查资金数据
+         * 根据条件查资金数据 (不传数据就是查询所有的)
          * 
          * @param request
          * @param map
@@ -83,10 +59,91 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        public Map<String, Object> listCapitalBy(HttpServletRequest request, Map<Object, Object> map) {
+        public Map<String, Object> listCapitalBy(HttpServletRequest request,String id,String plate,String BU,
+                String regionName,String province,String city,String company,String accountName,String accountBank,String account,
+                String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
+                String classify,String createTime,String updateTime,String year,String month,String remarks,String status) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                List<Capital> list = capitalService.listCapitalBy(map);
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                Capital capital=new Capital();
+                if(id!=null && !id.equals("")){
+                   capital.setId(id);
+                }
+                if(plate!=null && !plate.equals("")){
+                    capital.setPlate(plate);
+                }
+                if(BU!=null && !BU.equals("")){
+                    capital.setBU(BU);
+                }
+                if(regionName!=null && !regionName.equals("")){
+                    capital.setRegionName(regionName);
+                }
+                if(province!=null && !province.equals("")){
+                    capital.setProvince(province);
+                }
+                if(city!=null && !city.equals("")){
+                    capital.setCity(city);
+                }
+                if(company!=null && !company.equals("")){
+                    capital.setCompany(company);
+                }
+                if(accountName!=null && !accountName.equals("")){
+                    capital.setAccountName(accountName);
+                }
+                if(accountBank!=null && !accountBank.equals("")){
+                    capital.setAccountBank(accountBank);
+                }
+                if(account!=null && !account.equals("")){
+                    capital.setAccount(account);
+                }
+                if(accountNature!=null && !accountNature.equals("")){
+                    capital.setAccountNature(accountNature);
+                }
+                if(tradeTime!=null && !tradeTime.equals("")){
+                    capital.setTradeTime(sdf.parse(tradeTime));
+                }
+                if(startBlack!=null && !startBlack.equals("")){
+                    capital.setStartBlack(Integer.getInteger(startBlack));
+                }
+                if(incom!=null && !incom.equals("")){
+                    capital.setIncom(Integer.getInteger(incom));
+                }
+                if(pay!=null && !pay.equals("")){
+                    capital.setPay(Integer.getInteger(pay));
+                }
+                if(endBlack!=null && !endBlack.equals("")){
+                    capital.setEndBlack(Integer.getInteger(endBlack));
+                }
+                if(abstrac!=null && !abstrac.equals("")){
+                    capital.setAbstrac(abstrac);
+                }
+                if(classify!=null && !classify.equals("")){
+                    capital.setClassify(classify);
+                }
+                if(createTime!=null && !createTime.equals("")){
+                    capital.setCreateTime(sdf.parse(createTime));
+                }
+                if(updateTime!=null && !updateTime.equals("")){
+                    capital.setUpdateTime(sdf.parse(updateTime));
+                }
+                if(uId!=null && !uId.equals("")){
+                    capital.setuId(uId);
+                }
+                if(year!=null && !year.equals("")){
+                    capital.setYear(Integer.getInteger(year));
+                }
+                if(month!=null && !month.equals("")){
+                    capital.setMonth(Integer.getInteger(month));
+                }
+                if(remarks!=null && !remarks.equals("")){
+                    capital.setRemarks(remarks);
+                }
+                if(status!=null && !status.equals("")){
+                   capital.setStatus(Integer.getInteger(status));
+                }
+                List<Capital> list = capitalService.listCapitalBy(capital);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
@@ -111,10 +168,12 @@ public class CapitalController {
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                Capital  Capital=capitalService.selectCapitalById(id);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
-                dataMap.put("resultData", Capital);
+                if(id!=null&&!id.equals("")){
+                   Capital  Capital=capitalService.selectCapitalById(id);
+                   dataMap.put("resultCode", 200);
+                   dataMap.put("resultDesc", "查询成功!");
+                   dataMap.put("resultData", Capital);
+                }
             } catch (Exception e) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询失败!");
@@ -131,13 +190,82 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:create")
         @RequestMapping(value="/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertCapital(HttpServletRequest request, HttpServletResponse response, Capital capital){
+        public Map<String, Object> insertCapital(HttpServletRequest request,HttpServletResponse response,String plate,String BU,
+            String regionName,String province,String city,String company,String accountName,String accountBank,String account,
+            String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
+            String classify,String year,String month,String remarks){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
-                capital.setId(UuidUtil.getUUID());
-                capital.setCreateTime(new Date());
-                capital.setStatus(1);
-                Integer i = capitalService.insertCapital(capital);
+               User user = (User) request.getAttribute("user");
+               String uId = user.getId();
+               Capital capital =new Capital();
+               capital.setId(UuidUtil.getUUID());
+               if(plate!=null && !plate.equals("")){
+                   capital.setPlate(plate);
+               }
+               if(BU!=null && !BU.equals("")){
+                   capital.setBU(BU);
+               }
+               if(regionName!=null && !regionName.equals("")){
+                   capital.setRegionName(regionName);
+               }
+               if(province!=null && !province.equals("")){
+                   capital.setProvince(province);
+               }
+               if(city!=null && !city.equals("")){
+                   capital.setCity(city);
+               }
+               if(company!=null && !company.equals("")){
+                   capital.setCompany(company);
+               }
+               if(accountName!=null && !accountName.equals("")){
+                   capital.setAccountName(accountName);
+               }
+               if(accountBank!=null && !accountBank.equals("")){
+                   capital.setAccountBank(accountBank);
+               }
+               if(account!=null && !account.equals("")){
+                   capital.setAccount(account);
+               }
+               if(accountNature!=null && !accountNature.equals("")){
+                   capital.setAccountNature(accountNature);
+               }
+               if(tradeTime!=null && !tradeTime.equals("")){
+                   capital.setTradeTime(sdf.parse(tradeTime));
+               }
+               if(startBlack!=null && !startBlack.equals("")){
+                   capital.setStartBlack(Integer.getInteger(startBlack));
+               }
+               if(incom!=null && !incom.equals("")){
+                   capital.setIncom(Integer.getInteger(incom));
+               }
+               if(pay!=null && !pay.equals("")){
+                   capital.setPay(Integer.getInteger(pay));
+               }
+               if(endBlack!=null && !endBlack.equals("")){
+                   capital.setEndBlack(Integer.getInteger(endBlack));
+               }
+               if(abstrac!=null && !abstrac.equals("")){
+                   capital.setAbstrac(abstrac);
+               }
+               if(classify!=null && !classify.equals("")){
+                   capital.setClassify(classify);
+               }
+                   capital.setCreateTime(new Date());
+               if(uId!=null && !uId.equals("")){
+                   capital.setuId(uId);
+               }
+               if(year!=null && !year.equals("")){
+                   capital.setYear(Integer.getInteger(year));
+               }
+               if(month!=null && !month.equals("")){
+                   capital.setMonth(Integer.getInteger(month));
+               }
+               if(remarks!=null && !remarks.equals("")){
+                   capital.setRemarks(remarks);
+               }
+               capital.setStatus(1);
+               Integer i = capitalService.insertCapital(capital);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("result", "新增成功!");
@@ -160,10 +288,80 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        public Map<String, Object> updateCapital(HttpServletRequest request,Capital capital) {
+        public Map<String, Object> updateCapital(HttpServletRequest request,String id,String plate,String BU,
+                String regionName,String province,String city,String company,String accountName,String accountBank,String account,
+                String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
+                String classify,String year,String month,String remarks) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                capital.setCreateTime(new Date());
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                Capital capital =new Capital();
+                capital.setId(id);
+                if(plate!=null && !plate.equals("")){
+                    capital.setPlate(plate);
+                }
+                if(BU!=null && !BU.equals("")){
+                    capital.setBU(BU);
+                }
+                if(regionName!=null && !regionName.equals("")){
+                    capital.setRegionName(regionName);
+                }
+                if(province!=null && !province.equals("")){
+                    capital.setProvince(province);
+                }
+                if(city!=null && !city.equals("")){
+                    capital.setCity(city);
+                }
+                if(company!=null && !company.equals("")){
+                    capital.setCompany(company);
+                }
+                if(accountName!=null && !accountName.equals("")){
+                    capital.setAccountName(accountName);
+                }
+                if(accountBank!=null && !accountBank.equals("")){
+                    capital.setAccountBank(accountBank);
+                }
+                if(account!=null && !account.equals("")){
+                    capital.setAccount(account);
+                }
+                if(accountNature!=null && !accountNature.equals("")){
+                    capital.setAccountNature(accountNature);
+                }
+                if(tradeTime!=null && !tradeTime.equals("")){
+                    capital.setTradeTime(sdf.parse(tradeTime));
+                }
+                if(startBlack!=null && !startBlack.equals("")){
+                    capital.setStartBlack(Integer.getInteger(startBlack));
+                }
+                if(incom!=null && !incom.equals("")){
+                    capital.setIncom(Integer.getInteger(incom));
+                }
+                if(pay!=null && !pay.equals("")){
+                    capital.setPay(Integer.getInteger(pay));
+                }
+                if(endBlack!=null && !endBlack.equals("")){
+                    capital.setEndBlack(Integer.getInteger(endBlack));
+                }
+                if(abstrac!=null && !abstrac.equals("")){
+                    capital.setAbstrac(abstrac);
+                }
+                if(classify!=null && !classify.equals("")){
+                    capital.setClassify(classify);
+                }
+                if(uId!=null && !uId.equals("")){
+                    capital.setuId(uId);
+                }
+                if(year!=null && !year.equals("")){
+                    capital.setYear(Integer.getInteger(year));
+                }
+                if(month!=null && !month.equals("")){
+                    capital.setMonth(Integer.getInteger(month));
+                }
+                if(remarks!=null && !remarks.equals("")){
+                    capital.setRemarks(remarks);
+                }
+                capital.setUpdateTime(new Date());
                 capital.setStatus(1);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
@@ -192,13 +390,15 @@ public class CapitalController {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
             try {
+                if(id!=null && !id.equals("")){
                 Integer i =capitalService.deleteCapital(id);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");
-                } else {
+                 } else {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除失败!");
+                 }     
                 }
             } catch (Exception e) {
                 dataMap.put("resultCode", 500);
@@ -284,24 +484,23 @@ public class CapitalController {
                 ,String accountNature,String classify) throws Exception{
             OutputStream os = null;
             Map<String, Object> dataMap = new HashMap<String, Object>();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Map<Object, Object> map =new HashMap<Object, Object>();
             User user = (User) request.getAttribute("user");
             uId = user.getId();
+            Capital cap=new Capital();
             if(uId!=null&&!uId.equals("")){
-                map.put("uId", uId);
+                cap.setuId(uId);
             }
             if(accountName!=null&&!accountName.equals("")){
-                map.put("accountName",accountName);
+                cap.setAccountName(accountName);
             }
             if(accountNature!=null&&!accountNature.equals("")){
-                map.put("accountNature",accountNature);
+                cap.setAccountNature(accountNature);
             }
             if(classify!=null&&!classify.equals("")){
-                map.put("classify",classify);
+                cap.setClassify(classify);
             }
             try {
-                List<Capital> list = capitalService.listCapitalBy(map);
+                List<Capital> list = capitalService.listCapitalBy(cap);
                 List<String[]> strList=new ArrayList<>();
                 String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
