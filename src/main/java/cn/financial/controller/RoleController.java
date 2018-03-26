@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
-import cn.financial.service.impl.RoleResourceServiceImpl;
-import cn.financial.service.impl.RoleServiceImpl;
+import cn.financial.service.RoleResourceService;
+import cn.financial.service.RoleService;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -31,9 +31,9 @@ import cn.financial.util.UuidUtil;
 @RequestMapping("/role")
 public class RoleController {
     @Autowired
-    RoleServiceImpl roleService;
+    RoleService roleService;
     @Autowired
-    RoleResourceServiceImpl roleResourceService;
+    RoleResourceService roleResourceService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     /**
@@ -46,7 +46,7 @@ public class RoleController {
     public Map<String, Object> listRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
-            List<Role> role = roleService.listRole();
+            List<Role> role = roleService.listRole("");
             dataMap.put("roleList", role);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功");
@@ -58,7 +58,7 @@ public class RoleController {
     	return dataMap;
     }
     /**
-     * 根据id查询
+     * 根据roleId查询
      * @param request
      * @param response
      * @param roleId
@@ -69,10 +69,17 @@ public class RoleController {
     public Map<String, Object> getRoleById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            Role role = roleService.getRoleById(request.getParameter("roleId"));
-            dataMap.put("roleById", role);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            String roleId = request.getParameter("roleId");
+            if(roleId == null || "".equals(roleId)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "角色id为空");
+            }else{
+                Role role = roleService.getRoleById(roleId);
+                dataMap.put("roleById", role);
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "查询成功");
+            }
+            
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常");
@@ -93,18 +100,24 @@ public class RoleController {
     public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");
-            Role role = new Role();
-            role.setId(UuidUtil.getUUID());
-            role.setRoleName(roleName);
-            role.setCreateTime(new Date());
-            int roleList = roleService.insertRole(role);
-            if(roleList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
-            }else{
+            String roleName = request.getParameter("roleName");
+            if(roleName == null || "".equals(roleName)){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultDesc", "角色名称为空");
+            }else{
+                roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
+                Role role = new Role();
+                role.setId(UuidUtil.getUUID());
+                role.setRoleName(roleName);
+                role.setCreateTime(new Date());
+                int roleList = roleService.insertRole(role);
+                if(roleList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "新增成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "新增失败");
+                }
             }
             
         } catch (Exception e) {
@@ -127,18 +140,24 @@ public class RoleController {
     public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");
-            Role role = new Role();
-            role.setId(UuidUtil.getUUID());
-            role.setRoleName(roleName);
-            role.setUpdateTime(new Date());
-            Integer roleList = roleService.updateRole(role);
-            if(roleList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
-            }else{
+            String roleName = request.getParameter("roleName");
+            if(roleName == null || "".equals(roleName)){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultDesc", "角色名称为空");
+            }else{
+                roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
+                Role role = new Role();
+                role.setId(UuidUtil.getUUID());
+                role.setRoleName(roleName);
+                role.setUpdateTime(new Date());
+                Integer roleList = roleService.updateRole(role);
+                if(roleList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                }
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
@@ -158,14 +177,21 @@ public class RoleController {
     public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            Integer flag = roleService.deleteRole(request.getParameter("roleId"));
-            if(flag>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功");
-            }else{
+            String roleId = request.getParameter("roleId");
+            if(roleId == null || "".equals(roleId)){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "删除失败");
+                dataMap.put("resultDesc", "角色id为空");
+            }else{
+                Integer flag = roleService.deleteRole(roleId);
+                if(flag>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "删除成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "删除失败");
+                }
             }
+            
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常");
@@ -180,14 +206,21 @@ public class RoleController {
      * @param response
      */
     @RequiresPermissions("permission:view")
-    @RequestMapping(value = "/roleResource/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
     public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            List<RoleResource> roleResource = roleResourceService.listRoleResource(request.getParameter("rId"));
-            dataMap.put("roleResourceList", roleResource);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            String rId = request.getParameter("rId");
+            if(rId == null || "".equals(rId)){
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "角色id为空");
+            }else{
+                List<RoleResource> roleResource = roleResourceService.listRoleResource(rId);
+                dataMap.put("roleResourceList", roleResource);
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "查询成功");
+            }
+            
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常");
@@ -205,7 +238,7 @@ public class RoleController {
      * @param updateTime
      */
     @RequiresPermissions("permission:create")
-    @RequestMapping(value = "/RoleResource/insert", method = RequestMethod.POST)
+    @RequestMapping(value = "/RoleResourceInsert", method = RequestMethod.POST)
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
