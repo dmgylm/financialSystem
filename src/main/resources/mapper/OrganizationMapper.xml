@@ -4,14 +4,6 @@
 <!-- 组织结构 -->
 <mapper namespace="cn.financial.dao.OrganizationDAO">
 
-	<!-- 用户POJO对应数据库字段 <resultMap type="User" id="userResultMap"> <id property="id" 
-		column="usid" javaType="string" jdbcType="VARCHAR" /> <result property="name" 
-		column="name" javaType="string" jdbcType="VARCHAR" /> <result property="pwd" 
-		column="pwd" javaType="string" jdbcType="VARCHAR" /> <result property="privilege" 
-		column="privilege" javaType="int" jdbcType="INTEGER" /> <result property="createTime" 
-		column="createTime" javaType="java.sql.Date" jdbcType="DATE" /> <result property="updateTime" 
-		column="updateTime" javaType="java.sql.Date" jdbcType="DATE" /> </resultMap> -->
-
 	<!-- 组织架构POJO对应数据库字段 -->
 	<resultMap type="Organization" id="organizationResultMap">
 		<id property="id" column="id" jdbcType="VARCHAR"></id>
@@ -30,7 +22,6 @@
 			jdbcType="INTEGER"></result>
 		<result property="his_permission" column="his_permission"
 			javaType="string" jdbcType="VARCHAR"></result>
-		<!-- <collection property="users" resultMap="userResultMap"> </collection> -->
 
 	</resultMap>
 
@@ -50,16 +41,6 @@
 		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
 	</insert>
 
-	<!-- 查询所有的组织结构 -->
-	<select id="listOrganization" resultType="Organization">
-		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-		from
-		organization
-		where
-		status = 1
-	</select>
-
 	<!-- 根据条件查询组织结构信息 -->
 	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
 		select
@@ -69,20 +50,6 @@
 		where
 		status = 1
 		<include refid="query_organization_where"></include>
-	</select>
-
-	<!-- 根据ID查询组织结构信息 -->
-	<select id="getOrganizationById" parameterType="java.lang.String"
-		resultType="Organization">
-		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-		from
-		organization
-		where
-		id =
-		#{_parameter,jdbcType=VARCHAR}
-		and
-		status = 1
 	</select>
 
 	<!-- 根据Id更新组织结构信息 -->
@@ -124,7 +91,7 @@
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
 
-	<!-- 伪删除 （根据组织结构ID修改状态为0，即已删除） -->
+	<!-- 根据组织结构ID修改状态为0，即已停用 -->
 	<update id="deleteOrganizationByStatus" parameterType="java.lang.String">
 		update
 		organization
@@ -132,7 +99,8 @@
 		status = 0,
 		updateTime = curdate()
 		where
-		id = #{_parameter,jdbcType=VARCHAR}
+		id =
+		#{_parameter,jdbcType=VARCHAR}
 	</update>
 
 	<!-- 根据code查询该节点下的所有子节点 ,构建成树 -->
@@ -147,8 +115,8 @@
 		and
 		status = 1
 	</select>
-	
-	<!-- 根据code查询该节点下的所有父节点-->
+
+	<!-- 根据code查询该节点下的所有父节点 -->
 	<select id="listTreeByCodeForParent" parameterType="java.lang.String"
 		resultType="Organization">
 		select
@@ -157,19 +125,6 @@
 		organization
 		where
 		find_in_set(code,getParentList(#{_parameter,jdbcType=VARCHAR}))
-		and
-		status = 1
-	</select>
-	
-	<!-- 根据parentid查询节点信息 -->
-	<select id="listByParentId" parameterType="java.lang.String"
-		resultType="Organization">
-		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-		from
-		organization
-		where
-		parentId = #{_parameter,jdbcType=VARCHAR}
 		and
 		status = 1
 	</select>
