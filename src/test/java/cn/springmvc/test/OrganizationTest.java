@@ -124,7 +124,7 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgId() {
-        List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
+        List<Organization> list = service.listTreeByIdForSon("4698d2836e944d509c4e2edc1fb793a7");
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
@@ -136,6 +136,7 @@ public class OrganizationTest {
             System.out.println("his_permission:" + organization.getHis_permission());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
+        System.out.println(list.size());
     }
 
     /**
@@ -162,8 +163,8 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "0cdf0dc7db3d4e80b54e64aa7c89402b";
-        String parentOrgId = "8a4efc7d9b1b4ab8965af0fa283457a0";
+        String id = "c64bb8ec6a9a47008c4f6fcfb51a9bfc";
+        String parentOrgId = "4698d2836e944d509c4e2edc1fb793a7";
         service.moveOrganization(id, parentOrgId);
     }
 
@@ -198,64 +199,80 @@ public class OrganizationTest {
         }
     }
 
-    // /**
-    // * 模拟根据json字符串生成html的table标签，方法一
-    // */
-    // @Test
-    // public void toHtml() {
-    // String jsonOfStr = "{\"biaoming\":null,\"gongsiming\":null,"
-    // + "\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,"
-    // + "\"data\":{\"bxyye\":{\"heji\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null},\"jiaoqiangxian\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,"
-    // + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
-    // + "\"wanchenglv\":null}}}}";
-    //
-    // String jj =
-    // "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{\"heji\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"jiaoqiangxian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
-    //
-    // JSONObject jsonObject1 = JSONObject.fromObject(jj);
-    // JSONObject data =
-    // JSONObject.fromObject(jsonObject1.get("data").toString());
-    // String result = "<table border=\"1\">";
-    // List<String> listtd = new ArrayList<>();
-    // List<String> listtr = new ArrayList<>();
-    // List<JSONObject> listtr1 = new ArrayList<>();
-    // String rStr = JsonToHtmlUtil.jsonToTable(data, listtd, listtr, listtr1);
-    // String dStr = "<tr>";
-    // for (String string : listtd) {
-    // dStr += ("<td>" + string + "</td>");
-    // }
-    // dStr += "</tr>";
-    // result = result + dStr + rStr + "</table>";
-    // for (int i = 0; i < listtr1.size(); i++) {
-    // List<String> listend = new ArrayList<>();
-    // JsonToHtmlUtil.getNum(listtr1.get(i), listend);
-    // int rowspan = listend.size() + 1;
-    // if (rowspan > 1) {
-    // result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
-    // "<td rowspan=\"" + rowspan + "\">"
-    // + listtr.get(i).toString() + "</td>");
-    // } else {
-    // String td = "";
-    // for (int j = 0; j < listtd.size(); j++) {
-    // td += "<td></td>";
-    // }
-    // result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
-    // "<td rowspan=\"" + rowspan + "\">"
-    // + listtr.get(i).toString() + "</td>" + td);
-    // }
-    // }
-    // System.out.println(result);
-    // }
+    /**
+     * 模拟根据json字符串生成html的table标签，方法一
+     */
+    @Test
+    public void toHtml() {
+        String jsonOfStr = "{\"biaoming\":null,\"gongsiming\":null,"
+                + "\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,"
+                + "\"data\":{\"bxyye\":{\"heji\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
+                + "\"wanchenglv\":null},\"jiaoqiangxian\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
+                + "\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
+                + "\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
+                + "\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
+                + "\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,"
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null," 
+                + "\"wanchenglv\":null}}}}";
+        String jj = "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,"
+                + "\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{"
+                + "\"heji\":{\"benyueshiji\":null,\"benyuebudian\":null,"
+                + "\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},"
+                + "\"jiaoqiangxian\":{\"benyueshiji\":null,\"benyuebudian\":null,"
+                + "\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},"
+                + "\"shangyexian\":{\"benyueshiji\":null,\"benyuebudian\":null,"
+                + "\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},"
+                + "\"bxyw\":{\"shouru\":{\"benyueshiji\":null,\"benyuebudian\":null,"
+                + "\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},"
+                + "\"chengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,"
+                + "\"benyueyusuan\":null,\"wanchenglv\":null},\"rengongchengben\":{"
+                + "\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,"
+                + "\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
+        String hh = "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{\"heji\":{\"aa\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"jiaoqiangxian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
+        JSONObject jsonObject1 = JSONObject.fromObject(hh);
+        JSONObject data = JSONObject.fromObject(jsonObject1.get("data").toString());
+        String result = "<table border=\"1\">";
+        List<String> listtd = new ArrayList<>();
+        List<String> listtr = new ArrayList<>();
+        List<JSONObject> listtr1 = new ArrayList<>();
+        String rStr = JsonToHtmlUtil.jsonToTable(data, listtd, listtr, listtr1);
+        
+        
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        List<String> listtd1 = new ArrayList<>();
+        JsonToHtmlUtil.JsonToMap(data, map, listtd1);
+        JsonToHtmlUtil.iteration(JsonToHtmlUtil.sortMap(map));
+        String dStr = "<tr><td colspan=\'" + JsonToHtmlUtil.index + "\'>项目</td>";
+        
+        
+        for (String string : listtd) {
+            dStr += ("<td>" + string + "</td>");
+        }
+        dStr += "</tr>";
+        result = result + dStr + rStr + "</table>";
+        for (int i = 0; i < listtr1.size(); i++) {
+            List<String> listend = new ArrayList<>();
+            JsonToHtmlUtil.getNum(listtr1.get(i), listend);
+            int rowspan = listend.size() + 1;
+            if (rowspan > 1) {
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
+                        + listtr.get(i).toString() + "</td>");
+            } else {
+                String td = "";
+                for (int j = 0; j < listtd.size(); j++) {
+                    td += "<td></td>";
+                }
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
+                        + listtr.get(i).toString() + "</td>" + td);
+            }
+        }
+        System.out.println(result);
+    }
 
     /**
      * 模拟根据json字符串生成html的table标签,方法二
@@ -292,7 +309,9 @@ public class OrganizationTest {
                 + "\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,"
                 + "\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
 
-        JSONObject jsonObject = JSONObject.fromObject(jj);
+        String hh = "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{\"heji\":{\"aa\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"jiaoqiangxian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
+        
+        JSONObject jsonObject = JSONObject.fromObject(hh);
         JSONObject data = JSONObject.fromObject(jsonObject.get("data").toString());
         HashMap<String, Object> map = new HashMap<String, Object>();
         List<String> listtd = new ArrayList<>();
