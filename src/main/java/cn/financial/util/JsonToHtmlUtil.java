@@ -67,46 +67,46 @@ public class JsonToHtmlUtil {
         }
     }
 
-    // /**
-    // * 要返回的字符串
-    // */
-    // public static String str = "";
-    // /**
-    // * 解析json拼接
-    // * <table>
-    // * 标签
-    // *
-    // * @param objJson
-    // * 要解析的JSONObject对象
-    // * @param listtd
-    // * 横坐标string集合
-    // * @param listtr
-    // * 纵坐标string集合
-    // * @param listtr1
-    // * 纵坐标JSONObject集合
-    // */
-    // public static String jsonToTable(Object objJson, List<String> listtd,
-    // List<String> listtr, List<JSONObject> listtr1) {
-    // if (objJson instanceof JSONObject) {
-    // JSONObject jsonObject = (JSONObject) objJson;
-    // Iterator it = jsonObject.keys();
-    // while (it.hasNext()) {
-    // String key = it.next().toString();
-    // Object object = jsonObject.get(key);
-    // if (object instanceof JSONObject) {
-    // listtr.add(key);
-    // listtr1.add((JSONObject) object);
-    // str += ("<tr><td>" + key + "</td></tr>");
-    // jsonToTable((JSONObject) object, listtd, listtr, listtr1);
-    // } else {
-    // if (!listtd.contains(key)) {
-    // listtd.add(key);
-    // }
-    // }
-    // }
-    // }
-    // return str;
-    // }
+    /**
+     * 要返回的字符串
+     */
+    public static String str = "";
+
+    /**
+     * 解析json拼接
+     * <table>
+     * 标签
+     *
+     * @param objJson
+     *            要解析的JSONObject对象
+     * @param listtd
+     *            横坐标string集合
+     * @param listtr
+     *            纵坐标string集合
+     * @param listtr1
+     *            纵坐标JSONObject集合
+     */
+    public static String jsonToTable(Object objJson, List<String> listtd, List<String> listtr, List<JSONObject> listtr1) {
+        if (objJson instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) objJson;
+            Iterator it = jsonObject.keys();
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                Object object = jsonObject.get(key);
+                if (object instanceof JSONObject) {
+                    listtr.add(key);
+                    listtr1.add((JSONObject) object);
+                    str += ("<tr><td>" + key + "</td></tr>");
+                    jsonToTable((JSONObject) object, listtd, listtr, listtr1);
+                } else {
+                    if (!listtd.contains(key)) {
+                        listtd.add(key);
+                    }
+                }
+            }
+        }
+        return str;
+    }
 
     /**
      * json获取jsonobject各个key节点,即得到rowspan的值
