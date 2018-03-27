@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
@@ -45,6 +46,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:create")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
@@ -86,6 +88,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
@@ -133,6 +136,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:update")
     @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
     public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response) {
@@ -179,6 +183,7 @@ public class OrganizationController {
      * @param request
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebystatus", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request) {
@@ -209,6 +214,7 @@ public class OrganizationController {
      * @param request
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:stop")
     @RequestMapping(value = "/deletebycascade", method = RequestMethod.POST)
     public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request) {
@@ -240,6 +246,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
@@ -267,6 +274,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/getparnode", method = RequestMethod.POST)
     public Map<Object, Object> getParnode(HttpServletRequest request, HttpServletResponse response) {
@@ -296,6 +304,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions({ "organization:update", "organization:create" })
     @RequestMapping(value = "/move", method = RequestMethod.POST)
     public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
@@ -332,6 +341,7 @@ public class OrganizationController {
      * @param response
      * @return
      */
+    @ResponseBody
     @RequiresPermissions("organization:view")
     @RequestMapping(value = "/hasSon", method = RequestMethod.POST)
     public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
