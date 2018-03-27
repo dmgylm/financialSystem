@@ -100,25 +100,28 @@ public class MessageController {
         String content = null;
         String createTime = null;
         String updateTime = null;
-        
-        if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
-        	themeStr = request.getParameter("theme");
-        }
-        if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
-        	content = request.getParameter("content");
-        }
-        if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-        	createTime = request.getParameter("createTime");
-        }
-        if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-        	updateTime = request.getParameter("updateTime");
-        }
-        
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
         int theme = 0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         int unreadmessage=0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
+        	themeStr = request.getParameter("theme");
+        	map.put("theme", theme);// 消息主题
+        }
+        if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
+        	content = request.getParameter("content");
+        	map.put("content", content);// 消息内容
+        }
+        if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+        	createTime = request.getParameter("createTime");
+        	map.put("createTime", createTime);// 创建时间
+        }
+        if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
+        	updateTime = request.getParameter("updateTime");
+        	map.put("updateTime", updateTime);// 更新时间
+        }
         try {
 	        	if (content != null && !"".equals(content)) {
 	                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
@@ -148,14 +151,9 @@ public class MessageController {
                 	}
                 }
         		
-        		 map.put("id", request.getParameter("id"));// 消息id
-                 map.put("theme", theme);// 消息主题
-                 map.put("content", content);// 消息内容
-                 map.put("uId", request.getParameter("uId"));// 消息来源
-                 map.put("createTime", createTime);// 创建时间
-                 map.put("updateTime", updateTime);// 更新时间
-                
-                 list = messageService.listMessage(map);
+        		map.put("id", request.getParameter("id"));// 消息id
+                map.put("uId", request.getParameter("uId"));// 消息来源
+                list = messageService.listMessage(map);
                   
                 for(int k=0;k<list.size();k++) {
                     if(list.get(k).getStatus()==0) {
