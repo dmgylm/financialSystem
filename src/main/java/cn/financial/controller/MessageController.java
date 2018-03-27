@@ -127,13 +127,13 @@ public class MessageController {
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
         		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
-                	String status =request.getParameter("status");
-                	
-                	if(status=="2") {
+                	if(request.getParameter("status") == "2") {
                 		map.put("isTag", "1");
                 	}else {
-                		map.put("status", status);
-                		map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
+                		map.put("status", request.getParameter("status"));
+                		if(null != request.getParameter("isTag") && !"".equals(request.getParameter("isTag"))) {
+                			map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
+                		}
                 	}
                 }
         		
