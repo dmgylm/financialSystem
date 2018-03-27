@@ -1,6 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
 /**
  * 用户组织结构关联表
  * @author gs
@@ -19,6 +18,7 @@ public class UserOrganization {
     private String orgName;//机构名称
     private String his_permission;//保存历史权限记录
     private String createTime; //创建时间
+    private String updateTime;//修改时间
     
     public UserOrganization() {
         super();
@@ -110,6 +110,14 @@ public class UserOrganization {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
     
  }

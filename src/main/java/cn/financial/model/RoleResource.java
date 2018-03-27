@@ -1,6 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
 /**
  * 角色资源权限关联表
  * @author gs
@@ -17,6 +16,7 @@ public class RoleResource {
     private String parentId;//父id
     private String permssion;//权限
     private String createTime;//创建时间
+    private String updateTime;//修改时间
     
     public RoleResource() {
         super();
@@ -95,6 +95,14 @@ public class RoleResource {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
     
 }

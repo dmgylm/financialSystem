@@ -10,6 +10,7 @@ public class UserRole {
     private String name;//姓名
     private String jobNumber;//工号
     private String createTime; //创建时间
+    private String updateTime;//修改时间
     
     public UserRole() {
         super();
@@ -77,6 +78,14 @@ public class UserRole {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
     
  }
