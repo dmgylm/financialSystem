@@ -87,7 +87,7 @@ public class OrganizationController {
      * @return
      */
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/listBy", method = RequestMethod.GET)
+    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
