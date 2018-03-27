@@ -87,7 +87,7 @@ public class OrganizationController {
      * @return
      */
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
+    @RequestMapping(value = "/listBy", method = RequestMethod.GET)
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -99,7 +99,7 @@ public class OrganizationController {
             if (null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
                 map.put("createTime", format.parse(request.getParameter("createTime")));// 创建时间
             }
-            if (null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+            if (null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
                 map.put("updateTime", format.parse(request.getParameter("updateTime")));// 更新时间
             }
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
