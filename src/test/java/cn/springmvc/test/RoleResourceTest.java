@@ -1,6 +1,5 @@
 package cn.springmvc.test;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,7 +27,6 @@ import cn.financial.util.UuidUtil;
 public class RoleResourceTest {
     @Autowired
     private RoleResourceService service;
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
     public void insertTest() {
@@ -61,7 +59,7 @@ public class RoleResourceTest {
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
             " name: "+list.getName()+" ParentId:"+list.getParentId()+" Permssion: "+list.getPermssion()+
-            " url: "+list.getUrl()+" createTime: "+formatter.format(list.getCreateTime()) +"\n");
+            " url: "+list.getUrl()+" createTime: "+list.getCreateTime() +"\n");
         }
         
     }

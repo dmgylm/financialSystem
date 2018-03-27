@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.Resource;
-import cn.financial.service.impl.ResourceServiceImpl;
+import cn.financial.service.ResourceService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
@@ -23,7 +23,7 @@ import cn.financial.util.UuidUtil;
  */
 public class ResourceTest {
     @Autowired
-    private ResourceServiceImpl service;
+    private ResourceService service;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test

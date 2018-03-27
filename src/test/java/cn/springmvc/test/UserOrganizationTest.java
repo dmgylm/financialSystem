@@ -62,7 +62,7 @@ public class UserOrganizationTest {
             System.out.println(e.getMessage());
         }
     }
-    //查询全部
+    //查询全部or根据用户id查询
     @Test
     public void ListUserOrganizationTest() {
         List<UserOrganization> role = service.listUserOrganization("1cb54fff435b4fff8aa7c1fa391f519b");
@@ -70,7 +70,7 @@ public class UserOrganizationTest {
             System.out.println(" oId: "+list.getoId() +" uId: "+list.getuId() +" jobNumber: "+list.getJobNumber()+
                     " userName: "+list.getName()+" realName: "+list.getRealName()+" code: "+list.getCode()+
                     " ParentId: "+list.getParentId()+" His_permission: "+list.getHis_permission()+
-                    " orgName: "+list.getOrgName()+" createTime: "+formatter.format(list.getCreateTime()) +"\n");
+                    " orgName: "+list.getOrgName()+" createTime: "+list.getCreateTime() +"\n");
         }
         
     }
