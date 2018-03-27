@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,60 +90,45 @@ public class MessageController {
      * 
      * @param request
      * @param response
+     * @throws ParseException 
      */
     @RequiresPermissions("capital:view")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         List<Message> list = null;
-        String themeStr = null;
-        String content = null;
-        String createTime = null;
-        String updateTime = null;
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
-        int theme = 0;
         int unreadmessage=0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
-        	themeStr = request.getParameter("theme");
-        	map.put("theme", theme);// 消息主题
+        	map.put("theme",Integer.parseInt(request.getParameter("theme")));// 消息主题
         }
         if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
-        	content = request.getParameter("content");
-        	map.put("content", content);// 消息内容
+        	map.put("content", request.getParameter("content"));// 消息内容
         }
         if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-        	createTime = request.getParameter("createTime");
-        	map.put("createTime", createTime);// 创建时间
+        	createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
+        	map.put("createTime", dateFormat.format(createTimeOfDate));// 创建时间
         }
         if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-        	updateTime = request.getParameter("updateTime");
-        	map.put("updateTime", updateTime);// 更新时间
+        	updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
+        	map.put("updateTime", dateFormat.format(updateTimeOfDate));// 更新时间
+        }
+        if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+        	map.put("id", request.getParameter("id"));// 消息id
+        }
+        if(null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
+        	map.put("uId", request.getParameter("uId"));// 消息来源
         }
         try {
-	        	if (content != null && !"".equals(content)) {
-	                content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
-	            }
-	            if (createTime != null && !"".equals(createTime)) {
-	            	createTimeOfDate = dateFormat.parse(createTime);
-	            	createTime = dateFormat.format(createTimeOfDate);
-	            }
-	            if (updateTime != null && !"".equals(updateTime)) {
-	            	updateTimeOfDate = dateFormat.parse(updateTime);
-	            	updateTime = dateFormat.format(updateTimeOfDate);
-	            }
-	            if (themeStr != null && !"".equals(themeStr)) {
-	                theme = Integer.parseInt(themeStr);
-	            }
-        	
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
         		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
-                		
                 	String status =request.getParameter("status");
+                	
                 	if(status=="2") {
                 		map.put("isTag", "1");
                 	}else {
@@ -151,8 +137,6 @@ public class MessageController {
                 	}
                 }
         		
-        		map.put("id", request.getParameter("id"));// 消息id
-                map.put("uId", request.getParameter("uId"));// 消息来源
                 list = messageService.listMessage(map);
                   
                 for(int k=0;k<list.size();k++) {
