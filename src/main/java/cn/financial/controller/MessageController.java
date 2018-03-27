@@ -96,11 +96,24 @@ public class MessageController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         List<Message> list = null;
+        String themeStr = null;
+        String content = null;
+        String createTime = null;
+        String updateTime = null;
         
-        String themeStr = request.getParameter("theme");
-        String content = request.getParameter("content");
-        String createTime = request.getParameter("createTime");
-        String updateTime = request.getParameter("updateTime");
+        if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
+        	themeStr = request.getParameter("theme");
+        }
+        if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
+        	content = request.getParameter("content");
+        }
+        if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+        	createTime = request.getParameter("createTime");
+        }
+        if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
+        	updateTime = request.getParameter("updateTime");
+        }
+        
         Date createTimeOfDate = null;
         Date updateTimeOfDate = null;
         int theme = 0;
@@ -124,7 +137,7 @@ public class MessageController {
         	
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
-        		if (request.getParameter("status")!=null) {
+        		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
                 		
                 	String status =request.getParameter("status");
                 	if(status=="2") {
