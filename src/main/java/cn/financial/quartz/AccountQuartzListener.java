@@ -74,7 +74,7 @@ public class AccountQuartzListener implements ServletContextListener {
 				
 				if( !organizationService.hasOrganizationSon(map) ) {
 					
-					if( month+1 == 3 ) {
+					if( month+1 == 1 ) {
 						
 						Message message = new Message();
 						message.setId(UuidUtil.getUUID());
@@ -88,7 +88,7 @@ public class AccountQuartzListener implements ServletContextListener {
 						String job_name = "预算表单消息提示定时器"+i ;
 						
 						try {
-								QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 1 1 ?" , JSONObject
+								QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 1 1 ? *" , JSONObject
 										.fromObject(message));
 						} catch (SchedulerException e) {
 								e.printStackTrace();
