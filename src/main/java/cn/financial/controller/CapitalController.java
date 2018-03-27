@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
 import cn.financial.model.User;
@@ -58,7 +59,8 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request,String id,String plate,String BU,
                 String regionName,String province,String city,String company,String accountName,String accountBank,String account,
                 String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
@@ -72,34 +74,34 @@ public class CapitalController {
                    capital.setId(id);
                 }
                 if(plate!=null && !plate.equals("")){
-                    capital.setPlate(plate);
+                    capital.setPlate(new String(plate.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(BU!=null && !BU.equals("")){
-                    capital.setBU(BU);
+                    capital.setBU(new String(BU.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(regionName!=null && !regionName.equals("")){
-                    capital.setRegionName(regionName);
+                    capital.setRegionName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(province!=null && !province.equals("")){
-                    capital.setProvince(province);
+                    capital.setProvince(new String(province.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(city!=null && !city.equals("")){
-                    capital.setCity(city);
+                    capital.setCity(new String(city.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(company!=null && !company.equals("")){
-                    capital.setCompany(company);
+                    capital.setCompany(new String(company.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountName!=null && !accountName.equals("")){
-                    capital.setAccountName(accountName);
+                    capital.setAccountName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountBank!=null && !accountBank.equals("")){
-                    capital.setAccountBank(accountBank);
+                    capital.setAccountBank(new String(accountName.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(account!=null && !account.equals("")){
-                    capital.setAccount(account);
+                    capital.setAccount(new String(account.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountNature!=null && !accountNature.equals("")){
-                    capital.setAccountNature(accountNature);
+                    capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(tradeTime!=null && !tradeTime.equals("")){
                     capital.setTradeTime(sdf.parse(tradeTime));
@@ -117,10 +119,10 @@ public class CapitalController {
                     capital.setEndBlack(Integer.getInteger(endBlack));
                 }
                 if(abstrac!=null && !abstrac.equals("")){
-                    capital.setAbstrac(abstrac);
+                    capital.setAbstrac(new String(abstrac.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(classify!=null && !classify.equals("")){
-                    capital.setClassify(classify);
+                    capital.setClassify(new String(classify.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(createTime!=null && !createTime.equals("")){
                     capital.setCreateTime(sdf.parse(createTime));
@@ -138,7 +140,7 @@ public class CapitalController {
                     capital.setMonth(Integer.getInteger(month));
                 }
                 if(remarks!=null && !remarks.equals("")){
-                    capital.setRemarks(remarks);
+                    capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(status!=null && !status.equals("")){
                    capital.setStatus(Integer.getInteger(status));
@@ -147,6 +149,7 @@ public class CapitalController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
+                
             } catch (Exception e) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询失败!");
@@ -165,6 +168,7 @@ public class CapitalController {
          */
         @RequiresPermissions("resource:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
+        @ResponseBody
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -190,6 +194,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:create")
         @RequestMapping(value="/insert", method = RequestMethod.POST)
+        @ResponseBody
         public Map<String, Object> insertCapital(HttpServletRequest request,HttpServletResponse response,String plate,String BU,
             String regionName,String province,String city,String company,String accountName,String accountBank,String account,
             String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
@@ -201,34 +206,34 @@ public class CapitalController {
                Capital capital =new Capital();
                capital.setId(UuidUtil.getUUID());
                if(plate!=null && !plate.equals("")){
-                   capital.setPlate(plate);
+                   capital.setPlate(new String(plate.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(BU!=null && !BU.equals("")){
-                   capital.setBU(BU);
+                   capital.setBU(new String(BU.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(regionName!=null && !regionName.equals("")){
-                   capital.setRegionName(regionName);
+                   capital.setRegionName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(province!=null && !province.equals("")){
-                   capital.setProvince(province);
+                   capital.setProvince(new String(province.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(city!=null && !city.equals("")){
-                   capital.setCity(city);
+                   capital.setCity(new String(city.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(company!=null && !company.equals("")){
-                   capital.setCompany(company);
+                   capital.setCompany(new String(company.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(accountName!=null && !accountName.equals("")){
-                   capital.setAccountName(accountName);
+                   capital.setAccountName(new String(accountName.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(accountBank!=null && !accountBank.equals("")){
-                   capital.setAccountBank(accountBank);
+                   capital.setAccountBank(new String(accountBank.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(account!=null && !account.equals("")){
-                   capital.setAccount(account);
+                   capital.setAccount(new String(account.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(accountNature!=null && !accountNature.equals("")){
-                   capital.setAccountNature(accountNature);
+                   capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(tradeTime!=null && !tradeTime.equals("")){
                    capital.setTradeTime(sdf.parse(tradeTime));
@@ -246,10 +251,10 @@ public class CapitalController {
                    capital.setEndBlack(Integer.getInteger(endBlack));
                }
                if(abstrac!=null && !abstrac.equals("")){
-                   capital.setAbstrac(abstrac);
+                   capital.setAbstrac(new String(abstrac.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(classify!=null && !classify.equals("")){
-                   capital.setClassify(classify);
+                   capital.setClassify(new String(classify.getBytes("ISO-8859-1"), "UTF-8"));
                }
                    capital.setCreateTime(new Date());
                if(uId!=null && !uId.equals("")){
@@ -262,7 +267,7 @@ public class CapitalController {
                    capital.setMonth(Integer.getInteger(month));
                }
                if(remarks!=null && !remarks.equals("")){
-                   capital.setRemarks(remarks);
+                   capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"), "UTF-8"));
                }
                capital.setStatus(1);
                Integer i = capitalService.insertCapital(capital);
@@ -288,6 +293,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
+        @ResponseBody
         public Map<String, Object> updateCapital(HttpServletRequest request,String id,String plate,String BU,
                 String regionName,String province,String city,String company,String accountName,String accountBank,String account,
                 String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
@@ -299,34 +305,34 @@ public class CapitalController {
                 Capital capital =new Capital();
                 capital.setId(id);
                 if(plate!=null && !plate.equals("")){
-                    capital.setPlate(plate);
+                    capital.setPlate(new String(plate.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(BU!=null && !BU.equals("")){
-                    capital.setBU(BU);
+                    capital.setBU(new String(BU.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(regionName!=null && !regionName.equals("")){
-                    capital.setRegionName(regionName);
+                    capital.setRegionName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(province!=null && !province.equals("")){
-                    capital.setProvince(province);
+                    capital.setProvince(new String(province.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(city!=null && !city.equals("")){
-                    capital.setCity(city);
+                    capital.setCity(new String(city.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(company!=null && !company.equals("")){
-                    capital.setCompany(company);
+                    capital.setCompany(new String(company.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountName!=null && !accountName.equals("")){
-                    capital.setAccountName(accountName);
+                    capital.setAccountName(new String(accountName.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountBank!=null && !accountBank.equals("")){
-                    capital.setAccountBank(accountBank);
+                    capital.setAccountBank(new String(accountBank.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(account!=null && !account.equals("")){
-                    capital.setAccount(account);
+                    capital.setAccount(new String(account.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(accountNature!=null && !accountNature.equals("")){
-                    capital.setAccountNature(accountNature);
+                    capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(tradeTime!=null && !tradeTime.equals("")){
                     capital.setTradeTime(sdf.parse(tradeTime));
@@ -344,10 +350,10 @@ public class CapitalController {
                     capital.setEndBlack(Integer.getInteger(endBlack));
                 }
                 if(abstrac!=null && !abstrac.equals("")){
-                    capital.setAbstrac(abstrac);
+                    capital.setAbstrac(new String(abstrac.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(classify!=null && !classify.equals("")){
-                    capital.setClassify(classify);
+                    capital.setClassify(new String(classify.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(uId!=null && !uId.equals("")){
                     capital.setuId(uId);
@@ -359,7 +365,7 @@ public class CapitalController {
                     capital.setMonth(Integer.getInteger(month));
                 }
                 if(remarks!=null && !remarks.equals("")){
-                    capital.setRemarks(remarks);
+                    capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 capital.setUpdateTime(new Date());
                 capital.setStatus(1);
@@ -386,6 +392,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/delete", method = RequestMethod.POST)
+        @ResponseBody
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
@@ -413,6 +420,7 @@ public class CapitalController {
          * 导入
          */
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
+        @ResponseBody
         public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -480,6 +488,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequestMapping(value="/export",method = RequestMethod.POST)
+        @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response,String uId,String accountName
                 ,String accountNature,String classify) throws Exception{
             OutputStream os = null;
