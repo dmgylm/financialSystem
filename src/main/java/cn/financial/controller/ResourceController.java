@@ -64,7 +64,12 @@ public class ResourceController {
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String resourceId = request.getParameter("resourceId");
+        	
+        	String resourceId = null;
+        	
+        	if(null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))) {
+        		  resourceId = request.getParameter("resourceId");
+        	}
             if(resourceId == null || "".equals(resourceId)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "资源id为空");
@@ -92,11 +97,27 @@ public class ResourceController {
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try { 
-            String name = request.getParameter("name");
-            String code = request.getParameter("code");//父id
-            String url = request.getParameter("url");
-            String permssion = request.getParameter("permssion");
-            String createTime = request.getParameter("createTime");
+            String name = null;
+            String code = null;//父id
+            String url = null;
+            String permssion = null;
+            String createTime = null;
+            
+            if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
+            	name = request.getParameter("name");
+            }
+            if( null != request.getParameter("code") && !"".equals(request.getParameter("code")) ) {
+            	code = request.getParameter("code");//父id
+            }
+            if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
+            	url = request.getParameter("url");
+            }
+            if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
+            	permssion = request.getParameter("permssion");
+            }
+            if( null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime")) ) {
+            	createTime = request.getParameter("createTime");
+            }
             if(name == null || "".equals(name)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "资源名称为空");
@@ -147,12 +168,31 @@ public class ResourceController {
     public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String name = request.getParameter("name");
-            String resourceId = request.getParameter("resourceId");
-            String url = request.getParameter("url");
-            String parentId = request.getParameter("parentId");
-            String permssion = request.getParameter("permssion");
-            String updateTime = request.getParameter("updateTime");
+        	String name = null;
+            String permssion = null;//父id
+            String url = null;
+            String parentId = null;
+            String updateTime = null;
+            String resourceId = null;
+            
+            if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
+            	name = request.getParameter("name");
+            }
+            if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
+            	permssion = request.getParameter("permssion");//父id
+            }
+            if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
+            	url = request.getParameter("url");
+            }
+            if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
+            	parentId = request.getParameter("parentId");
+            }
+            if( null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime")) ) {
+            	updateTime = request.getParameter("updateTime");
+            }
+            if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
+            	resourceId = request.getParameter("resourceId");
+            }
             if(name == null || "".equals(name)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "资源名称为空");
@@ -199,7 +239,10 @@ public class ResourceController {
     public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String resourceId = request.getParameter("resourceId");
+            String resourceId = null;
+            if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
+            	resourceId = request.getParameter("resourceId");
+            }
             if(resourceId == null || "".equals(resourceId)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "资源id为空");
