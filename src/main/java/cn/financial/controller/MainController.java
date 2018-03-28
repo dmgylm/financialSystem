@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +23,6 @@ import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
-
-
-
 
 /**
  * 控制页面跳转
@@ -64,7 +62,7 @@ public class MainController {
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
             model.addAttribute("msg","其他错误：" + e.getMessage());
         } 
-        return "/login"; 
+        return "/login";  
     }
     /**
      * index(根据角色显示对应的功能权限)
@@ -78,13 +76,13 @@ public class MainController {
 	    String userName = user.getName();
 	    if(userName!=null && !"".equals(userName)){
 	        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
+	        List<RoleResource> roleResource = new ArrayList<RoleResource>();
 	        if(userRole.size()>0){
-	            List<RoleResource> roleResource = null;
 	            for(UserRole list:userRole){
 	                roleResource = roleResourceService.listRoleResource(list.getrId());//根据角色id查询对应功能权限信息
 	            }  
-	            model.addAttribute("roleResource",roleResource);
 	        }
+	        model.addAttribute("roleResource",roleResource);
 	    }
     	return "index";
     }
