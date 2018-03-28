@@ -10,7 +10,7 @@
 	</resultMap>    
 	<!--查询全部角色/根据roleName查询-->
     <select id="listRole" parameterType="STRING" resultType="role">
-        SELECT id,roleName,createTime,updateTime FROM role WHERE status = 1
+        SELECT id,roleName,status,createTime,updateTime FROM role WHERE status = 1
         <if test="roleName!=null and roleName!=''">
             and roleName = #{roleName}
         </if>
