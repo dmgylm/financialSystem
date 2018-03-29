@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Message;
 import cn.financial.model.User;
@@ -94,6 +95,7 @@ public class MessageController {
      */
     @RequiresPermissions("capital:view")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
@@ -119,9 +121,6 @@ public class MessageController {
         }
         if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
-        }
-        if(null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
-        	map.put("uId", request.getParameter("uId"));// 消息来源
         }
         try {
         		User user = (User) request.getAttribute("user");
@@ -225,6 +224,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:view")
     @RequestMapping(value = "/getbyid", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> getMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -252,6 +252,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:update")
     @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -291,6 +292,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:update")
     @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
+    @ResponseBody
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
