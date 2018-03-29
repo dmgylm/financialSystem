@@ -70,7 +70,7 @@ public class MainController {
      * @param respons
      * @return
      */
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/")
     public String index(HttpServletRequest request,HttpServletResponse respons,Model model){
 	    User user = (User) request.getAttribute("user");
 	    String userName = user.getName();
@@ -84,6 +84,6 @@ public class MainController {
 	        }
 	        model.addAttribute("roleResource",roleResource);
 	    }
-    	return "index";
+    	return "/index";
     }
 }
