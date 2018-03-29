@@ -22,7 +22,7 @@
          <selectKey keyProperty="code" resultType="INTEGER">
             select LAST_INSERT_ID()
          </selectKey>
-        insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},#{createTime})
+        insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},curdate())
     </insert>
     <!--根据id/code查询-->  
     <select id="getResourceById" parameterType="STRING" resultType="resource">
@@ -43,7 +43,7 @@
 		  <if test="url!=null and url!=''">url=#{url},</if>
 		  <if test="parentId!=null and parentId!=''">parentId=#{parentId},</if>
 		  <if test="permssion!=null and permssion!=''">permssion=#{permssion},</if>
-		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
+		  updateTime = curdate()
 		 </trim>
 		 WHERE id=#{id}
     </update>

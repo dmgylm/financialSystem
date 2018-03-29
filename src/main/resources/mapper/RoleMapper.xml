@@ -18,7 +18,7 @@
     </select>
     <!--新增角色-->
     <insert id="insertRole" parameterType="role">
-        insert into role(id,roleName,createTime) values (#{id},#{roleName},#{createTime})
+        insert into role(id,roleName,createTime) values (#{id},#{roleName},curdate())
     </insert>
     <!--根据id查询角色-->  
     <select id="getRoleById" parameterType="STRING" resultType="role">
@@ -29,7 +29,7 @@
          UPDATE role
 		 <trim prefix="set" suffixOverrides=",">
 		  <if test="roleName!=null and roleName!=''">roleName=#{roleName},</if>
-		  <if test="updateTime!=null and updateTime!=''">updateTime=#{updateTime},</if>
+		  updateTime = curdate()
 		 </trim>
 		 WHERE id=#{id}
     </update>

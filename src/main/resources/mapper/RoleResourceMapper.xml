@@ -14,6 +14,6 @@
     </select>
     <!--新增-->
     <insert id="insertRoleResource" parameterType="cn.financial.model.RoleResource">
-        insert into role_resource_mapping(id,rId,sId,createTime) values (#{id},#{rId},#{sId},#{createTime})
+        insert into role_resource_mapping(id,rId,sId,createTime) values (#{id},#{rId},#{sId},curdate())
     </insert>
 </mapper>

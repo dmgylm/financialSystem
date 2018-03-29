@@ -33,12 +33,12 @@
 		WHERE r.status=1 and u.status=1 
 		<if test="name!=null and name!=''">
             and u.name=#{name}
-         </if>
+        </if>
 		ORDER BY m.createTime DESC
     </select>
     <!--新增-->
     <insert id="insertUserRole" parameterType="cn.financial.model.UserRole">
-        insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},#{createTime})
+        insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},curdate())
     </insert>
     
 </mapper>
