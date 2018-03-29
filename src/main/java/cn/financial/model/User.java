@@ -18,7 +18,7 @@ public class User {
 
     private String updateTime; // 更新时间
     
-    private String salt;  //随机数生成
+    private String salt;  //uuid随机数生成
     public User() {
         super();
     }
@@ -93,9 +93,5 @@ public class User {
 
 	public void setSalt(String salt) {
 		this.salt = salt;
-	}
-
-	public String getCredentialsSalt() {
-		return name + salt;
 	}
 }
