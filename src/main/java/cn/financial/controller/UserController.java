@@ -190,7 +190,7 @@ public class UserController {
     public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String name = null, realName = null, jobNumber = null, createTime = null;
+            String name = null, realName = null, jobNumber = null;
             if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
                 name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");//用户名
             }
@@ -200,9 +200,6 @@ public class UserController {
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 jobNumber = request.getParameter("jobNumber");//工号
             }
-            if (null!=request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-                createTime = request.getParameter("createTime");//创建时间
-            }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
@@ -210,11 +207,11 @@ public class UserController {
             }else{
                 User user = new User();
                 user.setId(UuidUtil.getUUID());
+                user.setSalt(UuidUtil.getUUID());
                 user.setName(name);
                 user.setRealName(realName);
                 user.setPwd(name);//用户新增默认密码为用户名
                 user.setJobNumber(jobNumber);
-                user.setCreateTime(createTime);
                 int userList = userService.insertUser(user);
                 if(userList>0){
                     dataMap.put("resultCode", 200);
@@ -243,11 +240,11 @@ public class UserController {
      * @param oId
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/update")
     @ResponseBody
     public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = null, name = null, realName = null, pwd = null, jobNumber = null, updateTime = null;
+        String userId = null, name = null, realName = null, pwd = null, jobNumber = null;
         try {
             if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
                 name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");//用户名
@@ -264,16 +261,13 @@ public class UserController {
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 jobNumber = request.getParameter("jobNumber");//工号
             }
-            if (null!=request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-                updateTime = request.getParameter("updateTime");//修改时间
-            }
             User user = new User();
             user.setId(userId);
+            user.setSalt(UuidUtil.getUUID());
             user.setName(name);
             user.setRealName(realName);
             user.setPwd(pwd);
             user.setJobNumber(jobNumber);
-            user.setUpdateTime(updateTime);
             Integer userList = userService.updateUser(user);
             if(userList>0){
                 dataMap.put("resultCode", 200);
