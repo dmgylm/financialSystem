@@ -72,7 +72,7 @@ public class UserServiceImpl implements  UserService{
     @Override
     public Integer updateUser(User user) {
         //加密密码
-        if(user.getPwd()!=null && !"".equals(user.getPwd())){
+        if(user.getPwd()!=null && !user.getPwd().isEmpty()){
             passwordHelper.encryptPassword(user);
         }
         return userDao.updateUser(user);
