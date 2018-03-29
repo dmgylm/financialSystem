@@ -13,7 +13,10 @@
     </script>
 </head>
 <body>
-   <h1>登录</h1>
+    <@shiro.user>  
+                您已经登陆系统，请选择<a href="./index">进入系统</a>，或者<a href="./logout">登出系统来用其它用户登陆</a>
+    </@shiro.user> 
+   <h1>登录${(msg)!}</h1>
    <form id="loginForm" action="./login" method="post" >
               账号：   <input name="username" id="username">
             密码：      <input type="password" name="password" id="password">
