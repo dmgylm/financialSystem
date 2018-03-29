@@ -100,8 +100,8 @@ public class MessageController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         List<Message> list = null;
-        Date createTimeOfDate = null;
-        Date updateTimeOfDate = null;
+        //Date createTimeOfDate = null;
+        //Date updateTimeOfDate = null;
         int unreadmessage=0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
@@ -112,12 +112,12 @@ public class MessageController {
         	map.put("content", request.getParameter("content"));// 消息内容
         }
         if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-        	createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
-        	map.put("createTime", dateFormat.format(createTimeOfDate));// 创建时间
+        	//createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
+        	map.put("createTime", dateFormat.parse(request.getParameter("createTime")));// 创建时间
         }
         if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-        	updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
-        	map.put("updateTime", dateFormat.format(updateTimeOfDate));// 更新时间
+        	//updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
+        	map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
         }
         if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
