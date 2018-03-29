@@ -105,17 +105,13 @@ public class RoleController {
     public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleName = null, createTime = null;
+            String roleName = null;
             if(null!=request.getParameter("roleName") && !"".equals(request.getParameter("roleName"))){
                 roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称
-            }
-            if(null!=request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))){
-                createTime = request.getParameter("createTime");//创建时间
             }
             Role role = new Role();
             role.setId(UuidUtil.getUUID());
             role.setRoleName(roleName);
-            role.setCreateTime(createTime);
             int roleList = roleService.insertRole(role);
             if(roleList>0){
                 dataMap.put("resultCode", 200);
@@ -146,12 +142,9 @@ public class RoleController {
     public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleName = null, updateTime = null, roleId = null;
+            String roleName = null, roleId = null;
             if(null!=request.getParameter("roleName") && !"".equals(request.getParameter("roleName"))){
                 roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称
-            }
-            if(null!=request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))){
-                updateTime = request.getParameter("updateTime");//修改时间
             }
             if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
                 roleId = request.getParameter("roleId");//角色id
@@ -159,7 +152,6 @@ public class RoleController {
             Role role = new Role();
             role.setId(roleId);
             role.setRoleName(roleName);
-            role.setUpdateTime(updateTime);
             Integer roleList = roleService.updateRole(role);
             if(roleList>0){
                 dataMap.put("resultCode", 200);
@@ -250,10 +242,7 @@ public class RoleController {
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String createTime = null, resourceId = null, roleId = null;
-            if(null!=request.getParameter("creatTime") && !"".equals(request.getParameter("creatTime"))){
-                createTime = request.getParameter("creatTime");//创建时间
-            }
+            String resourceId = null, roleId = null;
             if(null!=request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))){
                 resourceId = request.getParameter("resourceId");//资源权限id ,json格式数据
             }
@@ -272,7 +261,6 @@ public class RoleController {
                     roleResource.setId(UuidUtil.getUUID());
                     roleResource.setsId(resourceIdStr);
                     roleResource.setrId(roleId);
-                    roleResource.setCreateTime(createTime);
                     roleResourceList = roleResourceService.insertRoleResource(roleResource);
                 }
             }

@@ -355,15 +355,12 @@ public class UserController {
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String orgId = null, uId = null, createTime = null;
+            String orgId = null, uId = null;
             if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
                 uId = request.getParameter("uId");//用户id
             }
             if (null!=request.getParameter("orgId") && !"".equals(request.getParameter("orgId"))) {
                 orgId = request.getParameter("orgId");//组织结构id ,json格式数据
-            }
-            if (null!=request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-                createTime = request.getParameter("createTime");//创建时间
             }
             JSONArray sArray = JSON.parseArray(orgId);
             int userOrganizationList = 0;
@@ -377,7 +374,6 @@ public class UserController {
                     userOrganization.setId(UuidUtil.getUUID());
                     userOrganization.setoId(orgIdStr);
                     userOrganization.setuId(uId);
-                    userOrganization.setCreateTime(createTime);
                     userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
                 }
             }
@@ -438,15 +434,12 @@ public class UserController {
     public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String roleId = null, uId = null, createTime = null;//roleId前台传入的数据是JSON格式
+            String roleId = null, uId = null;//roleId前台传入的数据是JSON格式
             if (null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))) {
                 roleId = request.getParameter("roleId");//角色id
             }
             if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
                 uId = request.getParameter("uId");//用户id
-            }
-            if(null!=request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))){
-                createTime = request.getParameter("createTime");//创建时间
             }
             JSONArray sArray = JSON.parseArray(roleId);
             int userRoleList = 0;
@@ -460,7 +453,6 @@ public class UserController {
                     userRole.setId(UuidUtil.getUUID());
                     userRole.setrId(roleStr);
                     userRole.setuId(uId);
-                    userRole.setCreateTime(createTime);
                     userRoleList = userRoleService.insertUserRole(userRole);
                 }
             }  

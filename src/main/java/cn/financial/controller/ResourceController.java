@@ -64,9 +64,7 @@ public class ResourceController {
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-        	
         	String resourceId = null;
-        	
         	if(null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))) {
         		  resourceId = request.getParameter("resourceId");
         	}
@@ -101,10 +99,9 @@ public class ResourceController {
             String code = null;//父id
             String url = null;
             String permssion = null;
-            String createTime = null;
             
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
-            	name = request.getParameter("name");
+            	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             }
             if( null != request.getParameter("code") && !"".equals(request.getParameter("code")) ) {
             	code = request.getParameter("code");//父id
@@ -115,41 +112,25 @@ public class ResourceController {
             if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
             	permssion = request.getParameter("permssion");
             }
-            if( null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime")) ) {
-            	createTime = request.getParameter("createTime");
+            Resource parent = resourceService.getResourceById("",code);//根据code查询对应功能权限
+            Resource resource = new Resource();
+            resource.setId(UuidUtil.getUUID());
+            resource.setName(name);
+            resource.setUrl(url);
+            resource.setPermssion(permssion);
+            if(parent != null && !"".equals(parent)){  
+                resource.setParentId(parent.getParentId());
+            }else{//没数据返回代表不是子节点直接把父节点赋值给parentId
+                resource.setParentId("1"); 
             }
-            if(name == null || "".equals(name)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "资源名称为空");
-            }else if(code == null || "".equals(code)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "父id为空");
-            }else if(createTime == null || "".equals(createTime)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "创建时间为空");
+            int resourceList = resourceService.insertResource(resource);
+            if(resourceList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "新增成功");
             }else{
-                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
-                Resource parent = resourceService.getResourceById("",code);//根据code查询对应功能权限
-                Resource resource = new Resource();
-                resource.setId(UuidUtil.getUUID());
-                resource.setName(name);
-                resource.setCreateTime(createTime);
-                resource.setUrl(url);
-                resource.setPermssion(permssion);
-                if(parent != null && !"".equals(parent)){  
-                    resource.setParentId(parent.getParentId());
-                }else{//没数据返回代表不是子节点直接把父节点赋值给parentId
-                    resource.setParentId("1"); 
-                }
-                int resourceList = resourceService.insertResource(resource);
-                if(resourceList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "新增成功");
-                }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "新增失败");
-                } 
-            }
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "新增失败");
+            } 
 
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
@@ -172,11 +153,10 @@ public class ResourceController {
             String permssion = null;//父id
             String url = null;
             String parentId = null;
-            String updateTime = null;
             String resourceId = null;
             
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
-            	name = request.getParameter("name");
+            	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             }
             if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
             	permssion = request.getParameter("permssion");//父id
@@ -187,38 +167,22 @@ public class ResourceController {
             if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
             	parentId = request.getParameter("parentId");
             }
-            if( null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime")) ) {
-            	updateTime = request.getParameter("updateTime");
-            }
             if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
             	resourceId = request.getParameter("resourceId");
             }
-            if(name == null || "".equals(name)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "资源名称为空");
-            }else if(resourceId == null || "".equals(resourceId)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "资源id为空");
-            }else if(updateTime == null || "".equals(updateTime)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改时间为空");
+            Resource resource = new Resource();
+            resource.setId(resourceId);
+            resource.setName(name);
+            resource.setUrl(url);
+            resource.setParentId(parentId);
+            resource.setPermssion(permssion);
+            Integer resourceList = resourceService.updateResource(resource);
+            if(resourceList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "修改成功");
             }else{
-                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
-                Resource resource = new Resource();
-                resource.setId(resourceId);
-                resource.setName(name);
-                resource.setUrl(url);
-                resource.setParentId(parentId);
-                resource.setPermssion(permssion);
-                resource.setUpdateTime(updateTime);
-                Integer resourceList = resourceService.updateResource(resource);
-                if(resourceList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功");
-                }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败");
-                }
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
             }
             
         } catch (Exception e) {
@@ -246,16 +210,15 @@ public class ResourceController {
             if(resourceId == null || "".equals(resourceId)){
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "资源id为空");
-            }else{
-                Integer flag = resourceService.deleteResource(resourceId);
-                if(flag>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "删除成功");
-                }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "删除失败");
-                } 
             }
+            Integer flag = resourceService.deleteResource(resourceId);
+            if(flag>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "删除成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "删除失败");
+            } 
             
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
