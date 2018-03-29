@@ -41,9 +41,8 @@ public class PasswordHelper {
         String newPassword = new SimpleHash(
                 algorithmName,
                 user.getPwd(),
-                ByteSource.Util.bytes(user.getCredentialsSalt()),
+                ByteSource.Util.bytes(user.getSalt()),
                 hashIterations).toHex();
-System.out.println( ByteSource.Util.bytes(user.getCredentialsSalt())+"@@@@@@2");
         user.setPwd(newPassword);
     }
 }

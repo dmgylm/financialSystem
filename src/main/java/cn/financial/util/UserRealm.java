@@ -55,21 +55,12 @@ public class UserRealm extends AuthorizingRealm {
             throw new LockedAccountException(); //帐号锁定
         }*/
 
-        /*System.out.println(getName());
-        //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                user.getName(), //用户名
+                user,//user.getName(), //用户名
                 user.getPwd(), //密码
-                //ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
-                getName()  //realm name
-        );*/
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                user.getName(), //用户名
-                user.getPwd(), //密码
-               ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
+                ByteSource.Util.bytes(user.getSalt()),//uuid生成
                 getName()  //realm name
         );
-        System.out.println( ByteSource.Util.bytes(user.getCredentialsSalt())+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return authenticationInfo;
     }
 
