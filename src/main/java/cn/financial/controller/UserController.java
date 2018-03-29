@@ -26,6 +26,7 @@ import cn.financial.model.UserRole;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
+import cn.financial.util.PasswordHelper;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -42,6 +43,8 @@ public class UserController {
     private UserOrganizationService userOrganizationService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private PasswordHelper passwordHelper;
     
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
@@ -51,18 +54,22 @@ public class UserController {
      * @param response
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/passWord", method = RequestMethod.POST)
+    @RequestMapping(value = "/passWord")
     @ResponseBody
     public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String oldPwd = null, newPwd = null, userId = null;
         
         User newuser = (User) request.getAttribute("user");
-        String pwd = userService.getUserById(newuser.getId()).getPwd();//查询当前登录用户密码
+        User users = userService.getUserById(newuser.getId());//查询当前登录用户密码,salt
         
         try{
             if(null!=request.getParameter("oldPwd") && !"".equals(request.getParameter("oldPwd"))){
-                oldPwd = request.getParameter("oldPwd");//旧密码
+                User userPwd = new User();
+                userPwd.setPwd(request.getParameter("oldPwd"));
+                userPwd.setSalt(users.getSalt());
+                passwordHelper.encryptPassword(userPwd);
+                oldPwd = userPwd.getPwd();//旧密码(页面传入)
             }
             if(null!=request.getParameter("newPwd") && !"".equals(request.getParameter("newPwd"))){
                 newPwd = request.getParameter("newPwd");//新密码
@@ -70,7 +77,7 @@ public class UserController {
             if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
                 userId = request.getParameter("userId");//用户id
             }
-            if(oldPwd.equals(pwd)) {//判断旧密码与原密码是否相等
+            if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
                 if(oldPwd.equals(newPwd)){
                     dataMap.put("resultCode", 400);
                     dataMap.put("resultDesc", "新旧密码一致");
@@ -78,6 +85,7 @@ public class UserController {
                     User user = new User();
                     user.setId(userId);
                     user.setPwd(newPwd);
+                    user.setSalt(UuidUtil.getUUID());
                     Integer userList = userService.updateUser(user);
                     if(userList>0){
                         dataMap.put("resultCode", 200);
