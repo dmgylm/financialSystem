@@ -124,7 +124,7 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgId() {
-        List<Organization> list = service.listTreeByIdForSon("4698d2836e944d509c4e2edc1fb793a7");
+        List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
