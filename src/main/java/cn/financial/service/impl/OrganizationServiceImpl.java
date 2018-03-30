@@ -127,11 +127,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        list.add(organizationByIds.get(0));
+        // list.add(organizationByIds.get(0));
         if (!CollectionUtils.isEmpty(organizationByIds)) {
-            // List<Organization> list =
-            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 List<TreeNode<Organization>> nodes = new ArrayList<>();
                 String jsonStr = "";
@@ -161,11 +160,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        list.add(organizationByIds.get(0));
+        // list.add(organizationByIds.get(0));
         if (!CollectionUtils.isEmpty(organizationByIds)) {
-            // List<Organization> list =
-            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 return list;
             }
