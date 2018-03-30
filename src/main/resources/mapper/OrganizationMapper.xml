@@ -13,9 +13,9 @@
 			jdbcType="VARCHAR"></result>
 		<result property="orgName" column="orgName" javaType="string"
 			jdbcType="VARCHAR"></result>
-		<result property="createTime" column="createTime" javaType="java.sql.Date"
+		<result property="createTime" column="createTime" javaType="string"
 			jdbcType="DATE"></result>
-		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
+		<result property="updateTime" column="updateTime" javaType="string"
 			jdbcType="DATE"></result>
 		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="status" column="status" javaType="int"
