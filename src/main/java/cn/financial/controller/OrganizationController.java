@@ -70,7 +70,7 @@ public class OrganizationController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "新增成功!");
             } else {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "新增失败!");
             }
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class OrganizationController {
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
+            dataMap.put("resultCode", 400);
             dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
@@ -166,7 +166,7 @@ public class OrganizationController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功!");
             } else {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "修改失败!");
             }
         } catch (Exception e) {
@@ -197,7 +197,7 @@ public class OrganizationController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "停用成功!");
             } else {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "停用失败!");
             }
         } catch (Exception e) {
@@ -228,7 +228,7 @@ public class OrganizationController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "停用成功!");
             } else {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "停用失败!");
             }
         } catch (Exception e) {
@@ -260,7 +260,7 @@ public class OrganizationController {
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", jsonTree);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
+            dataMap.put("resultCode", 400);
             dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
@@ -288,7 +288,7 @@ public class OrganizationController {
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
+            dataMap.put("resultCode", 400);
             dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
@@ -323,7 +323,7 @@ public class OrganizationController {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "移动成功!");
             } else {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "移动失败!");
             }
         } catch (Exception e) {
@@ -359,7 +359,7 @@ public class OrganizationController {
             dataMap.put("resultDesc", "查询成功!");
             dataMap.put("resultData", flag);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
+            dataMap.put("resultCode", 400);
             dataMap.put("resultDesc", "查询失败!");
             this.logger.error(e.getMessage(), e);
         }
