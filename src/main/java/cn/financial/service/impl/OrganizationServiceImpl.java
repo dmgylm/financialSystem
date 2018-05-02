@@ -161,10 +161,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        // list.add(organizationByIds.get(0));
+         list.add(organizationByIds.get(0));
         if (!CollectionUtils.isEmpty(organizationByIds)) {
-            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+//            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 return list;
             }
@@ -233,7 +233,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             return Integer.valueOf(0);
         }
         // 根据该节点的code查询到其下所有子节点信息的集合(要移动的节点及其子节点的集合)
-        List<Organization> list = organizationDAO.listTreeByCodeForSon(org.get(0).getCode());
+        List<Organization> list = listTreeByIdForSon(id);//organizationDAO.listTreeByCodeForSon(org.get(0).getCode());
         /*
          * 接下来是将要移动的几点按原来的机构新增到现在的父节点上,
          * 先将该节点新增，并修改其code，parentId，his_permission；然后再新增其子节点
