@@ -48,20 +48,12 @@ public interface OrganizationService {
     Integer deleteOrganizationById(String id);
 
     /**
-     * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）,停用(单条停用)
-     * 
-     * @param id
-     * @return
-     */
-    Integer deleteOrganizationByStatus(String id);
-
-    /**
      * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）,停用(级联停用，将此节点下的所有子节点停用)
      * 
      * @param id
      * @return
      */
-    Integer deleteOrganizationByStatusCascade(String id);
+    Integer deleteOrganizationByStatusCascade(String uId, String id);
 
     /**
      * 根据id查询该节点下的所有子节点,构建成树

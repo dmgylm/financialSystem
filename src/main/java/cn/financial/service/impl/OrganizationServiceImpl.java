@@ -46,7 +46,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             // 找到兄弟节点信息
             Map<Object, Object> mapbro = new HashMap<>();
             mapbro.put("parentId", org.get(0).getCode());
-            List<Organization> list = organizationDAO.listOrganizationBy(mapbro);
+            List<Organization> list = organizationDAO.listAllOrganizationBy(mapbro);
             // 若存在兄弟节点，则兄弟节点的code找到该节点的code
             if (!CollectionUtils.isEmpty(list)) {
                 List<String> codes = new ArrayList<String>();
@@ -90,16 +90,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 停用(单条停用),根据组织结构ID修改状态为0，即已停用
-     */
-    public Integer deleteOrganizationByStatus(String id) {
-        return organizationDAO.deleteOrganizationByStatus(id);
-    }
-
-    /**
      * 停用(级联停用，将此节点下的所有子节点停用)，根据组织结构ID修改状态为0，即已停用
      */
-    public Integer deleteOrganizationByStatusCascade(String id) {
+    @Transactional
+    public Integer deleteOrganizationByStatusCascade(String uId, String id) {
         Integer i = 0;
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
@@ -111,7 +105,14 @@ public class OrganizationServiceImpl implements OrganizationService {
             Iterator<Organization> iterator = list.iterator();
             while (iterator.hasNext()) {
                 Organization orga = iterator.next();
-                i = organizationDAO.deleteOrganizationByStatus(orga.getId());
+                Map<Object, Object> idmap = new HashMap<>();
+                idmap.put("id", id);
+                idmap.put("uId", uId);
+                // 先修改uid
+                Integer idupdate = organizationDAO.updateOrganizationById(idmap);
+                if (Integer.valueOf(1).equals(idupdate)) {
+                    i = organizationDAO.deleteOrganizationByStatus(orga.getId());
+                }
             }
         }
         return i;

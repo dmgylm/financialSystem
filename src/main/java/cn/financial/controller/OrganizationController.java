@@ -169,37 +169,6 @@ public class OrganizationController {
     }
 
     /**
-     * 停用(单条停用)，根据组织结构ID修改状态为0，即已停用
-     * 
-     * @param request
-     * @return
-     */
-    @ResponseBody
-    @RequiresPermissions("organization:stop")
-    @RequestMapping(value = "/deletebystatus", method = RequestMethod.POST)
-    public Map<Object, Object> deleteOrganizationByStatus(HttpServletRequest request) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        try {
-            Integer i = 0;
-            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                i = organizationService.deleteOrganizationByStatus(request.getParameter("id"));
-            }
-            if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "停用成功!");
-            } else {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "停用失败!");
-            }
-        } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-
-    /**
      * 停用(级联停用，将此节点下的所有子节点停用)，根据组织结构ID修改状态为0，即已停用
      * 
      * @param request
@@ -212,8 +181,9 @@ public class OrganizationController {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
             Integer i = 0;
+            User user = (User) request.getAttribute("user");
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                i = organizationService.deleteOrganizationByStatusCascade(request.getParameter("id"));
+                i = organizationService.deleteOrganizationByStatusCascade(user.getId(),request.getParameter("id"));
             }
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
