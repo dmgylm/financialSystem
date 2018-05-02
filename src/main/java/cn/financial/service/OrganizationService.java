@@ -93,7 +93,7 @@ public interface OrganizationService {
      * @param parentOrgId
      * @return
      */
-    Integer moveOrganization(String id, String parentOrgId);
+    Integer moveOrganization(String uId, String id, String parentOrgId);
 
     /**
      * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门；其他节点只能通过id查询）

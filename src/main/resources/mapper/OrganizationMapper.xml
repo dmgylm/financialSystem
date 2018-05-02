@@ -51,6 +51,17 @@
 		status = 1
 		<include refid="query_organization_where"></include>
 	</select>
+	
+	<!-- 根据条件查询组织结构信息（包含状态为1和0） -->
+    <select id="listAllOrganizationBy" parameterType="map" resultType="Organization">
+        select
+        id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+        from
+        organization
+        where
+        1 = 1
+        <include refid="query_organization_where"></include>
+    </select>
 
 	<!-- 根据Id更新组织结构信息 -->
 	<update id="updateOrganizationById" parameterType="map">

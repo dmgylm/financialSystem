@@ -223,7 +223,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Transactional
     @Override
-    public Integer moveOrganization(String id, String parentOrgId) {
+    public Integer moveOrganization(String uId ,String id, String parentOrgId) {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
@@ -246,7 +246,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 得到新父节点的子节点
         map = new HashMap<>();
         map.put("parentId", orgParent.get(0).getCode());
-        List<Organization> listSon = organizationDAO.listOrganizationBy(map);
+        List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
         if (!CollectionUtils.isEmpty(listSon)) {
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {
@@ -259,7 +259,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = new Organization();
         organization.setId(UuidUtil.getUUID());
         organization.setOrgName(org.get(0).getOrgName());
-        organization.setuId(org.get(0).getuId());// ??????????????????????????????????????
+        organization.setuId(uId);
         organization.setCode(code);
         organization.setParentId(orgParent.get(0).getCode());
         organization.setHis_permission(org.get(0).getHis_permission() + "," + code);
@@ -283,7 +283,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 Organization organization1 = new Organization();
                 organization1.setId(UuidUtil.getUUID());
                 organization1.setOrgName(orga.getOrgName());
-                organization1.setuId(orga.getuId());// ??????????????????????????????????????
+                organization1.setuId(uId);
                 organization1.setCode(code1);
                 organization1.setParentId(parentId1);
                 organization1.setHis_permission(orga.getHis_permission() + "," + code1);
@@ -333,4 +333,5 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return null;
     }
+
 }

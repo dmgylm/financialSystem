@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Organization;
+import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
@@ -60,9 +61,8 @@ public class OrganizationController {
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
                 organization.setOrgName(new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
             }
-            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
-                organization.setuId(request.getParameter("uId"));// 提交人id
-            }
+            User user = (User) request.getAttribute("user");
+            organization.setuId(user.getId());// 提交人id
             if (null != request.getParameter("parentOrgId") && !"".equals(request.getParameter("parentOrgId"))) {
                 // 新增的时候这里保存的是此节点的code
                 i = organizationService.saveOrganization(organization, request.getParameter("parentOrgId"));
@@ -150,18 +150,8 @@ public class OrganizationController {
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 map.put("id", request.getParameter("id"));// 组织id
             }
-//            if (null != request.getParameter("code") && !"".equals(request.getParameter("code"))) {
-//                map.put("code", request.getParameter("code"));// 该组织机构节点的序号
-//            }
-//            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
-//                map.put("uId", request.getParameter("uId"));// 提交人id
-//            }
-//            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
-//                map.put("parentId", request.getParameter("parentId"));// 父id
-//            }
-//            if (null != request.getParameter("his_permission") && !"".equals(request.getParameter("his_permission"))) {
-//                map.put("his_permission", request.getParameter("his_permission"));// 历史权限记录
-//            }
+            User user = (User) request.getAttribute("user");
+            map.put("uId", user.getId());
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -319,7 +309,8 @@ public class OrganizationController {
             if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
                 parentOrgId = request.getParameter("parentId");
             }
-            Integer i = organizationService.moveOrganization(id, parentOrgId);
+            User user = (User) request.getAttribute("user");
+            Integer i = organizationService.moveOrganization(user.getId() ,id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "移动成功!");
