@@ -26,8 +26,8 @@ import cn.financial.model.UserRole;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
-import cn.financial.util.PasswordHelper;
 import cn.financial.util.UuidUtil;
+import cn.financial.util.shiro.PasswordHelper;
 
 /**
  * 用户(用户角色关联表)(用户组织结构关联表)
@@ -128,9 +128,9 @@ public class UserController {
             if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
                 map.put("id", request.getParameter("userId"));//用户id
             }
-            if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
+            /*if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
                 map.put("pwd", request.getParameter("pwd"));//密码
-            }
+            }*/
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 map.put("jobNumber", request.getParameter("jobNumber"));//工号
             }
