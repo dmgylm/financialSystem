@@ -133,17 +133,8 @@ public class CapitalController {
                 if(uId!=null && !uId.equals("")){
                     map.put("uId",uId);
                 }
-                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                    map.put("year",Integer.getInteger(request.getParameter("year")));
-                }
-                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                    map.put("month",Integer.getInteger(request.getParameter("month")));
-                }
                 if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
                     map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
-                }
-                if(request.getParameter("status")!=null && !request.getParameter("status").equals("")){
-                    map.put("status",Integer.getInteger(request.getParameter("status")));
                 }
                 List<Capital> list = capitalService.listCapitalBy(map);
                 dataMap.put("resultCode", 200);
@@ -151,7 +142,7 @@ public class CapitalController {
                 dataMap.put("resultData", list);
                 
             } catch (Exception e) {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "查询失败!");
                 this.logger.error(e.getMessage(), e);
             }
@@ -179,7 +170,7 @@ public class CapitalController {
                    dataMap.put("resultData", Capital);
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "查询失败!");
                 this.logger.error(e.getMessage(), e);
             }
@@ -275,7 +266,7 @@ public class CapitalController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("result", "新增成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("result", "新增失败!");
                 }
             } catch (Exception e) {
@@ -374,7 +365,7 @@ public class CapitalController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "修改成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("resultDesc", "修改失败!");
                 }
             } catch (Exception e) {
@@ -403,7 +394,7 @@ public class CapitalController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");
                  } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("resultDesc", "删除失败!");
                  }     
                 }
