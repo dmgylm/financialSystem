@@ -127,10 +127,11 @@ public class OrganizationServiceImpl implements OrganizationService {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        // list.add(organizationByIds.get(0));
+        list.add(organizationByIds.get(0));
         if (!CollectionUtils.isEmpty(organizationByIds)) {
-            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            // list =
+            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            getOrganizationSonList(list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 List<TreeNode<Organization>> nodes = new ArrayList<>();
                 String jsonStr = "";
@@ -173,8 +174,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     /**
      * @Description: 递归查询组织机构
-     * @param @param departList
-     * @param @param departId 设定文件
+     * @param @param
+     *            departList
+     * @param @param
+     *            departId 设定文件
      * @return
      */
     public void getOrganizationSonList(List<Organization> departList, String departId) {
