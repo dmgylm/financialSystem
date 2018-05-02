@@ -50,6 +50,6 @@ public interface CapitalDao {
      * @param map
      * @return
      */
-    List<Capital> listCapitalBy(Capital capital);
+    List<Capital> listCapitalBy(Map<Object, Object> map);
 
 }

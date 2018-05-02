@@ -61,91 +61,91 @@ public class CapitalController {
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
-        public Map<String, Object> listCapitalBy(HttpServletRequest request,String id,String plate,String BU,
+        public Map<String, Object> listCapitalBy(HttpServletRequest request/*,String id,String plate,String BU,
                 String regionName,String province,String city,String company,String accountName,String accountBank,String account,
                 String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
-                String classify,String createTime,String updateTime,String year,String month,String remarks,String status) {
+                String classify,String createTime,String updateTime,String year,String month,String remarks,String status*/) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
+                Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                Capital capital=new Capital();
-                if(id!=null && !id.equals("")){
-                   capital.setId(id);
+                if(request.getParameter("id")!=null && !request.getParameter("id").equals("")){
+                   map.put("id", request.getParameter("id"));
                 }
-                if(plate!=null && !plate.equals("")){
-                    capital.setPlate(new String(plate.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
+                    map.put("plate",new String(request.getParameter("plate").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(BU!=null && !BU.equals("")){
-                    capital.setBU(new String(BU.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
+                    map.put("BU",new String(request.getParameter("BU").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(regionName!=null && !regionName.equals("")){
-                    capital.setRegionName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
+                    map.put("regionName",new String(request.getParameter("regionName").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(province!=null && !province.equals("")){
-                    capital.setProvince(new String(province.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
+                    map.put("province",new String(request.getParameter("province").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(city!=null && !city.equals("")){
-                    capital.setCity(new String(city.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
+                    map.put("city",new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(company!=null && !company.equals("")){
-                    capital.setCompany(new String(company.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
+                    map.put("company",new String(request.getParameter("company").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(accountName!=null && !accountName.equals("")){
-                    capital.setAccountName(new String(regionName.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
+                    map.put("accountName",new String(request.getParameter("accountName").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(accountBank!=null && !accountBank.equals("")){
-                    capital.setAccountBank(new String(accountName.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
+                    map.put("accountBank",new String(request.getParameter("accountBank").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(account!=null && !account.equals("")){
-                    capital.setAccount(new String(account.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
+                    map.put("account",new String(request.getParameter("account").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(accountNature!=null && !accountNature.equals("")){
-                    capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
+                    map.put("accountNature",new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(tradeTime!=null && !tradeTime.equals("")){
-                    capital.setTradeTime(sdf.parse(tradeTime));
+                if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
+                    map.put("tradeTime",sdf.parse(request.getParameter("tradeTime")));
                 }
-                if(startBlack!=null && !startBlack.equals("")){
-                    capital.setStartBlack(Integer.getInteger(startBlack));
+                if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
+                    map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
                 }
-                if(incom!=null && !incom.equals("")){
-                    capital.setIncom(Integer.getInteger(incom));
+                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
+                    map.put("incom",Integer.getInteger(request.getParameter("incom")));
                 }
-                if(pay!=null && !pay.equals("")){
-                    capital.setPay(Integer.getInteger(pay));
+                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
+                    map.put("pay",Integer.getInteger(request.getParameter("pay")));
                 }
-                if(endBlack!=null && !endBlack.equals("")){
-                    capital.setEndBlack(Integer.getInteger(endBlack));
+                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
+                    map.put("endBlack",Integer.getInteger(request.getParameter("endBlack")));
                 }
-                if(abstrac!=null && !abstrac.equals("")){
-                    capital.setAbstrac(new String(abstrac.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
+                    map.put("abstrac",new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(classify!=null && !classify.equals("")){
-                    capital.setClassify(new String(classify.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
+                    map.put("classify",new String(request.getParameter("classify").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(createTime!=null && !createTime.equals("")){
-                    capital.setCreateTime(sdf.parse(createTime));
+                if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
+                    map.put("createTime",sdf.parse(request.getParameter("createTime")));
                 }
-                if(updateTime!=null && !updateTime.equals("")){
-                    capital.setUpdateTime(sdf.parse(updateTime));
+                if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
+                    map.put("updateTime",sdf.parse(request.getParameter("updateTime")));
                 }
                 if(uId!=null && !uId.equals("")){
-                    capital.setuId(uId);
+                    map.put("uId",uId);
                 }
-                if(year!=null && !year.equals("")){
-                    capital.setYear(Integer.getInteger(year));
+                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
+                    map.put("year",Integer.getInteger(request.getParameter("year")));
                 }
-                if(month!=null && !month.equals("")){
-                    capital.setMonth(Integer.getInteger(month));
+                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
+                    map.put("month",Integer.getInteger(request.getParameter("month")));
                 }
-                if(remarks!=null && !remarks.equals("")){
-                    capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
+                    map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                if(status!=null && !status.equals("")){
-                   capital.setStatus(Integer.getInteger(status));
+                if(request.getParameter("status")!=null && !request.getParameter("status").equals("")){
+                    map.put("status",Integer.getInteger(request.getParameter("status")));
                 }
-                List<Capital> list = capitalService.listCapitalBy(capital);
+                List<Capital> list = capitalService.listCapitalBy(map);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
@@ -495,21 +495,21 @@ public class CapitalController {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             User user = (User) request.getAttribute("user");
             uId = user.getId();
-            Capital cap=new Capital();
+            Map<Object, Object> map = new HashMap<>();
             if(uId!=null&&!uId.equals("")){
-                cap.setuId(uId);
+                map.put("uId",uId);
             }
             if(accountName!=null&&!accountName.equals("")){
-                cap.setAccountName(accountName);
+                map.put("accountName",accountName);
             }
             if(accountNature!=null&&!accountNature.equals("")){
-                cap.setAccountNature(accountNature);
+                map.put("accountNature",accountNature);
             }
             if(classify!=null&&!classify.equals("")){
-                cap.setClassify(classify);
+                map.put("classify",classify);
             }
             try {
-                List<Capital> list = capitalService.listCapitalBy(cap);
+                List<Capital> list = capitalService.listCapitalBy(map);
                 List<String[]> strList=new ArrayList<>();
                 String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};

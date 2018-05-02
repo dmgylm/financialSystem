@@ -6,16 +6,30 @@
      
        <resultMap id="capital" type="cn.financial.model.Capital">
            <id column="id" property="id" jdbcType="INTEGER" />
-           <result column="oId" property="oId" jdbcType="VARCHAR" />
-           <result column="info" property="info"  />
+           <result column="plate" property="plate" jdbcType="VARCHAR" />
+           <result column="BU" property="BU" jdbcType="VARCHAR" />
+           <result column="regionName" property="regionName" jdbcType="VARCHAR" />
+           <result column="province" property="province" jdbcType="VARCHAR" />
+           <result column="city" property="city" jdbcType="VARCHAR" />
+           <result column="company" property="company" jdbcType="VARCHAR" />
+           <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+           <result column="accountBank" property="accountBank" jdbcType="VARCHAR" />
+           <result column="account" property="account" jdbcType="VARCHAR" />
+           <result column="accountNature" property="accountNature" jdbcType="VARCHAR" />
+           <result column="tradeTime" property="tradeTime" jdbcType="DATE" />
+           <result column="startBlack" property="startBlack" jdbcType="INTEGER" />
+           <result column="incom" property="incom" jdbcType="INTEGER" />
+           <result column="pay" property="pay" jdbcType="INTEGER" />
+           <result column="endBlack" property="endBlack" jdbcType="INTEGER" />
+           <result column="abstrac" property="abstrac" jdbcType="VARCHAR" />
+           <result column="classify" property="classify" jdbcType="VARCHAR" />
            <result column="createTime" property="createTime" jdbcType="DATE" />
            <result column="updateTime" property="updateTime" jdbcType="DATE" />
-           <result column="typeId" property="typeId" jdbcType="VARCHAR" />
            <result column="uId" property="uId" jdbcType="VARCHAR" />
            <result column="year" property="year" jdbcType="INTEGER" />
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
-           
+           <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap>    
  
@@ -47,7 +61,7 @@
        </select>
        
        <!-- 根据条件查询资金数据-->
-       <select id="listCapitalBy" parameterType="capital" resultType="Capital">
+       <select id="listCapitalBy" parameterType="map" resultType="Capital">
          SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status 
          FROM capital

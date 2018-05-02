@@ -58,9 +58,9 @@ public class CapitalServiceImpl implements CapitalService{
      * 根据条件资金表数据
      */
     @Override
-    public List<Capital> listCapitalBy(Capital capital) {
+    public List<Capital> listCapitalBy(Map<Object, Object> map) {
         // TODO Auto-generated method stub
-        return capitalDao.listCapitalBy(capital);
+        return capitalDao.listCapitalBy(map);
     }
 
     /**
