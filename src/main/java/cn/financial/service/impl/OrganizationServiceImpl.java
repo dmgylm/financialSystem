@@ -280,23 +280,22 @@ public class OrganizationServiceImpl implements OrganizationService {
             if (Integer.valueOf(1).equals(idupdate)) {
                 // 停用
                 organizationDAO.deleteOrganizationByStatus(orga.getId());
-            }
-
-            /*
-             * 添加子节点
-             */
-            if (orga.getId() != id && !id.equals(orga.getId())) {
-                // 子节点的code
-                String code1 = orga.getCode().replaceFirst(org.get(0).getCode(), organization.getCode());
-                String parentId1 = orga.getParentId().replaceFirst(org.get(0).getCode(), organization.getCode());
-                Organization organization1 = new Organization();
-                organization1.setId(UuidUtil.getUUID());
-                organization1.setOrgName(orga.getOrgName());
-                organization1.setuId(uId);
-                organization1.setCode(code1);
-                organization1.setParentId(parentId1);
-                organization1.setHis_permission(orga.getHis_permission() + "," + code1);
-                organizationDAO.saveOrganization(organization1);
+                /*
+                 * 添加子节点
+                 */
+                if (orga.getId() != id && !id.equals(orga.getId())) {
+                    // 子节点的code
+                    String code1 = orga.getCode().replaceFirst(org.get(0).getCode(), organization.getCode());
+                    String parentId1 = orga.getParentId().replaceFirst(org.get(0).getCode(), organization.getCode());
+                    Organization organization1 = new Organization();
+                    organization1.setId(UuidUtil.getUUID());
+                    organization1.setOrgName(orga.getOrgName());
+                    organization1.setuId(uId);
+                    organization1.setCode(code1);
+                    organization1.setParentId(parentId1);
+                    organization1.setHis_permission(orga.getHis_permission() + "," + code1);
+                    organizationDAO.saveOrganization(organization1);
+                }
             }
         }
         return Integer.valueOf(1);
