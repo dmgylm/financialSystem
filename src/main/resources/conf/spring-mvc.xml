@@ -30,7 +30,7 @@
     <!-- 用户登录后进行保存 -->
       <mvc:annotation-driven>
         <mvc:argument-resolvers>
-            <bean class="cn.financial.util.CurrentUserMethodArgumentResolver"/>
+            <bean class="cn.financial.util.shiro.CurrentUserMethodArgumentResolver"/>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
     
