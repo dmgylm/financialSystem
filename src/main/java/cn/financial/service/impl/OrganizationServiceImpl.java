@@ -106,7 +106,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             while (iterator.hasNext()) {
                 Organization orga = iterator.next();
                 Map<Object, Object> idmap = new HashMap<>();
-                idmap.put("id", id);
+                idmap.put("id", orga.getId());
                 idmap.put("uId", uId);
                 // 先修改uid
                 Integer idupdate = organizationDAO.updateOrganizationById(idmap);
@@ -272,7 +272,15 @@ public class OrganizationServiceImpl implements OrganizationService {
         Iterator<Organization> iterator = list.iterator();
         while (iterator.hasNext()) {
             Organization orga = iterator.next();
-            organizationDAO.deleteOrganizationByStatus(orga.getId());
+            Map<Object, Object> idmap = new HashMap<>();
+            idmap.put("id", orga.getId());
+            idmap.put("uId", uId);
+            // 先修改uid
+            Integer idupdate = organizationDAO.updateOrganizationById(idmap);
+            if (Integer.valueOf(1).equals(idupdate)) {
+                // 停用
+                organizationDAO.deleteOrganizationByStatus(orga.getId());
+            }
 
             /*
              * 添加子节点
