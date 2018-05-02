@@ -54,7 +54,7 @@ public class UserController {
      * @param response
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/passWord")
+    @RequestMapping(value = "/passWord", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -113,7 +113,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/index")
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -193,7 +193,7 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
-    @RequestMapping(value = "/insert")
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -211,7 +211,7 @@ public class UserController {
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "用户名已存在");
+                dataMap.put("resultDesc", "用户名已存在,请重新命名");
             }else{
                 User user = new User();
                 user.setId(UuidUtil.getUUID());
@@ -248,7 +248,7 @@ public class UserController {
      * @param oId
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
