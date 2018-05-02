@@ -121,7 +121,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
-    public String TreeByIdForSon(String id) {
+    public JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
@@ -144,8 +144,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                     nodes.add(node);
                 }
                 JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
-                jsonStr = jsonObject.toString();
-                return jsonStr;
+                return jsonObject;
             }
         }
         return null;

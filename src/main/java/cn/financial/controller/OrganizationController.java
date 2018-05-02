@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONObject;
 
 /**
  * 组织结构相关操作
@@ -149,18 +150,18 @@ public class OrganizationController {
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 map.put("id", request.getParameter("id"));// 组织id
             }
-            if (null != request.getParameter("code") && !"".equals(request.getParameter("code"))) {
-                map.put("code", request.getParameter("code"));// 该组织机构节点的序号
-            }
-            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
-                map.put("uId", request.getParameter("uId"));// 提交人id
-            }
-            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
-                map.put("parentId", request.getParameter("parentId"));// 父id
-            }
-            if (null != request.getParameter("his_permission") && !"".equals(request.getParameter("his_permission"))) {
-                map.put("his_permission", request.getParameter("his_permission"));// 历史权限记录
-            }
+//            if (null != request.getParameter("code") && !"".equals(request.getParameter("code"))) {
+//                map.put("code", request.getParameter("code"));// 该组织机构节点的序号
+//            }
+//            if (null != request.getParameter("uId") && !"".equals(request.getParameter("uId"))) {
+//                map.put("uId", request.getParameter("uId"));// 提交人id
+//            }
+//            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
+//                map.put("parentId", request.getParameter("parentId"));// 父id
+//            }
+//            if (null != request.getParameter("his_permission") && !"".equals(request.getParameter("his_permission"))) {
+//                map.put("his_permission", request.getParameter("his_permission"));// 历史权限记录
+//            }
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", 200);
@@ -252,7 +253,7 @@ public class OrganizationController {
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
-            String jsonTree = "";
+            JSONObject jsonTree = new JSONObject();
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 jsonTree = organizationService.TreeByIdForSon(request.getParameter("id"));
             }

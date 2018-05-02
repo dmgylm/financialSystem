@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.financial.model.Organization;
+import net.sf.json.JSONObject;
 
 /**
  * 组织结构service接口层
@@ -68,7 +69,7 @@ public interface OrganizationService {
      * @param id
      * @return
      */
-    String TreeByIdForSon(String id);
+    JSONObject TreeByIdForSon(String id);
 
     /**
      * 根据id查询该节点下的所有子节点集合
