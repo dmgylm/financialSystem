@@ -35,9 +35,9 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("aa");
+        organization2.setOrgName("aaaaaaaaaaa");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
-        Integer i = service.saveOrganization(organization2, "135831766bf544e4a7f0f34f058116e7");
+        Integer i = service.saveOrganization(organization2, "cced74c59a9846b5b0a81c0baf235c17");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -105,8 +105,8 @@ public class OrganizationTest {
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "092ebe80f0754dc794990662e8cd0eac";
-        Integer i = service.deleteOrganizationByStatusCascade(id);
+        String id = "5dd58617f174473888857f389c822c75";
+        Integer i = service.deleteOrganizationByStatusCascade("aa",id);
         System.out.println(i);
     }
 
@@ -115,8 +115,8 @@ public class OrganizationTest {
      */
     @Test
     public void TreeByOrgId() {
-        String string = service.TreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
-        System.out.println(string);
+        JSONObject string = service.TreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
+        System.out.println(string.toString());
     }
 
     /**
@@ -165,7 +165,7 @@ public class OrganizationTest {
     public void moveOrganization() {
         String id = "c64bb8ec6a9a47008c4f6fcfb51a9bfc";
         String parentOrgId = "4698d2836e944d509c4e2edc1fb793a7";
-        service.moveOrganization(id, parentOrgId);
+        service.moveOrganization("aa",id, parentOrgId);
     }
 
     /**
