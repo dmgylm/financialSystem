@@ -15,7 +15,7 @@ import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.UserService;
-import cn.financial.util.PasswordHelper;
+import cn.financial.util.shiro.PasswordHelper;
 
 
 @Service("UserServiceImpl")
