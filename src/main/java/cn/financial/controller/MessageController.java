@@ -99,7 +99,9 @@ public class MessageController {
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> mapn = new HashMap<Object, Object>();
         List<Message> list = null;
+        List<Message> listm=null;
         //Date createTimeOfDate = null;
         //Date updateTimeOfDate = null;
         int unreadmessage=0;
@@ -119,31 +121,31 @@ public class MessageController {
         	//updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
         	map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
         }
-        if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+   /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
-        }
+        }*/
         try {
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
+        		mapn.put("uId", user.getId());
         		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
                 	if(request.getParameter("status") == "2") {
                 		map.put("isTag", "1");
                 	}else {
                 		map.put("status", request.getParameter("status"));
-                		if(null != request.getParameter("isTag") && !"".equals(request.getParameter("isTag"))) {
+                	/*	if(null != request.getParameter("isTag") && !"".equals(request.getParameter("isTag"))) {
                 			map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
-                		}
+                		}*/
                 	}
                 }
         		
                 list = messageService.listMessage(map);
-                  
-                for(int k=0;k<list.size();k++) {
-                    if(list.get(k).getStatus()==0) {
+                listm= messageService.listMessage(mapn);
+                for(int k=0;k<listm.size();k++) {
+                    if(listm.get(k).getStatus()==0) {
                     	unreadmessage+=1;
                     }
                 }
-                
                 dataMap.put("resultstatus", unreadmessage);//未读的条数
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");
