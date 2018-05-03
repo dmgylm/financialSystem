@@ -2,6 +2,7 @@ package cn.financial.service.impl;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.financial.dao.CapitalDao;
@@ -72,7 +73,11 @@ public class CapitalServiceImpl implements CapitalService{
         return capitalDao.deleteCapital(id);
     }
 
+    @Override
+    public List<Capital> listCapitalById(List<String> ids) {
+        // TODO Auto-generated method stub
+        return capitalDao.listCapitalById(ids);
+    }
     
- 
 }
  

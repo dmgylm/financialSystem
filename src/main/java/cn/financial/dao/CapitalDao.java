@@ -2,6 +2,7 @@ package cn.financial.dao;
 
 import java.util.List;
 import java.util.Map;
+
 import cn.financial.model.Capital;
 
 /**
@@ -51,5 +52,12 @@ public interface CapitalDao {
      * @return
      */
     List<Capital> listCapitalBy(Map<Object, Object> map);
+    
+    /**
+     * 导出根据多个id查询
+     * @param id
+     * @return
+     */
+    List<Capital> listCapitalById(List<String> ids);
 
 }

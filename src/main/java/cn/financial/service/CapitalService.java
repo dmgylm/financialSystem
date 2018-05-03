@@ -2,6 +2,7 @@ package cn.financial.service;
 
 import java.util.List;
 import java.util.Map;
+
 import cn.financial.model.Capital;
 
 /**
@@ -10,6 +11,8 @@ import cn.financial.model.Capital;
  *
  */
 public interface CapitalService {
+    
+     
     
     /**
      * 新增资金表数据
@@ -51,4 +54,11 @@ public interface CapitalService {
      * @return
      */
     List<Capital> listCapitalBy(Map<Object, Object> map);
+    
+    /**
+     * 导出根据多个id查询
+     * @param id
+     * @return
+     */
+    List<Capital> listCapitalById(List<String> ids);
 }

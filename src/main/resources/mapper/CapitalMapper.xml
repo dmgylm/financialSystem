@@ -70,7 +70,19 @@
          ORDER BY createTime DESC
        </select>
        
-       <!-- 根据条件修改资金数据-->
+       <!--导出根据多个id查询 -->
+       <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
+           SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
+           FROM capital 
+           WHERE status=1 and id in 
+            <foreach collection="list" item="id" index="index" open="(" separator="," close=")" >
+               #{id}
+           </foreach>
+           ORDER BY createTime DESC
+       </select>
+       
+       <!-- 根据条件修改资金数据--> 
       <update id="updateCapital" parameterType="capital">
          UPDATE capital
         <trim prefix="set" suffixOverrides=",">

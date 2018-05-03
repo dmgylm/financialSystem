@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request/*,String id,String plate,String BU,
                 String regionName,String province,String city,String company,String accountName,String accountBank,String account,
@@ -410,6 +411,7 @@ public class CapitalController {
         /***
          * 导入
          */
+        @RequiresPermissions("capital:upload")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
         @ResponseBody
         public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
@@ -478,29 +480,21 @@ public class CapitalController {
          * @param response
          * @throws Exception 
          */
+        @RequiresPermissions("capital:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
-        public void export(HttpServletRequest request,HttpServletResponse response,String uId,String accountName
-                ,String accountNature,String classify) throws Exception{
+        public void export(HttpServletRequest request,HttpServletResponse response,String[] id) throws Exception{
             OutputStream os = null;
             Map<String, Object> dataMap = new HashMap<String, Object>();
-            User user = (User) request.getAttribute("user");
-            uId = user.getId();
-            Map<Object, Object> map = new HashMap<>();
-            if(uId!=null&&!uId.equals("")){
-                map.put("uId",uId);
-            }
-            if(accountName!=null&&!accountName.equals("")){
-                map.put("accountName",accountName);
-            }
-            if(accountNature!=null&&!accountNature.equals("")){
-                map.put("accountNature",accountNature);
-            }
-            if(classify!=null&&!classify.equals("")){
-                map.put("classify",classify);
-            }
+           /* User user = (User) request.getAttribute("user");
+            uId = user.getId();*/
+          /*  Map<Object, Object> map = new HashMap<>();
+            if(id!=null&&!id.equals("")){
+                map.put("id",id);
+            }*/
             try {
-                List<Capital> list = capitalService.listCapitalBy(map);
+                List<String> ids = Arrays.asList(id);
+                List<Capital> list = capitalService.listCapitalById(ids);
                 List<String[]> strList=new ArrayList<>();
                 String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
