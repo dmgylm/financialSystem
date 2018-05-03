@@ -30,6 +30,13 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
     public Integer insertUserOrganization(UserOrganization userOrganization) {
         return userOrganizationDao.insertUserOrganization(userOrganization);
     }
+    /**
+     * 修改
+     */
+    @Override
+    public Integer updateUserOrganization(String uId) {
+        return userOrganizationDao.updateUserOrganization(uId);
+    }
 
 }
  
