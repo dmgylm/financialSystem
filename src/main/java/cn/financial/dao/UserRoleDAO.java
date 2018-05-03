@@ -23,5 +23,16 @@ public interface UserRoleDAO {
      * @return
      */
     Integer insertUserRole(UserRole user);
-
+    /**
+     * 删除
+     * @param uId
+     * @return
+     */
+    Integer deleteUserRole(@Param("uId") String uId);
+    /**
+     * 修改
+     * @param user
+     * @return
+     */
+    Integer updateUserRole(UserRole user);
 }

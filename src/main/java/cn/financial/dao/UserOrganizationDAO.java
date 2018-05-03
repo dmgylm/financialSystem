@@ -12,24 +12,27 @@ import cn.financial.model.UserOrganization;
  * 2018/3/16
  */
 public interface UserOrganizationDAO {
-    
     /**
      * 查询所有
      * @return
      */
     List<UserOrganization> listUserOrganization(@Param("uId") String uId);
-    
     /**
      * 新增
      * @param userOrganization
      * @return
      */
     Integer insertUserOrganization(UserOrganization userOrganization);
-    
     /**
-     * 修改
+     * 删除
      * @param uId
      * @return
      */
-    Integer updateUserOrganization(@Param("uId") String uId);
+    Integer deleteUserOrganization(@Param("uId") String uId);
+    /**
+     * 修改
+     * @param userOrganization
+     * @return
+     */
+    Integer updateUserOrganization(UserOrganization userOrganization);
 }
