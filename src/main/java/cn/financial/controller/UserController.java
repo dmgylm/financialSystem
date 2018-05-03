@@ -330,7 +330,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("organization:view")
+    @RequiresPermissions({"organization:view","permission:view"})
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
@@ -357,7 +357,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("organization:create")
+    @RequiresPermissions({"organization:create","permission:create"})
     @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
@@ -401,12 +401,12 @@ public class UserController {
         return dataMap;
     }
     /**
-     * 修改（先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息）
+     * 修改（先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息）（根据用户id修改用户组织架构关联信息）
      * @param request
      * @param response
      * @return
      */
-    @RequiresPermissions("organization:update")
+    @RequiresPermissions({"organization:update","permission:update"})
     @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateUserOrganization(HttpServletRequest request,HttpServletResponse response){
@@ -419,7 +419,7 @@ public class UserController {
             if (null!=request.getParameter("orgId") && !"".equals(request.getParameter("orgId"))) {
                 orgId = request.getParameter("orgId");//组织结构id ,json格式数据
             }
-            int userOrgDelete = userOrganizationService.updateUserOrganization(uId);//删除
+            int userOrgDelete = userOrganizationService.deleteUserOrganization(uId);//删除
             if(userOrgDelete > 0){
                 JSONArray sArray = JSON.parseArray(orgId);
                 int userOrganizationList = 0;
@@ -433,7 +433,7 @@ public class UserController {
                         userOrganization.setId(UuidUtil.getUUID());
                         userOrganization.setoId(orgIdStr);
                         userOrganization.setuId(uId);
-                        userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);//新增
+                        userOrganizationList = userOrganizationService.updateUserOrganization(userOrganization);//修改（新增数据）
                     }
                 }
                 if(userOrganizationList>0){
@@ -489,8 +489,6 @@ public class UserController {
      * @param response
      * @param uid
      * @param rid
-     * @param createTime
-     * @param updateTime
      */
     @RequiresPermissions("permission:create")
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
@@ -526,6 +524,63 @@ public class UserController {
             }else{
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "新增失败");
+            }
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息（根据用户id修改用户角色关联信息）
+     * @param request
+     * @param response
+     * @param uid
+     * @param rid
+     * @param updateTime
+     */
+    @RequiresPermissions("permission:create")
+    @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateUserRole(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            String roleId = null, uId = null;//roleId前台传入的数据是JSON格式
+            if (null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))) {
+                roleId = request.getParameter("roleId");//角色id
+            }
+            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
+                uId = request.getParameter("uId");//用户id
+            }
+            int userRoleDelete = userRoleService.deleteUserRole(uId);//删除
+            if(userRoleDelete > 0){
+                JSONArray sArray = JSON.parseArray(roleId);
+                int userRoleList = 0;
+                UserRole userRole = null; 
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String roleStr =(String)object.get("roleId");//获取key-roleId键值
+                    System.out.println("roleId:==="+roleStr);
+                    if(roleStr!=null && !"".equals(roleStr)){
+                        userRole = new UserRole();
+                        userRole.setId(UuidUtil.getUUID());
+                        userRole.setrId(roleStr);
+                        userRole.setuId(uId);
+                        userRoleList = userRoleService.updateUserRole(userRole);//修改（新增数据）
+                    }
+                }  
+                if(userRoleList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                }
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
             }
             
         } catch (Exception e) {

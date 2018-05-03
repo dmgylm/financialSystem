@@ -201,7 +201,7 @@ public class RoleController {
     }
     
     /**
-     * 查询所有/根据角色id查对应的功能权限(角色资源关联表)
+     * 查询所有/根据角色id查对应的功能权限(角色功能权限关联表)
      * @param request
      * @param response
      */
@@ -228,13 +228,12 @@ public class RoleController {
         return dataMap;
     }
     /**
-     * 新增(角色资源关联表)
+     * 新增(角色功能权限关联表)
      * @param request
      * @param response
      * @param sid
      * @param rid
      * @param createTime
-     * @param updateTime
      */
     @RequiresPermissions("permission:create")
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
@@ -271,6 +270,64 @@ public class RoleController {
                 dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "新增失败");
             } 
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 修改(角色功能权限关联表)先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息
+     * （根据角色id修改角色功能权限关联信息）
+     * @param request
+     * @param response
+     * @param sid
+     * @param rid
+     * @param updateTime
+     */
+    @RequiresPermissions("permission:update")
+    @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateRoleResource(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            String resourceId = null, roleId = null;
+            if(null!=request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))){
+                resourceId = request.getParameter("resourceId");//资源权限id ,json格式数据
+            }
+            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
+                roleId = request.getParameter("roleId");//角色id
+            }
+            int roleResourceDelete = roleResourceService.deleteRoleResource(roleId);//删除
+            if(roleResourceDelete > 0){
+                JSONArray sArray = JSON.parseArray(resourceId);
+                int roleResourceList = 0;
+                RoleResource roleResource = null;
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String resourceIdStr = (String)object.get("resourceId");//获取key-resourceId键值
+                    System.out.println("resouceId:==="+resourceIdStr);
+                    if(resourceIdStr!=null && !"".equals(resourceIdStr)){
+                        roleResource = new RoleResource();
+                        roleResource.setId(UuidUtil.getUUID());
+                        roleResource.setsId(resourceIdStr);
+                        roleResource.setrId(roleId);
+                        roleResourceList = roleResourceService.updateRoleResource(roleResource);//修改（新增数据）
+                    }
+                }
+                if(roleResourceList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                }
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
+            }
             
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
