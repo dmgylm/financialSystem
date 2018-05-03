@@ -19,9 +19,12 @@
     </insert>
     
     <!-- 修改 (先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息)-->
-    <delete id="updateUserOrganization" parameterType="STRING">
+    <delete id="deleteUserOrganization" parameterType="STRING">
         DELETE FROM user_organization_mapping where uId=#{uId}
     </delete>
+    <insert id="updateUserOrganization" parameterType="cn.financial.model.UserOrganization">
+        insert into user_organization_mapping(id,uId,oId,updateTime) values (#{id},#{uId},#{oId},curdate())
+    </insert>
     <!-- <update id="updateUserOrganization" parameterType="cn.financial.model.UserOrganization">
          UPDATE user_organization_mapping
          <trim prefix="set" suffixOverrides=",">

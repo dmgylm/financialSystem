@@ -40,5 +40,11 @@
     <insert id="insertUserRole" parameterType="cn.financial.model.UserRole">
         insert into user_role_mapping(id,rId,uId,createTime) values (#{id},#{rId},#{uId},curdate())
     </insert>
-    
+    <!-- 修改 (先删除用户关联的角色信息，再重新添加该用户的角色信息)-->
+    <delete id="deleteUserRole" parameterType="STRING">
+        DELETE FROM user_role_mapping where uId=#{uId}
+    </delete>
+    <insert id="updateUserRole" parameterType="cn.financial.model.UserRole">
+        insert into user_role_mapping(id,rId,uId,updateTime) values (#{id},#{rId},#{uId},curdate())
+    </insert>
 </mapper>

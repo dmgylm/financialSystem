@@ -16,4 +16,11 @@
     <insert id="insertRoleResource" parameterType="cn.financial.model.RoleResource">
         insert into role_resource_mapping(id,rId,sId,createTime) values (#{id},#{rId},#{sId},curdate())
     </insert>
+    <!-- 修改 (先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息)-->
+    <delete id="deleteRoleResource" parameterType="STRING">
+        DELETE FROM role_resource_mapping where rId=#{rId}
+    </delete>
+    <insert id="updateRoleResource" parameterType="cn.financial.model.UserRole">
+        insert into role_resource_mapping(id,rId,sId,updateTime) values (#{id},#{rId},#{sId},curdate())
+    </insert>
 </mapper>
