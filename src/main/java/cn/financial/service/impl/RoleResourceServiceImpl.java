@@ -33,7 +33,22 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     public Integer insertRoleResource(RoleResource roleResource) {
         return roleResourceDao.insertRoleResource(roleResource);
+    }
+    /**
+     * 删除
+     */
+    @Override
+    public Integer deleteRoleResource(String rId) {
+        return roleResourceDao.deleteRoleResource(rId);
+    }
+    /**
+     * 修改
+     */
+    @Override
+    public Integer updateRoleResource(RoleResource roleResource) {
+        return roleResourceDao.updateRoleResource(roleResource);
     } 
+    
 
 }
  

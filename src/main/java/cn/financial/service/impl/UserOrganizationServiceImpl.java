@@ -31,12 +31,19 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
         return userOrganizationDao.insertUserOrganization(userOrganization);
     }
     /**
-     * 修改
+     * 删除
      */
     @Override
-    public Integer updateUserOrganization(String uId) {
-        return userOrganizationDao.updateUserOrganization(uId);
+    public Integer deleteUserOrganization(String uId) {
+        return userOrganizationDao.deleteUserOrganization(uId);
     }
-
+    /**
+     * 修改
+     * @return
+     */
+    @Override
+    public Integer updateUserOrganization(UserOrganization userOrganization) {
+        return userOrganizationDao.updateUserOrganization(userOrganization);
+    }
 }
  

@@ -30,6 +30,21 @@ public class UserRoleServiceImpl implements UserRoleService{
     public Integer insertUserRole(UserRole user) {
         return userRoleDao.insertUserRole(user);
     }
-
+    /**
+     * 删除
+     * @return
+     */
+    @Override
+    public Integer deleteUserRole(String uId) {
+        return userRoleDao.deleteUserRole(uId);
+    }
+    /**
+     * 修改
+     * @return
+     */
+    @Override
+    public Integer updateUserRole(UserRole user) {
+        return userRoleDao.updateUserRole(user);
+    }
 }
  
