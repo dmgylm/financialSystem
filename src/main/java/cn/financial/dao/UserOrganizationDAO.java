@@ -12,6 +12,7 @@ import cn.financial.model.UserOrganization;
  * 2018/3/16
  */
 public interface UserOrganizationDAO {
+    
     /**
      * 查询所有
      * @return
@@ -24,5 +25,11 @@ public interface UserOrganizationDAO {
      * @return
      */
     Integer insertUserOrganization(UserOrganization userOrganization);
-
+    
+    /**
+     * 修改
+     * @param uId
+     * @return
+     */
+    Integer updateUserOrganization(@Param("uId") String uId);
 }
