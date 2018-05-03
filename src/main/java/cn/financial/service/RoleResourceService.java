@@ -17,4 +17,16 @@ public interface RoleResourceService {
      * @return
      */
     Integer insertRoleResource(RoleResource roleResource);
+    /**
+     * 删除
+     * @param rId
+     * @return
+     */
+    Integer deleteRoleResource(String rId);
+    /**
+     * 修改
+     * @param roleResource
+     * @return
+     */
+    Integer updateRoleResource(RoleResource roleResource);
 }

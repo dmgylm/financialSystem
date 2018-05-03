@@ -18,9 +18,15 @@ public interface UserOrganizationService {
      */
     Integer insertUserOrganization(UserOrganization userOrganization);
     /**
-     * 修改
+     * 删除
      * @param uId
      * @return
      */
-    Integer updateUserOrganization(String uId);
+    Integer deleteUserOrganization(String uId);
+    /**
+     * 修改
+     * @param userOrganization
+     * @return
+     */
+    Integer updateUserOrganization(UserOrganization userOrganization);
 }
