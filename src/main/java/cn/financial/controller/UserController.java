@@ -401,6 +401,62 @@ public class UserController {
         return dataMap;
     }
     /**
+     * 修改（先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息）
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequiresPermissions("organization:update")
+    @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateUserOrganization(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            String orgId = null, uId = null;
+            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
+                uId = request.getParameter("uId");//用户id
+            }
+            if (null!=request.getParameter("orgId") && !"".equals(request.getParameter("orgId"))) {
+                orgId = request.getParameter("orgId");//组织结构id ,json格式数据
+            }
+            int userOrgDelete = userOrganizationService.updateUserOrganization(uId);//删除
+            if(userOrgDelete > 0){
+                JSONArray sArray = JSON.parseArray(orgId);
+                int userOrganizationList = 0;
+                UserOrganization userOrganization = null;
+                for (int i = 0; i < sArray.size(); i++) {
+                    JSONObject object = (JSONObject) sArray.get(i);
+                    String orgIdStr =(String)object.get("orgId");//获取key-orgId键值
+                    System.out.println("organizationId:==="+orgIdStr);
+                    if(orgIdStr!=null && !"".equals(orgIdStr)){
+                        userOrganization = new UserOrganization();
+                        userOrganization.setId(UuidUtil.getUUID());
+                        userOrganization.setoId(orgIdStr);
+                        userOrganization.setuId(uId);
+                        userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);//新增
+                    }
+                }
+                if(userOrganizationList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                }
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
+            }
+            
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    
+    /**
      * 查询所有(用户角色关联表)
      * @param request
      * @param response
