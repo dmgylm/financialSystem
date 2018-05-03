@@ -17,4 +17,10 @@ public interface UserOrganizationService {
      * @return
      */
     Integer insertUserOrganization(UserOrganization userOrganization);
+    /**
+     * 修改
+     * @param uId
+     * @return
+     */
+    Integer updateUserOrganization(String uId);
 }
