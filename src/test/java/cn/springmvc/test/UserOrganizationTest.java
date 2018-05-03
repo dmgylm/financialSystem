@@ -79,7 +79,7 @@ public class UserOrganizationTest {
     @Test
     public void updateUserOrganizationTest(){
         UserOrganization userOrganization = null;
-        int deleteNumber = service.updateUserOrganization("1beb41326553418f9fc9b45d037a0925");
+        int deleteNumber = service.deleteUserOrganization("1beb41326553418f9fc9b45d037a0925");
         if(deleteNumber>0){
             String orgIdStr = "[{\"orgId\":\"f8483e1c85e84323853aeee27b4e8c91\"},{\"orgId\":\"e71064dc0fc443fa8893ce489aed8c38\"},{\"orgId\":\"92aaf16c788f4797a0512e155c15f83c\"},{\"orgId\":\"634c24cf93c64665aca409b54bfb3f6e\"}]";
             JSONArray sArray = JSON.parseArray(orgIdStr);
@@ -99,7 +99,7 @@ public class UserOrganizationTest {
                         System.out.println("organizationId:==="+orgId);
                         
                         userOrganization.setCreateTime("2018/05/03");
-                        number = service.insertUserOrganization(userOrganization);
+                        number = service.updateUserOrganization(userOrganization);
                     //}
                 //}
             }
