@@ -75,4 +75,44 @@ public class UserOrganizationTest {
         
     }
     
+    //修改
+    @Test
+    public void updateUserOrganizationTest(){
+        UserOrganization userOrganization = null;
+        int deleteNumber = service.updateUserOrganization("1beb41326553418f9fc9b45d037a0925");
+        if(deleteNumber>0){
+            String orgIdStr = "[{\"orgId\":\"f8483e1c85e84323853aeee27b4e8c91\"},{\"orgId\":\"e71064dc0fc443fa8893ce489aed8c38\"},{\"orgId\":\"92aaf16c788f4797a0512e155c15f83c\"},{\"orgId\":\"634c24cf93c64665aca409b54bfb3f6e\"}]";
+            JSONArray sArray = JSON.parseArray(orgIdStr);
+            int number=0;
+            for (int i = 0; i < sArray.size(); i++) {
+                JSONObject object = (JSONObject) sArray.get(i);
+                String orgId =(String)object.get("orgId");
+                //map.put("code", code);// 根据组织架构code查询id
+                //List<Organization> list = organizationService.listOrganizationBy(map);
+                //if(list.size()>0){
+                    //for(Organization orgList:list){
+                        userOrganization = new UserOrganization();
+                        userOrganization.setuId("1beb41326553418f9fc9b45d037a0925");
+                        //userOrganization.setId("1beb41326553418f9fc9b45d037a0925");
+                        userOrganization.setId(UuidUtil.getUUID());
+                        userOrganization.setoId(orgId);
+                        System.out.println("organizationId:==="+orgId);
+                        
+                        userOrganization.setCreateTime("2018/05/03");
+                        number = service.insertUserOrganization(userOrganization);
+                    //}
+                //}
+            }
+            
+            try {
+                System.out.println("修改成功："+number);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }else{
+            System.out.println("删除失败");
+        }
+        
+    }
+    
 }
