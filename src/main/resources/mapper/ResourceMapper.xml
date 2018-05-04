@@ -27,7 +27,7 @@
     <!--根据id/code查询-->  
     <select id="getResourceById" parameterType="STRING" resultType="resource">
          SELECT id,name,code,url,parentId,permssion,createTime,updateTime FROM resource 
-         WHERE 1 = 1
+         WHERE status = 1
          <if test="id!=null and id!=''">
             and id=#{id}
          </if>
