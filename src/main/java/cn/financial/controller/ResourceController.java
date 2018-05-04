@@ -95,10 +95,10 @@ public class ResourceController {
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try { 
-            String name = null;
+            String name = null;//功能权限名称
             String code = null;//父id
-            String url = null;
-            String permssion = null;
+            String url = null;//路径
+            String permssion = null;//权限
             
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
             	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
@@ -112,16 +112,20 @@ public class ResourceController {
             if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
             	permssion = request.getParameter("permssion");
             }
-            Resource parent = resourceService.getResourceById("",code);//根据code查询对应功能权限
+            Resource parent = resourceService.getResourceById("",code);//根据code查询parentId(父id是否存在)
             Resource resource = new Resource();
             resource.setId(UuidUtil.getUUID());
             resource.setName(name);
             resource.setUrl(url);
             resource.setPermssion(permssion);
             if(parent != null && !"".equals(parent)){  
-                resource.setParentId(parent.getParentId());
-            }else{//没数据返回代表不是子节点直接把父节点赋值给parentId
-                resource.setParentId("1"); 
+                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                    resource.setParentId(parent.getParentId()+"/"+parent.getCode());
+                }else{
+                    resource.setParentId("1");
+                }
+            }else{//没数据返回代表父id不存在直接把1赋值给parentId
+                resource.setParentId("1");
             }
             int resourceList = resourceService.insertResource(resource);
             if(resourceList>0){
@@ -152,7 +156,7 @@ public class ResourceController {
         	String name = null;
             String permssion = null;//父id
             String url = null;
-            String parentId = null;
+            //String parentId = null;
             String resourceId = null;
             
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
@@ -164,18 +168,27 @@ public class ResourceController {
             if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
             	url = request.getParameter("url");
             }
-            if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
+            /*if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
             	parentId = request.getParameter("parentId");
-            }
+            }*/
             if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
             	resourceId = request.getParameter("resourceId");
             }
+            Resource parent = resourceService.getResourceById(resourceId,"");//根据id查询parentId(父id是否存在)
             Resource resource = new Resource();
             resource.setId(resourceId);
             resource.setName(name);
             resource.setUrl(url);
-            resource.setParentId(parentId);
             resource.setPermssion(permssion);
+            if(parent != null && !"".equals(parent)){  
+                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                    resource.setParentId(parent.getParentId());
+                }else{
+                    resource.setParentId("1");
+                }
+            }else{//没数据返回代表父id不存在直接把1赋值给parentId
+                resource.setParentId("1");
+            }
             Integer resourceList = resourceService.updateResource(resource);
             if(resourceList>0){
                 dataMap.put("resultCode", 200);
@@ -206,10 +219,6 @@ public class ResourceController {
             String resourceId = null;
             if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
             	resourceId = request.getParameter("resourceId");
-            }
-            if(resourceId == null || "".equals(resourceId)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "资源id为空");
             }
             Integer flag = resourceService.deleteResource(resourceId);
             if(flag>0){
