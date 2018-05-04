@@ -60,12 +60,9 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
-        public Map<String, Object> listCapitalBy(HttpServletRequest request/*,String id,String plate,String BU,
-                String regionName,String province,String city,String company,String accountName,String accountBank,String account,
-                String accountNature,String tradeTime,String startBlack,String incom,String pay,String endBlack,String abstrac,
-                String classify,String createTime,String updateTime,String year,String month,String remarks,String status*/) {
+        public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Map<Object, Object> map = new HashMap<>();
@@ -136,6 +133,16 @@ public class CapitalController {
                 }
                 if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
                     map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
+                }
+                Integer pageSize=0;
+                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                    map.put("pageSize",pageSize);
+                }
+                Integer start=0;
+                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                    map.put("start",start);
                 }
                 List<Capital> list = capitalService.listCapitalBy(map);
                 dataMap.put("resultCode", 200);

@@ -68,6 +68,7 @@
          WHERE status=1 
          <include refid="query_capital_where"></include>
          ORDER BY createTime DESC
+         LIMIT #{start},#{pageSize}
        </select>
        
        <!--导出根据多个id查询 -->
