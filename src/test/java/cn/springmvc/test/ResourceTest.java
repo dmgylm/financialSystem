@@ -28,13 +28,22 @@ public class ResourceTest {
     //新增
     @Test
     public void insertTest() {
+        Resource parent = service.getResourceById("","31");//根据code查询对应功能权限parentId(父id是否存在)
         Resource resource = new Resource();
         resource.setId(UuidUtil.getUUID());
-        resource.setName("录入中心");
-        resource.setUrl("");
-        resource.setParentId("44444444");
-        resource.setPermssion("333");
-        resource.setCreateTime("2018/3/26");
+        resource.setName("llllll");
+        resource.setUrl("/444444");
+        resource.setPermssion("444444");
+        if(parent != null && !"".equals(parent)){
+            if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                resource.setParentId(parent.getParentId()+"/"+parent.getCode());
+            }else{
+                resource.setParentId("1");
+            }
+        }else{//没数据返回代表父id不存在直接把1赋值给parentId
+            resource.setParentId("1"); 
+        }
+        resource.setCreateTime("2018/05/03");
         try {
             System.out.println(service.insertResource(resource));
         } catch (Exception e) {
@@ -44,13 +53,22 @@ public class ResourceTest {
     //修改
     @Test
     public void updateTest() {
+        Resource parent = service.getResourceById("f14cdee2deb24271a912918a7f74ce19","");//根据code查询对应功能权限parentId(父id是否存在)
         Resource resource = new Resource();
-        resource.setId("1111");
-        resource.setName("汇总中心");
-        resource.setUrl("/url/ttttt");
-        resource.setParentId("6574323111111111");
-        resource.setPermssion("76866432");
-        resource.setUpdateTime("2018/3/26");
+        resource.setId("f14cdee2deb24271a912918a7f74ce19");
+        resource.setName("4444444");
+        resource.setUrl("/ttttt");
+        if(parent != null && !"".equals(parent)){
+            if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                resource.setParentId(parent.getParentId());
+            }else{
+                resource.setParentId("1");
+            }
+        }else{//没数据返回代表父id不存在直接把1赋值给parentId
+            resource.setParentId("1"); 
+        }
+        resource.setPermssion("3333333333");
+        resource.setUpdateTime("2018/05/04");
         try {
             System.out.println(service.updateResource(resource));
         } catch (Exception e) {
@@ -60,7 +78,7 @@ public class ResourceTest {
     //删除
     @Test
     public void deleteTest() {   
-        System.out.println(service.deleteResource("2222"));
+        System.out.println(service.deleteResource("18b0eb4a32fc487aa3d4d43647fae4b4"));
     }
     //查询全部
     @Test
@@ -77,9 +95,14 @@ public class ResourceTest {
     @Test
     public void ListByIdTest() {
         //35a51fa5b6ed49ad920b30055ea9f4c6  1
-        Resource resource = service.getResourceById("","1");
-        System.out.println("id: "+resource.getId()+" name: "+resource.getName()+" code: "+resource.getCode()+
-                " url: "+resource.getUrl()+" parentId: "+resource.getParentId()+" permssion: "+resource.getPermssion()+
-                " createTime: "+resource.getCreateTime()+" updateTime: "+resource.getUpdateTime());
+        Resource resource = service.getResourceById("18b0eb4a32fc487aa3d4d43647fae4b4","");
+        if(resource!=null && !"".equals(resource)){
+            System.out.println("id: "+resource.getId()+" name: "+resource.getName()+" code: "+resource.getCode()+
+                    " url: "+resource.getUrl()+" parentId: "+resource.getParentId()+" permssion: "+resource.getPermssion()+
+                    " createTime: "+resource.getCreateTime()+" updateTime: "+resource.getUpdateTime()); 
+        }else{
+            System.out.println("数据不存在");
+        }
+        
     }
 }
