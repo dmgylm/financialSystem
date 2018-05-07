@@ -336,6 +336,12 @@ public class OrganizationServiceImpl implements OrganizationService {
                     if (o.getOrgName().contains("公司")) {
                         return o;
                     }
+                    if (o.getOrgName().contains("盛世大联保险事业部")) {
+                        return o;
+                    }
+                    if (o.getOrgName().contains("大客户部业务一部")) {
+                        return o;
+                    }
                 }
             }
         }
