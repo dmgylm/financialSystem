@@ -44,11 +44,12 @@
        
        <!-- 根据条件查询预算数据 -->
        <select id="listBudgetBy" parameterType="map" resultType="Budget">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus 
-         FROM budget 
-         WHERE delStatus=1 
+         SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,o.orgName
+         FROM budget s,organization o
+         WHERE s.delStatus=1 AND s.oId=o.id
+         <include refid="query_income_budget_where"></include>
          ORDER BY createTime DESC
-        <include refid="query_budget_where"></include>
+         LIMIT #{start},#{pageSize}
        </select>
        
        <!-- 根据条件修改预算数据 -->

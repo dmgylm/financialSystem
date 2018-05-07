@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,32 +34,11 @@ public class StatementController {
         private  StatementService statementService;
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
-      
-        /**
-         * 查询所有的损益数据
-         * 
-         * @param request
-         * @param response
-         */
-        @RequiresPermissions("tering:view")
-        @RequestMapping(value="/statement/list", method = RequestMethod.POST)
-        public Map<String, Object> getAllStatement(HttpServletRequest request, HttpServletResponse response) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-            try {
-                List<Statement> list = statementService.getAll();
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
-                dataMap.put("resultData", list);
-            } catch (Exception e) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询失败!");
-                this.logger.error(e.getMessage(), e);
-            }
-            return dataMap;
-        }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         /**
-         * 根据条件查损益数据
+         * 根据条件查损益数据(提交不传就是查询全部)
          * 
          * @param request
          * @param map
@@ -67,9 +47,55 @@ public class StatementController {
          */
         @RequiresPermissions("tering:view")
         @RequestMapping(value="/statement/listBy", method = RequestMethod.POST)
-        public Map<String, Object> listStatementBy(HttpServletRequest request, Map<Object, Object> map) {
+        public Map<String, Object> listStatementBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
+                Map<Object, Object> map = new HashMap<>();
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                if(request.getParameter("id")!=null && !request.getParameter("id").equals("")){
+                   map.put("id", request.getParameter("id"));
+                }
+                if(request.getParameter("oId")!=null && !request.getParameter("oId").equals("")){
+                    map.put("oId",request.getParameter("oId"));
+                }
+                if(request.getParameter("info")!=null && !request.getParameter("info").equals("")){
+                    map.put("info",request.getParameter("info"));
+                }
+                if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
+                    map.put("createTime",sdf.parse(request.getParameter("createTime")));
+                }
+                if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
+                    map.put("updateTime",sdf.parse(request.getParameter("updateTime")));
+                }
+                if(request.getParameter("typeId")!=null && !request.getParameter("typeId").equals("")){
+                    map.put("typeId",request.getParameter("typeId"));
+                }
+                if(uId!=null && !uId.equals("")){
+                    map.put("uId",uId);
+                }
+                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
+                    map.put("year",Integer.getInteger(request.getParameter("year")));
+                }
+                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
+                    map.put("month",Integer.getInteger(request.getParameter("month")));
+                }
+                if(request.getParameter("status")!=null && !request.getParameter("status").equals("")){
+                    map.put("status",Integer.getInteger(request.getParameter("status")));
+                }
+                if(request.getParameter("delStatus")!=null && !request.getParameter("delStatus").equals("")){
+                    map.put("delStatus",Integer.getInteger(request.getParameter("delStatus")));
+                }
+                Integer pageSize=0;
+                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                    map.put("pageSize",pageSize);
+                }
+                Integer start=0;
+                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                    map.put("start",start);
+                }
                 List<Statement> list = statementService.listStatementBy(map);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "查询成功!");

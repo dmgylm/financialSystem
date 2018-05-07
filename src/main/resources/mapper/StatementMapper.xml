@@ -45,11 +45,12 @@
        
        <!-- 根据条件查询损益数据 -->
        <select id="listStatementBy" parameterType="map" resultType="Statement">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus
-         FROM income_statement
-         WHERE delStatus=1 
+         SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,o.orgName
+         FROM income_statement s,organization o
+         WHERE s.delStatus=1 AND s.oId=o.id
+         <include refid="query_income_statement_where"></include>
          ORDER BY createTime DESC
-        <include refid="query_income_statement_where"></include>
+         LIMIT #{start},#{pageSize}
        </select>
        
        <!-- 根据条件修改损益数据 -->

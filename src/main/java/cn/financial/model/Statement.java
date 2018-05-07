@@ -36,7 +36,7 @@ public class Statement {
         }
         
         public  Statement(String id,String oId,String info,Date createTime,Date updateTime,
-                String typeId,String uId,Integer year,Integer month,Integer status){
+                String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus){
             this.id=id;
             this.oId=oId;
             this.info=info;
