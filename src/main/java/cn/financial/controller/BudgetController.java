@@ -149,6 +149,7 @@ public class BudgetController {
                budget.setId(UuidUtil.getUUID());
                budget.setuId(uId);
                budget.setCreateTime(new Date());
+               budget.setStatus(2);
                budget.setDelStatus(1);
                 Integer i = budgetService.insertBudget(budget);
                 if (i == 1) {

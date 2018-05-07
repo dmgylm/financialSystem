@@ -149,6 +149,7 @@ public class StatementController {
                 statement.setId(UuidUtil.getUUID());
                 statement.setuId(uId);
                 statement.setCreateTime(new Date());
+                statement.setStatus(2);
                 statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
                 if (i == 1) {
