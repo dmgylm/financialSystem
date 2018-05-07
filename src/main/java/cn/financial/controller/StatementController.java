@@ -101,7 +101,7 @@ public class StatementController {
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", list);
             } catch (Exception e) {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "查询失败!");
                 this.logger.error(e.getMessage(), e);
             }
@@ -126,7 +126,7 @@ public class StatementController {
                 dataMap.put("resultDesc", "查询成功!");
                 dataMap.put("resultData", statement);
             } catch (Exception e) {
-                dataMap.put("resultCode", 200);
+                dataMap.put("resultCode", 400);
                 dataMap.put("resultDesc", "查询失败!");
                 this.logger.error(e.getMessage(), e);
             }
@@ -155,7 +155,7 @@ public class StatementController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("result", "新增成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("result", "新增失败!");
                 }
             } catch (Exception e) {
@@ -186,7 +186,7 @@ public class StatementController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "修改成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("resultDesc", "修改失败!");
                 }
             } catch (Exception e) {
@@ -213,7 +213,7 @@ public class StatementController {
                     dataMap.put("resultCode", 200);
                     dataMap.put("resultDesc", "删除成功!");
                 } else {
-                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultCode", 400);
                     dataMap.put("resultDesc", "删除失败!");
                 }
             } catch (Exception e) {
