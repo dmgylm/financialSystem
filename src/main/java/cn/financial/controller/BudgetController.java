@@ -119,7 +119,7 @@ public class BudgetController {
            try {
                budget.setId(UuidUtil.getUUID());
                budget.setCreateTime(new Date());
-               budget.setStatus(1);
+               budget.setDelStatus(1);
                 Integer i = budgetService.insertBudget(budget);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
@@ -147,7 +147,7 @@ public class BudgetController {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 budget.setCreateTime(new Date());
-                budget.setStatus(1);
+                budget.setDelStatus(1);
                 Integer i = budgetService.updateBudget(budget);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);

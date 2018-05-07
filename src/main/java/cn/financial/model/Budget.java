@@ -27,7 +27,9 @@ public class Budget {
     	 
     	 private Integer month; //月份
          
-    	 private Integer status; //状态
+    	 private Integer status; //提交状态 （0待提交  1已提交 2新增）
+         
+         private Integer delStatus; //删除状态（0已删除 1未删除）
     	 
     	 public Budget() {
              super();
@@ -45,6 +47,7 @@ public class Budget {
              this.year=year;
              this.month=month;
              this.status=status;
+             this.delStatus=delStatus;
          }
     
     	public String getId() {
@@ -125,6 +128,14 @@ public class Budget {
 
         public void setStatus(Integer status) {
             this.status = status;
+        }
+
+        public Integer getDelStatus() {
+            return delStatus;
+        }
+
+        public void setDelStatus(Integer delStatus) {
+            this.delStatus = delStatus;
         }
        
 }

@@ -15,38 +15,39 @@
            <result column="year" property="year" jdbcType="INTEGER" />
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
+           <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
            
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
        <!--新增损益数据 -->
        <insert id="insertStatement" parameterType="statement" keyProperty="id">
-            insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status})
+            insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status,delStatus)
+            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
        </insert>
       
       
        <!-- 查询所有的损益数据 -->
        <select id="getAll" resultMap="statement">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus 
         from  income_statement 
-        where status=1
+        where delStatus=1
         ORDER BY createTime DESC
        </select>
        
       <!--  根据id查询损益数据 -->
        <select id="selectStatementById" parameterType="String" resultMap="statement" >
-           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+           SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus
            FROM income_statement
-           WHERE id = #{id} and status=1
+           WHERE id = #{id} and delStatus=1
            ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询损益数据 -->
        <select id="listStatementBy" parameterType="map" resultType="Statement">
-         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status 
+         SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus
          FROM income_statement
-         WHERE status=1 
+         WHERE delStatus=1 
          ORDER BY createTime DESC
         <include refid="query_income_statement_where"></include>
        </select>
@@ -63,13 +64,14 @@
             <if test="year !=null and year!=''">year = #{year},</if>
             <if test="month!=null and month!=''">month = #{month},</if>
             <if test="status!=null and status!=''"> status = #{status}</if>
+            <if test="delStatus!=null and delStatus!=''"> delStatus = #{delStatus}</if>
         </trim>
          where id = #{id}
       </update>
       
       <!-- 删除用户  status=0 -->
       <update id="deleteStatement">
-        UPDATE income_statement SET status=0 WHERE id=#{id}
+        UPDATE income_statement SET delStatus=0 WHERE id=#{id}
       </update>
     
       <!--sql-->
@@ -103,6 +105,9 @@
          </if>
          <if test="status!=null and status!=''">
             and status = #{status}
+         </if>
+         <if test="delStatus!=null and delStatus!=''">
+            and delStatus = #{delStatus}
          </if>
     </sql>
     

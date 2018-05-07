@@ -119,7 +119,7 @@ public class StatementController {
            try {
                 statement.setId(UuidUtil.getUUID());
                 statement.setCreateTime(new Date());
-                statement.setStatus(1);
+                statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
@@ -147,7 +147,7 @@ public class StatementController {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 statement.setUpdateTime(new Date());
-                statement.setStatus(1);
+                statement.setDelStatus(1);
                 Integer i = statementService.updateStatement(statement);
                 if (i == 1) {
                     dataMap.put("resultCode", 200);
