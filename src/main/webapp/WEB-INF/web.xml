@@ -60,7 +60,9 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
- 
+    <listener>
+        <listener-class>cn.financial.quartz.AccountQuartzListener</listener-class>
+    </listener>
     <!-- springMVC核心配置 -->
     <servlet>
         <servlet-name>spring</servlet-name>
