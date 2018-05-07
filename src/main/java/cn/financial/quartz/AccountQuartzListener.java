@@ -1,32 +1,23 @@
 package cn.financial.quartz;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpServletRequest;
 
 import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import cn.financial.model.Budget;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.Statement;
-import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.OrganizationService;
-import cn.financial.service.StatementService;
-import cn.financial.service.impl.OrganizationServiceImpl;
-import cn.financial.service.impl.StatementServiceImpl;
 import cn.financial.service.impl.UserRoleServiceImpl;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
@@ -40,11 +31,9 @@ public class AccountQuartzListener implements ServletContextListener {
 	}
 	
 	private static WebApplicationContext springContext;
-	@Autowired
+	
 	private OrganizationService organizationService;
-	@Autowired
-	private StatementService statementService;
-	@Autowired
+	
 	private UserRoleServiceImpl userRoleServiceImpl;
 	
 	public AccountQuartzListener() {
@@ -98,11 +87,25 @@ public class AccountQuartzListener implements ServletContextListener {
 						message.setIsTag(0);
 						message.setsName("系统");
 						
+	                    Budget budget = new Budget();
+	                    budget.setId(UuidUtil.getUUID());
+	                    budget.setoId(rog.getId());//分公司id
+	                    budget.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
+	                    budget.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
+	                    budget.setDelStatus(1);
+	                    budget.setYear(year);
+	                    budget.setMonth(month);
+						
+						String job_budget = "预算表单新增定时器"+i;
 						String job_name = "预算表单消息提示定时器"+i ;
 						
 						try {
+						        
+						        QuartzManager.addJob(QuartzManager.getsched(), job_budget, QuartzBudget.class, "0 0 0 1 1 ? *" , JSONObject
+                                    .fromObject(budget));//新增预算表
+						        
 								QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 1 1 ? *" , JSONObject
-										.fromObject(message));
+										.fromObject(message));//消息提醒
 								
 						} catch (SchedulerException e) {
 								e.printStackTrace();
@@ -118,30 +121,25 @@ public class AccountQuartzListener implements ServletContextListener {
 					message.setIsTag(0);
 					message.setsName("系统");
 					
+					Statement statement = new Statement();
+                    statement.setId(UuidUtil.getUUID());
+                    statement.setoId(rog.getId());//分公司id
+                    statement.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
+                    statement.setYear(year);
+                    statement.setMonth(month);
+                    statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
+                    statement.setDelStatus(1);
+                    
+					String job_statement = "损益表单新增定时器"+i ;
 					String job_name = "损益表单消息提示定时器"+i ; 
 					
 					try {
-							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0/1 * * * ? *" , JSONObject
-									.fromObject(message));
-							System.out.println("orgId=============="+orglist.get(i).getId());
-							Statement statement = new Statement();
-							statement.setId(UuidUtil.getUUID());
-							statement.setoId(rog.getOrgName());//分公司
-							statement.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
-							statement.setYear(year);
-							statement.setMonth(month);
-			                statement.setCreateTime(new Date());
-			                statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
-			                statement.setDelStatus(1);
-			                statement.setuId("");
-			                statement.setInfo("");
-			                statement.setUpdateTime(null);
-			                Integer flag = statementService.insertStatement(statement);
-			                if (flag == 1) {
-			                    System.out.println("损益报表数据新增成功");
-			                } else {
-			                    System.out.println("损益报表数据新增失败");
-			                }
+					        QuartzManager.addJob(QuartzManager.getsched(), job_statement, QuartzStatement.class, "0 0 0 11 * ? *" , JSONObject
+                                .fromObject(statement));//新增损益表
+					        
+							QuartzManager.addJob(QuartzManager.getsched(), job_name, QuartzJob.class, "0 0 0 11 * ? *" , JSONObject
+									.fromObject(message));//消息提醒
+							
 					} catch (SchedulerException e) {
 							e.printStackTrace();
 					}
