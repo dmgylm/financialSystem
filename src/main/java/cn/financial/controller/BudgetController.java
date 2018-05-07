@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.Budget;
+import cn.financial.model.User;
 import cn.financial.service.BudgetService;
 import cn.financial.util.UuidUtil;
 
@@ -117,7 +118,10 @@ public class BudgetController {
         public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response,Budget budget){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
+               User user = (User) request.getAttribute("user");
+               String uId = user.getId();
                budget.setId(UuidUtil.getUUID());
+               budget.setuId(uId);
                budget.setCreateTime(new Date());
                budget.setDelStatus(1);
                 Integer i = budgetService.insertBudget(budget);
@@ -146,6 +150,9 @@ public class BudgetController {
         public Map<String, Object> updatebudget(HttpServletRequest request,Budget budget) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                budget.setuId(uId);
                 budget.setCreateTime(new Date());
                 budget.setDelStatus(1);
                 Integer i = budgetService.updateBudget(budget);

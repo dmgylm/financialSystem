@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.Statement;
+import cn.financial.model.User;
 import cn.financial.service.StatementService;
 import cn.financial.util.UuidUtil;
 
@@ -117,7 +118,10 @@ public class StatementController {
         public Map<String, Object> insertStatement(HttpServletRequest request,Statement statement){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
                 statement.setId(UuidUtil.getUUID());
+                statement.setuId(uId);
                 statement.setCreateTime(new Date());
                 statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
@@ -146,6 +150,9 @@ public class StatementController {
         public Map<String, Object> updateStatement(HttpServletRequest request,Statement statement) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                statement.setuId(uId);
                 statement.setUpdateTime(new Date());
                 statement.setDelStatus(1);
                 Integer i = statementService.updateStatement(statement);
