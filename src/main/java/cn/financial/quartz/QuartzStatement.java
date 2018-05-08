@@ -1,21 +1,14 @@
 package cn.financial.quartz;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import cn.financial.model.Organization;
 import cn.financial.model.Statement;
-import cn.financial.service.OrganizationService;
 import cn.financial.service.StatementService;
-import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
 
 public class QuartzStatement implements Job{
