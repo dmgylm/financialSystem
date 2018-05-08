@@ -17,7 +17,8 @@ import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml" })
 public class StatementTest {
 
     @Autowired
@@ -45,6 +46,7 @@ public class StatementTest {
         statement.setYear(2018);
         statement.setMonth(3);
         statement.setStatus(1);
+        statement.setDelStatus(2);
         Integer i = statementService.insertStatement(statement);
         System.out.println(i);
     }
