@@ -5,8 +5,8 @@
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <result column="roleName" property="roleName" jdbcType="VARCHAR" />
 	   <result column="status" property="status" jdbcType="INTEGER" />
-	   <result column="createTime" property="createTime" jdbcType="DATE" />
-	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	   <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+	   <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
 	</resultMap>    
 	<!--查询全部角色/根据roleName查询-->
     <select id="listRole" parameterType="STRING" resultType="role">
@@ -18,7 +18,7 @@
     </select>
     <!--新增角色-->
     <insert id="insertRole" parameterType="role">
-        insert into role(id,roleName,createTime) values (#{id},#{roleName},curdate())
+        insert into role(id,roleName,createTime) values (#{id},#{roleName},now())
     </insert>
     <!--根据id查询角色-->  
     <select id="getRoleById" parameterType="STRING" resultType="role">
@@ -29,7 +29,7 @@
          UPDATE role
 		 <trim prefix="set" suffixOverrides=",">
 		  <if test="roleName!=null and roleName!=''">roleName=#{roleName},</if>
-		  updateTime = curdate()
+		  updateTime = now()
 		 </trim>
 		 WHERE id=#{id}
     </update>

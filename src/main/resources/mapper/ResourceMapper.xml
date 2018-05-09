@@ -9,8 +9,8 @@
 	   <result column="parentId" property="parentId" jdbcType="INTEGER" />
 	   <result column="permssion" property="permssion" jdbcType="INTEGER" />
 	   <result column="status" property="status" jdbcType="INTEGER" />
-	   <result column="createTime" property="createTime" jdbcType="DATE" />
-	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	   <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+	   <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
 	</resultMap>    
 	<!--查询全部-->
     <select id="listResource" resultType="resource">
@@ -22,7 +22,7 @@
          <selectKey keyProperty="code" resultType="INTEGER">
             select LAST_INSERT_ID()
          </selectKey>
-        insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},curdate())
+        insert into resource(id,name,url,parentId,permssion,createTime) values (#{id},#{name},#{url},#{parentId},#{permssion},now())
     </insert>
     <!--根据id/code查询-->  
     <select id="getResourceById" parameterType="STRING" resultType="resource">
@@ -43,7 +43,7 @@
 		  <if test="url!=null and url!=''">url=#{url},</if>
 		  <if test="parentId!=null and parentId!=''">parentId=#{parentId},</if>
 		  <if test="permssion!=null and permssion!=''">permssion=#{permssion},</if>
-		  updateTime = curdate()
+		  updateTime = now()
 		 </trim>
 		 WHERE id=#{id}
     </update>

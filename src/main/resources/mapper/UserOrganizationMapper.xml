@@ -15,7 +15,7 @@
     
     <!--新增-->
     <insert id="insertUserOrganization" parameterType="cn.financial.model.UserOrganization">
-        insert into user_organization_mapping(id,uId,oId,createTime) values (#{id},#{uId},#{oId},curdate())
+        insert into user_organization_mapping(id,uId,oId,createTime) values (#{id},#{uId},#{oId},now())
     </insert>
     
     <!-- 修改 (先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息)-->
@@ -23,13 +23,13 @@
         DELETE FROM user_organization_mapping where uId=#{uId}
     </delete>
     <insert id="updateUserOrganization" parameterType="cn.financial.model.UserOrganization">
-        insert into user_organization_mapping(id,uId,oId,updateTime) values (#{id},#{uId},#{oId},curdate())
+        insert into user_organization_mapping(id,uId,oId,updateTime) values (#{id},#{uId},#{oId},now())
     </insert>
     <!-- <update id="updateUserOrganization" parameterType="cn.financial.model.UserOrganization">
          UPDATE user_organization_mapping
          <trim prefix="set" suffixOverrides=",">
           <if test="oId!=null and oId!=''">oId=#{oId},</if>
-          updateTime = curdate(),
+          updateTime = now(),
          </trim>
          WHERE uId=#{uId}
     </update> -->
