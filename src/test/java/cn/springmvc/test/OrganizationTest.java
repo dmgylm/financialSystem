@@ -35,9 +35,9 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("aaaaaaaaaaa");
+        organization2.setOrgName("电销");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
-        Integer i = service.saveOrganization(organization2, "cced74c59a9846b5b0a81c0baf235c17");
+        Integer i = service.saveOrganization(organization2, "c09c07b638b4461eb7e48e4fb35fa7cf");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -94,8 +94,8 @@ public class OrganizationTest {
     @Test
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "092ebe80f0754dc794990662e8cd0eac");
-        map.put("orgName", "123123123123123");
+        map.put("id", "7d1ef3a8bc584d739ad3a30ea2ad6c82");
+        map.put("orgName", "dfsfsfsfsafasfsad");
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -144,7 +144,7 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgIdParent() {
-        List<Organization> list = service.listTreeByIdForParent("fd99bcb243b0473f865a243538d3d080");
+        List<Organization> list = service.listTreeByIdForParent("135831766bf544e4a7f0f34f058116e7");
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
@@ -185,7 +185,7 @@ public class OrganizationTest {
      */
     @Test
     public void getCompanyNameBySon() {
-        Organization organization = service.getCompanyNameBySon("1a7458a2d2f44c17873c2c82aee320dd");
+        Organization organization = service.getCompanyNameBySon("06e37893beb249b7a3a34eb4cc61d7ef");
         if (null != organization) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
