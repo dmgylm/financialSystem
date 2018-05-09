@@ -39,8 +39,8 @@ public class StatementTest {
         statement.setId(UuidUtil.getUUID());
         statement.setoId("5");
         statement.setInfo(info);
-        statement.setCreateTime(sdf.parse("2018-02-18"));
-        statement.setUpdateTime(sdf.parse("2018-03-20"));
+        statement.setCreateTime("2018-02-18");
+        statement.setUpdateTime("2018-03-20");
         statement.setTypeId("5");
         statement.setuId("9685618f583c416ab835683d1eba09ea");
         statement.setYear(2018);
@@ -115,8 +115,8 @@ public class StatementTest {
         statement.setId("2");
         statement.setoId("5");
         statement.setInfo(info);
-        statement.setCreateTime(sdf.parse("2018-02-18"));
-        statement.setUpdateTime(sdf.parse("2018-03-20"));
+        statement.setCreateTime("2018-02-18");
+        statement.setUpdateTime("2018-03-20");
         statement.setTypeId("5");
         statement.setuId("9685618f583c416ab835683d1eba09ea");
         statement.setYear(2018);

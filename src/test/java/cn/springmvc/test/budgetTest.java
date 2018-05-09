@@ -38,8 +38,8 @@ public class budgetTest {
         budget.setId(UuidUtil.getUUID());
         budget.setoId("3333");
         budget.setInfo(info);
-        budget.setCreateTime(sdf.parse("2018-02-18"));
-        budget.setUpdateTime(sdf.parse("2018-03-20"));
+        budget.setCreateTime("2018-02-18");
+        budget.setUpdateTime("2018-03-20");
         budget.setTypeId("333");
         budget.setuId("6fcafcb22adf4c22a509184c96a828db");
         budget.setYear(2018);
@@ -113,8 +113,8 @@ public class budgetTest {
         budget.setId("792a654bcad84f15bc808df63a805581");
         budget.setoId("1");
         budget.setInfo(info);
-        budget.setCreateTime(sdf.parse("2018-02-18"));
-        budget.setUpdateTime(sdf.parse("2018-03-20"));
+        budget.setCreateTime("2018-02-18");
+        budget.setUpdateTime("2018-03-20");
         budget.setTypeId("1");
         budget.setuId("9685618f583c416ab835683d1eba09ea");
         budget.setYear(2018);
