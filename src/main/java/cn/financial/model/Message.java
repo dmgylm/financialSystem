@@ -24,9 +24,9 @@ public class Message {
 
     Integer isTag; // 是否标注（0未标注；1标注）
 
-    Date createTime; // 创建时间
+    String createTime; // 创建时间
 
-    Date updateTime; // 修改时间
+    String updateTime; // 修改时间
     
     String uId;//用户接收信息
 
@@ -84,24 +84,24 @@ public class Message {
     public void setIsTag(Integer isTag) {
         this.isTag = isTag;
     }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
     
-    public String getuId() {
+    public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getuId() {
         return uId;
     }
 
