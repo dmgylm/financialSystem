@@ -8,8 +8,8 @@
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
-           <result column="createTime" property="createTime" jdbcType="DATE" />
-           <result column="updateTime" property="updateTime" jdbcType="DATE" />
+           <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+           <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
            <result column="typeId" property="typeId" jdbcType="VARCHAR" />
            <result column="uId" property="uId" jdbcType="VARCHAR" />
            <result column="year" property="year" jdbcType="INTEGER" />
@@ -62,9 +62,7 @@
             <if test="info!=null and info!=''">
                 info = #{info},
             </if>
-            <if test="updateTime!=null and updateTime!=''">
-                updateTime = #{updateTime},
-            </if>
+                updateTime = now(),
             <if test="typeId !=null and typeId!=''">
                 typeId = #{typeId},
             </if>
@@ -104,11 +102,11 @@
             and info = #{info}
         </if>
         <if test="createTime!=null and createTime!=''">
-            and createTime = #{createTime}
-        </if>
-        <if test="updateTime!=null and updateTime!=''">
-            and updateTime = #{updateTime}
-        </if>
+            and createTime LIKE CONCAT('%',#{createTime},'%') 
+         </if>
+         <if test="updateTime!=null and updateTime!=''">
+            and updateTime LIKE CONCAT('%',#{updateTime},'%')
+         </if>
         <if test="typeId !=null and typeId!=''">
             and typeId = #{typeId}
         </if>

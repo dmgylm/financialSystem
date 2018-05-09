@@ -16,15 +16,15 @@
            <result column="accountBank" property="accountBank" jdbcType="VARCHAR" />
            <result column="account" property="account" jdbcType="VARCHAR" />
            <result column="accountNature" property="accountNature" jdbcType="VARCHAR" />
-           <result column="tradeTime" property="tradeTime" jdbcType="DATE" />
+           <result column="tradeTime" property="tradeTime" jdbcType="TIMESTAMP" />
            <result column="startBlack" property="startBlack" jdbcType="INTEGER" />
            <result column="incom" property="incom" jdbcType="INTEGER" />
            <result column="pay" property="pay" jdbcType="INTEGER" />
            <result column="endBlack" property="endBlack" jdbcType="INTEGER" />
            <result column="abstrac" property="abstrac" jdbcType="VARCHAR" />
            <result column="classify" property="classify" jdbcType="VARCHAR" />
-           <result column="createTime" property="createTime" jdbcType="DATE" />
-           <result column="updateTime" property="updateTime" jdbcType="DATE" />
+           <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+           <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
            <result column="uId" property="uId" jdbcType="VARCHAR" />
            <result column="year" property="year" jdbcType="INTEGER" />
            <result column="month" property="month" jdbcType="INTEGER" /> 
@@ -38,7 +38,7 @@
             insert into capital(id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status)
             values (#{id},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
-            #{endBlack},#{abstrac},#{classify},#{createTime,jdbcType=DATE},#{uId},#{year},#{month},#{remarks},#{status})
+            #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status})
        </insert>
       
        <!-- 查询所有的资金数据 -->
@@ -104,7 +104,7 @@
             <if test="endBlack!=null and endBlack!=''">endBlack = #{endBlack},</if>
             <if test="abstrac!=null and abstrac!=''">abstrac = #{abstrac},</if>
             <if test="classify!=null and classify!=''">classify = #{classify},</if>
-            <if test="updateTime!=null and updateTime!=''">updateTime = #{updateTime},</if>
+            updateTime= now(),
             <if test="uId!=null and uId!=''">uId = #{uId},</if>
             <if test="year !=null and year!=''">year = #{year},</if>
             <if test="month!=null and month!=''">month = #{month},</if>
@@ -156,7 +156,7 @@
              and accountNature = #{accountNature}
          </if>
          <if test="tradeTime!=null and tradeTime!=''">
-             and  tradeTime = #{tradeTime}
+             and  tradeTime LIKE CONCAT('%',#{tradeTime},'%')
           </if>
           <if test="startBlack!=null and startBlack!=''">
              and startBlack = #{startBlack} 
@@ -177,10 +177,10 @@
               and classify = #{classify}
           </if>
          <if test="createTime!=null and createTime!=''">
-            and createTime = #{createTime}
+            and createTime LIKE CONCAT('%',#{createTime},'%') 
          </if>
          <if test="updateTime!=null and updateTime!=''">
-            and updateTime = #{updateTime}
+            and updateTime LIKE CONCAT('%',#{updateTime},'%')
          </if>
          <if test="uId!=null and uId!=''">
             and uId = #{uId}
