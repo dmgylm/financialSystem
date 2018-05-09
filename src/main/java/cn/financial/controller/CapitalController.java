@@ -302,7 +302,9 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 Capital capital =new Capital();
-                capital.setId(id);
+                if(id!=null && !id.equals("")){
+                    capital.setId(id);
+                }
                 if(plate!=null && !plate.equals("")){
                     capital.setPlate(new String(plate.getBytes("ISO-8859-1"), "UTF-8"));
                 }
