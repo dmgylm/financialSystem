@@ -286,30 +286,30 @@ public class UserController {
             }
             if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
                 pwd = request.getParameter("pwd");//密码
+                if(!pwd.matches(regEx)){//密码规则校验
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "密码输入格式错误");
+                    return dataMap;
+                }
             }
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 jobNumber = request.getParameter("jobNumber");//工号
             }
-            if(pwd.matches(regEx)){//密码规则校验
-                User user = new User();
-                user.setId(userId);
-                user.setSalt(UuidUtil.getUUID());
-                user.setName(name);
-                user.setRealName(realName);
-                user.setPwd(pwd);
-                user.setJobNumber(jobNumber);
-                Integer userList = userService.updateUser(user);
-                if(userList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功");
-                }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败");
-                } 
+            User user = new User();
+            user.setId(userId);
+            user.setSalt(UuidUtil.getUUID());
+            user.setName(name);
+            user.setRealName(realName);
+            user.setPwd(pwd);
+            user.setJobNumber(jobNumber);
+            Integer userList = userService.updateUser(user);
+            if(userList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "修改成功");
             }else{
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "密码输入格式错误");
-            }
+                dataMap.put("resultDesc", "修改失败");
+            } 
             
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
