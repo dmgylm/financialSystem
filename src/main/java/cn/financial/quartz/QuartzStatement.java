@@ -1,42 +1,54 @@
 package cn.financial.quartz;
 
 import java.util.Date;
+import java.util.List;
 
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import cn.financial.model.Message;
 import cn.financial.model.Statement;
+import cn.financial.model.UserRole;
 import cn.financial.service.StatementService;
-import net.sf.json.JSONObject;
-
+import cn.financial.service.impl.MessageServiceImpl;
+import cn.financial.service.impl.UserRoleServiceImpl;
+import cn.financial.util.UuidUtil;
+/**
+ * 系统关账消息提醒任务
+ * @author admin
+ *
+ */
 public class QuartzStatement implements Job{
-    
-    private StatementService statementService;
-	
+	private MessageServiceImpl messageService;
+    private UserRoleServiceImpl userRoleService;
+    protected Logger logger = LoggerFactory.getLogger(QuartzStatement.class);
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
-		
-	    statementService = (StatementService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
-	    JobDetail detail = arg0.getJobDetail();
-        JSONObject object = (JSONObject) detail.getJobDataMap().get("statement");
+		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
+		userRoleService = (UserRoleServiceImpl) AccountQuartzListener.getSpringContext().getBean("UserRoleServiceImpl");
+        List<UserRole> rolelist = userRoleService.listUserRole(null);
 		try {
-            Statement statement = new Statement();
-            statement.setId(object.getString("id"));
-            statement.setoId(object.getString("oId"));//分公司id
-            statement.setTypeId(object.getString("typeId"));//部门（根据部门id查分公司id）
-            statement.setYear(object.getInt("year"));
-            statement.setMonth(object.getInt("month"));
-            statement.setCreateTime(new Date());
-            statement.setStatus(object.getInt("status"));//提交状态（0 待提交   1已提交  2新增）
-            statement.setDelStatus(object.getInt("delStatus"));
-            Integer flag = statementService.insertStatement(statement);
-            if (flag == 1) {
-                System.out.println("损益报表数据新增成功");
-            } else {
-                System.out.println("损益报表数据新增失败");
-            }
+			for( int i =0;i<rolelist.size();i++ ) {
+				
+				if( rolelist.get(i).getRoleName().equals("制单员") ) {
+					Message message = new Message();
+					message.setId(UuidUtil.getUUID());
+					message.setStatus(0);
+					message.setTheme(1);
+					message.setContent(" 每月10号为系统关账日期，请提前做好相关工作");
+					message.setuId(rolelist.get(i).getuId());
+					message.setIsTag(0);
+					message.setsName("系统");
+					Integer i1 = messageService.saveMessage(message);
+					if (i1 != 1) {
+						logger.error("发送系统关账日期消息失败");
+					}
+				}
+			}
         } catch (Exception e) {
             e.printStackTrace();
         }
