@@ -14,9 +14,9 @@
 		<result property="orgName" column="orgName" javaType="string"
 			jdbcType="VARCHAR"></result>
 		<result property="createTime" column="createTime" javaType="string"
-			jdbcType="DATE"></result>
+			jdbcType="TIMESTAMP"></result>
 		<result property="updateTime" column="updateTime" javaType="string"
-			jdbcType="DATE"></result>
+			jdbcType="TIMESTAMP"></result>
 		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="status" column="status" javaType="int"
 			jdbcType="INTEGER"></result>
@@ -38,7 +38,7 @@
 		his_permission
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 根据条件查询组织结构信息 -->
@@ -85,7 +85,7 @@
 			<if test="his_permission!=null and his_permission!=''">
 				his_permission = #{his_permission,jdbcType=VARCHAR},
 			</if>
-			updateTime = curdate()
+			updateTime = now()
 		</trim>
 		where
 		id = #{id,jdbcType=VARCHAR}
@@ -108,7 +108,7 @@
 		organization
 		set
 		status = 0,
-		updateTime = curdate()
+		updateTime = now()
 		where
 		id =
 		#{_parameter,jdbcType=VARCHAR}
