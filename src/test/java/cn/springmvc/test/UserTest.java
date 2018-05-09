@@ -36,11 +36,12 @@ public class UserTest {
     public void insertTest() {
         User user = new User();
         user.setId(UuidUtil.getUUID());
-        user.setName("admin");
-        user.setRealName("ssss");      
-        user.setPwd("admin");
+        user.setSalt(UuidUtil.getUUID());
+        user.setName("admin1");
+        user.setRealName("3333");      
+        user.setPwd("Welcome1");
         user.setJobNumber("743211124420888");
-        user.setCreateTime("2018/3/26");
+        user.setCreateTime("2018/5/9");
         //加密密码 
         PasswordHelper.encryptPassword(user);
         try {
@@ -57,6 +58,7 @@ public class UserTest {
         //user.setName("gggggggggggggggg");
         user.setRealName("拖拖拖");
         user.setPwd("3333");
+        user.setSalt(UuidUtil.getUUID());
         //user.setJobNumber("7432111244208");
         user.setUpdateTime("2018/3/25");
         //加密密码
@@ -75,12 +77,17 @@ public class UserTest {
     //查询全部or多条件查询用户列表
     @Test
     public void ListUserTest() {
+        int page = 2;
+        int pageSize = 5;
+        page = pageSize * (page - 1);
         Map<Object, Object> map = new HashMap<Object, Object>();
         //map.put("name","恩恩");
         //map.put("realName", "小芳");
         //map.put("jobNumber", "7432111244208");
         //map.put("pwd", "555666");
-        map.put("status", "0");
+        map.put("status", 1);
+        map.put("pageSize", pageSize);//条数
+        map.put("start", page);//页码
         //map.put("createTime", "2018-03-06");
         //map.put("updateTime", "");
         List<User> user = service.listUser(map);
