@@ -1,6 +1,5 @@
 package cn.springmvc.test;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.User;
 import cn.financial.service.UserService;
-import cn.financial.util.UuidUtil;
-import cn.financial.util.shiro.PasswordHelper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
         "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
@@ -28,10 +25,10 @@ public class UserTest {
     @Autowired
     private UserService service;
     
-    @Autowired
+    /*@Autowired
     private PasswordHelper PasswordHelper;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    //新增
+    //新增   测试类执行没更新缓存
     @Test
     public void insertTest() {
         User user = new User();
@@ -41,7 +38,6 @@ public class UserTest {
         user.setRealName("3333");      
         user.setPwd("Welcome1");
         user.setJobNumber("743211124420888");
-        user.setCreateTime("2018/5/9");
         //加密密码 
         PasswordHelper.encryptPassword(user);
         try {
@@ -60,7 +56,6 @@ public class UserTest {
         user.setPwd("3333");
         user.setSalt(UuidUtil.getUUID());
         //user.setJobNumber("7432111244208");
-        user.setUpdateTime("2018/3/25");
         //加密密码
         PasswordHelper.encryptPassword(user);
         try {
@@ -68,7 +63,7 @@ public class UserTest {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
+    }*/
     //删除
     @Test
     public void deleteTest() {   
@@ -77,7 +72,7 @@ public class UserTest {
     //查询全部or多条件查询用户列表
     @Test
     public void ListUserTest() {
-        int page = 2;
+        int page = 1;
         int pageSize = 5;
         page = pageSize * (page - 1);
         Map<Object, Object> map = new HashMap<Object, Object>();
@@ -88,7 +83,7 @@ public class UserTest {
         map.put("status", 1);
         map.put("pageSize", pageSize);//条数
         map.put("start", page);//页码
-        //map.put("createTime", "2018-03-06");
+        map.put("createTime", "2018-03-20 16:00:00");
         //map.put("updateTime", "");
         List<User> user = service.listUser(map);
         for(User list:user){
