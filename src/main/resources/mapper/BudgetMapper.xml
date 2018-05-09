@@ -22,7 +22,7 @@
        <!--新增预算数据 -->
        <insert id="insertBudget" parameterType="Budget" keyProperty="id">
             insert into budget(id,oId,info,createTime,typeId,uId,year,month,status,delStatus)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
+            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
        </insert>
       
       

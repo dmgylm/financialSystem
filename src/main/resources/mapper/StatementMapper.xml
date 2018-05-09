@@ -23,7 +23,7 @@
        <!--新增损益数据 -->
        <insert id="insertStatement" parameterType="statement" keyProperty="id">
             insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status,delStatus)
-            values (#{id},#{oId},#{info},#{createTime,jdbcType=DATE},#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
+            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
        </insert>
       
       

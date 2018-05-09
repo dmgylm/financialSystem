@@ -16,10 +16,10 @@
 		<result property="oId" column="oId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="isTag" column="isTag" javaType="int"
 			jdbcType="INTEGER"></result>
-		<result property="createTime" column="createTime" javaType="java.sql.Date"
-			jdbcType="DATE"></result>
-		<result property="updateTime" column="updateTime" javaType="java.sql.Date"
-			jdbcType="DATE"></result>
+		<result property="createTime" column="createTime" javaType="string"
+			jdbcType="TIMESTAMP"></result>
+		<result property="updateTime" column="updateTime" javaType="string"
+			jdbcType="TIMESTAMP"></result>
 
 	</resultMap>
 
@@ -37,7 +37,7 @@
 		uId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},curdate(),#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的消息
