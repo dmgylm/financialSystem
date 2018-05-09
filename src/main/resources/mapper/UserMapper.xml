@@ -16,6 +16,7 @@
         SELECT id,name,realName,pwd,jobNumber,status,salt,createTime,updateTime FROM user WHERE 1 = 1 
         <include refid="query_user_where"></include>
         ORDER BY createTime DESC
+        LIMIT #{start},#{pageSize}
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
