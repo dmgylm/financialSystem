@@ -124,6 +124,16 @@ public class MessageController {
    /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
         }*/
+        Integer pageSize=0;
+        if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+            pageSize=Integer.parseInt(request.getParameter("pageSize"));
+            map.put("pageSize",pageSize);
+        }
+        Integer start=0;
+        if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+            start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+            map.put("start",start);
+        }
         try {
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
