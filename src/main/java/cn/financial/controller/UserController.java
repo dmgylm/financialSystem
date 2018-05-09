@@ -46,6 +46,12 @@ public class UserController {
     @Autowired
     private PasswordHelper passwordHelper;
     
+    /*密码校验规则：
+     * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
+     * 至少6个字符（最多15个字符）、大写与小写字母、至少一个数字，支持特殊符号，但不支持空格
+     * */
+    final String regEx = "(?!(^[A-Za-z]*$))(?!(^[0-9]*$))(?=(^.*[\\d].*$))(?=(^.*[a-z].*$))(?=(^.*[A-Z].*$))(?!(^.*[\\s].*$))^[0-9A-Za-z\\x21-\\x7e]{6,15}$";
+
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
     /**
@@ -77,27 +83,32 @@ public class UserController {
             if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
                 userId = request.getParameter("userId");//用户id
             }
-            if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
-                if(oldPwd.equals(newPwd)){
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "新旧密码一致");
-                }else{
-                    User user = new User();
-                    user.setId(userId);
-                    user.setPwd(newPwd);
-                    user.setSalt(UuidUtil.getUUID());
-                    Integer userList = userService.updateUser(user);
-                    if(userList>0){
-                        dataMap.put("resultCode", 200);
-                        dataMap.put("resultDesc", "修改成功");
-                    }else{
+            if(newPwd.matches(regEx)){//密码规则校验
+                if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
+                    if(oldPwd.equals(newPwd)){
                         dataMap.put("resultCode", 400);
-                        dataMap.put("resultDesc", "修改失败");
+                        dataMap.put("resultDesc", "新旧密码一致");
+                    }else{
+                        User user = new User();
+                        user.setId(userId);
+                        user.setPwd(newPwd);
+                        user.setSalt(UuidUtil.getUUID());
+                        Integer userList = userService.updateUser(user);
+                        if(userList>0){
+                            dataMap.put("resultCode", 200);
+                            dataMap.put("resultDesc", "修改成功");
+                        }else{
+                            dataMap.put("resultCode", 400);
+                            dataMap.put("resultDesc", "修改失败");
+                        }
                     }
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "原密码输入错误");
                 }
             }else{
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "原密码输入错误");
+                dataMap.put("resultDesc", "密码输入格式错误");
             }
             
         } catch (Exception e) {
@@ -142,6 +153,16 @@ public class UserController {
             }
             if (null!=request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
                 map.put("updateTime", request.getParameter("updateTime"));//修改时间
+            }
+            Integer pageSize=0;
+            if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                map.put("pageSize",pageSize);//条数
+            }
+            Integer start=0;
+            if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                map.put("start",start);//页码
             }
             List<User> user = userService.listUser(map);//查询全部map为空
             dataMap.put("userList", user);
@@ -218,7 +239,7 @@ public class UserController {
                 user.setSalt(UuidUtil.getUUID());
                 user.setName(name);
                 user.setRealName(realName);
-                user.setPwd(name);//用户新增默认密码为用户名
+                user.setPwd("Welcome1");//用户新增默认密码为Welcome1
                 user.setJobNumber(jobNumber);
                 int userList = userService.insertUser(user);
                 if(userList>0){
@@ -269,21 +290,26 @@ public class UserController {
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 jobNumber = request.getParameter("jobNumber");//工号
             }
-            User user = new User();
-            user.setId(userId);
-            user.setSalt(UuidUtil.getUUID());
-            user.setName(name);
-            user.setRealName(realName);
-            user.setPwd(pwd);
-            user.setJobNumber(jobNumber);
-            Integer userList = userService.updateUser(user);
-            if(userList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
+            if(pwd.matches(regEx)){//密码规则校验
+                User user = new User();
+                user.setId(userId);
+                user.setSalt(UuidUtil.getUUID());
+                user.setName(name);
+                user.setRealName(realName);
+                user.setPwd(pwd);
+                user.setJobNumber(jobNumber);
+                Integer userList = userService.updateUser(user);
+                if(userList>0){
+                    dataMap.put("resultCode", 200);
+                    dataMap.put("resultDesc", "修改成功");
+                }else{
+                    dataMap.put("resultCode", 400);
+                    dataMap.put("resultDesc", "修改失败");
+                } 
             }else{
                 dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
-            } 
+                dataMap.put("resultDesc", "密码输入格式错误");
+            }
             
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
