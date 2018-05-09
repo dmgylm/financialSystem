@@ -15,9 +15,9 @@ public class Statement {
             	 
         private String info;  //内容
             	 
-        private Date createTime; //创建时间
+        private String createTime; //创建时间
             	 
-        private Date updateTime; //更新时间
+        private String updateTime; //更新时间
             	 
         private String typeId;    //版块Id(来源于组织结构表）
             	 
@@ -35,7 +35,7 @@ public class Statement {
             super();
         }
         
-        public  Statement(String id,String oId,String info,Date createTime,Date updateTime,
+        public  Statement(String id,String oId,String info,String createTime,String updateTime,
                 String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus){
             this.id=id;
             this.oId=oId;
@@ -74,23 +74,24 @@ public class Statement {
     		this.info = info;
     	}
     
-    	public Date getCreateTime() {
-    		return createTime;
-    	}
     
-    	public void setCreateTime(Date createTime) {
-    		this.createTime = createTime;
-    	}
-    
-    	public Date getUpdateTime() {
-    		return updateTime;
-    	}
-    
-    	public void setUpdateTime(Date updateTime) {
-    		this.updateTime = updateTime;
-    	}
-    
-    	public String getTypeId() {
+    	public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getUpdateTime() {
+            return updateTime;
+        }
+
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
+
+        public String getTypeId() {
     		return typeId;
     	}
     

@@ -63,10 +63,10 @@ public class StatementController {
                     map.put("info",request.getParameter("info"));
                 }
                 if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
-                    map.put("createTime",sdf.parse(request.getParameter("createTime")));
+                    map.put("createTime",request.getParameter("createTime"));
                 }
                 if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
-                    map.put("updateTime",sdf.parse(request.getParameter("updateTime")));
+                    map.put("updateTime",request.getParameter("updateTime"));
                 }
                 if(request.getParameter("typeId")!=null && !request.getParameter("typeId").equals("")){
                     map.put("typeId",request.getParameter("typeId"));
@@ -148,7 +148,6 @@ public class StatementController {
                 String uId = user.getId();
                 statement.setId(UuidUtil.getUUID());
                 statement.setuId(uId);
-                statement.setCreateTime(new Date());
                 statement.setStatus(2);
                 statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
@@ -180,7 +179,6 @@ public class StatementController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 statement.setuId(uId);
-                statement.setUpdateTime(new Date());
                 statement.setDelStatus(1);
                 Integer i = statementService.updateStatement(statement);
                 if (i == 1) {

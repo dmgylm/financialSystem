@@ -63,10 +63,10 @@ public class BudgetController {
                     map.put("info",request.getParameter("info"));
                 }
                 if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
-                    map.put("createTime",sdf.parse(request.getParameter("createTime")));
+                    map.put("createTime",request.getParameter("createTime"));
                 }
                 if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
-                    map.put("updateTime",sdf.parse(request.getParameter("updateTime")));
+                    map.put("updateTime",request.getParameter("updateTime"));
                 }
                 if(request.getParameter("typeId")!=null && !request.getParameter("typeId").equals("")){
                     map.put("typeId",request.getParameter("typeId"));
@@ -148,7 +148,6 @@ public class BudgetController {
                String uId = user.getId();
                budget.setId(UuidUtil.getUUID());
                budget.setuId(uId);
-               budget.setCreateTime(new Date());
                budget.setStatus(2);
                budget.setDelStatus(1);
                 Integer i = budgetService.insertBudget(budget);
@@ -180,7 +179,6 @@ public class BudgetController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 budget.setuId(uId);
-                budget.setCreateTime(new Date());
                 budget.setDelStatus(1);
                 Integer i = budgetService.updateBudget(budget);
                 if (i == 1) {

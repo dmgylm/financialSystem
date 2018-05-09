@@ -31,7 +31,7 @@ public class Capital {
          
          private String accountNature; //账户性质
          
-         private Date tradeTime; //交易日期
+         private String tradeTime; //交易日期
          
          private Integer startBlack; //期初余额
          
@@ -45,9 +45,9 @@ public class Capital {
          
          private String classify; //项目分类
     	 
-    	 private Date createTime; //创建时间
+    	 private String createTime; //创建时间
     	 
-    	 private Date updateTime; //更新时间
+    	 private String updateTime; //更新时间
     	 
     	 private String  uId;    //提交人id
     	
@@ -65,8 +65,8 @@ public class Capital {
          }
          
          public  Capital(String id,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
-                 Date tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
-                 Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
+                 String tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
+                 String createTime,String updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
              this.id=id;
              this.plate=plate;
              this.BU=BU;
@@ -102,23 +102,23 @@ public class Capital {
     		this.id = id;
     	}
     
-    	public Date getCreateTime() {
-    		return createTime;
-    	}
-    
-    	public void setCreateTime(Date createTime) {
-    		this.createTime = createTime;
-    	}
-    
-    	public Date getUpdateTime() {
-    		return updateTime;
-    	}
-    
-    	public void setUpdateTime(Date updateTime) {
-    		this.updateTime = updateTime;
-    	}
-    
-    	public String getuId() {
+    	public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getUpdateTime() {
+            return updateTime;
+        }
+
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
+        }
+
+        public String getuId() {
     		return uId;
     	}
     
@@ -182,13 +182,7 @@ public class Capital {
             this.accountNature = accountNature;
         }
 
-        public Date getTradeTime() {
-            return tradeTime;
-        }
-
-        public void setTradeTime(Date tradeTime) {
-            this.tradeTime = tradeTime;
-        }
+       
 
         public Integer getStartBlack() {
             return startBlack;
@@ -292,6 +286,14 @@ public class Capital {
 
         public void setCompany(String company) {
             this.company = company;
+        }
+
+        public String getTradeTime() {
+            return tradeTime;
+        }
+
+        public void setTradeTime(String tradeTime) {
+            this.tradeTime = tradeTime;
         }
 
 }

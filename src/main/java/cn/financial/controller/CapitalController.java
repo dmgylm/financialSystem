@@ -45,7 +45,7 @@ public class CapitalController {
         
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
-        @RequestMapping(value="/excel", method = RequestMethod.GET)
+        @RequestMapping(value="/excel", method = RequestMethod.POST)
         public String getexcel(HttpServletRequest request, HttpServletResponse response) {
             return "cel";
         }
@@ -102,7 +102,7 @@ public class CapitalController {
                     map.put("accountNature",new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
-                    map.put("tradeTime",sdf.parse(request.getParameter("tradeTime")));
+                    map.put("tradeTime",request.getParameter("tradeTime"));
                 }
                 if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
                     map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
@@ -123,10 +123,10 @@ public class CapitalController {
                     map.put("classify",new String(request.getParameter("classify").getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
-                    map.put("createTime",sdf.parse(request.getParameter("createTime")));
+                    map.put("createTime",request.getParameter("createTime"));
                 }
                 if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
-                    map.put("updateTime",sdf.parse(request.getParameter("updateTime")));
+                    map.put("updateTime",request.getParameter("updateTime"));
                 }
                 if(uId!=null && !uId.equals("")){
                     map.put("uId",uId);
@@ -235,7 +235,7 @@ public class CapitalController {
                    capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(tradeTime!=null && !tradeTime.equals("")){
-                   capital.setTradeTime(sdf.parse(tradeTime));
+                   capital.setTradeTime(tradeTime);
                }
                if(startBlack!=null && !startBlack.equals("")){
                    capital.setStartBlack(Integer.getInteger(startBlack));
@@ -255,7 +255,7 @@ public class CapitalController {
                if(classify!=null && !classify.equals("")){
                    capital.setClassify(new String(classify.getBytes("ISO-8859-1"), "UTF-8"));
                }
-                   capital.setCreateTime(new Date());
+             
                if(uId!=null && !uId.equals("")){
                    capital.setuId(uId);
                }
@@ -336,7 +336,7 @@ public class CapitalController {
                     capital.setAccountNature(new String(accountNature.getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(tradeTime!=null && !tradeTime.equals("")){
-                    capital.setTradeTime(sdf.parse(tradeTime));
+                    capital.setTradeTime(tradeTime);
                 }
                 if(startBlack!=null && !startBlack.equals("")){
                     capital.setStartBlack(Integer.getInteger(startBlack));
@@ -368,7 +368,6 @@ public class CapitalController {
                 if(remarks!=null && !remarks.equals("")){
                     capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"), "UTF-8"));
                 }
-                capital.setUpdateTime(new Date());
                 capital.setStatus(1);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
@@ -446,7 +445,7 @@ public class CapitalController {
                     capital.setAccountBank(str[7]);
                     capital.setAccount(str[8]);
                     capital.setAccountNature(str[9]);
-                    capital.setTradeTime(sdf.parse(str[10]));
+                    capital.setTradeTime(str[10]);
                     capital.setStartBlack(Integer.parseInt(str[11]));
                     capital.setIncom(Integer.parseInt(str[12]));
                     capital.setPay(Integer.parseInt(str[13]));
@@ -456,7 +455,6 @@ public class CapitalController {
                     capital.setRemarks(str[17]);
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(calendar.getTime());
-                    capital.setCreateTime(new Date());
                     User user = (User) request.getAttribute("user");
                     String uId = user.getId();
                     capital.setuId(uId);
@@ -542,7 +540,7 @@ public class CapitalController {
                        str[9]=capital.getAccountNature();
                     }
                     if(!capital.getTradeTime().equals("")){
-                       str[10]=sdf.format(capital.getTradeTime());
+                       str[10]=capital.getTradeTime();
                     }
                     if(!capital.getStartBlack().equals("")){
                        str[11]=capital.getStartBlack().toString();
