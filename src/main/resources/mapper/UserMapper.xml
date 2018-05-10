@@ -11,11 +11,11 @@
 	   <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
 	   <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
 	</resultMap>    
-	<!--查询全部用户/多条件查询用户列表-->
+	<!--查询全部用户/多条件查询用户列表   从小到大-->
     <select id="listUser" parameterType="map" resultType="user">
         SELECT id,name,realName,pwd,jobNumber,status,salt,createTime,updateTime FROM user WHERE 1 = 1 
         <include refid="query_user_where"></include>
-        ORDER BY createTime DESC
+        ORDER BY createTime ASC
         LIMIT #{start},#{pageSize}
     </select>
     <!--新增用户-->
@@ -65,14 +65,14 @@
             and id = #{id,jdbcType=VARCHAR}
         </if>
         <if test="name!=null and name!=''">
-            and name = #{name,jdbcType=VARCHAR}
+            and name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
         </if>
         <if test="realName!=null and realName!=''">
-            and realName = #{realName,jdbcType=VARCHAR}
+            and realName LIKE CONCAT('%',#{realName,jdbcType=VARCHAR},'%')
         </if>
-        <if test="pwd!=null and pwd!=''">
+        <!-- <if test="pwd!=null and pwd!=''">
             and pwd = #{pwd,jdbcType=VARCHAR}
-        </if>
+        </if> -->
         <if test="jobNumber!=null and jobNumber!=''">
             and jobNumber = #{jobNumber,jdbcType=VARCHAR}
         </if>
