@@ -39,7 +39,7 @@ public class QuartzStatement implements Job{
 					message.setId(UuidUtil.getUUID());
 					message.setStatus(0);
 					message.setTheme(1);
-					message.setContent(" 每月10号为系统关账日期，请提前做好相关工作");
+					message.setContent(" 每月10号为系统停止录入数据截止日期,请提前做好相关工作");
 					message.setuId(rolelist.get(i).getuId());
 					message.setIsTag(0);
 					message.setsName("系统");

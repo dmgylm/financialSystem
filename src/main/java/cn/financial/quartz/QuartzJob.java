@@ -44,13 +44,28 @@ public class QuartzJob implements Job{
 		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
 		statementService = (StatementService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
 		List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
-		
+		List<Organization> orgCompany=organizationService.getCompany();
 		Map<Object, Object> map;
 		
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		int month = Calendar.getInstance().get(Calendar.MONTH);
 		
 		try {
+			for (int i = 0; i < orgCompany.size(); i++) {
+				Message message = new Message();
+				message.setId(UuidUtil.getUUID());
+				message.setStatus(0);
+				message.setTheme(1);
+				message.setContent(year+"年"+month+"月"+orgCompany.get(i).getOrgName()+"损益报表已生成");
+				message.setoId(orgCompany.get(i).getId());
+				message.setIsTag(0);
+				message.setsName("系统");
+				Integer i1 = messageService.saveMessage(message);
+				if (i1!= 1) {
+					logger.error("发送损益报表消息失败");
+				}
+			}
+			
 			for( int i=0;i<orglist.size();i++ ) {
 				
 				map = new HashMap<Object, Object>();
@@ -58,19 +73,6 @@ public class QuartzJob implements Job{
 				
 				if( !organizationService.hasOrganizationSon(map) ) {
 				    Organization rog = organizationService.getCompanyNameBySon(orglist.get(i).getId());
-					
-					Message message = new Message();
-					message.setId(UuidUtil.getUUID());
-					message.setStatus(0);
-					message.setTheme(1);
-					message.setContent(year+"年"+month+"月"+rog.getOrgName()+orglist.get(i).getOrgName()+"损益报表已生成");
-					message.setoId(orglist.get(i).getId());
-					message.setIsTag(0);
-					message.setsName("系统");
-					Integer i1 = messageService.saveMessage(message);
-					if (i1!= 1) {
-						logger.error("发送损益报表消息失败");
-					}
 					Statement statement = new Statement();
 			        statement.setId(UuidUtil.getUUID());
 			        statement.setoId(rog.getId());//分公司id
