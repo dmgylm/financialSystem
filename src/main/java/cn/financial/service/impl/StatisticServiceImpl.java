@@ -101,12 +101,13 @@ public class StatisticServiceImpl implements StatisticService {
 			//判断是否全选，非全选不用走查询步骤，直接下一步，因为json里会包含非全选的结构
 			//当前1为全选
 			if(jid.get("sel").equals(1)){
-				//将当前id下所有子节点全部拿出来
+				//将当前id下所有子节点全部拿出来,父节点不会包含在内
 				ja = JSONArray.fromObject(organizationService.TreeByIdForSon(jid.getString("id")));
 				ja = childSel(ja);
 				for (int j = 0; j < ja.size(); j++) {
 					JSONObject idson = JSONObject.fromObject(ja.get(j));
 					JSONObject jdata =JSONObject.fromObject(idson.get("nodeData")); 
+					//放入map里，相同的id自动过滤整合
 					selmap.put(idson.get("id"), jdata.getString("id"));
 				}
 			}
