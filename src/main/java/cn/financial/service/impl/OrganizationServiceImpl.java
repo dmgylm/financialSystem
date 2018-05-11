@@ -348,4 +348,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         return null;
     }
 
+	@Override
+	public List<Organization> getCompany() {
+		return organizationDAO.getCompany();
+	}
+
 }
