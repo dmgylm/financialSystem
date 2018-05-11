@@ -74,5 +74,11 @@ public interface OrganizationDAO {
      * @param code
      */
     List<Organization> listTreeByCodeForParent(String code);
+    
+    /**
+     * 获取组织结构为公司的数据
+     * @return
+     */
+    List<Organization> getCompany();
 
 }
