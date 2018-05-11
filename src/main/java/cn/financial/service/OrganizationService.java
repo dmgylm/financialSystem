@@ -102,5 +102,9 @@ public interface OrganizationService {
      * @return
      */
     Organization getCompanyNameBySon(String id);
-
+    /**
+     * 获取组织结构为公司的数据
+     * @return
+     */
+    List<Organization> getCompany();
 }
