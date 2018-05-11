@@ -29,7 +29,8 @@ public class Message {
     String updateTime; // 修改时间
     
     String uId;//用户接收信息
-
+ 
+    String fileurl;//文件路径
     public String getId() {
         return id;
     }
@@ -109,7 +110,15 @@ public class Message {
         this.uId = uId;
     }
 
-    @Override
+    public String getFileurl() {
+		return fileurl;
+	}
+
+	public void setFileurl(String fileurl) {
+		this.fileurl = fileurl;
+	}
+
+	@Override
     public String toString() {
         return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", oId="
                 + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+"]";
