@@ -170,5 +170,16 @@
 			and his_permission = #{his_permission,jdbcType=VARCHAR}
 		</if>
 	</sql>
-
+	
+	<!-- 获取组织机构为公司的数据 -->
+	<select id="getCompany"  resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		from
+		organization
+		where
+		status = 1
+		and orgName like '%公司%' or orgName ='盛世大联保险事业部'  or orgName='大客户部业务一部'
+	</select>
+	
 </mapper>

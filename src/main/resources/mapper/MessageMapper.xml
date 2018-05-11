@@ -20,7 +20,10 @@
 			jdbcType="TIMESTAMP"></result>
 		<result property="updateTime" column="updateTime" javaType="string"
 			jdbcType="TIMESTAMP"></result>
-
+		<result property="uid" column="uId" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="fileurl" column="fileurl" javaType="string"
+			jdbcType="VARCHAR"></result>
 	</resultMap>
 
 	<!-- 新增 消息 节点信息 -->
@@ -34,10 +37,11 @@
 		isTag,
 		sName,
 		createTime,
-		uId
+		uId,
+		fileurl
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{fileurl,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的消息
@@ -111,9 +115,20 @@
 	</delete>
 	<!-- 根据消息状态展示消息列表  -->
 	<select id="listMessage" parameterType="map" resultMap="messageResultMap">
-		select * from message where oid in
-		(select oid from user_organization_mapping where uid=#{uId}) or uid=#{uId}
-
+				select * from message where oid in
+		(SELECT id FROM organization where code  IN(select org.parentId from user_organization_mapping uo,user_role_mapping  ur ,role,organization org,user u where uo.uId=ur.uId
+		and ur.rId=role.id 
+		and uo.oId=org.id	
+		and u.id=ur.uId
+		and ur.uid=#{uid}
+	  	and role.roleName='制单员'
+	  	and role.status=1
+		and u.`status`=1
+	  	
+	 ) )or uid=#{uid}
+		<!-- select * from message where oid in
+		(select oid from user_organization_mapping where uid=#{uId}) or uid=#{uId} -->
+		
 		<include refid="query_message_where"></include>
 		order by
 		createTime desc
