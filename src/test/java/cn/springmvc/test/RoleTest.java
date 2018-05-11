@@ -31,7 +31,6 @@ public class RoleTest {
         Role role = new Role();
         role.setId(UuidUtil.getUUID());
         role.setRoleName("cccc");
-        role.setCreateTime("2018/3/26");
         try {
             System.out.println(service.insertRole(role));
         } catch (Exception e) {
@@ -42,9 +41,8 @@ public class RoleTest {
     @Test
     public void updateTest() {
         Role role = new Role();
-        role.setId("732a2b28ea63417fbeceee1ac907fb92");
-        role.setRoleName("aaaaa");
-        role.setUpdateTime("2018/3/26");
+        role.setId("fd1f0ddde52940289009bc89e13243ec");
+        role.setRoleName("vvvvvv");
         try {
             System.out.println(service.updateRole(role));
         } catch (Exception e) {
