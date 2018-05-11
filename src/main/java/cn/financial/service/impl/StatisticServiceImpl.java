@@ -2,13 +2,18 @@ package cn.financial.service.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.hamcrest.core.IsNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.financial.model.Organization;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticService;
 
 /**
@@ -19,7 +24,15 @@ import cn.financial.service.StatisticService;
  */
 @Service("StatisticServiceImpl")
 public class StatisticServiceImpl implements StatisticService {
+	
+    @Autowired
+    private OrganizationService organizationService;
 
+    
+    /*
+     * 将符合规则的内容字段进行统计(non-Javadoc)
+     * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
+     */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONArray getStatic(JSONArray jsonArray) {
@@ -71,6 +84,64 @@ public class StatisticServiceImpl implements StatisticService {
 			jain.clear();
 		}
 		jar.add(jac);
+		return jar;
+	}
+
+	/*
+	 * 将前台选择的分级进行处理(non-Javadoc)
+	 * @see cn.financial.service.StatisticService#getSelect(net.sf.json.JSONArray)
+	 */
+	@Override
+	public JSONArray getSelect(JSONArray jsonArray) {
+		JSONArray total = new JSONArray();
+		JSONArray ja = new JSONArray();
+		Map<Object, String> selmap = new HashMap<Object, String>();
+		for (int i = 0; i < jsonArray.size(); i++) {
+			JSONObject jid =JSONObject.fromObject(jsonArray.getString(i));
+			//判断是否全选，非全选不用走查询步骤，直接下一步，因为json里会包含非全选的结构
+			//当前1为全选
+			if(jid.get("sel").equals(1)){
+				//将当前id下所有子节点全部拿出来
+				ja = JSONArray.fromObject(organizationService.TreeByIdForSon(jid.getString("id")));
+				ja = childSel(ja);
+				for (int j = 0; j < ja.size(); j++) {
+					JSONObject idson = JSONObject.fromObject(ja.get(j));
+					JSONObject jdata =JSONObject.fromObject(idson.get("nodeData")); 
+					selmap.put(idson.get("id"), jdata.getString("id"));
+				}
+			}
+		}
+		System.out.println(selmap);
+		//上面处理玩全部后，直接从表里查询对应的统计json数据
+		for (Object code : selmap.keySet()) {
+			 String selval = selmap.get(code);
+			 //查询对应表里记录后整合成jsonarray
+			 total.add("");
+		}
+		return total;
+	}
+	
+	/**
+	 * 循环查找底层树
+	 * @param ja
+	 * @return
+	 */
+	public JSONArray childSel(JSONArray ja){
+		JSONArray jar = new JSONArray();
+		for (int i = 0; i < ja.size(); i++) {
+			JSONObject jo =JSONObject.fromObject(ja.get(i));
+			if(!jo.get("children").toString().equals("[]")){
+				JSONArray jc = JSONArray.fromObject(jo.get("children"));
+				for (int j = 0; j < jc.size(); j++) {
+					JSONObject jch = JSONObject.fromObject(jc.get(j));
+					jar.add(jch);
+				}
+			}else{
+				jar.add(ja);
+				return ja;
+			}
+		}
+		jar = childSel(jar);
 		return jar;
 	}
 

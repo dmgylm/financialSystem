@@ -33,7 +33,6 @@ public class StatisticController {
     private StatisticService statisticService;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticController.class);
-	
     
     /**
      * 统计数据相关
@@ -48,7 +47,7 @@ public class StatisticController {
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            JSONArray ja = statisticService.getStatic(JSONArray.fromObject(request.getParameter("jsondata")));
+            JSONArray ja = statisticService.getStatic(statisticService.getSelect(JSONArray.fromObject(request.getParameter("jsondata"))));
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "统计成功!");
             dataMap.put("resultData", ja);
@@ -60,5 +59,5 @@ public class StatisticController {
         return dataMap;
     }
 	
-
+    
 }

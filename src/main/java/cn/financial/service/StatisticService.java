@@ -5,9 +5,15 @@ import net.sf.json.JSONArray;
 public interface StatisticService {
 
     /**
-     * 统计所有选择级下数量
+     * 统计所有数量
      * @return
      */
 	JSONArray getStatic(JSONArray jsonArray);
+	
+    /**
+     * 选择结构相关
+     * @return
+     */
+	JSONArray getSelect(JSONArray jsonArray);
 
 }
