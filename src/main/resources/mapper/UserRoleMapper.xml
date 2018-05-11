@@ -6,7 +6,7 @@
         SELECT m.id as id,r.id as rId,u.id as uId,r.roleName as roleName,u.realName as realName,
 		u.name as name,u.jobNumber as jobNumber,m.createTime as createTime
 		FROM role r inner join user_role_mapping m on r.id=m.rId INNER JOIN user u on u.id=m.uId 
-		WHERE r.status=1 and u.status=1 
+		WHERE 1 = 1 
 		<if test="name!=null and name!=''">
             and u.name=#{name}
         </if>

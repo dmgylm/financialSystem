@@ -6,7 +6,7 @@
         SELECT m.id as id,r.id as rId,s.id as sId,r.roleName as roleName,s.name as name,s.code as code,
 		s.url as url,s.parentId as parentId,s.permssion as permssion,m.createTime as createTime
 		FROM role r inner join role_resource_mapping m on r.id=m.rId INNER JOIN resource s on s.id=m.sId 
-		WHERE r.status=1 and s.status=1
+		WHERE 1 = 1
 		<if test="rId!=null and rId!=''">
             and r.id=#{rId}
         </if>
