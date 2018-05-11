@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.service.MessageService;
+import cn.financial.util.UuidUtil;
 
 /**
  * 消息相关操作
@@ -105,7 +106,7 @@ public class MessageController {
         //Date createTimeOfDate = null;
         //Date updateTimeOfDate = null;
         int unreadmessage=0;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
         	map.put("theme",Integer.parseInt(request.getParameter("theme")));// 消息主题
@@ -115,11 +116,13 @@ public class MessageController {
         }
         if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
         	//createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
-        	map.put("createTime", dateFormat.parse(request.getParameter("createTime")));// 创建时间
+        	//map.put("createTime", dateFormat.parse(request.getParameter("createTime")));// 创建时间
+        	map.put("createTime", request.getParameter("createTime"));
         }
         if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
+        	map.put("updateTime", request.getParameter("updateTime"));
         	//updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
-        	map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
+        	//map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
         }
    /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
@@ -316,6 +319,44 @@ public class MessageController {
             } else {
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "删除失败!");
+            }
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常!");
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 汇总表生成时给指定用户发送消息
+     * 
+     * @param request
+     * @param id
+     *            传入的消息表id（required = true，必须存在）
+     * @return
+     */
+    @RequiresPermissions("message:save")
+    @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<Object, Object> saveMessageByUser(HttpServletRequest request) {
+        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        try {
+				Message message = new Message();
+				message.setId(UuidUtil.getUUID());
+				message.setStatus(0);
+				message.setTheme(1);
+				message.setContent("汇总损益表已生成");
+				message.setuId(request.getParameter("uid"));//发送指定人的id
+				message.setIsTag(0);
+				message.setsName("系统");
+				message.setFileurl(request.getParameter("fileUrl"));//汇总表文件的路径
+				Integer i1 = messageService.saveMessage(message);
+            if (Integer.valueOf(1).equals(i1)) {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "增加成功!");
+            } else {
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "增加失败!");
             }
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
