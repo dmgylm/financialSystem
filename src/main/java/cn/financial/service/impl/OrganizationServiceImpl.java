@@ -236,18 +236,44 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public List<Organization> listTreeByIdForParent(String id) {
+        List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+        // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> list = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
-            if (!CollectionUtils.isEmpty(list)) {
-                return list;
-            }
+        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(departList)) {
+            // 递归在所有的组织结构中找到我们需要的节点及所有其父节点
+            getOrganizationParentList(departList, list, organizationByIds.get(0).getParentId());
         }
-        return null;
+        return list;
     }
+    
+    /**
+     * 根据id查询该节点及所有其父节点
+     * @param departList
+     * @param result
+     * @param code
+     */
+    public void getOrganizationParentList(List<Organization> departList, List<Organization> result, String parentcode) {
+        try {
+            if (!CollectionUtils.isEmpty(departList)) {
+                Iterator<Organization> iterator = departList.iterator();
+                while (iterator.hasNext()) {
+                    Organization o = iterator.next();
+                    if (parentcode.equals(o.getCode())) {
+                        result.add(o);
+                        getOrganizationParentList(departList, result, o.getParentId());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    } 
 
     /**
      * 移动组织机构
