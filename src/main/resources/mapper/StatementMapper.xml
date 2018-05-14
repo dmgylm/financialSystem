@@ -24,7 +24,7 @@
        <!--新增损益数据 -->
        <insert id="insertStatement" parameterType="statement" keyProperty="id">
             insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status,delStatus,sId)
-            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},1)
+            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId})
        </insert>
       
       
@@ -40,7 +40,7 @@
        <select id="selectStatementById" parameterType="String" resultMap="statement" >
            SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
            FROM income_statement
-           WHERE id = #{id} and delStatus=1 and sId=1
+           WHERE id = #{id} and delStatus=1
            ORDER BY createTime DESC
        </select>
        
@@ -48,7 +48,7 @@
        <select id="listStatementBy" parameterType="map" resultType="Statement">
          SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,s.sId,o.orgName
          FROM income_statement s,organization o
-         WHERE s.delStatus=1 and s.sId=1 AND s.oId=o.id
+         WHERE s.delStatus=1 AND s.oId=o.id
          <include refid="query_income_statement_where"></include>
          ORDER BY createTime DESC
          LIMIT #{start},#{pageSize}
@@ -68,12 +68,12 @@
             <if test="status!=null and status!=''"> status = #{status}</if>
             <if test="delStatus!=null and delStatus!=''"> delStatus = #{delStatus}</if>
         </trim>
-         where id = #{id} and sId=1
+         where id = #{id} and sId=#{sId}
       </update>
       
       <!-- 删除用户  status=0 -->
       <update id="deleteStatement">
-        UPDATE income_statement SET delStatus=0 WHERE id=#{id} and sId=1
+        UPDATE income_statement SET delStatus=0 WHERE id=#{id}
       </update>
     
       <!--sql-->
@@ -107,6 +107,9 @@
          </if>
          <if test="status!=null and status!=''">
             and s.status = #{status}
+         </if>
+         <if test="sId!=null and sId!=''">
+            and s.sId = #{sId}
          </if>
          <if test="orgName!=null and orgName!=''">
             and o.orgName  LIKE "%"#{orgName}"%"

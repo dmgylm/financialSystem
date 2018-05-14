@@ -46,7 +46,7 @@ public class StatementController {
          * @return
          */
         @RequiresPermissions("statement:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         public Map<String, Object> listStatementBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -85,6 +85,9 @@ public class StatementController {
                 }
                 if(request.getParameter("delStatus")!=null && !request.getParameter("delStatus").equals("")){
                     map.put("delStatus",Integer.getInteger(request.getParameter("delStatus")));
+                }
+                if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
+                    map.put("sId",Integer.getInteger(request.getParameter("sId")));
                 }
                 if(request.getParameter("orgName")!=null && !request.getParameter("orgName").equals("")){
                     map.put("orgName",new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
