@@ -127,15 +127,21 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+        // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
         list.add(organizationByIds.get(0));
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
+        if (!CollectionUtils.isEmpty(departList)) {
+            // sql函数递归查询
             // list =
             // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            // java代码递归查询
+            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+            getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
             if (!CollectionUtils.isEmpty(list)) {
                 List<TreeNode<Organization>> nodes = new ArrayList<>();
-                String jsonStr = "";
                 for (Organization organization : list) {
                     TreeNode<Organization> node = new TreeNode<>();
                     node.setId(organization.getCode());
@@ -152,7 +158,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id查询该节点下的所有子节点集合
+     * 根据id查询该节点极其下的所有子节点集合
      */
     @Override
     public List<Organization> listTreeByIdForSon(String id) {
@@ -160,16 +166,43 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+        // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-         list.add(organizationByIds.get(0));
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-//            list = organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            getOrganizationSonList(list, organizationByIds.get(0).getCode());
-            if (!CollectionUtils.isEmpty(list)) {
-                return list;
-            }
+        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(departList)) {
+            // sql函数递归查询
+            // list =
+            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+            // java代码递归查询
+            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+            // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+            getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
         }
         return list;
+    }
+
+    /**
+     * @Description: 在所有的组织结构中循环递归找到我们需要的组织结构极其下所有子结构
+     * @param departList
+     * @param result
+     */
+    public void getOrganizationSonList2(List<Organization> departList, List<Organization> result, String code) {
+        try {
+            if (!CollectionUtils.isEmpty(departList)) {
+                Iterator<Organization> iterator = departList.iterator();
+                while (iterator.hasNext()) {
+                    Organization o = iterator.next();
+                    if (code.equals(o.getParentId())) {
+                        result.add(o);
+                        getOrganizationSonList2(departList, result, o.getCode());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -224,7 +257,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Transactional
     @Override
-    public Integer moveOrganization(String uId ,String id, String parentOrgId) {
+    public Integer moveOrganization(String uId, String id, String parentOrgId) {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
@@ -233,7 +266,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             return Integer.valueOf(0);
         }
         // 根据该节点的code查询到其下所有子节点信息的集合(要移动的节点及其子节点的集合)
-        List<Organization> list = listTreeByIdForSon(id);//organizationDAO.listTreeByCodeForSon(org.get(0).getCode());
+        List<Organization> list = listTreeByIdForSon(id);// organizationDAO.listTreeByCodeForSon(org.get(0).getCode());
         /*
          * 接下来是将要移动的几点按原来的机构新增到现在的父节点上,
          * 先将该节点新增，并修改其code，parentId，his_permission；然后再新增其子节点
@@ -348,9 +381,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         return null;
     }
 
-	@Override
-	public List<Organization> getCompany() {
-		return organizationDAO.getCompany();
-	}
+    @Override
+    public List<Organization> getCompany() {
+        return organizationDAO.getCompany();
+    }
 
 }
