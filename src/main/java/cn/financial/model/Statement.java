@@ -1,7 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
-
 /**
  * 损益表model
  * @author lmn
@@ -30,13 +28,15 @@ public class Statement {
         private Integer status; //提交状态 （0待提交  1已提交 2新增）
         
         private Integer delStatus; //删除状态（0已删除 1未删除）
+        
+        private Integer sId; //1表示损益表   2表示预算表
     
         public Statement() {
             super();
         }
         
         public  Statement(String id,String oId,String info,String createTime,String updateTime,
-                String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus){
+                String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId){
             this.id=id;
             this.oId=oId;
             this.info=info;
@@ -48,6 +48,7 @@ public class Statement {
             this.month=month;
             this.status=status;
             this.delStatus=delStatus;
+            this.sId=sId;
         }
          
     	public String getId() {
@@ -138,5 +139,14 @@ public class Statement {
         public void setDelStatus(Integer delStatus) {
             this.delStatus = delStatus;
         }
+
+        public Integer getsId() {
+            return sId;
+        }
+
+        public void setsId(Integer sId) {
+            this.sId = sId;
+        }
+        
 
 }

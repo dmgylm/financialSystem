@@ -141,7 +141,7 @@
              and city = #{city}
         </if>
         <if test=" company!=null and company!=''">
-             and company = #{company}
+             and company LIKE CONCAT('%',#{company},'%') 
         </if>
         <if test="accountName!=null and accountName!=''">
              and accountName = #{accountName}
@@ -156,7 +156,7 @@
              and accountNature = #{accountNature}
          </if>
          <if test="tradeTime!=null and tradeTime!=''">
-             and  tradeTime LIKE CONCAT('%',#{tradeTime},'%')
+             and  tradeTime = #{tradeTime}
           </if>
           <if test="startBlack!=null and startBlack!=''">
              and startBlack = #{startBlack} 
@@ -177,10 +177,10 @@
               and classify = #{classify}
           </if>
          <if test="createTime!=null and createTime!=''">
-            and createTime LIKE CONCAT('%',#{createTime},'%') 
+            and createTime = #{createTime}
          </if>
          <if test="updateTime!=null and updateTime!=''">
-            and updateTime LIKE CONCAT('%',#{updateTime},'%')
+            and updateTime=#{updateTime}
          </if>
          <if test="uId!=null and uId!=''">
             and uId = #{uId}

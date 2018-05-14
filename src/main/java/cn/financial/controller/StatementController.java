@@ -26,7 +26,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
-@RequestMapping("/tering")
+@RequestMapping("/statement")
 public class StatementController {
  
     
@@ -45,8 +45,8 @@ public class StatementController {
          *            
          * @return
          */
-        @RequiresPermissions("tering:view")
-        @RequestMapping(value="/statement/listBy", method = RequestMethod.POST)
+        @RequiresPermissions("statement:view")
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         public Map<String, Object> listStatementBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -86,6 +86,9 @@ public class StatementController {
                 if(request.getParameter("delStatus")!=null && !request.getParameter("delStatus").equals("")){
                     map.put("delStatus",Integer.getInteger(request.getParameter("delStatus")));
                 }
+                if(request.getParameter("orgName")!=null && !request.getParameter("orgName").equals("")){
+                    map.put("orgName",new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
+                }
                 Integer pageSize=0;
                 if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
                     pageSize=Integer.parseInt(request.getParameter("pageSize"));
@@ -116,8 +119,8 @@ public class StatementController {
          *           
          * @return
          */
-        @RequiresPermissions("tering:view")
-        @RequestMapping(value="/statement/listById", method = RequestMethod.POST)
+        @RequiresPermissions("statement:view")
+        @RequestMapping(value="/listById", method = RequestMethod.POST)
         public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -139,8 +142,8 @@ public class StatementController {
          * @param response
          * @return
          */
-        @RequiresPermissions("tering:create")
-        @RequestMapping(value="/statement/insert", method = RequestMethod.POST)
+        @RequiresPermissions("statement:create")
+        @RequestMapping(value="/insert", method = RequestMethod.POST)
         public Map<String, Object> insertStatement(HttpServletRequest request,Statement statement){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
@@ -171,8 +174,8 @@ public class StatementController {
          * @param request
          * @return
          */
-        @RequiresPermissions("tering:update")
-        @RequestMapping(value="/statement/update", method = RequestMethod.POST)
+        @RequiresPermissions("statement:update")
+        @RequestMapping(value="/update", method = RequestMethod.POST)
         public Map<String, Object> updateStatement(HttpServletRequest request,Statement statement) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
@@ -201,8 +204,8 @@ public class StatementController {
          * @param request
          * @return
          */
-        @RequiresPermissions("tering:update")
-        @RequestMapping(value="/statement/delete", method = RequestMethod.POST)
+        @RequiresPermissions("statement:update")
+        @RequestMapping(value="/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
