@@ -32,7 +32,7 @@
        <select id="getAll" resultMap="statement">  
         select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
         from  income_statement 
-        where delStatus=1 and sId=1
+        where delStatus=1 
         ORDER BY createTime DESC
        </select>
        
