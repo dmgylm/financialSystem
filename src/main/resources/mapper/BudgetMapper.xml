@@ -16,21 +16,22 @@
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
            <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
+           <result column="sId" property="sId" jdbcType="INTEGER"/>
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
        <!--新增预算数据 -->
        <insert id="insertBudget" parameterType="Budget" keyProperty="id">
-            insert into budget(id,oId,info,createTime,typeId,uId,year,month,status,delStatus)
-            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus})
+            insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status,delStatus,sId)
+            values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},2)
        </insert>
       
       
        <!-- 查询所有的预算数据 -->
        <select id="getAllBudget" resultMap="budget">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus
-        from  budget
-        where delStatus=1
+        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
+        from  income_statement 
+        where delStatus=1 and sId=2
         ORDER BY createTime DESC
        </select>
        
@@ -44,9 +45,9 @@
        
        <!-- 根据条件查询预算数据 -->
        <select id="listBudgetBy" parameterType="map" resultType="Budget">
-         SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,o.orgName
-         FROM budget s,organization o
-         WHERE s.delStatus=1 AND s.oId=o.id
+         SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,s.sId,o.orgName
+         FROM income_statement s,organization o
+         WHERE s.delStatus=1 and s.sId=2 AND s.oId=o.id
          <include refid="query_budget_where"></include>
          ORDER BY createTime DESC
          LIMIT #{start},#{pageSize}
@@ -54,76 +55,60 @@
        
        <!-- 根据条件修改预算数据 -->
       <update id="updateBudget" parameterType="budget">
-        update budget
+         update income_statement
         <trim prefix="set" suffixOverrides=",">
-            <if test=" oId!=null and oId!=''">
-                oId = #{oId},
-            </if>
-            <if test="info!=null and info!=''">
-                info = #{info},
-            </if>
-                updateTime = now(),
-            <if test="typeId !=null and typeId!=''">
-                typeId = #{typeId},
-            </if>
-            <if test="uId!=null and uId!=''">
-                uId = #{uId},
-            </if>
-            <if test="year !=null and year!=''">
-                year = #{year},
-            </if>
-            <if test="month!=null and month!=''">
-                month = #{month},
-            </if>
-            <if test="status!=null and status!=''">
-                status = #{status}
-            </if>
-            <if test="delStatus!=null and delStatus!=''">
-                delStatus = #{delStatus}
-            </if>
+            <if test=" oId!=null and oId!=''">oId = #{oId},</if>
+            <if test="info!=null and info!=''">info = #{info},</if>
+            updateTime = now(),
+            <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
+            <if test="uId!=null and uId!=''">uId = #{uId},</if>
+            <if test="year !=null and year!=''">year = #{year},</if>
+            <if test="month!=null and month!=''">month = #{month},</if>
+            <if test="status!=null and status!=''"> status = #{status}</if>
+            <if test="delStatus!=null and delStatus!=''"> delStatus = #{delStatus}</if>
         </trim>
-        where id = #{id}
+         where id = #{id} and sId=2
       </update>
       
        <!-- 删除 status=0 -->
       <update id="deleteBudget">
-        update budget set delStatus=0 where id=#{id}
+       UPDATE income_statement SET delStatus=0 WHERE id=#{id} and sId=2
       </update>
       
       <!--sql-->
      <sql id="query_budget_where">
         <if test="id!=null and id!=''">
-            and id = #{id}
+            and s.id = #{id}
         </if>
         <if test=" oId!=null and oId!=''">
-            and oId = #{oId}
+            and s.oId = #{oId}
         </if>
         <if test="info!=null and info!=''">
-            and info = #{info}
+            and s.info = #{info}
         </if>
-        <if test="createTime!=null and createTime!=''">
-            and createTime LIKE CONCAT('%',#{createTime},'%') 
+         <if test="createTime!=null and createTime!=''">
+            and s.createTime =#{createTime}
          </if>
          <if test="updateTime!=null and updateTime!=''">
-            and updateTime LIKE CONCAT('%',#{updateTime},'%')
+            and s.updateTime = #{updateTime}
          </if>
         <if test="typeId !=null and typeId!=''">
-            and typeId = #{typeId}
+            and s.typeId = #{typeId}
         </if>
         <if test="uId!=null and uId!=''">
-            and uId = #{uId}
+            and s.uId = #{uId}
         </if>
         <if test="year !=null and year!=''">
-            and year = #{year}
+            and s.year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            and month = #{month}
+            and s.month = #{month}
          </if>
          <if test="status!=null and status!=''">
-            and status = #{status}
+            and s.status = #{status}
          </if>
-         <if test="delStatus!=null and delStatus!=''">
-            and delStatus = #{delStatus}
+         <if test="orgName!=null and orgName!=''">
+            and o.orgName  LIKE "%"#{orgName}"%"
          </if>
     </sql>
     

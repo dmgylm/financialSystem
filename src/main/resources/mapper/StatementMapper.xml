@@ -16,6 +16,7 @@
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
            <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
+           <result column="sId" property="sId" jdbcType="INTEGER"/>
            
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
