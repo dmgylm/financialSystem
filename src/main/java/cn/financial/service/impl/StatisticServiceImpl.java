@@ -2,17 +2,14 @@ package cn.financial.service.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.hamcrest.core.IsNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticService;
 
