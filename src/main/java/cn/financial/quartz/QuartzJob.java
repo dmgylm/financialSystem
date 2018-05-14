@@ -6,27 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.quartz.Job;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.financial.controller.OrganizationController;
-import cn.financial.model.Budget;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.Statement;
-import cn.financial.model.UserRole;
-import cn.financial.service.BudgetService;
-import cn.financial.service.OrganizationService;
 import cn.financial.service.StatementService;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
-import cn.financial.service.impl.UserRoleServiceImpl;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 /**
  * 损益表消息生成提醒任务
  * @author admin
@@ -81,6 +72,7 @@ public class QuartzJob implements Job{
 			        statement.setMonth(month);
 			        statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
 			        statement.setDelStatus(1);
+			        statement.setsId(1);//1表示损益表   2表示预算表
 			        Integer flag = statementService.insertStatement(statement);
 			        if(flag!=1) {
 			    	   logger.error("损益报表数据新增失败");

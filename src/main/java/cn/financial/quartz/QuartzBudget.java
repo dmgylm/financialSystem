@@ -1,13 +1,11 @@
 package cn.financial.quartz;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.quartz.Job;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -16,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import cn.financial.model.Budget;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
+import cn.financial.model.Statement;
 import cn.financial.service.BudgetService;
+import cn.financial.service.StatementService;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.UuidUtil;
@@ -28,15 +28,17 @@ import cn.financial.util.UuidUtil;
 public class QuartzBudget implements Job{
 	private MessageServiceImpl messageService;
 	private OrganizationServiceImpl organizationService;
-    private BudgetService budgetService;
+    //private BudgetService budgetService;
+	private StatementService statementService;
     protected Logger logger = LoggerFactory.getLogger(QuartzBudget.class);
     
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-	    budgetService = (BudgetService) AccountQuartzListener.getSpringContext().getBean("BudgetServiceImpl");
-	    List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
+	    //budgetService = (BudgetService) AccountQuartzListener.getSpringContext().getBean("BudgetServiceImpl");
+		statementService = (StatementService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
+		List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
 		List<Organization> orgCompany=organizationService.getCompany();
 		Map<Object, Object> map;
 		
@@ -61,15 +63,25 @@ public class QuartzBudget implements Job{
 			map.put("id", orglist.get(i).getId());
 			if( !organizationService.hasOrganizationSon(map) ) {
 				Organization rog = organizationService.getCompanyNameBySon(orglist.get(i).getId());
-				Budget budget = new Budget();
-	            budget.setId(UuidUtil.getUUID());
-	            budget.setoId(rog.getId());//分公司id
-	            budget.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
-	            budget.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
-	            budget.setDelStatus(1);
-	            budget.setYear(year);
-	            budget.setMonth(month);
-	            Integer flag = budgetService.insertBudget(budget);
+//				Budget budget = new Budget();
+//	            budget.setId(UuidUtil.getUUID());
+//	            budget.setoId(rog.getId());//分公司id
+//	            budget.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
+//	            budget.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
+//	            budget.setDelStatus(1);
+//	            budget.setYear(year);
+//	            budget.setMonth(month);
+//	            Integer flag = budgetService.insertBudget(budget);
+				Statement statement = new Statement();
+                statement.setId(UuidUtil.getUUID());
+                statement.setoId(rog.getId());//分公司id
+                statement.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）
+                statement.setYear(year);
+                statement.setMonth(month);
+                statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
+                statement.setDelStatus(1);
+                statement.setsId(2);//1表示损益表   2表示预算表
+                Integer flag = statementService.insertStatement(statement);
 	            if (flag != 1) {
 	            	 logger.error("预算报表数据新增失败");
 	            	}
