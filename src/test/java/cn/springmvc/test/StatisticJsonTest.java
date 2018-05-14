@@ -8,16 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import cn.financial.service.StatisticService;
+import cn.financial.service.StatisticJsonService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
         "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
         "classpath:conf/spring-shiro.xml"})
-public class StatisticTest {
+public class StatisticJsonTest {
 
     @Autowired
-    private StatisticService service;
+    private StatisticJsonService service;
 	
     @Test
     public void StatisticJsonTest() {

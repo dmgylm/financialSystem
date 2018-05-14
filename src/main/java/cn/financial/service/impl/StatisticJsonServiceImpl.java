@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.financial.service.OrganizationService;
-import cn.financial.service.StatisticService;
+import cn.financial.service.StatisticJsonService;
 
 /**
  * 统计service实现层
@@ -20,7 +20,7 @@ import cn.financial.service.StatisticService;
  *
  */
 @Service("StatisticServiceImpl")
-public class StatisticServiceImpl implements StatisticService {
+public class StatisticJsonServiceImpl implements StatisticJsonService {
 	
     @Autowired
     private OrganizationService organizationService;

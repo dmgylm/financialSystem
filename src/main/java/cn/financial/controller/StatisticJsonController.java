@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.financial.service.StatisticService;
+import cn.financial.service.StatisticJsonService;
 
 /**
  * 统计相关操作
@@ -27,12 +27,12 @@ import cn.financial.service.StatisticService;
  */
 @Controller
 @RequestMapping("/statistic")
-public class StatisticController {
+public class StatisticJsonController {
 	
     @Autowired
-    private StatisticService statisticService;
+    private StatisticJsonService statisticService;
 
-    protected Logger logger = LoggerFactory.getLogger(StatisticController.class);
+    protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
     
     /**
      * 统计数据相关

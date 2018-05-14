@@ -2,7 +2,7 @@ package cn.financial.service;
 
 import net.sf.json.JSONArray;
 
-public interface StatisticService {
+public interface StatisticJsonService {
 
     /**
      * 统计所有数量
