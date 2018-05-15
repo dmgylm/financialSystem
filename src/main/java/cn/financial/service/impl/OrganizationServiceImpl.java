@@ -385,22 +385,17 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Organization getCompanyNameBySon(String id) {
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", id);
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            List<Organization> parent = organizationDAO.listTreeByCodeForParent(organizationByIds.get(0).getCode());
-            if (!CollectionUtils.isEmpty(parent)) {
-                for (Organization o : parent) {
-                    if (o.getOrgName().contains("公司")) {
-                        return o;
-                    }
-                    if (o.getOrgName().contains("盛世大联保险事业部")) {
-                        return o;
-                    }
-                    if (o.getOrgName().contains("大客户部业务一部")) {
-                        return o;
-                    }
+        List<Organization> parent = listTreeByIdForParent(id);
+        if (!CollectionUtils.isEmpty(parent)) {
+            for (Organization o : parent) {
+                if (o.getOrgName().contains("公司")) {
+                    return o;
+                }
+                if (o.getOrgName().contains("盛世大联保险事业部")) {
+                    return o;
+                }
+                if (o.getOrgName().contains("大客户部业务一部")) {
+                    return o;
                 }
             }
         }
