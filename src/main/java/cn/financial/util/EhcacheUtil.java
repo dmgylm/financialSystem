@@ -15,7 +15,7 @@ import net.sf.ehcache.Element;
  */
 public class EhcacheUtil implements Serializable {
 
-	private static final String path = "/ehcache.xml";
+	private static final String path = "/spring-cache.xml";
 
 	private URL url;
 
