@@ -407,4 +407,16 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationDAO.getCompany();
     }
 
+	
+
+	public List<Organization> listOrganizationcode(List<String> listmap) {
+		return organizationDAO.listOrganizationcode(listmap);
+	}
+
+
+public List<Organization> listOrganization(List<String> list) {
+		
+		return organizationDAO.listOrganization(list);
+	}
+
 }
