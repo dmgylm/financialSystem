@@ -3,6 +3,8 @@ package cn.financial.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import cn.financial.model.Organization;
 
 /**
@@ -80,5 +82,20 @@ public interface OrganizationDAO {
      * @return
      */
     List<Organization> getCompany();
+  
+    /**
+     * 查询通过id查询的his_permission值
+     * @param list
+     * @return
+     */
+    List<Organization> listOrganization(@Param("list") List<String> list);
+    
+    /**
+     * 通过his_permission查询相对应的数据
+     * @param code
+     * @return
+     */
+    List<Organization> listOrganizationcode(@Param("code") List<String> code);
+
 
 }
