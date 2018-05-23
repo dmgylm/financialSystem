@@ -1,10 +1,13 @@
 package cn.springmvc.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.junit.Test;
@@ -26,7 +29,8 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
-
+    
+  
     /**
      * 新增组织结构
      */
@@ -119,6 +123,48 @@ public class OrganizationTest {
         System.out.println(string.toString());
     }
 
+    /**
+     * 查询该节点以及节点以下的
+     */
+    @Test
+    public void orgshow(){
+    	try {
+     	   List<String> ids=new ArrayList<String>();
+ 		   ids.add("f946a081eda949228537a8746200c3d6");
+ 		   ids.add("cced74c59a9846b5b0a81c0baf235c17");
+     	   List<Organization> list = service.listOrganization(ids);
+     	   List<String> listmap=new ArrayList<String>();
+     	   for (Organization organization : list) {
+     		    String his_permission = organization.getHis_permission();
+     		    String[] hps = his_permission.split(",");//分割逗号
+                listmap.addAll(Arrays.asList(hps));
+               } 
+      	  JSONObject obj=new JSONObject();
+     	  List<Organization> listshow = service.listOrganizationcode(listmap);
+     	  JSONArray json=JSONArray.fromObject(listshow);
+     	  try {
+     		  obj.put("list",json);
+        	  obj.put("resultCode",200);
+		    } catch (Exception e) {
+              obj.put("resultCode",500);
+	     	  obj.put("resultDesc","服务器异常");
+		    }
+     	    System.out.println(json);
+
+     	  for (Organization organization : listshow) {
+               System.out.println("id:" + organization.getId());
+               System.out.println("code:" + organization.getCode());
+               System.out.println("orgName:" + organization.getOrgName());
+               System.out.println("his_permission:" + organization.getHis_permission());
+               System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+           } 
+     	 System.out.println("展示"+listmap);
+     	
+     
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
     /**
      * 根据id查询该节点下的所有子节点 的集合
      */
