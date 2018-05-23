@@ -40,7 +40,41 @@
 		values
 		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
 	</insert>
-
+	
+    <!--查询该节点以及节点以下的  -->
+    <select id="listOrganization"  resultType="Organization">
+    	select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		from
+		organization
+		where
+		status = 1
+     <include refid="query_organization_find"></include>
+    </select>
+    
+    <select id="listOrganizationcode" resultType="Organization">
+      select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		from
+		organization
+		where
+		status = 1
+     <include refid="query_organization_code"></include>
+   </select>
+    
+        <sql id="query_organization_find">
+           and id in
+          <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids,jdbcType=VARCHAR}
+          </foreach>
+        </sql>
+        
+         <sql id="query_organization_code">
+            and code in 
+		<foreach item="item"  collection="code" open="(" separator="," close=")">  
+			#{item,jdbcType=VARCHAR}  
+		</foreach>
+        </sql>
 	<!-- 根据条件查询组织结构信息 -->
 	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
 		select
@@ -139,6 +173,7 @@
 		and
 		status = 1
 	</select>
+	
 
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
