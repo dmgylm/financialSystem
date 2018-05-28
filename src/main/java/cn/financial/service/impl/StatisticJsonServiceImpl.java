@@ -43,7 +43,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				JSONArray jai = ja.getJSONArray(it.next());
 				for (int j = 0; j < jai.size(); j++) {
 					JSONObject jni = JSONObject.fromObject(jai.get(j));
-						//判断价格或其他参数
+						//判断是否是输入
 						if (jni.get("type").equals(2)){
 							//判断是否在map里存在此数据
 							if (dataint.containsKey(jni.get("name"))) {
