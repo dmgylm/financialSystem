@@ -73,6 +73,12 @@ public class BudgetServiceImpl implements BudgetService{
         return budgetDao.deleteBudget(id);
     }
 
+	@Override
+	public List<Budget> getAllBudgets(Map<Object, Object> map) {
+		// TODO Auto-generated method stub
+		return budgetDao.getAllBudgets(map);
+	}
+
    
  
 }

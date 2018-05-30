@@ -28,8 +28,8 @@ public class DataModuleServiceImpl implements DataModuleService{
 	}
 
 	@Override
-	public Integer deleteDataModule(String dataModuleId) {
-		return dataModuleDao.deleteDataModule(dataModuleId);
+	public Integer updateDataModule(String dataModuleId) {
+		return dataModuleDao.updateDataModule(dataModuleId);
 	}
 
 	
