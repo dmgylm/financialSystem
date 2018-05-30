@@ -35,8 +35,53 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
      */
 	@SuppressWarnings("unchecked")
-	public JSONObject getStatic(JSONObject model ,List<JSONObject> valueList) {
-		JSONArray addJar = new JSONArray();
+	public JSONObject jsonCalculation(JSONObject model ,List<JSONObject> valueList) {
+		JSONArray json = new JSONArray();
+		Map<String,Object> item = new HashMap<String, Object>();
+		for (int k = 0; k < valueList.size(); k++) {
+			JSONObject valueJson = valueList.get(k);
+			Iterator<String> it = valueJson.keys();
+			while (it.hasNext()) {
+				String Jsonkey = it.next();
+				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
+				Iterator<String> vt = jsonValve.keys();
+				while (vt.hasNext()) {
+					String itemKey = vt.next();
+					Double valve = jsonValve.getDouble(itemKey);
+					itemKey = itemKey.replaceAll("\\.", "_");
+					if(item.containsKey(itemKey)){
+						valve +=(Double)item.get(itemKey);
+					}
+					item.put(itemKey, valve);
+				}
+			}
+		}
+		
+		Iterator<String> it = model.keys();
+		while (it.hasNext()) {
+			String modelKey = it.next();
+			JSONArray modelArr = model.getJSONArray(modelKey);
+			for (int i = 0; i < modelArr.size(); i++) {
+				JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
+				//判断输入是否是需要整合的
+				Integer type = rowjar.getInt("type");
+				String itemKey = rowjar.getString("key");
+				String formula = rowjar.getString("reallyFormula");
+				itemKey = itemKey.replaceAll("\\.", "_");
+				formula = formula.replaceAll("\\.", "_");
+				if (type ==2 ||type == 4){
+					//将数据添加到新json里
+					rowjar.put("value", item.get(itemKey));
+				}else if(type ==3 && !formula.contains("SUM")){
+					rowjar.put("value", FormulaUtil.calculationByFormula(item,formula));
+				}
+				json.add(rowjar);
+			}
+			model.put(modelKey, json);
+			json.clear();
+		}
+		
+/*		JSONArray addJar = new JSONArray();
 		Map<String,Object> params = new HashMap<String, Object>();
 		for(int k=0;k<valueList.size();k++) {
 			JSONObject valueJson = valueList.get(k);
@@ -51,7 +96,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 					Integer type = rowjar.getInt("type");
 					if (type ==2 ||type == 4){
 						//还要判断是否存在值，不存在直接跳过
-						if(valueObj.toString() != "null"){
+						if(!valueObj.toString().equals("null")){
 							String key = rowjar.getString("key");
 							double value = 0 ;
 							if(rowjar.containsKey("value")) {
@@ -89,7 +134,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 			model.put(modelKey, addJar);
 			addJar.clear();
-		}
+		}*/
 		
 		return model;
 	}

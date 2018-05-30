@@ -11,7 +11,7 @@ public interface StatisticJsonService {
      * 统计所有数量
      * @return
      */
-	JSONObject getStatic(JSONObject cachemodel ,List<JSONObject> valuemode);
+	JSONObject jsonCalculation(JSONObject cachemodel ,List<JSONObject> valuemode);
 	
     /**
      * 选择结构相关
