@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.financial.dao.DataModuleDao">
-    <resultMap type="cn.financial.model.DataModule" id="DataModule" >
+    <resultMap type="cn.financial.model.DataModule" id="dataModule" >
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <result column="moduleName" property="moduleName" jdbcType="VARCHAR" />
 	   <result column="versionNumber" property="versionNumber" jdbcType="VARCHAR" />
 	   <result column="founder" property="founder" jdbcType="VARCHAR" />
 	   <result column="statue" property="statue" jdbcType="INTEGER" />
+	   <result column="startTime" property="startTime" jdbcType="DATE"/>
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
 	</resultMap>    
-	<!--查询全部用户/多条件查询用户列表-->
+	<!--查询全部模板/多条件查询模板列表-->
     <select id="listDataModule" parameterType="map" resultType="dataModule">
-        SELECT id,moduleName,versionNumber,founder,statue,createTime,updateTime FROM dataModule WHERE 1 = 1 
+        SELECT id,moduleName,versionNumber,founder,statue,startTime,createTime,updateTime FROM dataModule WHERE 1 = 1 
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC
     </select>
-    <!--新增用户-->
+    <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
-        insert into DataModule(id,moduleName,versionNumber,founder,statue,createTime) 
+        insert into dataModule(id,moduleName,versionNumber,founder,statue,startTime,createTime) 
         values (#{id},#{moduleName},#{versionNumber},#{founder},#{statue},curdate())
     </insert>
    
-    <!--修改用户-->
+    <!--修改模板-->
     <!-- <update id="updateUser" parameterType="user">
          UPDATE user
 		 <trim prefix="set" suffixOverrides=",">
@@ -39,8 +40,8 @@
     <!-- <delete id="deleteUser" parameterType="STRING">
          DELETE FROM user WHERE id = #{userId}
     </delete> -->
-    <update id="deleteDataModule">
-        UPDATE DataModule SET statue=0,updateTime = curdate() WHERE id=#{id}
+    <update id="updateDataModule">
+        UPDATE dataModule SET versionNumber=versionNumber+1,updateTime = curdate() WHERE id=#{id}
     </update>
     
     <!--定义一个sql片段 -->

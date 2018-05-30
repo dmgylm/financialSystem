@@ -16,7 +16,7 @@
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
            <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
-           <result column="sId" property="sId" jdbcType="INTEGER"/>
+           <!-- <result column="sId" property="sId" jdbcType="INTEGER"/> -->
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
@@ -29,10 +29,18 @@
       
        <!-- 查询所有的预算数据 -->
        <select id="getAllBudget" resultMap="budget">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
-        from  income_statement 
-        where delStatus=1 and sId=2
-        ORDER BY createTime DESC
+        select b.id,b.oId,b.info,b.createTime,b.updateTime,b.typeId,b.uId,b.year,b.month,b.status,b.delStatus,bc.info as infos
+		from budget b
+		INNER JOIN budget_copy bc ON b.id=bc.id
+		where b.delStatus=1 ORDER BY b.id DESC
+       </select>
+       
+       <!-- 查询所有的预算数据 -->
+       <select id="getAllBudgets" parameterType="map" resultMap="budget">  
+        select b.id,b.oId,b.info,b.createTime,b.updateTime,b.typeId,b.uId,b.year,b.month,b.status,b.delStatus,bc.info as infos
+		from budget b
+		INNER JOIN budget_copy bc ON b.id=bc.id
+		where b.delStatus=1 ORDER BY b.createTime DESC LIMIT #{start},#{pageSize}
        </select>
        
       <!--  根据id查询预算数据 -->
@@ -48,7 +56,7 @@
          SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,s.sId,o.orgName
          FROM income_statement s,organization o
          WHERE s.delStatus=1 and s.sId=2 AND s.oId=o.id
-         <include refid="query_budget_where"></include>
+         <include refid="query_budget_where"></include> 
          ORDER BY createTime DESC
          LIMIT #{start},#{pageSize}
        </select>
