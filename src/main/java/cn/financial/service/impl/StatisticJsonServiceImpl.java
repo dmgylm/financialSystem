@@ -1,6 +1,5 @@
 package cn.financial.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.poi.ss.formula.functions.Replace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,61 +78,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			model.put(modelKey, json);
 			json.clear();
 		}
-		
-/*		JSONArray addJar = new JSONArray();
-		Map<String,Object> params = new HashMap<String, Object>();
-		for(int k=0;k<valueList.size();k++) {
-			JSONObject valueJson = valueList.get(k);
-			Iterator<String> it = model.keys();
-			while (it.hasNext()) {
-				String modelKey = it.next();
-				JSONArray modelArr = model.getJSONArray(modelKey);
-				JSONObject valueObj = valueJson.getJSONObject(modelKey);
-				for (int i = 0; i < modelArr.size(); i++) {
-					JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
-					//判断输入是否是需要整合的
-					Integer type = rowjar.getInt("type");
-					if (type ==2 ||type == 4){
-						//还要判断是否存在值，不存在直接跳过
-						if(!valueObj.toString().equals("null")){
-							String key = rowjar.getString("key");
-							double value = 0 ;
-							if(rowjar.containsKey("value")) {
-								value = rowjar.getDouble("value");
-							}
-							value += valueObj.getDouble(key);
-							//将数据添加到新json里
-							rowjar.put("value", value);
-							key = key.replaceAll("\\.", "_");
-							params.put(key, value);
-						}
-					}
-					addJar.add(rowjar);
-				}
-				model.put(modelKey, addJar);
-				addJar.clear();
-			}
-		}
-		
-		//第二次进行数据公式计算循环
-		Iterator<String> ct = model.keys();
-		while (ct.hasNext()) {
-			String modelKey = ct.next();
-			JSONArray modelArr = model.getJSONArray(modelKey);
-			for (int i = 0; i < modelArr.size(); i++) {
-				JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
-				//判断输入是否是需要整合的
-				Integer type = rowjar.getInt("type");
-				String formula = rowjar.getString("reallyFormula");
-				formula = formula.replaceAll("\\.", "_");
-				if (type ==3&&!formula.contains("SUM")){
-					rowjar.put("value", FormulaUtil.calculationByFormula(params,formula));
-				}
-				addJar.add(rowjar);
-			}
-			model.put(modelKey, addJar);
-			addJar.clear();
-		}*/
 		
 		return model;
 	}
