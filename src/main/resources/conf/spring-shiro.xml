@@ -34,14 +34,14 @@
 
     <!-- 会话ID生成器 -->
     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
-<!-- 
-    会话Cookie模板
+ 
+   <!-- 会话Cookie模板 --> 
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg name="name" value="meta.session.id"/>
         <property name="httpOnly" value="true"/>
         <property name="maxAge" value="-1"/>
     </bean>
- -->
+ 
     <!-- <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="rememberMe"/>
         <property name="httpOnly" value="true"/>
@@ -79,8 +79,8 @@
         <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
         <property name="sessionDAO" ref="sessionDAO"/>
         <property name="sessionIdCookieEnabled" value="true"/>
-   <!--      <property name="sessionIdCookie" ref="sessionIdCookie"/> -->
-         <property name="sessionIdCookie" ref="simpleCookie"/>
+   		<property name="sessionIdCookie" ref="sessionIdCookie"/> 
+         <!-- <property name="sessionIdCookie" ref="simpleCookie"/> -->
     </bean>
 
     <!-- shiro安全管理器  设置cacheManage,下列属性有实现CacheManagerAware接口的,都会自动注入缓存管理器 -->
@@ -136,6 +136,7 @@
                 /login = authc
                 /logout = logout
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
+                /mongoDB/**=anon<!--设置静态资源文件为游客可访问-->
                 /** = user,sysUser     
             </value>
         </property>
