@@ -115,7 +115,7 @@ public class MongoDBDao {
 		DBObject query1 = new BasicDBObject(); //setup the query criteria 设置查询条件
 		/*query1.put("id", new BasicDBObject("$in", idList));
 		query1.put("time", (new BasicDBObject("$gte", startTime)).append("$lte", endTime));*/
-		DBCursor dbCursor =mongoTemplate.getCollection("netWork").find(query1);
+		DBCursor dbCursor =mongoTemplate.getCollection("netWork").find(query1).limit(3000);
 		List<NetWork> list=new ArrayList<NetWork>();
 		while (dbCursor.hasNext()){
 		    DBObject object=dbCursor.next();
@@ -155,8 +155,8 @@ public class MongoDBDao {
 					dbCursor.close();
 				}
 			}*/
-			DBCursor dbCursor =mongoTemplate.getCollection("dataTest").find(query1).limit(300);
-			System.out.println(dbCursor.count()); 
+			DBCursor dbCursor =mongoTemplate.getCollection("dataTest").find(query1).limit(3000);
+			//System.out.println(dbCursor.count()); 
 			List<Object> lists = new ArrayList<Object>();
 			while (dbCursor.hasNext()){
 				DBObject object=dbCursor.next();
