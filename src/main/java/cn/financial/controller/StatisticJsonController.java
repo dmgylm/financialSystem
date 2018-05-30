@@ -47,10 +47,10 @@ public class StatisticJsonController {
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            JSONArray ja = statisticService.getStatic(statisticService.getSelect(JSONArray.fromObject(request.getParameter("jsondata"))));
+//            JSONArray ja = statisticService.getStatic(statisticService.getSelect(JSONArray.fromObject(request.getParameter("jsondata"))));
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "统计成功!");
-            dataMap.put("resultData", ja);
+//            dataMap.put("resultData", ja);
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");

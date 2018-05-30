@@ -1,17 +1,21 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.poi.ss.formula.functions.Replace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
+import cn.financial.util.FormulaUtil;
 
 /**
  * 统计service实现层
@@ -31,55 +35,63 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
      */
 	@SuppressWarnings("unchecked")
-	@Override
-	public JSONArray getStatic(JSONArray jsonArray) {
-		Map<Object, Integer> dataint = new HashMap<Object, Integer>();
-		JSONArray jar = new JSONArray();
-		for (int i = 0; i < jsonArray.size(); i++) {
-			JSONObject ja = JSONObject.fromObject(jsonArray.get(i));
-			Iterator<String> it = ja.keys();
+	public JSONObject getStatic(JSONObject model ,List<JSONObject> valueList) {
+		JSONArray addJar = new JSONArray();
+		Map<String,Object> params = new HashMap<String, Object>();
+		for(int k=0;k<valueList.size();k++) {
+			JSONObject valueJson = valueList.get(k);
+			Iterator<String> it = model.keys();
 			while (it.hasNext()) {
-				Integer sum = 0;
-				JSONArray jai = ja.getJSONArray(it.next());
-				for (int j = 0; j < jai.size(); j++) {
-					JSONObject jni = JSONObject.fromObject(jai.get(j));
-						//判断是否是输入
-						if (jni.get("type").equals(2)){
-							//判断是否在map里存在此数据
-							if (dataint.containsKey(jni.get("name"))) {
-								sum = jni.getInt("type")
-										+ dataint.get(jni.get("name"));
-							} else {
-								sum = jni.getInt("type");
+				String modelKey = it.next();
+				JSONArray modelArr = model.getJSONArray(modelKey);
+				JSONObject valueObj = valueJson.getJSONObject(modelKey);
+				for (int i = 0; i < modelArr.size(); i++) {
+					JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
+					//判断输入是否是需要整合的
+					Integer type = rowjar.getInt("type");
+					if (type ==2 ||type == 4){
+						//还要判断是否存在值，不存在直接跳过
+						if(valueObj.toString() != "null"){
+							String key = rowjar.getString("key");
+							double value = 0 ;
+							if(rowjar.containsKey("value")) {
+								value = rowjar.getDouble("value");
 							}
+							value += valueObj.getDouble(key);
+							//将数据添加到新json里
+							rowjar.put("value", value);
+							key = key.replaceAll("\\.", "_");
+							params.put(key, value);
 						}
-					dataint.put(jni.get("name"), sum);
+					}
+					addJar.add(rowjar);
 				}
+				model.put(modelKey, addJar);
+				addJar.clear();
 			}
 		}
-
-		// 重新建立新json，将合集数据添加进去
-		JSONObject jv = JSONObject.fromObject(jsonArray.get(0));
-		JSONArray jain = new JSONArray();
-		JSONObject jac = new JSONObject();
-
-		Iterator<String> iv = jv.keys();
-		while (iv.hasNext()) {
-			String key = iv.next();
-			JSONArray jai = jv.getJSONArray(key);
-			for (int j = 0; j < jai.size(); j++) {
-				JSONObject jni = JSONObject.fromObject(jai.get(j));
-				if (dataint.containsKey(jni.get("name"))) {
-					Integer vs = dataint.get(jni.get("name"));
-					jni.put("value", vs);
+		
+		//第二次进行数据公式计算循环
+		Iterator<String> ct = model.keys();
+		while (ct.hasNext()) {
+			String modelKey = ct.next();
+			JSONArray modelArr = model.getJSONArray(modelKey);
+			for (int i = 0; i < modelArr.size(); i++) {
+				JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
+				//判断输入是否是需要整合的
+				Integer type = rowjar.getInt("type");
+				String formula = rowjar.getString("reallyFormula");
+				formula = formula.replaceAll("\\.", "_");
+				if (type ==3&&!formula.contains("SUM")){
+					rowjar.put("value", FormulaUtil.calculationByFormula(params,formula));
 				}
-				jain.add(jni);
+				addJar.add(rowjar);
 			}
-			jac.put(key, jain);
-			jain.clear();
+			model.put(modelKey, addJar);
+			addJar.clear();
 		}
-		jar.add(jac);
-		return jar;
+		
+		return model;
 	}
 
 	/*
@@ -108,7 +120,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 		}
 		System.out.println(selmap);
-		//上面处理玩全部后，直接从表里查询对应的统计json数据
+		//上面处理完全部后，直接从表里查询对应的统计json数据
 		for (Object code : selmap.keySet()) {
 			 String selval = selmap.get(code);
 			 //查询对应表里记录后整合成jsonarray
