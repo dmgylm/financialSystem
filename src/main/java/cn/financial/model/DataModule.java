@@ -2,6 +2,10 @@ package cn.financial.model;
 
 public class DataModule {
 
+	public final static int STATUS_NOVALID = 0;	//无效
+	
+	public final static int STATUS_CONSUMED = 1;	//有效
+
 	private String id;
 	
 	private String moduleName;
@@ -10,7 +14,9 @@ public class DataModule {
 	
 	private String founder; //创建人
 	
-	private String statue;
+	private Integer statue;
+	
+	private String startTime; //起效日期
 	
 	private String createTime; // 创建时间
 
@@ -48,14 +54,6 @@ public class DataModule {
 		this.founder = founder;
 	}
 
-	public String getStatue() {
-		return statue;
-	}
-
-	public void setStatue(String statue) {
-		this.statue = statue;
-	}
-
 	public String getCreateTime() {
 		return createTime;
 	}
@@ -70,6 +68,22 @@ public class DataModule {
 
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Integer getStatue() {
+		return statue;
+	}
+
+	public void setStatue(Integer statue) {
+		this.statue = statue;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
 	}
     
     

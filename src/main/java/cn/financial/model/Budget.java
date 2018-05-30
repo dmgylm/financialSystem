@@ -32,6 +32,8 @@ public class Budget {
          private Integer delStatus; //删除状态（0已删除 1未删除）
          
          private Integer sId; //1表示损益表   2表示预算表
+         
+         private String infos;
     	 
     	 public Budget() {
              super();
@@ -148,6 +150,14 @@ public class Budget {
         public void setsId(Integer sId) {
             this.sId = sId;
         }
+
+		public String getInfos() {
+			return infos;
+		}
+
+		public void setInfos(String infos) {
+			this.infos = infos;
+		}
         
        
 }
