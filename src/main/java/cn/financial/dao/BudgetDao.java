@@ -37,6 +37,9 @@ public interface BudgetDao {
      * @return
      */
     List<Budget> getAllBudget();
+    
+    
+    List<Budget> getAllBudgets(Map<Object, Object> map);
      
     /**
      * 根据id查询预算表数据

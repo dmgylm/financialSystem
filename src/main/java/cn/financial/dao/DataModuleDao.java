@@ -25,7 +25,7 @@ public interface DataModuleDao {
      * @param dataModuleId
      * @return
      */
-    Integer deleteDataModule(String dataModuleId);
+    Integer updateDataModule(String dataModuleId);
     
     
 }
