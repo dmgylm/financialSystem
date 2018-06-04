@@ -64,7 +64,7 @@
     
         <sql id="query_organization_find">
          and code in
-        <foreach  item="sa" collection="list" open="("separator=","close=")">
+        <foreach  item="sa" collection="list" open="(" separator="," close=")">
 		#{item}
         </foreach>
            and id in
