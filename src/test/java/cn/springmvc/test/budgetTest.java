@@ -3,9 +3,14 @@ package cn.springmvc.test;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +22,8 @@ import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
+        "classpath:conf/spring-shiro.xml","classpath:conf/mongoDB.properties" })
 public class budgetTest {
 
     @Autowired
@@ -54,9 +60,20 @@ public class budgetTest {
      */
     @Test
     public void getAllBudget() {
-        List<Budget> list =budgetServiceImpl.getAllBudget(); 
+    	Calendar c = Calendar.getInstance();
+		long s = c.getTimeInMillis();
+		System.out.println("start:"+s);
+        List<Budget> list =budgetServiceImpl.getAllBudget();
+        c = Calendar.getInstance();
+		long e = c.getTimeInMillis();
+		System.out.println("end:"+e);
+		System.out.println(s-e);
+        
+        
         System.out.println("所有的数据长度"+list.size());
-        for (int i = 0; i < list.size(); i++) {
+        
+        
+        /*for (int i = 0; i < list.size(); i++) {
             System.out.println("第"+(i+1)+"条数据");
             System.out.println(list.get(i).getId()+"--"+list.get(i).getoId()+"--"
                      +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
@@ -64,7 +81,70 @@ public class budgetTest {
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
+        }*/
+    }
+    
+    class MyThread extends Thread{
+        
+        @Override
+        public void run() {
+            //System.out.println("主动创建的第22个线程");
+        	Calendar c = Calendar.getInstance();
+    		long s = c.getTimeInMillis();
+    		System.out.println("start:"+s);
+            List<Budget> list =budgetServiceImpl.getAllBudget();
+            c = Calendar.getInstance();
+    		long e = c.getTimeInMillis();
+    		System.out.println("end:"+e);
+    		System.out.println(s-e);
+            
+            
+            System.out.println("所有的数据长度"+list.size());
         }
+    }
+    @Test
+    public void ThreadTest(){
+    	
+    	/*MyThread mt=new MyThread();
+    	mt.start();*/
+    	
+
+    	   
+	        
+	        //final Semaphore semaphore = new Semaphore(10);
+	        ExecutorService exec = Executors.newCachedThreadPool();
+	        Calendar c = Calendar.getInstance();
+	        long start = c.getTimeInMillis();
+	        System.out.println(start);
+	        for (int i = 0; i < 10; i++) {
+	            final int num = i;
+	            Runnable task = new Runnable() {
+	                @Override
+	                public void run() {
+	                	Map<Object, Object> map=new HashMap<>();
+	                	map.put("start", num*300);
+	                	map.put("pageSize", 300);
+	                	List<Budget> list =budgetServiceImpl.getAllBudgets(map);
+	                	System.out.println("所有的数据长度"+list.size());
+	                }
+	            };
+	            exec.submit(task);
+	        }
+	        exec.shutdown();
+	        try {
+				exec.awaitTermination(1, TimeUnit.HOURS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        //writer.write("---END---\n");
+	        System.out.println("---END---\n");  
+	        c = Calendar.getInstance();
+	        long end = c.getTimeInMillis();
+	        System.out.println(end);
+	        System.out.println(end-start);
+    	    
+    	
     }
 
     /**
