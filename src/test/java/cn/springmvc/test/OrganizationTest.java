@@ -126,34 +126,38 @@ public class OrganizationTest {
     /**
      * 查询该节点以及节点以下的
      */
+
     @Test
     public void orgshow(){
     	try {
      	   List<String> ids=new ArrayList<String>();
  		   ids.add("f946a081eda949228537a8746200c3d6");
  		   ids.add("cced74c59a9846b5b0a81c0baf235c17");
+ 		   ids.add("f8483e1c85e84323853aeee27b4e8c91");
+ 		   ids.add("e71064dc0fc443fa8893ce489aed8c38");
      	   List<Organization> list = service.listOrganization(ids);
      	   List<String> listmap=new ArrayList<String>();
      	   for (Organization organization : list) {
      		    String his_permission = organization.getHis_permission();
      		    String[] hps = his_permission.split(",");//分割逗号
-                listmap.addAll(Arrays.asList(hps));
+                listmap.addAll(Arrays.asList(hps));//所有的his_permission存到listmap当中
                } 
-      	  JSONObject obj=new JSONObject();
-     	  List<Organization> listshow = service.listOrganizationcode(listmap);
-     	  JSONArray json=JSONArray.fromObject(listshow);
+      	   JSONObject obj=new JSONObject();
+      	   //查询对应的节点的数据
+     	   List<Organization> listshow = service.listOrganizationcode(listmap);
+     	   JSONArray json=JSONArray.fromObject(listshow);   
      	  try {
-     		  obj.put("list",json);
+     		  obj.put("rows",json);
         	  obj.put("resultCode",200);
 		    } catch (Exception e) {
               obj.put("resultCode",500);
 	     	  obj.put("resultDesc","服务器异常");
 		    }
      	    System.out.println(json);
-
      	  for (Organization organization : listshow) {
                System.out.println("id:" + organization.getId());
                System.out.println("code:" + organization.getCode());
+               System.out.println("parentId:"+organization.getParentId());
                System.out.println("orgName:" + organization.getOrgName());
                System.out.println("his_permission:" + organization.getHis_permission());
                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
