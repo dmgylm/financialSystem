@@ -40,7 +40,7 @@
 select b.id,b.oId,b.info,b.createTime,b.updateTime,b.typeId,b.uId,b.year,b.month,b.status,b.delStatus,bc.info as infos
       from income_statement b
 	  LEFT JOIN  income_statement_copy bc ON b.id=bc.id
-	  where
+	  where b.delStatus=1 and b.sid=1
       oid in("ee042ad88b074a8f8db898059acbb323","dc08f7044c9249c988c4f42f69022952",
       "851f1687f20c474287e4b7de1ae0839e","90ad76acb556438bbb42384a56563169",
       "499bcfc565864d21b77897387d09a183","2a38648b34134859a018d080ae720573") ORDER BY b.createTime DESC LIMIT #{start},#{pageSize}
