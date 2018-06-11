@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import cn.financial.model.Budget;
 import cn.financial.service.impl.BudgetServiceImpl;
 import cn.financial.util.UuidUtil;
@@ -60,17 +62,24 @@ public class budgetTest {
      */
     @Test
     public void getAllBudget() {
-    	Calendar c = Calendar.getInstance();
-		long s = c.getTimeInMillis();
-		System.out.println("start:"+s);
-        List<Budget> list =budgetServiceImpl.getAllBudget();
-        c = Calendar.getInstance();
-		long e = c.getTimeInMillis();
-		System.out.println("end:"+e);
-		System.out.println(s-e);
-        
-        
-        System.out.println("所有的数据长度"+list.size());
+    	  
+    	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+    		Calendar c = Calendar.getInstance();
+    		long s = c.getTimeInMillis();
+    		System.out.println("start:"+s);
+    		Date day=new Date();  
+    		System.out.println(df.format(day));
+            List<Budget> list =budgetServiceImpl.getAllBudget();
+            c = Calendar.getInstance();
+    		long e = c.getTimeInMillis();
+    		System.out.println("end:"+e);
+    		System.out.println(s-e);
+    		Date day1=new Date();
+    		System.out.println("开始时间"+df.format(day));
+    		System.out.println("结束时间"+df.format(day1));
+            System.out.println("所有的数据长度"+list.size());
+
+    	
         
         
         /*for (int i = 0; i < list.size(); i++) {
