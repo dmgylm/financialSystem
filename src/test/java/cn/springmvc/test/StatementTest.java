@@ -47,35 +47,17 @@ public class StatementTest {
         statement.setMonth(3);
         statement.setStatus(1);
         statement.setDelStatus(2);
+        statement.setsId(1);
         Integer i = statementService.insertStatement(statement);
         System.out.println(i);
     }
 
     /**
-     * 查询所有的损益数据
-     */
-    @Test
-    public void getAllStatement() {
-        List<Statement> list = statementService.getAll();
-        System.out.println("所有的数据长度"+list.size());
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println("第"+(i+1)+"条数据");
-            System.out.println(list.get(i).getId()+"--"+list.get(i).getoId()+"--"
-                     +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"+list.get(i).getTypeId()+"--"
-                     +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
-                     +list.get(i).getMonth()+"--"+list.get(i).getStatus());
-            
-        }
-    }
-
-    /**
-     * 根据传入的map查询相应的损益表数据
+     * 根据传入的map查询相应的损益表数据 不传就是查询 全部
      */
     @Test
     public void listStatementBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "2");
         List<Statement> list = statementService.listStatementBy(map);
         System.out.println(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -122,6 +104,7 @@ public class StatementTest {
         statement.setYear(2018);
         statement.setMonth(3);
         statement.setStatus(1);
+        statement.setsId(1);
         Integer i = statementService.updateStatement(statement);
             System.out.println("结果"+i);
      }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import cn.financial.model.Capital;
+import cn.financial.model.User;
 import cn.financial.service.impl.CapitalServiceImpl;
 import cn.financial.util.UuidUtil;
 
@@ -32,57 +33,45 @@ public class CapitalTest {
      */
     @Test
     public void insertCapital() throws UnsupportedEncodingException, ParseException {
-      /*  String info="222";
-        info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
-        Capital capital=new Capital();
+        Capital capital =new Capital();
         capital.setId(UuidUtil.getUUID());
-        capital.setoId("2222");
-        capital.setInfo(info);
-        capital.setCreateTime(sdf.parse("2018-02-18"));
-        capital.setUpdateTime(sdf.parse("2018-03-20"));
-        capital.setuId("6fcafcb22adf4c22a509184c96a828db");
+        capital.setPlate("1235");
+        capital.setBU("1234");
+        capital.setRegionName("1111");
+        capital.setProvince("1111");
+        capital.setCity("11");
+        capital.setCompany("1");
+        capital.setAccountName("1");
+        capital.setAccountBank("1");
+        capital.setAccount("13445");
+        capital.setAccountNature("123234");
+        capital.setTradeTime("2018-01-02");
+        capital.setStartBlack(1200);
+        capital.setIncom(20000);
+        capital.setPay(8000);
+        capital.setEndBlack(1293);
+        capital.setAbstrac("113");
+        capital.setClassify(":");
+        capital.setuId("1234");
         capital.setYear(2018);
-        capital.setMonth(3);
+        capital.setMonth(6);
+        capital.setRemarks("23455");
         capital.setStatus(1);
         Integer i = capitalServiceImpl.insertCapital(capital);
-        System.out.println(i);*/
+        System.out.println(i);
     }
 
     /**
-     * 查询所有的金额数据
+     * 根据条件查资金数据 (不传数据就是查询所有的)
      */
     @Test
     public void getAllCapital() {
-       /* List<Capital> list = capitalServiceImpl.getAllCapital();
+        Map<Object, Object> map = new HashMap<>();
+        List<Capital> list = capitalServiceImpl.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("第"+(i+1)+"条数据");
-            System.out.println(list.get(i).getId()+"--"+list.get(i).getoId()+"--"
-                     +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"
-                     +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
-                     +list.get(i).getMonth()+"--"+list.get(i).getStatus());
-            
-        }*/
-    }
-
-    /**
-     * 根据传入的map查询相应的金额表数据
-     */
-    @Test
-    public void listCapitalBy() {
-      /*  Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("oId", "111");
-        List<Capital> list = capitalServiceImpl.listCapitalBy(map);
-        System.out.println(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println("开始"+list.get(i).getId()+"--"+list.get(i).getoId()+"--"
-                     +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"
-                     +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
-                     +list.get(i).getMonth()+"--"+list.get(i).getStatus());
-            
-        }*/
+            System.out.println("第"+(i+1)+"条数据Id是："+list.get(i).getId());
+        }
     }
 
     /**
@@ -90,13 +79,12 @@ public class CapitalTest {
      */
     @Test
     public void getCapitalById(){
-        /*String id = "b5d06e8791de436480d819835e32ab46";
+        String id = "b5d06e8791de436480d819835e32ab46";
         Capital capital = capitalServiceImpl.selectCapitalById(id);
-        System.out.println("开始"+capital.getId()+"--"+capital.getoId()+"--"
-                +capital.getInfo()+"--"+sdf.format(capital.getCreateTime())+"--"
-                +sdf.format(capital.getUpdateTime())+"--"
+        System.out.println("开始"+capital.getId()+"--"+capital.getCreateTime()+"--"
+                +capital.getUpdateTime()+"--"
                 +capital.getuId()+"--"+capital.getYear()+"--"
-                +capital.getMonth()+"--"+capital.getStatus());*/
+                +capital.getMonth()+"--"+capital.getStatus());
     }
 
     /**
@@ -106,20 +94,16 @@ public class CapitalTest {
      */
     @Test
     public void updateCapital() throws UnsupportedEncodingException, ParseException {
-     /*   String info="111";
-        info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
+       /*String info="111";
+        info = new String(info.getBytes("ISO-8859-1"), "UTF-8");*/
         Capital capital=new Capital();
         capital.setId("b5d06e8791de436480d819835e32ab46");
-        capital.setoId("1");
-        capital.setInfo(info);
-        capital.setCreateTime(sdf.parse("2018-02-18"));
-        capital.setUpdateTime(sdf.parse("2018-03-20"));
         capital.setuId("9685618f583c416ab835683d1eba09ea");
         capital.setYear(2018);
         capital.setMonth(1);
         capital.setStatus(1);
         Integer i = capitalServiceImpl.updateCapital(capital);
-            System.out.println("结果"+i);*/
+            System.out.println("结果"+i);
      }
 
     /**
