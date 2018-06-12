@@ -22,7 +22,8 @@
    <context:component-scan base-package="cn.financial.controller"/>
    
    <!-- 如上配置用于开启Shiro Spring AOP权限注解的支持；<aop:config proxy-target-class="true">表示代理类。 -->
-    <!-- <aop:config proxy-target-class="true"></aop:config> -->
+    <aop:config proxy-target-class="true"></aop:config>
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
@@ -112,6 +113,8 @@
     <mvc:interceptors>
        <mvc:interceptor>
            <mvc:mapping path="/app/**"/><!-- /**拦截所有得URL -->
+           <mvc:exclude-mapping path="/login"/>
+           <mvc:exclude-mapping path="/subLogin"/>
            <bean id="loginInterceptor" class="cn.financial.util.LoginInterceptor"/>
         </mvc:interceptor> 
     </mvc:interceptors> 
