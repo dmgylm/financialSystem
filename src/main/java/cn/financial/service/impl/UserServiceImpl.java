@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -89,16 +90,30 @@ public class UserServiceImpl implements  UserService{
         List<UserRole> userRole = userRoleDao.listUserRole(username);
         Set<String> roles = new HashSet<String>();
         for(int i=0;i<userRole.size();i++){
-            roles.add(userRole.get(i).getrId());
+            roles.add(userRole.get(i).getRoleName());
+            System.out.println("角色-----------"+userRole.get(i).getRoleName());
         }
         return roles;
     }
     //权限
     public Set<String> findPermissions(String username) {
-        List<RoleResource> resource = roleResourceDao.listRoleResource(username);
         Set<String> permissions = new HashSet<String>();
-        for(int i=0;i<resource.size();i++){
-            permissions.add(resource.get(i).getPermssion());
+        try {
+            if(username!=null && !"".equals(username)){
+                List<UserRole> userRole = userRoleDao.listUserRole(username);//根据用户名查询对应角色信息
+                List<RoleResource> roleResource = new ArrayList<RoleResource>();
+                if(userRole.size()>0){
+                    for(UserRole list:userRole){
+                        roleResource.addAll(roleResourceDao.listRoleResource(list.getrId())); //根据角色id查询对应功能权限信息
+                    }  
+                }
+                for(int i=0;i<roleResource.size();i++){
+                    permissions.add(roleResource.get(i).getPermssion());
+                    System.out.println("权限-----------"+roleResource.get(i).getPermssion());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return permissions;
     }
