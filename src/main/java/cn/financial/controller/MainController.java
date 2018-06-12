@@ -90,7 +90,8 @@ public class MainController {
 	        List<RoleResource> roleResource = new ArrayList<RoleResource>();
 	        if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
 	            for(UserRole list:userRole){
-	                roleResource = roleResourceService.listRoleResource(list.getrId());//根据角色id查询对应功能权限信息
+	                roleResource .addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
+	                
 	            }  
 	        }
 	        model.addAttribute("roleResource",roleResource);

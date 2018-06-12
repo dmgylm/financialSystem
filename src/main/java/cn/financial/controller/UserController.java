@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,8 +125,8 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("tering:menu")
-    @RequestMapping(value = "/index")
+    //@RequiresRoles("超级管理员")
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
