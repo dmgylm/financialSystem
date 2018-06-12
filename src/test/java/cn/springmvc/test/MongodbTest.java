@@ -3,16 +3,15 @@ package cn.springmvc.test;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoClientOptionsFactoryBean;
 
 import cn.financial.dao.MongoDBDao;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mongodb.Block;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -25,54 +24,63 @@ import com.mongodb.client.MongoDatabase;
 
 public class MongodbTest {
 	
-//	public static void main(String[] args) throws Exception {
-//		Calendar start = Calendar.getInstance();
-//		System.out.println("start:"+start.getTimeInMillis());
-////		MongoClientOptionsFactoryBean mcof = new MongoClientOptionsFactoryBean();
-////		mcof.setConnectTimeout(30000);
-////		MongoClientOptions object = mcof.getObject();
-//		MongoClient mongoClient = new MongoClient("localhost");
-////		MongoClient mongoClient = new MongoClient("192.168.1.3");
-//
-//		MongoDatabase db = mongoClient.getDatabase("test");
-////		MongoCollection<Document> doc = db.getCollection("dataTest");
-//		MongoCollection<Document> doc = db.getCollection("netWork");
-//
-//		final List<JSONObject> list = new ArrayList<JSONObject>();
-//		FindIterable<Document> iter = doc.find();
-////		iter = iter.skip(9500);
-//		Calendar end = Calendar.getInstance();
-//		System.out.println("end:"+end.getTimeInMillis());
-//		System.out.println("findTime:"+(end.getTimeInMillis()-start.getTimeInMillis()));
-//		iter.forEach(new Block<Document>() {
-//			public void apply(Document _doc) {
-//				String string = null;
-//				Document value = (Document)_doc.get("value");
-//				string = value.toJson();
-//				list.add(JSONObject.fromObject(string));
+	private ThreadPoolManager executor= ThreadPoolManager.newInstance();
+	
+	public static void main(String[] args) {
+		MongodbTest mt = new MongodbTest();
+		mt.test();
+//		mt.testThread();
+	}
+	
+	public void test()  {
+		Calendar start = Calendar.getInstance();
+		System.out.println("start:"+start.getTimeInMillis());
+//		MongoClientOptionsFactoryBean mcof = new MongoClientOptionsFactoryBean();
+//		mcof.setConnectTimeout(30000);
+//		MongoClientOptions object = mcof.getObject();
+		MongoClient mongoClient = new MongoClient("localhost");
+//		MongoClient mongoClient = new MongoClient("192.168.1.3");
+
+		MongoDatabase db = mongoClient.getDatabase("test");
+//		MongoCollection<Document> doc = db.getCollection("dataTest");
+		MongoCollection<Document> doc = db.getCollection("netWork");
+
+		final List<JSONObject> list = new ArrayList<JSONObject>();
+		FindIterable<Document> iter = doc.find();
+//		iter = iter.skip(9500);
+		Calendar end = Calendar.getInstance();
+		System.out.println("end:"+end.getTimeInMillis());
+		System.out.println("findTime:"+(end.getTimeInMillis()-start.getTimeInMillis()));
+		iter.forEach(new Block<Document>() {
+			public void apply(Document _doc) {
+				String string = null;
+				Document value = (Document)_doc.get("value");
+				string = value.toJson();
+				list.add(JSONObject.parseObject(string));
+			}
+		});
+		
+//		iter.into(list);
+//		iter.forEach(new Consumer<Document>() {
+//			@Override
+//			public void accept(Document _doc) {
+//				list.add(_doc.get("value").toString());
+////				System.out.println(_doc);
 //			}
 //		});
-//		
-////		iter.into(list);
-////		iter.forEach(new Consumer<Document>() {
-////			@Override
-////			public void accept(Document _doc) {
-////				list.add(_doc.get("value").toString());
-//////				System.out.println(_doc);
-////			}
-////		});
-//		end = Calendar.getInstance();
-//		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
-////		JSONArray.fromObject(list);
-//		end = Calendar.getInstance();
-//		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
-//		System.out.println(list.size());
-//		end = Calendar.getInstance();
-//		System.out.println("end:"+end.getTimeInMillis());
-//		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
-//		
-//	}
-	public static void main(String[] args) throws Exception {
+		end = Calendar.getInstance();
+		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
+//		JSONArray.fromObject(list);
+		end = Calendar.getInstance();
+		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
+		System.out.println(list.size());
+		end = Calendar.getInstance();
+		System.out.println("end:"+end.getTimeInMillis());
+		System.out.println((end.getTimeInMillis()-start.getTimeInMillis()));
+		
+	}
+	
+	public void testThread()  {
 		Calendar start = Calendar.getInstance();
 		System.out.println("start:"+start.getTimeInMillis());
 //		MongoClientOptionsFactoryBean mcof = new MongoClientOptionsFactoryBean();
@@ -91,17 +99,7 @@ public class MongodbTest {
 		System.out.println("end:"+end.getTimeInMillis());
 		System.out.println("findTime:"+(end.getTimeInMillis()-start.getTimeInMillis()));
 		
-//		iter.into(list);
-//		iter.forEach(new Consumer<Document>() {
-//			@Override
-//			public void accept(Document _doc) {
-//				list.add(_doc.get("value").toString());
-////				System.out.println(_doc);
-//			}
-//		});
-		
-		MongodbTest mt = new MongodbTest();
-		final List<JSONObject> list = mt.ss(iter);
+		final List<JSONObject> list = execThread(iter);
 //		JSONArray.fromObject(list);
 		System.out.println(list.size());
 		end = Calendar.getInstance();
@@ -110,29 +108,29 @@ public class MongodbTest {
 		
 	}
 	
-	public List<JSONObject> ss(FindIterable<Document> iter){
-		List<MyThread> list = new ArrayList<MyThread>();
-		int pageSize = 1000;
-		int count = 10;
+	public List<JSONObject> execThread(FindIterable<Document> iter){
+		List<MyThread> threadlst = new ArrayList<MyThread>();
+		int pageSize = 5000;
+		int count = 2;
+		CountDownLatch cdl = new CountDownLatch(count);
 		for(int i=0;i<count;i++){
 			int start = i*pageSize;
-			MyThread t = new MyThread(iter, start, pageSize);
-			t.start();
-			list.add(t);
+			MyThread t = new MyThread(cdl,iter, start, pageSize);
+			executor.addExecuteTask(t);
+			threadlst.add(t);
 		}
-		for(MyThread t:list){
-			try {
-				t.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				continue;
-			}
+		System.out.println("线程正在执行");
+		try {
+			cdl.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		List<JSONObject> array = new ArrayList<JSONObject>();
-		for(MyThread t:list){
-			array.addAll(t.getList());
+		System.out.println("线程正在结束");
+		List<JSONObject> list = new ArrayList<JSONObject>();
+		for(MyThread t:threadlst){
+			list.addAll(t.getList());
 		}
-		return array;
+		return list;
 	}
 	
 	class MyThread extends Thread{
@@ -140,8 +138,10 @@ public class MongodbTest {
 		private int start;
 		private FindIterable<Document> iter;
 		private int end;
+		private CountDownLatch cdl;
 
-		MyThread(FindIterable<Document> iter,int start,int end){
+		MyThread(CountDownLatch cdl,FindIterable<Document> iter,int start,int end){
+			this.cdl = cdl;
 			this.iter = iter;
 			this.start = start;
 			this.end = end;
@@ -152,6 +152,11 @@ public class MongodbTest {
 		
 		@Override
 		public void run() {
+			try {
+				Thread.sleep((long)2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			iter.skip(start);
 			iter.limit(end);
 			iter.forEach(new Block<Document>() {
@@ -159,9 +164,11 @@ public class MongodbTest {
 					String string = null;
 					Document value = (Document)_doc.get("value");
 					string = value.toJson();
-					list.add(JSONObject.fromObject(string));
+					list.add(JSONObject.parseObject(string));
 				}
 			});
+			cdl.countDown();
+			
 		}
 
 		public List<JSONObject> getList() {
