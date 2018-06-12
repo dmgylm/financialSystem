@@ -1,7 +1,9 @@
 package cn.financial.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +15,14 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import cn.financial.model.RoleResource;
 import cn.financial.model.User;
@@ -36,8 +42,13 @@ public class MainController {
     private UserRoleService userRoleService;
     @Autowired
     private RoleResourceService roleResourceService;
+    
+    @RequestMapping(value="/subLogin", produces = "application/json;charset=utf-8")
+    public String getexcel(HttpServletRequest request, HttpServletResponse response) {
+        return "login";
+    }
     /**
-     * login
+     * login验证
      * @param request
      * @param respons
      * @return
@@ -48,10 +59,10 @@ public class MainController {
         UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));
         try {
             subject.login(token);
-        } catch (UnknownAccountException e) {
+        }catch (UnknownAccountException e) {
             System.out.println( "帐号不存在");
             model.addAttribute("msg","帐号不存在");
-        } catch (IncorrectCredentialsException e) { 
+        }catch (IncorrectCredentialsException e) { 
             System.out.println( "用户名/密码错误");
             model.addAttribute("msg","用户名/密码错误"); 
         } catch (ExcessiveAttemptsException e) {  
@@ -62,7 +73,7 @@ public class MainController {
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
             model.addAttribute("msg","其他错误：" + e.getMessage());
         } 
-        return "/login";  
+        return "login"; 
     }
     /**
      * index(根据角色显示对应的功能权限)
@@ -77,13 +88,13 @@ public class MainController {
 	    if(userName!=null && !"".equals(userName)){
 	        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
 	        List<RoleResource> roleResource = new ArrayList<RoleResource>();
-	        if(userRole.size()>0){
+	        if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
 	            for(UserRole list:userRole){
 	                roleResource = roleResourceService.listRoleResource(list.getrId());//根据角色id查询对应功能权限信息
 	            }  
 	        }
 	        model.addAttribute("roleResource",roleResource);
 	    }
-    	return "/index";
+    	return "index";
     }
 }

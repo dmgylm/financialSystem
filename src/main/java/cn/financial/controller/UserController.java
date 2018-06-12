@@ -124,7 +124,8 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @RequiresPermissions("tering:menu")
+    @RequestMapping(value = "/index")
     @ResponseBody
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
