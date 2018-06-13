@@ -1,6 +1,10 @@
 package cn.financial.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
+    
+    private static final long serialVersionUID = 1L; 
 
     private String id; // 用户表id
 
@@ -19,6 +23,9 @@ public class User {
     private String updateTime; // 更新时间
     
     private String salt;  //uuid随机数生成
+    
+    private Boolean locked = Boolean.FALSE;//记录登陆次数
+    
     public User() {
         super();
     }
@@ -94,4 +101,13 @@ public class User {
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
+	
+	public Boolean getLocked() {  
+        return locked;  
+    }  
+  
+    public void setLocked(Boolean locked) {  
+        this.locked = locked;  
+    }
+    
 }
