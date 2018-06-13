@@ -261,6 +261,43 @@ public class UserController {
         return dataMap;
     }
     /**
+     * 管理员重置密码
+     * @param request
+     * @param response
+     * @param userId
+     * @param pwd
+     */
+    @RequiresPermissions("user:update")
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        String userId = null;
+        try {
+            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
+                userId = request.getParameter("userId");//用户id
+            }
+            User user = new User();
+            user.setId(userId);
+            user.setSalt(UuidUtil.getUUID());
+            user.setPwd("Welcome2");//重置默认密码为Welcome2
+            Integer userList = userService.updateUser(user);
+            if(userList>0){
+                dataMap.put("resultCode", 200);
+                dataMap.put("resultDesc", "修改成功");
+            }else{
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "修改失败");
+            } 
+        } catch (Exception e) {
+            dataMap.put("resultCode", 500);
+            dataMap.put("resultDesc", "服务器异常");
+            this.logger.error(e.getMessage(), e);
+        }
+        
+        return dataMap;
+    }
+    /**
      * 修改用户
      * @param request
      * @param response
