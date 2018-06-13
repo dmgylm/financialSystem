@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.financial.exception.FormulaAnalysisException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -110,8 +111,9 @@ public class FormulaUtil {
 	 * @param array 该表格所有对象
 	 * @param key
 	 * @return
+	 * @throws FormulaAnalysisException 
 	 */
-	public static String getReallyFormulaByKey(JSONArray array,String key){
+	public static String getReallyFormulaByKey(JSONArray array,String key) throws FormulaAnalysisException{
 		for(int i=0;i<array.size();i++){
 			JSONObject json = array.getJSONObject(i);
 			String jsonKey = json.getString(FIELD_KEY);
@@ -146,26 +148,22 @@ public class FormulaUtil {
 	 * @param formula 该对象公式
 	 * @return
 	 */
-	public static String replaceFormula(JSONArray array,String formula){
-		try {
-			if(formula!=null && !formula.equals("")) {
-				String[] attrs = splitFormula(formula);
-				for(String attr:attrs) {
-					if(attr.equalsIgnoreCase("SUM")) {
-						continue;
-					}
-					String subFormula = getFormulaByKey(array,attr);
-					if(subFormula==null) {
-						throw new Exception(attr+" not is found");
-					}
-					if(!subFormula.equals("")) {
-						formula = formula.replaceAll(attr, "("+subFormula+")");
-						return replaceFormula(array,formula);
-					}
+	public static String replaceFormula(JSONArray array,String formula) throws FormulaAnalysisException {
+		if(formula!=null && !formula.equals("")) {
+			String[] attrs = splitFormula(formula);
+			for(String attr:attrs) {
+				if(attr.equalsIgnoreCase("SUM")) {
+					continue;
+				}
+				String subFormula = getFormulaByKey(array,attr);
+				if(subFormula==null) {
+					throw new FormulaAnalysisException(attr+" not is found");
+				}
+				if(!subFormula.equals("")) {
+					formula = formula.replaceAll(attr, "("+subFormula+")");
+					return replaceFormula(array,formula);
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return formula;
 	}
