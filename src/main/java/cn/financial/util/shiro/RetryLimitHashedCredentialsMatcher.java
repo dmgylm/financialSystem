@@ -26,13 +26,14 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             retryCount = new AtomicInteger(0);
             passwordRetryCache.put(username, retryCount);
         }
-        /*if(retryCount.incrementAndGet() > 5) {
-            //if retry count > 5 throw
+        System.out.println("*******************"+retryCount);
+        if(retryCount.incrementAndGet() > 3) {
+            //if retry count > 4 throw
             throw new ExcessiveAttemptsException();
-        }*/
+        }
 
-        boolean matches = super.doCredentialsMatch(token, info);
-        System.out.println(matches+"********************************************************");
+        boolean matches = super.doCredentialsMatch(token, info);//密码验证
+        System.out.println(matches+"*****************************************");
         if(matches) {
             //clear retry count
             passwordRetryCache.remove(username);

@@ -3,6 +3,7 @@ package cn.financial.util.shiro;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -50,15 +51,16 @@ public class UserRealm extends AuthorizingRealm {
         if(user == null) {
             throw new UnknownAccountException();//没找到帐号
         }
-
-     /*   if(Boolean.TRUE.equals(user.getLocked())) {
-            throw new LockedAccountException(); //帐号锁定
-        }*/
-
+        // 判断帐号是否锁定  
+        if (Boolean.TRUE.equals(user.getLocked())) {  
+            // 抛出 帐号锁定异常  
+            throw new LockedAccountException();  
+        }
+        // 交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配  
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 user.getName(), //用户名
                 user.getPwd(), //密码
-                ByteSource.Util.bytes(user.getSalt()),//uuid生成
+                ByteSource.Util.bytes(user.getSalt()),//uuid生成盐
                 getName()  //realm name
         );
         return authenticationInfo;
