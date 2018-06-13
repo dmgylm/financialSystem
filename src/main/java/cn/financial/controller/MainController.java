@@ -42,7 +42,12 @@ public class MainController {
     private UserRoleService userRoleService;
     @Autowired
     private RoleResourceService roleResourceService;
-    
+    /**
+     * 跳转登录页面
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value="/subLogin", produces = "application/json;charset=utf-8")
     public String getexcel(HttpServletRequest request, HttpServletResponse response) {
         return "login";
@@ -60,14 +65,14 @@ public class MainController {
         try {
             subject.login(token);
         }catch (UnknownAccountException e) {
-            System.out.println( "帐号不存在");
-            model.addAttribute("msg","帐号不存在");
+            System.out.println( "该用户不存在");
+            model.addAttribute("msg","该用户不存在");
         }catch (IncorrectCredentialsException e) { 
-            System.out.println( "用户名/密码错误");
-            model.addAttribute("msg","用户名/密码错误"); 
+            System.out.println( "密码或账户错误，请重新输入");
+            model.addAttribute("msg","密码或账户错误，请重新输入"); 
         } catch (ExcessiveAttemptsException e) {  
-            System.out.println("登录失败多次，账户锁定10分钟");
-            model.addAttribute("msg","登录失败多次，账户锁定10分钟");
+            System.out.println("账户已锁，请联系管理员");
+            model.addAttribute("msg","账户已锁，请联系管理员");
         } catch (AuthenticationException e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
@@ -81,7 +86,7 @@ public class MainController {
      * @param respons
      * @return
      */
-	@RequestMapping(value="/")
+	@RequestMapping(value="/index")
     public String index(HttpServletRequest request,HttpServletResponse respons,Model model){
 	    User user = (User) request.getAttribute("user");
 	    String userName = user.getName();
