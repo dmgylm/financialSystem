@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
 
@@ -68,15 +70,15 @@ public class OrganizationController {
                 i = organizationService.saveOrganization(organization, request.getParameter("parentOrgId"));
             }
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -119,12 +121,12 @@ public class OrganizationController {
                 map.put("parentId", request.getParameter("parentId"));// 父id
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", 400);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -154,15 +156,15 @@ public class OrganizationController {
             map.put("uId", user.getId());
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -186,15 +188,15 @@ public class OrganizationController {
                 i = organizationService.deleteOrganizationByStatusCascade(user.getId(),request.getParameter("id"));
             }
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "停用成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "停用失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -217,12 +219,12 @@ public class OrganizationController {
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 jsonTree = organizationService.TreeByIdForSon(request.getParameter("id"));
             }
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", jsonTree);
         } catch (Exception e) {
-            dataMap.put("resultCode", 400);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -245,12 +247,12 @@ public class OrganizationController {
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 list = organizationService.listTreeByIdForParent(request.getParameter("id"));
             }
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", 400);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -282,15 +284,15 @@ public class OrganizationController {
             User user = (User) request.getAttribute("user");
             Integer i = organizationService.moveOrganization(user.getId() ,id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "移动成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "移动失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -317,12 +319,12 @@ public class OrganizationController {
                 map.put("id", request.getParameter("id"));
             }
             Boolean flag = organizationService.hasOrganizationSon(map);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", flag);
         } catch (Exception e) {
-            dataMap.put("resultCode", 400);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
