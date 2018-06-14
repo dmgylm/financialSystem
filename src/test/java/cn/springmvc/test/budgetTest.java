@@ -3,24 +3,32 @@ package cn.springmvc.test;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.bson.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.alibaba.fastjson.JSONObject;
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+
 import cn.financial.model.Budget;
 import cn.financial.service.impl.BudgetServiceImpl;
 import cn.financial.util.UuidUtil;
+import cn.springmvc.test.MongodbTest.MyThread;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
@@ -56,7 +64,75 @@ public class budgetTest {
         Integer i = budgetServiceImpl.insertBudget(budget);
         System.out.println(i);
     }
+    private ThreadPoolManager executor= ThreadPoolManager.newInstance();
+    
+    
+    @Test
+    public void thred(){
+    	  Calendar c = Calendar.getInstance();
+ 	      long startime = c.getTimeInMillis();
+ 	      System.out.println("开始时间:"+startime);
+ 	      List<MyThread> threadlst = new ArrayList<MyThread>();
+ 			int pageSize = 1000;
+ 			int count = 10;
+ 			CountDownLatch cdl = new CountDownLatch(count);
+ 			for(int i=0;i<count;i++){
+ 				int start = i*pageSize;
+ 			    Map<Object, Object> map=new HashMap<>();
+ 	            map.put("start",start);
+ 	            map.put("pageSize", pageSize);
+ 			    List<Budget> list = budgetServiceImpl.getAllBudgets(map);
+ 				MyThread t = new MyThread(cdl,list);
+ 				
+ 				executor.addExecuteTask(t);
+ 				threadlst.add(t);
+ 			}
+ 			System.out.println("线程正在执行");
+ 			try {
+ 				cdl.await();
+ 			} catch (InterruptedException e) {
+ 				e.printStackTrace();
+ 			}
+ 			System.out.println("线程正在结束");
+ 		   List<Budget> list1 = new ArrayList<Budget>();
+ 			for(MyThread t:threadlst){
+ 				list1.addAll(t.getList());
+ 			}
+	        
+	        c = Calendar.getInstance();
+	        long end = c.getTimeInMillis();
+	        System.out.println("结束时间:"+end);
+	        System.out.println("需要花费的时间"+(end-startime));
+ 			System.out.println(list1.size());
+ 			System.out.println(list1.get(0).getId()+"---"+list1.get(0).getStatus());
+    }
+     class MyThread extends Thread{
+		private CountDownLatch cdl;
+		MyThread(CountDownLatch cdl,List<Budget> list){
+			this.cdl = cdl;
+			this.list = list;
+			
+		}
 
+		private  List<Budget> list = new ArrayList<Budget>();
+		@Override
+		public void run() {
+			try {
+				Thread.sleep((long)2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			cdl.countDown();
+		}
+		public List<Budget> getList() {
+			return list;
+		}
+
+		public void setList(List<Budget> list) {
+			this.list = list;
+		}
+}
+  
     /**
      * 查询所有的预算数据
      */
@@ -93,7 +169,7 @@ public class budgetTest {
         }*/
     }
     
-    class MyThread extends Thread{
+    /*class MyThread extends Thread{
         
         @Override
         public void run() {
@@ -110,17 +186,15 @@ public class budgetTest {
             
             System.out.println("所有的数据长度"+list.size());
         }
-    }
+    }*/
     @Test
     public void ThreadTest(){
     	
-    	/*MyThread mt=new MyThread();
-    	mt.start();*/
+    	//MyThread mt=new MyThread();
+    	//mt.start();
     	
-
-    	   
 	        
-	        //final Semaphore semaphore = new Semaphore(10);
+	       // final Semaphore semaphore = new Semaphore(10);
 	        ExecutorService exec = Executors.newCachedThreadPool();
 	        Calendar c = Calendar.getInstance();
 	        long start = c.getTimeInMillis();
