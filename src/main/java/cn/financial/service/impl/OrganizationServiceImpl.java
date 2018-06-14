@@ -133,27 +133,27 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
         if (!CollectionUtils.isEmpty(organizationByIds)) {
             list.add(organizationByIds.get(0));
-        }
-        if (!CollectionUtils.isEmpty(departList)) {
-            // sql函数递归查询
-            // list =
-            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            // java代码递归查询
-            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
-            // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
-            getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
-            if (!CollectionUtils.isEmpty(list)) {
-                List<TreeNode<Organization>> nodes = new ArrayList<>();
-                for (Organization organization : list) {
-                    TreeNode<Organization> node = new TreeNode<>();
-                    node.setId(organization.getCode());
-                    node.setParentId(organization.getParentId().toString());
-                    node.setText(organization.getOrgName());
-                    node.setNodeData(organization);
-                    nodes.add(node);
+            if (!CollectionUtils.isEmpty(departList)) {
+                // sql函数递归查询
+                // list =
+                // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+                // java代码递归查询
+                // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+                // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+                getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+                if (!CollectionUtils.isEmpty(list)) {
+                    List<TreeNode<Organization>> nodes = new ArrayList<>();
+                    for (Organization organization : list) {
+                        TreeNode<Organization> node = new TreeNode<>();
+                        node.setId(organization.getCode());
+                        node.setParentId(organization.getParentId().toString());
+                        node.setText(organization.getOrgName());
+                        node.setNodeData(organization);
+                        nodes.add(node);
+                    }
+                    JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+                    return jsonObject;
                 }
-                JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
-                return jsonObject;
             }
         }
         return null;
@@ -174,15 +174,15 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
         if (!CollectionUtils.isEmpty(organizationByIds)) {
             list.add(organizationByIds.get(0));
-        }
-        if (!CollectionUtils.isEmpty(departList)) {
-            // sql函数递归查询
-            // list =
-            // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-            // java代码递归查询
-            // getOrganizationSonList(list, organizationByIds.get(0).getCode());
-            // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
-            getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+            if (!CollectionUtils.isEmpty(departList)) {
+                // sql函数递归查询
+                // list =
+                // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+                // java代码递归查询
+                // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+                // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+                getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+            }
         }
         return list;
     }
@@ -250,10 +250,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
         if (!CollectionUtils.isEmpty(organizationByIds)) {
             list.add(organizationByIds.get(0));
-        }
-        if (!CollectionUtils.isEmpty(departList)) {
-            // 递归在所有的组织结构中找到我们需要的节点及所有其父节点
-            getOrganizationParentList(departList, list, organizationByIds.get(0).getParentId());
+            if (!CollectionUtils.isEmpty(departList)) {
+                // 递归在所有的组织结构中找到我们需要的节点及所有其父节点
+                getOrganizationParentList(departList, list, organizationByIds.get(0).getParentId());
+            }
         }
         return list;
     }
