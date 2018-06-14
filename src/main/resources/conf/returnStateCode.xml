@@ -13,4 +13,30 @@
         <code>500</code>
         <description>系统错误</description>
     </Result>
+    
+    <Result name="LOGIN_NO_USER">
+        <code>201</code>
+        <description>该用户不存在</description>
+    </Result>
+    <Result name="LOGIN_USERNAME_ERROR">
+        <code>202</code>
+        <description>密码或账户错误，请重新输入</description>
+    </Result>
+    <Result name="LOGIN_USER_LOCKOUT">
+        <code>203</code>
+        <description>账户已锁，请联系管理员</description>
+    </Result>
+    <Result name="LOGIN_FAILURE">
+        <code>204</code>
+        <description>其他错误</description>
+    </Result>
+    
+    <Result name="CAPITAL_FILE_EXCEED_5M">
+        <code>205</code>
+        <description>文件大于5M!请重新上传</description>
+    </Result>
+    
+    
+    
+    
 </StateCode>
