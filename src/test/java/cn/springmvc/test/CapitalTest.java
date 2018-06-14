@@ -51,7 +51,7 @@ public class CapitalTest {
         capital.setPay(8000);
         capital.setEndBlack(1293);
         capital.setAbstrac("113");
-        capital.setClassify(":");
+        capital.setClassify("123");
         capital.setuId("1234");
         capital.setYear(2018);
         capital.setMonth(6);
