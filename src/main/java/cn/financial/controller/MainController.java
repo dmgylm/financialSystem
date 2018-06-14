@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -15,20 +16,19 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.shiro.PasswordHelper;
 
 /**
  * 控制页面跳转
@@ -59,26 +59,35 @@ public class MainController {
      * @return
      */
     @RequestMapping(value="/login")
-    public String login(HttpServletRequest request,HttpServletResponse respons ,Model model){
+    @ResponseBody
+    public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));
+        UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));   
         try {
             subject.login(token);
+            session.setAttribute("password", request.getParameter("password"));
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
-            model.addAttribute("msg","该用户不存在");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, "description"));
         }catch (IncorrectCredentialsException e) { 
             System.out.println( "密码或账户错误，请重新输入");
-            model.addAttribute("msg","密码或账户错误，请重新输入"); 
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, "description"));
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
-            model.addAttribute("msg","账户已锁，请联系管理员");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, "description"));
         } catch (AuthenticationException e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            model.addAttribute("msg","其他错误：" + e.getMessage());
-        } 
-        return "login"; 
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "description"));
+        }
+        return dataMap; 
     }
     /**
      * index(根据角色显示对应的功能权限)
@@ -87,20 +96,31 @@ public class MainController {
      * @return
      */
 	@RequestMapping(value="/index")
-    public String index(HttpServletRequest request,HttpServletResponse respons,Model model){
+	@ResponseBody
+    public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+	    Map<String, Object> dataMap = new HashMap<String, Object>();
 	    User user = (User) request.getAttribute("user");
 	    String userName = user.getName();
+	    String passWord = session.getAttribute("password").toString();
+	    if(passWord!=null && !passWord.equals("")){
+            if(passWord.equals("Welcome1")){
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, "description"));
+                return dataMap;
+            }
+	    }
 	    if(userName!=null && !"".equals(userName)){
 	        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
 	        List<RoleResource> roleResource = new ArrayList<RoleResource>();
 	        if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
 	            for(UserRole list:userRole){
-	                roleResource .addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
-	                
+	                roleResource.addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
 	            }  
 	        }
-	        model.addAttribute("roleResource",roleResource);
+	        dataMap.put("roleResource", roleResource);
+	        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
 	    }
-    	return "index";
+    	return dataMap;
     }
 }
