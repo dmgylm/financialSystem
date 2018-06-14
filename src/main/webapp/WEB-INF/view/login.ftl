@@ -14,7 +14,7 @@
 </head>
 <body>
     <@shiro.user>  
-                您已经登陆系统，请选择<a href="./">进入系统</a>，或者<a href="./logout">登出系统来用其它用户登陆</a>
+                您已经登陆系统，请选择<a href="./index">进入系统</a>，或者<a href="./logout">登出系统来用其它用户登陆</a>
     </@shiro.user> 
    <h1>登录${(msg)!}</h1>
    <form id="loginForm" action="./login" method="post" >
