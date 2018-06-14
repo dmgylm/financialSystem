@@ -40,5 +40,7 @@ public class ElementConfig {
     
     // 色名称不能重复
     public static final String ROLENAME_EXISTENCE = "ROLENAME_EXISTENCE";
-
+    
+    //重置密码
+    public static final String RESET_PWD = "RESET_PWD";
 }
