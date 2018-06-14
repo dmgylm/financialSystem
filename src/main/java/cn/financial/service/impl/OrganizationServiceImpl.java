@@ -131,7 +131,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
         // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            list.add(organizationByIds.get(0));
+        }
         if (!CollectionUtils.isEmpty(departList)) {
             // sql函数递归查询
             // list =
@@ -170,7 +172,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
         // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            list.add(organizationByIds.get(0));
+        }
         if (!CollectionUtils.isEmpty(departList)) {
             // sql函数递归查询
             // list =
@@ -244,7 +248,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
         // 当前节点
         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        list.add(organizationByIds.get(0));
+        if (!CollectionUtils.isEmpty(organizationByIds)) {
+            list.add(organizationByIds.get(0));
+        }
         if (!CollectionUtils.isEmpty(departList)) {
             // 递归在所有的组织结构中找到我们需要的节点及所有其父节点
             getOrganizationParentList(departList, list, organizationByIds.get(0).getParentId());
@@ -303,6 +309,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         map = new HashMap<>();
         map.put("id", parentOrgId);
         List<Organization> orgParent = organizationDAO.listOrganizationBy(map);
+        if (CollectionUtils.isEmpty(orgParent)) {
+            return Integer.valueOf(0);
+        }
         // 得到新父节点的子节点
         map = new HashMap<>();
         map.put("parentId", orgParent.get(0).getCode());
