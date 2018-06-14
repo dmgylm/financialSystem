@@ -27,8 +27,8 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             passwordRetryCache.put(username, retryCount);
         }
         System.out.println("*******************"+retryCount);
-        if(retryCount.incrementAndGet() > 4) {
-            //if retry count > 4 throw
+        if(retryCount.incrementAndGet() > 3) {
+            //if retry count > 3 throw
             throw new ExcessiveAttemptsException();
         }
 
