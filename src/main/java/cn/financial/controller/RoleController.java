@@ -107,7 +107,13 @@ public class RoleController {
         try {
             String roleName = null;
             if(null!=request.getParameter("roleName") && !"".equals(request.getParameter("roleName"))){
-                roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称
+                roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称 
+            }
+            List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
+            if(roleNameList.size()>0){//roleName不能重复
+                dataMap.put("resultCode", 400);
+                dataMap.put("resultDesc", "角色名称不能重复");
+                return dataMap;
             }
             Role role = new Role();
             role.setId(UuidUtil.getUUID());
