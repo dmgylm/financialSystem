@@ -24,7 +24,7 @@
     
     <task:annotation-driven />
      <!-- 属性文件位置 -->
-    <context:property-placeholder location="classpath*:conf/jdbc.properties,classpath*:conf/resources.properties,classpath*:conf/mongoDB.properties"/>
+    <context:property-placeholder location="classpath*:conf/jdbc.properties,classpath*:conf/resources.properties,classpath*:conf/mongoDB.properties,classpath*:conf/redis-config.properties"/>
     <!-- 扫描文件（自动将servicec层注入） -->
     <context:component-scan base-package="cn.financial"/>
     
