@@ -3,13 +3,10 @@ package cn.springmvc.test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
+import org.dom4j.DocumentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.Organization;
 import cn.financial.service.impl.OrganizationServiceImpl;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.JsonToHtmlUtil;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
@@ -29,8 +29,17 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
+
     
-  
+    /**
+     * 测试获取xml的状态节点
+     */
+    @Test
+    public void XMLreturnValue() {
+        String returnValue = ElementXMLUtils.returnValue("ORGANIZATION_GET_SUCCESSFULLY", "code");
+        System.out.println(returnValue);
+    }
+
     /**
      * 新增组织结构
      */
@@ -50,7 +59,9 @@ public class OrganizationTest {
      */
     @Test
     public void listOrganization() {
+        long start = System.currentTimeMillis();
         List<Organization> list = service.listOrganizationBy(new HashMap<Object, Object>());
+        long end = System.currentTimeMillis();
         for (Organization organization : list) {
             System.out.println("id:" + organization.getId());
             System.out.println("code:" + organization.getCode());
@@ -62,6 +73,7 @@ public class OrganizationTest {
             System.out.println("his_permission:" + organization.getHis_permission());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
+        System.out.println(end - start);
     }
 
     /**
@@ -110,7 +122,7 @@ public class OrganizationTest {
     @Test
     public void deleteOrganizationByStatus() {
         String id = "5dd58617f174473888857f389c822c75";
-        Integer i = service.deleteOrganizationByStatusCascade("aa",id);
+        Integer i = service.deleteOrganizationByStatusCascade("aa", id);
         System.out.println(i);
     }
 
@@ -128,47 +140,47 @@ public class OrganizationTest {
      */
 
     @Test
-    public void orgshow(){
-    	try {
-     	   List<String> ids=new ArrayList<String>();
- 		   ids.add("f946a081eda949228537a8746200c3d6");
- 		   ids.add("cced74c59a9846b5b0a81c0baf235c17");
- 		   ids.add("f8483e1c85e84323853aeee27b4e8c91");
- 		   ids.add("e71064dc0fc443fa8893ce489aed8c38");
-     	   List<Organization> list = service.listOrganization(ids);
-     	   List<String> listmap=new ArrayList<String>();
-     	   for (Organization organization : list) {
-     		    String his_permission = organization.getHis_permission();
-     		    String[] hps = his_permission.split(",");//分割逗号
-                listmap.addAll(Arrays.asList(hps));//所有的his_permission存到listmap当中
-               } 
-      	   JSONObject obj=new JSONObject();
-      	   //查询对应的节点的数据
-     	   List<Organization> listshow = service.listOrganizationcode(listmap);
-     	   JSONArray json=JSONArray.fromObject(listshow);   
-     	  try {
-     		  obj.put("rows",json);
-        	  obj.put("resultCode",200);
-		    } catch (Exception e) {
-              obj.put("resultCode",500);
-	     	  obj.put("resultDesc","服务器异常");
-		    }
-     	    System.out.println(json);
-     	  for (Organization organization : listshow) {
-               System.out.println("id:" + organization.getId());
-               System.out.println("code:" + organization.getCode());
-               System.out.println("parentId:"+organization.getParentId());
-               System.out.println("orgName:" + organization.getOrgName());
-               System.out.println("his_permission:" + organization.getHis_permission());
-               System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-           } 
-     	 System.out.println("展示"+listmap);
-     	
-     
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    public void orgshow() {
+        try {
+            List<String> ids = new ArrayList<String>();
+            ids.add("f946a081eda949228537a8746200c3d6");
+            ids.add("cced74c59a9846b5b0a81c0baf235c17");
+            ids.add("f8483e1c85e84323853aeee27b4e8c91");
+            ids.add("e71064dc0fc443fa8893ce489aed8c38");
+            List<Organization> list = service.listOrganization(ids);
+            List<String> listmap = new ArrayList<String>();
+            for (Organization organization : list) {
+                String his_permission = organization.getHis_permission();
+                String[] hps = his_permission.split(",");// 分割逗号
+                listmap.addAll(Arrays.asList(hps));// 所有的his_permission存到listmap当中
+            }
+            JSONObject obj = new JSONObject();
+            // 查询对应的节点的数据
+            List<Organization> listshow = service.listOrganizationcode(listmap);
+            JSONArray json = JSONArray.fromObject(listshow);
+            try {
+                obj.put("rows", json);
+                obj.put("resultCode", 200);
+            } catch (Exception e) {
+                obj.put("resultCode", 500);
+                obj.put("resultDesc", "服务器异常");
+            }
+            System.out.println(json);
+            for (Organization organization : listshow) {
+                System.out.println("id:" + organization.getId());
+                System.out.println("code:" + organization.getCode());
+                System.out.println("parentId:" + organization.getParentId());
+                System.out.println("orgName:" + organization.getOrgName());
+                System.out.println("his_permission:" + organization.getHis_permission());
+                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            }
+            System.out.println("展示" + listmap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     /**
      * 根据id查询该节点下的所有子节点 的集合
      */
@@ -215,7 +227,7 @@ public class OrganizationTest {
     public void moveOrganization() {
         String id = "c64bb8ec6a9a47008c4f6fcfb51a9bfc";
         String parentOrgId = "4698d2836e944d509c4e2edc1fb793a7";
-        service.moveOrganization("aa",id, parentOrgId);
+        service.moveOrganization("aa", id, parentOrgId);
     }
 
     /**
@@ -267,8 +279,7 @@ public class OrganizationTest {
                 + "\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,"
                 + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,"
                 + "\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,"
-                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null," 
-                + "\"wanchenglv\":null}}}}";
+                + "\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null," + "\"wanchenglv\":null}}}}";
         String jj = "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,"
                 + "\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{"
                 + "\"heji\":{\"benyueshiji\":null,\"benyuebudian\":null,"
@@ -291,15 +302,13 @@ public class OrganizationTest {
         List<String> listtr = new ArrayList<>();
         List<JSONObject> listtr1 = new ArrayList<>();
         String rStr = JsonToHtmlUtil.jsonToTable(data, listtd, listtr, listtr1);
-        
-        
+
         HashMap<String, Object> map = new HashMap<String, Object>();
         List<String> listtd1 = new ArrayList<>();
         JsonToHtmlUtil.JsonToMap(data, map, listtd1);
         JsonToHtmlUtil.iteration(JsonToHtmlUtil.sortMap(map));
         String dStr = "<tr><td colspan=\'" + JsonToHtmlUtil.index + "\'>项目</td>";
-        
-        
+
         for (String string : listtd) {
             dStr += ("<td>" + string + "</td>");
         }
@@ -310,15 +319,15 @@ public class OrganizationTest {
             JsonToHtmlUtil.getNum(listtr1.get(i), listend);
             int rowspan = listend.size() + 1;
             if (rowspan > 1) {
-                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
-                        + listtr.get(i).toString() + "</td>");
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
+                        "<td rowspan=\"" + rowspan + "\">" + listtr.get(i).toString() + "</td>");
             } else {
                 String td = "";
                 for (int j = 0; j < listtd.size(); j++) {
                     td += "<td></td>";
                 }
-                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
-                        + listtr.get(i).toString() + "</td>" + td);
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
+                        "<td rowspan=\"" + rowspan + "\">" + listtr.get(i).toString() + "</td>" + td);
             }
         }
         System.out.println(result);
@@ -360,7 +369,7 @@ public class OrganizationTest {
                 + "\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
 
         String hh = "{\"biaoming\":null,\"gongsiming\":null,\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,\"data\":{\"aaaaaa\":{\"bxyye\":{\"heji\":{\"aa\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"jiaoqiangxian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"shangyexian\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}},\"bxyw\":{\"shouru\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"chengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null},\"rengongchengben\":{\"benyueshiji\":null,\"benyuebudian\":null,\"budianhoushiji\":null,\"benyueyusuan\":null,\"wanchenglv\":null}}}}}";
-        
+
         JSONObject jsonObject = JSONObject.fromObject(hh);
         JSONObject data = JSONObject.fromObject(jsonObject.get("data").toString());
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -386,11 +395,11 @@ public class OrganizationTest {
             JsonToHtmlUtil.getNum(listtr1.get(i), listend);
             int rowspan = listend.size() + 1;
             if (rowspan > 1) {
-                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
-                        + listtr.get(i).toString() + "</td>");
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
+                        "<td rowspan=\"" + rowspan + "\">" + listtr.get(i).toString() + "</td>");
             } else {
-                result = result.replace("<td>" + listtr.get(i).toString() + "</td>", "<td rowspan=\"" + rowspan + "\">"
-                        + listtr.get(i).toString() + "</td>");
+                result = result.replace("<td>" + listtr.get(i).toString() + "</td>",
+                        "<td rowspan=\"" + rowspan + "\">" + listtr.get(i).toString() + "</td>");
             }
         }
 
