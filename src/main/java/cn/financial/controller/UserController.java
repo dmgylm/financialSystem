@@ -3,6 +3,7 @@ package cn.financial.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -268,7 +269,7 @@ public class UserController {
      * @param pwd
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    @RequestMapping(value = "/reset")
     @ResponseBody
     public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -277,12 +278,16 @@ public class UserController {
             if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
                 userId = request.getParameter("userId");//用户id
             }
+            String resetPwd = getRandomString(6);//生成随机重置密码
             User user = new User();
             user.setId(userId);
             user.setSalt(UuidUtil.getUUID());
-            user.setPwd("Welcome2");//重置默认密码为Welcome2
+            user.setPwd(resetPwd);
+            System.out.println("重置密码："+resetPwd);
+            //user.setPwd("Welcome2");//重置默认密码为Welcome2
             Integer userList = userService.updateUser(user);
             if(userList>0){
+                dataMap.put("resetPwd", resetPwd);
                 dataMap.put("resultCode", 200);
                 dataMap.put("resultDesc", "修改成功");
             }else{
@@ -296,6 +301,21 @@ public class UserController {
         }
         
         return dataMap;
+    }
+    
+    public static String getRandomString(int length){  
+        String str="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
+        Random random=new Random();  
+          
+        StringBuffer sb=new StringBuffer();  
+          
+        for(int i=0;i<length;i++){  
+              
+            int number =random.nextInt(62);  
+              
+            sb.append(str.charAt(number));  
+        }  
+        return sb.toString();  
     }
     /**
      * 修改用户
