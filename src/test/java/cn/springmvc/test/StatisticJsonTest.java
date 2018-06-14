@@ -38,7 +38,7 @@ public class StatisticJsonTest {
 		}
         long end = new Date().getTime();
         System.out.println("nitTime:"+(end-start));
-        JSONObject sArray =service.jsonCalculation(JSONObject.fromObject(resourceIdStr),lj);
+//        JSONObject sArray =service.jsonCalculation(JSONObject.fromObject(resourceIdStr),lj);
 //    	System.out.println(sArray);
     }
     
@@ -46,7 +46,7 @@ public class StatisticJsonTest {
     public void SelectJsonTest() {
     	
         String resourceIdStr = "[{\"id\":\"2b6995992d1a4afba6324af631fe3088\",\"sel\":1},{\"id\":\"32aa9084b85740869082488fe08431fc\",\"sel\":1},{\"id\":\"cff5d41750974a8e93b72803a2b9d5a5\",\"sel\":1}]";
-        JSONArray sArray =service.getSelect(JSONArray.fromObject(resourceIdStr));
+//        JSONArray sArray =service.getSelect(JSONArray.fromObject(resourceIdStr));
     	
     }
 	

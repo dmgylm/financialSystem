@@ -2,8 +2,8 @@ package cn.financial.service;
 
 import java.util.List;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+
 
 public interface StatisticJsonService {
 
@@ -13,10 +13,5 @@ public interface StatisticJsonService {
      */
 	JSONObject jsonCalculation(JSONObject cachemodel ,List<JSONObject> valuemode);
 	
-    /**
-     * 选择结构相关
-     * @return
-     */
-	JSONArray getSelect(JSONArray jsonArray);
 
 }

@@ -1,12 +1,12 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONArray;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.service.StatisticJsonService;
 
@@ -46,11 +48,12 @@ public class StatisticJsonController {
     @RequestMapping(value = "/staticjson", method = RequestMethod.POST)
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        List<JSONObject> valuemode = new ArrayList<JSONObject>();
         try {
-//            JSONArray ja = statisticService.getStatic(statisticService.getSelect(JSONArray.fromObject(request.getParameter("jsondata"))));
+            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),valuemode);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "统计成功!");
-//            dataMap.put("resultData", ja);
+            dataMap.put("resultData", ja);
         } catch (Exception e) {
             dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "服务器异常!");

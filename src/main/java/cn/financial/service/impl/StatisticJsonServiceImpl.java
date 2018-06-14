@@ -1,17 +1,16 @@
 package cn.financial.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
@@ -34,18 +33,19 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      * 将符合规则的内容字段进行统计(non-Javadoc)
      * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
      */
-	@SuppressWarnings("unchecked")
 	public JSONObject jsonCalculation(JSONObject model ,List<JSONObject> valueList) {
+		
+        long start = new Date().getTime();
 		
 		JSONArray json = new JSONArray();
 		Map<String,Object> item = new HashMap<String, Object>();
 		for (int k = 0; k < valueList.size(); k++) {
 			JSONObject valueJson = valueList.get(k);
-			Iterator<String> it = valueJson.keys();
+			Iterator<String> it = valueJson.keySet().iterator();
 			while (it.hasNext()) {
 				String Jsonkey = it.next();
 				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
-				Iterator<String> vt = jsonValve.keys();
+				Iterator<String> vt = jsonValve.keySet().iterator();
 				while (vt.hasNext()) {
 					String itemKey = vt.next();
 					Double valve = jsonValve.getDouble(itemKey);
@@ -58,14 +58,14 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 		}
 		
-		Iterator<String> it = model.keys();
+		Iterator<String> it = model.keySet().iterator();
 		while (it.hasNext()) {
 			String modelKey = it.next();
 			JSONArray modelArr = model.getJSONArray(modelKey);
 			for (int i = 0; i < modelArr.size(); i++) {
-				JSONObject rowjar = JSONObject.fromObject(modelArr.get(i));
+				JSONObject rowjar = modelArr.getJSONObject(i);
 				//判断输入是否是需要整合的
-				Integer type = rowjar.getInt("type");
+				Integer type = rowjar.getInteger("type");
 				String itemKey = rowjar.getString("key");
 				String formula = rowjar.getString("reallyFormula");
 				itemKey = itemKey.replaceAll("\\.", "_");
@@ -82,66 +82,70 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			json.clear();
 		}
 		
+        long end = new Date().getTime();
+        System.out.println("init Time:"+(end-start));
+		
 		return model;
 	}
+	
 
 	/*
 	 * 将前台选择的分级进行处理(non-Javadoc)
 	 * @see cn.financial.service.StatisticService#getSelect(net.sf.json.JSONArray)
 	 */
-	@Override
-	public JSONArray getSelect(JSONArray jsonArray) {
-		JSONArray total = new JSONArray();
-		JSONArray ja = new JSONArray();
-		Map<Object, String> selmap = new HashMap<Object, String>();
-		for (int i = 0; i < jsonArray.size(); i++) {
-			JSONObject jid =JSONObject.fromObject(jsonArray.getString(i));
-			//判断是否全选，非全选不用走查询步骤，直接下一步，因为json里会包含非全选的结构
-			//当前1为全选
-			if(jid.get("sel").equals(1)){
-				//将当前id下所有子节点全部拿出来,父节点不会包含在内
-				ja = JSONArray.fromObject(organizationService.TreeByIdForSon(jid.getString("id")));
-				ja = childSel(ja);
-				for (int j = 0; j < ja.size(); j++) {
-					JSONObject idson = JSONObject.fromObject(ja.get(j));
-					JSONObject jdata =JSONObject.fromObject(idson.get("nodeData")); 
-					//放入map里，相同的id自动过滤整合
-					selmap.put(idson.get("id"), jdata.getString("id"));
-				}
-			}
-		}
-		System.out.println(selmap);
-		//上面处理完全部后，直接从表里查询对应的统计json数据
-		for (Object code : selmap.keySet()) {
-			 String selval = selmap.get(code);
-			 //查询对应表里记录后整合成jsonarray
-			 total.add("");
-		}
-		return total;
-	}
+//	public JSONArray getSelect(JSONArray jsonArray) {
+//		JSONArray total = new JSONArray();
+//		JSONArray ja = new JSONArray();
+//		Map<Object, String> selmap = new HashMap<Object, String>();
+//		for (int i = 0; i < jsonArray.size(); i++) {
+//			JSONObject jid =JSONObject.fromObject(jsonArray.getString(i));
+//			//判断是否全选，非全选不用走查询步骤，直接下一步，因为json里会包含非全选的结构
+//			//当前1为全选
+//			if(jid.get("sel").equals(1)){
+//				//将当前id下所有子节点全部拿出来,父节点不会包含在内
+//				ja = JSONArray.fromObject(organizationService.TreeByIdForSon(jid.getString("id")));
+//				ja = childSel(ja);
+//				for (int j = 0; j < ja.size(); j++) {
+//					JSONObject idson = JSONObject.fromObject(ja.get(j));
+//					JSONObject jdata =JSONObject.fromObject(idson.get("nodeData")); 
+//					//放入map里，相同的id自动过滤整合
+//					selmap.put(idson.get("id"), jdata.getString("id"));
+//				}
+//			}
+//		}
+//		System.out.println(selmap);
+//		//上面处理完全部后，直接从表里查询对应的统计json数据
+//		for (Object code : selmap.keySet()) {
+//			 String selval = selmap.get(code);
+//			 //查询对应表里记录后整合成jsonarray
+//			 total.add("");
+//		}
+//		return total;
+//	}
 	
 	/**
 	 * 循环查找底层树
 	 * @param ja
 	 * @return
 	 */
-	public JSONArray childSel(JSONArray ja){
-		JSONArray jar = new JSONArray();
-		for (int i = 0; i < ja.size(); i++) {
-			JSONObject jo =JSONObject.fromObject(ja.get(i));
-			if(!jo.get("children").toString().equals("[]")){
-				JSONArray jc = JSONArray.fromObject(jo.get("children"));
-				for (int j = 0; j < jc.size(); j++) {
-					JSONObject jch = JSONObject.fromObject(jc.get(j));
-					jar.add(jch);
-				}
-			}else{
-				jar.add(ja);
-				return ja;
-			}
-		}
-		jar = childSel(jar);
-		return jar;
-	}
+//	public JSONArray childSel(JSONArray ja){
+//		JSONArray jar = new JSONArray();
+//		for (int i = 0; i < ja.size(); i++) {
+//			JSONObject jo =JSONObject.fromObject(ja.get(i));
+//			if(!jo.get("children").toString().equals("[]")){
+//				JSONArray jc = JSONArray.fromObject(jo.get("children"));
+//				for (int j = 0; j < jc.size(); j++) {
+//					JSONObject jch = JSONObject.fromObject(jc.get(j));
+//					jar.add(jch);
+//				}
+//			}else{
+//				jar.add(ja);
+//				return ja;
+//			}
+//		}
+//		jar = childSel(jar);
+//		return jar;
+//	}
+
 
 }
