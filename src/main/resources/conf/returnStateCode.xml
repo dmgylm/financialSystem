@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 状态码配置 -->
 <StateCode>
-	<Result name="ORGANIZATION_ADD_SUCCESSFULLY">
+	<Result name="RUN_SUCCESSFULLY">
 		<code>200</code>
-		<description>新增成功 </description>
+		<description>成功 </description>
 	</Result>
-	<Result name="ORGANIZATION_ADD_ERROR">
-        <code>201</code>
-        <description>新增失败 </description>
+	<Result name="RUN_ERROR">
+        <code>400</code>
+        <description>失败 </description>
     </Result>
     <Result name="RUN_FAILURE">
         <code>500</code>
         <description>系统错误</description>
-    </Result>
-    <Result name="ORGANIZATION_GET_SUCCESSFULLY">
-        <code>200</code>
-        <description>获取信息成功 </description>
-    </Result>
-    <Result name="ORGANIZATION_GET_ERROR">
-        <code>201</code>
-        <description>获取信息失败 </description>
     </Result>
 </StateCode>
