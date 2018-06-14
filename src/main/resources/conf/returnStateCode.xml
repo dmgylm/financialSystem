@@ -36,7 +36,24 @@
         <description>文件大于5M!请重新上传</description>
     </Result>
     
-    
-    
-    
+    <Result name="USER_OLDPWD">
+        <code>206</code>
+        <description>新旧密码一致</description>
+    </Result>
+    <Result name="USER_OLDPWD_ERROR">
+        <code>207</code>
+        <description>原密码输入错误</description>
+    </Result>
+    <Result name="USER_PWDFORMAT_ERROR">
+        <code>208</code>
+        <description>密码输入格式错误</description>
+    </Result>
+    <Result name="USERNAME_EXISTENCE">
+        <code>209</code>
+        <description>用户名已存在,请重新命名</description>
+    </Result>
+    <Result name="ROLENAME_EXISTENCE">
+        <code>210</code>
+        <description>角色名称不能重复</description>
+    </Result>
 </StateCode>
