@@ -129,7 +129,7 @@
         <property name="successUrl" value="/index"/>
         <property name="filters">
             <util:map>
-                <entry key="authc" value-ref="MyFormAuthenticationFilter"/>
+                <!-- <entry key="authc" value-ref="MyFormAuthenticationFilter"/> -->
                 <entry key="sysUser" value-ref="sysUserFilter"/>
                 <entry key="logout" value-ref="logoutFilter" />
             </util:map>
@@ -141,7 +141,7 @@
           -->
         <property name="filterChainDefinitions">
             <value>
-                /login=authc
+                /login=anon
                 /logout = logout
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
                 /mongoDB/**=anon<!--设置静态资源文件为游客可访问-->
