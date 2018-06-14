@@ -56,4 +56,8 @@
         <code>210</code>
         <description>角色名称不能重复</description>
     </Result>
+    <Result name="RESET_PWD">
+        <code>211</code>
+        <description>请重置您的密码</description>
+    </Result>
 </StateCode>
