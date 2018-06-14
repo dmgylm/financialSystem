@@ -28,6 +28,12 @@ public class RoleTest {
     //新增
     @Test
     public void insertTest() {
+        String roleName = "bb";
+        List<Role> roleNameList = service.listRole(roleName);//根据roleName查询角色信息
+        if(roleNameList.size()>0){//roleName不能重复
+            System.out.println("角色名称不能重复");
+            return;
+        }
         Role role = new Role();
         role.setId(UuidUtil.getUUID());
         role.setRoleName("cccc");
