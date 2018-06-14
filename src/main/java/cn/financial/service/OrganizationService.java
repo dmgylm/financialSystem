@@ -107,4 +107,8 @@ public interface OrganizationService {
      * @return
      */
     List<Organization> getCompany();
+
+	List<Organization> listOrganization(List<String> ids);
+
+	List<Organization> listOrganizationcode(List<String> listmap);
 }
