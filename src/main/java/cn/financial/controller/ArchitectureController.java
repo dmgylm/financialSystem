@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Organization;
 import cn.financial.service.OrganizationService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 
 
 @Controller
@@ -49,13 +51,14 @@ public class ArchitectureController {
      	 JSONObject obj=new JSONObject();
      	  //查询对应的节点的数据
     	 List<Organization> listshow = service.listOrganizationcode(listmap);
-    	 JSONArray json=JSONArray.fromObject(listshow);   
+    	 JSONArray json=JSONArray.fromObject(listshow); 
     	  try {
     		  obj.put("rows",json);
-       	      obj.put("resultCode",200);
+       	      obj.put("resultCode",ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+       	      obj.put("resultDesc",ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
 		    } catch (Exception e) {
-              obj.put("resultCode",500);
-	     	  obj.put("resultDesc","服务器异常");
+              obj.put("resultCode",ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "code"));
+	     	  obj.put("resultDesc",ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "description"));
 		    }
     	    return obj;
 	}
