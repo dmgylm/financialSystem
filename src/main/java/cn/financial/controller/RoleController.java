@@ -24,6 +24,8 @@ import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.RoleService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -53,11 +55,11 @@ public class RoleController {
     	try {
             List<Role> role = roleService.listRole("");//查询全部参数为空
             dataMap.put("roleList", role);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
@@ -81,12 +83,12 @@ public class RoleController {
             }
             Role role = roleService.getRoleById(roleId);
             dataMap.put("roleById", role);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             e.printStackTrace();
         }
         return dataMap;
@@ -111,8 +113,8 @@ public class RoleController {
             }
             List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
             if(roleNameList.size()>0){//roleName不能重复
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "角色名称不能重复");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, "description"));
                 return dataMap;
             }
             Role role = new Role();
@@ -120,16 +122,16 @@ public class RoleController {
             role.setRoleName(roleName);
             int roleList = roleService.insertRole(role);
             if(roleList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -160,15 +162,15 @@ public class RoleController {
             role.setRoleName(roleName);
             Integer roleList = roleService.updateRole(role);
             if(roleList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -191,16 +193,16 @@ public class RoleController {
             }
             Integer flag = roleService.deleteRole(roleId);
             if(flag>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "删除失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
@@ -223,12 +225,12 @@ public class RoleController {
             }
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
             dataMap.put("roleResourceList", roleResource);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -270,16 +272,16 @@ public class RoleController {
                 }
             }
             if(roleResourceList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -324,20 +326,20 @@ public class RoleController {
                     }
                 }
                 if(roleResourceList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;

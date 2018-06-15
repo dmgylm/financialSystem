@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import cn.financial.model.Resource;
 import cn.financial.service.ResourceService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -43,11 +45,11 @@ public class ResourceController {
     	try {
             List<Resource> resource = resourceService.listResource();
             dataMap.put("resourceList", resource);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
@@ -68,19 +70,14 @@ public class ResourceController {
         	if(null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))) {
         		  resourceId = request.getParameter("resourceId");
         	}
-            if(resourceId == null || "".equals(resourceId)){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "资源id为空");
-            }else{
-                Resource resource = resourceService.getResourceById(resourceId,"");
-                dataMap.put("resourceById", resource);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功");
-            }
+            Resource resource = resourceService.getResourceById(resourceId,"");
+            dataMap.put("resourceById", resource);
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             e.printStackTrace();
         }
         return dataMap;
@@ -129,16 +126,16 @@ public class ResourceController {
             }
             int resourceList = resourceService.insertResource(resource);
             if(resourceList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
 
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -191,16 +188,16 @@ public class ResourceController {
             }
             Integer resourceList = resourceService.updateResource(resource);
             if(resourceList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -222,16 +219,16 @@ public class ResourceController {
             }
             Integer flag = resourceService.deleteResource(resourceId);
             if(flag>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "删除失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
