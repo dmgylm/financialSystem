@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,8 @@ import cn.financial.model.UserRole;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
 
@@ -88,8 +89,8 @@ public class UserController {
             if(newPwd.matches(regEx)){//密码规则校验
                 if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
                     if(oldPwd.equals(newPwd)){
-                        dataMap.put("resultCode", 400);
-                        dataMap.put("resultDesc", "新旧密码一致");
+                        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD, "code"));
+                        dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD, "description"));
                     }else{
                         User user = new User();
                         user.setId(userId);
@@ -97,25 +98,25 @@ public class UserController {
                         user.setSalt(UuidUtil.getUUID());
                         Integer userList = userService.updateUser(user);
                         if(userList>0){
-                            dataMap.put("resultCode", 200);
-                            dataMap.put("resultDesc", "修改成功");
+                            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                         }else{
-                            dataMap.put("resultCode", 400);
-                            dataMap.put("resultDesc", "修改失败");
+                            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                         }
                     }
                 }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "原密码输入错误");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR, "description"));
                 }
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "密码输入格式错误");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -169,12 +170,12 @@ public class UserController {
             }
             List<User> user = userService.listUser(map);//查询全部map为空
             dataMap.put("userList", user);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
@@ -197,12 +198,12 @@ public class UserController {
             }
             User user = userService.getUserById(userId);
             dataMap.put("userById", user);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             e.printStackTrace();
         }
         return dataMap;
@@ -234,8 +235,8 @@ public class UserController {
             }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "用户名已存在,请重新命名");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, "description"));
             }else{
                 User user = new User();
                 user.setId(UuidUtil.getUUID());
@@ -246,17 +247,17 @@ public class UserController {
                 user.setJobNumber(jobNumber);
                 int userList = userService.insertUser(user);
                 if(userList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "新增成功");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "新增失败");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -269,7 +270,7 @@ public class UserController {
      * @param pwd
      */
     @RequiresPermissions("user:update")
-    @RequestMapping(value = "/reset")
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -288,15 +289,15 @@ public class UserController {
             Integer userList = userService.updateUser(user);
             if(userList>0){
                 dataMap.put("resetPwd", resetPwd);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         
@@ -346,8 +347,8 @@ public class UserController {
             if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
                 pwd = request.getParameter("pwd");//密码
                 if(!pwd.matches(regEx)){//密码规则校验
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "密码输入格式错误");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "description"));
                     return dataMap;
                 }
             }
@@ -363,16 +364,16 @@ public class UserController {
             user.setJobNumber(jobNumber);
             Integer userList = userService.updateUser(user);
             if(userList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -395,16 +396,16 @@ public class UserController {
             }
             Integer flag = userService.deleteUser(userId);//逻辑删除根据status状态判断0表示离职1表示在职
             if(flag>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "删除失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
@@ -427,12 +428,12 @@ public class UserController {
             }
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
             dataMap.put("userOrganizationList", userOrganization);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功"); 
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -471,16 +472,16 @@ public class UserController {
                 }
             }
             if(userOrganizationList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -522,20 +523,20 @@ public class UserController {
                     }
                 }
                 if(userOrganizationList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -558,12 +559,12 @@ public class UserController {
             }
             List<UserRole> userRole = userRoleService.listUserRole(name);
             dataMap.put("userRoleList", userRole);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -604,16 +605,16 @@ public class UserController {
                 }
             }  
             if(userRoleList>0){
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "新增成功");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "新增失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -657,20 +658,20 @@ public class UserController {
                     }
                 }  
                 if(userRoleList>0){
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 }else{
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             }else{
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "修改失败");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
