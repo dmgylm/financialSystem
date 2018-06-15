@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
 import cn.financial.model.User;
 import cn.financial.service.CapitalService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
 
@@ -60,7 +62,7 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -145,13 +147,13 @@ public class CapitalController {
                     map.put("start",start);
                 }
                 List<Capital> list = capitalService.listCapitalBy(map);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", list);
                 
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -173,13 +175,13 @@ public class CapitalController {
             try {
                 if(id!=null&&!id.equals("")){
                    Capital  Capital=capitalService.selectCapitalById(id);
-                   dataMap.put("resultCode", 200);
-                   dataMap.put("resultDesc", "查询成功!");
+                   dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                   dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                    dataMap.put("resultData", Capital);
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -271,15 +273,15 @@ public class CapitalController {
                capital.setStatus(1);
                Integer i = capitalService.insertCapital(capital);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("result", "新增成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("result", "新增失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -371,15 +373,15 @@ public class CapitalController {
                 capital.setStatus(1);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -400,16 +402,16 @@ public class CapitalController {
                 if(id!=null && !id.equals("")){
                 Integer i =capitalService.deleteCapital(id);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "删除成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                  } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "删除失败!");
+                     dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                     dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                  }     
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -464,20 +466,20 @@ public class CapitalController {
                     a = capitalService.insertCapital(capital);
                  }
                 if (a == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("result", "导入成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("result", "导入失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
         }else{
-            dataMap.put("resultCode", 400);
-            dataMap.put("result", "文件大于5M!请重新上传");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M, "description"));
         } 
       }
         
@@ -569,11 +571,11 @@ public class CapitalController {
                 response.setContentType("application/octet-stream");
                 os = response.getOutputStream();
                 ExcelUtil.export(strList, os);
-                dataMap.put("resultCode", 200);
-                dataMap.put("result", "导出成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } catch (IOException e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("result", "导出失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 e.printStackTrace();
             } finally {
                 if(os != null)

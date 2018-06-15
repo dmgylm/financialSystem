@@ -1,13 +1,10 @@
 package cn.financial.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.financial.model.Capital;
 import cn.financial.model.Statement;
 import cn.financial.model.User;
 import cn.financial.service.StatementService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -35,8 +38,6 @@ public class StatementController {
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         /**
          * 根据条件查损益数据(提交不传就是查询全部)
          * 
@@ -103,12 +104,12 @@ public class StatementController {
                     map.put("start",start);
                 }
                 List<Statement> list = statementService.listStatementBy(map);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", list);
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -128,12 +129,12 @@ public class StatementController {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Statement  statement=statementService.selectStatementById(id);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", statement);
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -188,15 +189,15 @@ public class StatementController {
                 statement.setDelStatus(1);
                 Integer i = statementService.updateStatement(statement);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -215,17 +216,114 @@ public class StatementController {
             try {
                 Integer i =statementService.deleteStatement(id);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "删除成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "删除失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
         }
+        
+        
+       /* *//***
+         * 导出下载
+         * @param response
+         * @throws Exception 
+         *//*
+        @RequiresPermissions("statement:download")
+        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @ResponseBody
+        public void export(HttpServletRequest request,HttpServletResponse response,String id) throws Exception{
+            OutputStream os = null;
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            try {
+                Statement  statement=statementService.selectStatementById(id);
+                List<String[]> strList=new ArrayList<>();
+                String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
+                        "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                strList.add(ss);
+                for (int i = 0; i < list.size(); i++) {
+                    String[] str=new String[18];
+                    Capital capital=list.get(i);
+                    if(!capital.getPlate().equals("")){
+                        str[0]=capital.getPlate();
+                     }
+                    if(!capital.getBU().equals("")){
+                        str[1]=capital.getBU();
+                     }
+                    if(!capital.getRegionName().equals("")){
+                        str[2]=capital.getRegionName();
+                     }
+                    if(!capital.getProvince().equals("")){
+                        str[3]=capital.getProvince();
+                     }
+                    if(!capital.getCity().equals("")){
+                        str[4]=capital.getCity();
+                     }
+                    if(!capital.getCompany().equals("")){
+                        str[5]=capital.getCompany();
+                     }
+                    if(!capital.getAccountName().equals("")){
+                       str[6]=capital.getAccountName();
+                    }
+                    if(!capital.getAccountBank().equals("")){
+                       str[7]=capital.getAccountBank();
+                    }
+                    if(!capital.getAccount().equals("")){
+                       str[8]=capital.getAccount();
+                    }
+                    if(!capital.getAccountNature().equals("")){
+                       str[9]=capital.getAccountNature();
+                    }
+                    if(!capital.getTradeTime().equals("")){
+                       str[10]=capital.getTradeTime();
+                    }
+                    if(!capital.getStartBlack().equals("")){
+                       str[11]=capital.getStartBlack().toString();
+                    }
+                    if(!capital.getIncom().equals("")){
+                       str[12]=capital.getIncom().toString();
+                    }
+                    if(!capital.getPay().equals("")){
+                       str[13]=capital.getPay().toString();
+                    }
+                    if(!capital.getEndBlack().equals("")){
+                       str[14]=capital.getEndBlack().toString();
+                    }
+                    if(!capital.getAbstrac().equals("")){
+                        str[15]=capital.getAbstrac();
+                    }
+                    if(!capital.getClassify().equals("")){
+                        str[16]=capital.getClassify();
+                    }
+                    if(!capital.getRemarks().equals("")){
+                        str[17]=capital.getRemarks();
+                    } 
+                        strList.add(str);
+                }
+                response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                response.setContentType("application/octet-stream");
+                os = response.getOutputStream();
+                ExcelUtil.export(strList, os);
+                dataMap.put("resultCode", 200);
+                dataMap.put("result", "导出成功!");
+            } catch (IOException e) {
+                dataMap.put("resultCode", 400);
+                dataMap.put("result", "导出失败!");
+                e.printStackTrace();
+            } finally {
+                if(os != null)
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }*/
 }
