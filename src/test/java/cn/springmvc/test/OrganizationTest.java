@@ -36,7 +36,7 @@ public class OrganizationTest {
      */
     @Test
     public void XMLreturnValue() {
-        String returnValue = ElementXMLUtils.returnValue("ORGANIZATION_GET_SUCCESSFULLY", "code");
+        String returnValue = ElementXMLUtils.returnValue("RUN_SUCCESSFULLY", "code");
         System.out.println(returnValue);
     }
 
