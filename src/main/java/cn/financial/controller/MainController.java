@@ -19,6 +19,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.RoleResource;
@@ -28,10 +29,9 @@ import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.shiro.PasswordHelper;
 
 /**
- * 控制页面跳转
+ * 登录认证
  * @author gs
  *
  */
@@ -58,7 +58,7 @@ public class MainController {
      * @param respons
      * @return
      */
-    @RequestMapping(value="/login")
+    @RequestMapping(value="/login", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -90,12 +90,26 @@ public class MainController {
         return dataMap; 
     }
     /**
+     * 登出
+     * @return
+     */
+    @RequestMapping(value = "/subLogout", method = RequestMethod.POST)  
+    @ResponseBody  
+    public Map<String, Object> logout() {  
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Subject currentUser = SecurityUtils.getSubject();
+        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+        dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+        currentUser.logout();  
+        return dataMap;  
+    } 
+    /**
      * index(根据角色显示对应的功能权限)
      * @param request
      * @param respons
      * @return
      */
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/index", method = RequestMethod.POST)
 	@ResponseBody
     public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response, HttpSession session){
 	    Map<String, Object> dataMap = new HashMap<String, Object>();
