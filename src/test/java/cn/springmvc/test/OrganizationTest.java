@@ -111,7 +111,7 @@ public class OrganizationTest {
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("id", "7d1ef3a8bc584d739ad3a30ea2ad6c82");
-        map.put("orgName", "dfsfsfsfsafasfsad");
+        //map.put("orgName", "dfsfsfsfsafasfsad");
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -131,7 +131,7 @@ public class OrganizationTest {
      */
     @Test
     public void TreeByOrgId() {
-        JSONObject string = service.TreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
+        JSONObject string = service.TreeByIdForSon("");
         System.out.println(string.toString());
     }
 
