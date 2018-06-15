@@ -45,7 +45,7 @@ public class OrganizationController {
      * 新增组织结构
      * 
      * @ code是根据父节点找到其下子节点，然后根据子节点的序号，往后排。（比如01子节点有0101和0102，那么需要查到这两个，
-     * 然后根据算法生成第三个 ）
+     *   然后根据算法生成第三个 ）
      * 
      * @param request
      * @param response
@@ -86,7 +86,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据条件查询组织结构信息
+     * 根据条件查询组织结构信息。如果存在参数，则根据传递的参数查询相应的节点信息；如果参数不存在，则查询所有节点的信息
      * 
      * @param request
      * @param response
@@ -186,7 +186,7 @@ public class OrganizationController {
             Integer i = 0;
             User user = (User) request.getAttribute("user");
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                i = organizationService.deleteOrganizationByStatusCascade(user.getId(),request.getParameter("id"));
+                i = organizationService.deleteOrganizationByStatusCascade(user.getId(), request.getParameter("id"));
             }
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
@@ -205,6 +205,10 @@ public class OrganizationController {
 
     /**
      * 根据id查询所有该节点的子节点,构建tree的string字符串
+     * <p>
+     * 如果id存在，则查询改id所有子节点，构成树结构
+     * <p>
+     * 如果id不存在，则查询全部节点，构成树结构
      * 
      * @param request
      * @param response
@@ -215,11 +219,13 @@ public class OrganizationController {
     @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        String id = "";
         try {
             JSONObject jsonTree = new JSONObject();
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                jsonTree = organizationService.TreeByIdForSon(request.getParameter("id"));
+                id = request.getParameter("id");
             }
+            jsonTree = organizationService.TreeByIdForSon(id);
             if (jsonTree != null) {
                 dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
                 dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
@@ -237,7 +243,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据id查询所有该节点的父节点
+     * 根据id查询所有该节点的所有父节点
      * 
      * @param request
      * @param response
@@ -293,7 +299,7 @@ public class OrganizationController {
                 parentOrgId = request.getParameter("parentId");
             }
             User user = (User) request.getAttribute("user");
-            Integer i = organizationService.moveOrganization(user.getId() ,id, parentOrgId);
+            Integer i = organizationService.moveOrganization(user.getId(), id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
                 dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
