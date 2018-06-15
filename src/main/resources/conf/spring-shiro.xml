@@ -101,22 +101,22 @@
         <property name="path" value="/"/>
     </bean>
     <!-- 基于Form表单的身份验证过滤器 -->
-    <!-- <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/> 
-        <property name="loginUrl" value="/index"/>
-    </bean> -->
+        <property name="loginUrl" value="/login"/>
+    </bean>
  
      <bean id="sysUserFilter" class="cn.financial.util.shiro.SysUserFilter"/>  
      
      <!--  注销跳转url -->
-     <bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+     <!-- <bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
         <property name="redirectUrl" value="/subLogin" />
-     </bean>
+     </bean> -->
      
      <!-- 自定义表单认证过滤器 -->
-     <bean id="MyFormAuthenticationFilter" class="cn.financial.util.shiro.MyFormAuthenticationFilter"/>
+     <!-- <bean id="MyFormAuthenticationFilter" class="cn.financial.util.shiro.MyFormAuthenticationFilter"/> -->
 
     <!-- Shiro的Web过滤器  :id必须和web.xml 文件中配置的DelegatingFilterProxy的filter-name一致-->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -129,9 +129,9 @@
         <property name="successUrl" value="/index"/>
         <property name="filters">
             <util:map>
-                <!-- <entry key="authc" value-ref="MyFormAuthenticationFilter"/> -->
+                <entry key="authc" value-ref="formAuthenticationFilter"/>
                 <entry key="sysUser" value-ref="sysUserFilter"/>
-                <entry key="logout" value-ref="logoutFilter" />
+                <!-- <entry key="logout" value-ref="logoutFilter" /> -->
             </util:map>
         </property>
          <!-- 配置哪些页面需要受保护
@@ -142,7 +142,8 @@
         <property name="filterChainDefinitions">
             <value>
                 /login=anon
-                /logout = logout
+                /subLogout=authc<!-- 登出 -->
+                <!-- /logout = logout -->
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
                 /mongoDB/**=anon<!--设置静态资源文件为游客可访问-->
                 /subLogin=anon
