@@ -147,13 +147,11 @@ public class CapitalController {
                     map.put("start",start);
                 }
                 List<Capital> list = capitalService.listCapitalBy(map);
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", list);
                 
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -175,13 +173,11 @@ public class CapitalController {
             try {
                 if(id!=null&&!id.equals("")){
                    Capital  Capital=capitalService.selectCapitalById(id);
-                   dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                   dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                   dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                    dataMap.put("resultData", Capital);
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -273,15 +269,12 @@ public class CapitalController {
                capital.setStatus(1);
                Integer i = capitalService.insertCapital(capital);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -373,15 +366,12 @@ public class CapitalController {
                 capital.setStatus(1);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -402,16 +392,13 @@ public class CapitalController {
                 if(id!=null && !id.equals("")){
                 Integer i =capitalService.deleteCapital(id);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                  } else {
-                     dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                     dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                  }     
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -466,20 +453,16 @@ public class CapitalController {
                     a = capitalService.insertCapital(capital);
                  }
                 if (a == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
             }
         }else{
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M));
         } 
       }
         
@@ -571,11 +554,9 @@ public class CapitalController {
                 response.setContentType("application/octet-stream");
                 os = response.getOutputStream();
                 ExcelUtil.export(strList, os);
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } catch (IOException e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 e.printStackTrace();
             } finally {
                 if(os != null)

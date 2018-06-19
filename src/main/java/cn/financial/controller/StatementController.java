@@ -104,12 +104,11 @@ public class StatementController {
                     map.put("start",start);
                 }
                 List<Statement> list = statementService.listStatementBy(map);
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                
                 dataMap.put("resultData", list);
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -129,12 +128,12 @@ public class StatementController {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Statement  statement=statementService.selectStatementById(id);
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                
                 dataMap.put("resultData", statement);
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -159,15 +158,15 @@ public class StatementController {
                 statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                    
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+               
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -189,15 +188,15 @@ public class StatementController {
                 statement.setDelStatus(1);
                 Integer i = statementService.updateStatement(statement);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                    
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+               
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
@@ -216,15 +215,14 @@ public class StatementController {
             try {
                 Integer i =statementService.deleteStatement(id);
                 if (i == 1) {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    
                 } else {
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                    
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
