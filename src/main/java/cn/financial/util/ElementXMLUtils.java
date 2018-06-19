@@ -1,6 +1,5 @@
 package cn.financial.util;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class ElementXMLUtils {
         SAXReader reader = new SAXReader();
         Document document;
         try {
-            document = reader.read(new File(configName));
+            document = reader.read(ElementXMLUtils.class.getClassLoader().getResource(configName).getPath());
             // 获取文档根节点
             Element root = document.getRootElement();
             @SuppressWarnings("unchecked")
