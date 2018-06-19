@@ -142,8 +142,7 @@
         <property name="filterChainDefinitions">
             <value>
                 /login=anon
-                /subLogout=authc<!-- 登出 -->
-                <!-- /logout = logout -->
+                /logout=authc<!-- 登出 -->
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
                 /mongoDB/**=anon<!--设置静态资源文件为游客可访问-->
                 /subLogin=anon
