@@ -71,15 +71,12 @@ public class OrganizationController {
                 i = organizationService.saveOrganization(organization, request.getParameter("parentOrgId"));
             }
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -122,12 +119,10 @@ public class OrganizationController {
                 map.put("parentId", request.getParameter("parentId"));// 父id
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -157,15 +152,12 @@ public class OrganizationController {
             map.put("uId", user.getId());
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -189,15 +181,12 @@ public class OrganizationController {
                 i = organizationService.deleteOrganizationByStatusCascade(user.getId(), request.getParameter("id"));
             }
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -227,16 +216,13 @@ public class OrganizationController {
             }
             jsonTree = organizationService.TreeByIdForSon(id);
             if (jsonTree != null) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", jsonTree);
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -260,16 +246,13 @@ public class OrganizationController {
                 list = organizationService.listTreeByIdForParent(request.getParameter("id"));
             }
             if (!CollectionUtils.isEmpty(list)) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", list);
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -301,15 +284,12 @@ public class OrganizationController {
             User user = (User) request.getAttribute("user");
             Integer i = organizationService.moveOrganization(user.getId(), id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -336,12 +316,10 @@ public class OrganizationController {
                 map.put("id", request.getParameter("id"));
             }
             Boolean flag = organizationService.hasOrganizationSon(map);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("resultData", flag);
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;

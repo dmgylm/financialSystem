@@ -27,8 +27,8 @@ public class ElementXMLUtils {
      */
     public static HashMap<String, String> returnValue(String name) {
         HashMap<String, String> result = new HashMap<>();
-        result.put("code", "");
-        result.put("desc", "");
+        result.put("resultCode", "");
+        result.put("resultDesc", "");
         SAXReader reader = new SAXReader();
         Document document;
         try {
@@ -46,10 +46,10 @@ public class ElementXMLUtils {
                     Element elementDesc = e.element("description");
                     String description = elementDesc.getStringValue();
                     if (code != null && code.length() != 0 && !code.equals("")) {
-                        result.put("code", code);
+                        result.put("resultCode", code);
                     }
                     if (description != null && description.length() != 0 && !description.equals("")) {
-                        result.put("desc", description);
+                        result.put("resultDesc", description);
                     }
                 }
             }
