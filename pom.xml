@@ -332,13 +332,62 @@
 		<artifactId>aspectjweaver</artifactId>
 		<version>1.8.8</version>
 	</dependency>
-    
     </dependencies>
     
+    <profiles>
+	  	<profile>
+	  		<id>dev</id>
+	  		<properties>
+	  			<env>dev</env>
+	  		</properties>
+	  		<activation>
+	  			<activeByDefault>true</activeByDefault>
+	  		</activation>
+	  	</profile>
+	  	
+	  	<profile>
+	  		<id>test</id>
+	  		<properties>
+	  			<env>test</env>
+	  		</properties>
+	  	</profile>
+	  	<profile>
+	  		<id>prod</id>
+	  		<properties>
+	  			<env>prod</env>
+	  		</properties>
+	  	</profile>
+  	</profiles>
     <build>
         <finalName>financial</finalName>
+        <filters>
+	    	<filter>src/main/resources/env/${env}.properties</filter>
+	    </filters>
+        <resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>env/*.properties</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<!--被编译过的应用程序class文件存放的目录。 -->
+		<outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
         <pluginManagement>
         <plugins>
+        	<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <configuration>
+			        <webResources>
+			            <resource>
+			                <directory>src/main/webapp</directory>
+			                <filtering>true</filtering>
+			            </resource>
+			        </webResources>
+			    </configuration>
+			</plugin>
             <!-- Tomcat 启动插件 -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -368,6 +417,9 @@
                         <phase>compile</phase>
                     </execution>
                 </executions>
+                <configuration>
+                	<eencoding>UTF-8</eencoding>
+                </configuration>
             </plugin>
             
             <!-- 依赖插件 在部署war包时，需要将项目依赖的jar包，也打到war包中 -->

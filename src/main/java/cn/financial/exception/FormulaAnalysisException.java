@@ -2,8 +2,6 @@ package cn.financial.exception;
 
 public class FormulaAnalysisException extends Exception{
 
-	
-
 	/**
 	 * 
 	 */

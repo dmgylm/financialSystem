@@ -37,8 +37,8 @@ public class MongoDBServiceImpl {
 		Calendar c = Calendar.getInstance();
 		long s = c.getTimeInMillis();
 		System.out.println("start:"+s);
-//		List<NetWork> ss=mongodbDao.findAll1();
-		List<NetWork> ss=mongodbDao.findAll1s();
+		List<NetWork> ss=mongodbDao.findAll1();
+//		List<NetWork> ss=mongodbDao.findAll1s();
 		
 		c = Calendar.getInstance();
 		long e = c.getTimeInMillis();

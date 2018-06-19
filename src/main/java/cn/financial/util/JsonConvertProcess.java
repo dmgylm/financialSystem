@@ -5,33 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
-import org.junit.Test;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class JsonConvertProcess {
-	
-	@Test
-	public void shortJsonTest() {
-		try {
-			String path = "C:/Users/Admin/Desktop/解析后文件.txt";
-			JSONObject newObj = simplifyJson(readFileContent(path));
-			System.out.println(newObj.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void mergeJsonTest() {
-		String longTxt = readFileContent("C:/Users/Admin/Desktop/解析后文件.txt");
-		String shortTxt = readFileContent("C:/Users/Admin/Desktop/新解析后文件.txt");
-		JSONObject longJson = JSONObject.fromObject(longTxt);
-		JSONObject shortJson = JSONObject.fromObject(shortTxt);
-		JSONObject mergeJson = mergeJson(longJson,shortJson);
-		System.out.println(mergeJson);
-	}
 	
 	/**
 	 * 将数据Json和模板Json进行合并
@@ -40,7 +17,7 @@ public class JsonConvertProcess {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static JSONObject mergeJson(JSONObject templateJson, JSONObject dataJson) {
+	public static JSONObject mergeJson(JSONObject templateJson, JSONObject dataJson) {
 		for(Iterator<String> iter = templateJson.keySet().iterator();iter.hasNext();){
 			String key = iter.next();
 			JSONArray longLst = templateJson.getJSONArray(key);
@@ -55,7 +32,7 @@ public class JsonConvertProcess {
 	 * @param templateArr 模板Json
 	 * @param dataJson 数据Json
 	 */
-	private static void mergeDetail(JSONArray templateArr, JSONObject dataJson) {
+	public static void mergeDetail(JSONArray templateArr, JSONObject dataJson) {
 		for(int i=0;i<templateArr.size();i++) {
 			JSONObject longJson = templateArr.getJSONObject(i);
 			if(longJson.containsKey("key")) {
@@ -94,7 +71,7 @@ public class JsonConvertProcess {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static JSONObject simplifyJson(String jsonStr) {
+	public static JSONObject simplifyJson(String jsonStr) {
 		JSONObject obj = JSONObject.fromObject(jsonStr);
 		JSONObject newObj = new JSONObject();
 		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
@@ -113,7 +90,7 @@ public class JsonConvertProcess {
 	 * @param newObj
 	 * @return
 	 */
-	private static JSONObject generateSimplifyJson(JSONArray arr,JSONObject newObj) {
+	public static JSONObject generateSimplifyJson(JSONArray arr,JSONObject newObj) {
 		JSONObject nJson = new JSONObject();
 		for(int i=0;i<arr.size();i++) {
 			Object obj = arr.get(i);
