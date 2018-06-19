@@ -13,5 +13,6 @@ public interface StatisticJsonService {
      */
 	JSONObject jsonCalculation(JSONObject cachemodel ,List<JSONObject> valuemode);
 	
+	List<JSONObject> jsonValuemode(List<String> ids);
 
 }

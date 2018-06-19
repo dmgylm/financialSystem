@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.service.StatisticJsonService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 
 /**
  * 统计相关操作
@@ -48,15 +50,15 @@ public class StatisticJsonController {
     @RequestMapping(value = "/staticjson", method = RequestMethod.POST)
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        List<JSONObject> valuemode = new ArrayList<JSONObject>();
+        List<String> valuemode = new ArrayList<String>();
         try {
-            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),valuemode);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "统计成功!");
+            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),statisticService.jsonValuemode(valuemode));
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", ja);
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;

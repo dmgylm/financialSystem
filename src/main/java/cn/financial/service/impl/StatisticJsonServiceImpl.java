@@ -87,6 +87,13 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		
 		return model;
 	}
+
+
+	@Override
+	public List<JSONObject> jsonValuemode(List<String> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 	/*
