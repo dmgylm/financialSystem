@@ -1,5 +1,7 @@
 package cn.financial.util;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import org.dom4j.Attribute;
@@ -24,12 +26,14 @@ public class ElementXMLUtils {
      * @return
      * @throws DocumentException
      */
-    public static String returnValue(String name, String value) {
-        String result = "";
+    public static HashMap<String, String> returnValue(String name) {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("code", "");
+        result.put("desc", "");
         SAXReader reader = new SAXReader();
         Document document;
         try {
-            document = reader.read(ElementXMLUtils.class.getClassLoader().getResource(configName).getPath());
+            document = reader.read(new File(configName));
             // 获取文档根节点
             Element root = document.getRootElement();
             @SuppressWarnings("unchecked")
@@ -38,10 +42,15 @@ public class ElementXMLUtils {
                 Attribute attribute = e.attribute("name");
                 String attrName = attribute.getValue();
                 if (attrName.equals(name)) {
-                    Element element = e.element(value);
-                    String re = element.getStringValue();
-                    if (re != null && re.length() != 0 && !re.equals("")) {
-                        result = re;
+                    Element elementCode = e.element("code");
+                    String code = elementCode.getStringValue();
+                    Element elementDesc = e.element("description");
+                    String description = elementDesc.getStringValue();
+                    if (code != null && code.length() != 0 && !code.equals("")) {
+                        result.put("code", code);
+                    }
+                    if (description != null && description.length() != 0 && !description.equals("")) {
+                        result.put("desc", description);
                     }
                 }
             }
@@ -50,5 +59,4 @@ public class ElementXMLUtils {
         }
         return result;
     }
-
 }
