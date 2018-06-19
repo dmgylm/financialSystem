@@ -89,8 +89,7 @@ public class UserController {
             if(newPwd.matches(regEx)){//密码规则校验
                 if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
                     if(oldPwd.equals(newPwd)){
-                        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD, "code"));
-                        dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD, "description"));
+                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
                     }else{
                         User user = new User();
                         user.setId(userId);
@@ -98,25 +97,20 @@ public class UserController {
                         user.setSalt(UuidUtil.getUUID());
                         Integer userList = userService.updateUser(user);
                         if(userList>0){
-                            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                         }else{
-                            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                         }
                     }
                 }else{
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR));
                 }
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -170,12 +164,10 @@ public class UserController {
             }
             List<User> user = userService.listUser(map);//查询全部map为空
             dataMap.put("userList", user);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
     	return dataMap;
@@ -198,12 +190,10 @@ public class UserController {
             }
             User user = userService.getUserById(userId);
             dataMap.put("userById", user);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             e.printStackTrace();
         }
         return dataMap;
@@ -235,8 +225,7 @@ public class UserController {
             }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE));
             }else{
                 User user = new User();
                 user.setId(UuidUtil.getUUID());
@@ -247,17 +236,14 @@ public class UserController {
                 user.setJobNumber(jobNumber);
                 int userList = userService.insertUser(user);
                 if(userList>0){
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 }else{
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -285,19 +271,15 @@ public class UserController {
             user.setSalt(UuidUtil.getUUID());
             user.setPwd(resetPwd);
             System.out.println("重置密码："+resetPwd);
-            //user.setPwd("Welcome2");//重置默认密码为Welcome2
             Integer userList = userService.updateUser(user);
             if(userList>0){
                 dataMap.put("resetPwd", resetPwd);
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             } 
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         
@@ -347,8 +329,7 @@ public class UserController {
             if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
                 pwd = request.getParameter("pwd");//密码
                 if(!pwd.matches(regEx)){//密码规则校验
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
                     return dataMap;
                 }
             }
@@ -364,16 +345,13 @@ public class UserController {
             user.setJobNumber(jobNumber);
             Integer userList = userService.updateUser(user);
             if(userList>0){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -396,16 +374,13 @@ public class UserController {
             }
             Integer flag = userService.deleteUser(userId);//逻辑删除根据status状态判断0表示离职1表示在职
             if(flag>0){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
@@ -428,12 +403,10 @@ public class UserController {
             }
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
             dataMap.put("userOrganizationList", userOrganization);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -472,16 +445,13 @@ public class UserController {
                 }
             }
             if(userOrganizationList>0){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             } 
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -523,20 +493,16 @@ public class UserController {
                     }
                 }
                 if(userOrganizationList>0){
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 }else{
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -559,12 +525,10 @@ public class UserController {
             }
             List<UserRole> userRole = userRoleService.listUserRole(name);
             dataMap.put("userRoleList", userRole);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -605,16 +569,13 @@ public class UserController {
                 }
             }  
             if(userRoleList>0){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -658,20 +619,16 @@ public class UserController {
                     }
                 }  
                 if(userRoleList>0){
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 }else{
-                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             }else{
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;

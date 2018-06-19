@@ -69,25 +69,20 @@ public class MainController {
         try {
             subject.login(token);
             session.setAttribute("password", request.getParameter("password"));
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
         }catch (IncorrectCredentialsException e) { 
             System.out.println( "密码或账户错误，请重新输入");
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
         } catch (AuthenticationException e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
         }
         return dataMap; 
     }
@@ -100,8 +95,7 @@ public class MainController {
     public Map<String, Object> logout() {  
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Subject currentUser = SecurityUtils.getSubject();
-        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-        dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         currentUser.logout();  
         return dataMap;  
     } 
@@ -120,8 +114,7 @@ public class MainController {
 	    String passWord = session.getAttribute("password").toString();
 	    if(passWord!=null && !passWord.equals("")){
             if(passWord.equals("Welcome1")){
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, "code"));
-                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, "description"));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
                 return dataMap;
             }
 	    }
@@ -150,8 +143,7 @@ public class MainController {
             
             //System.out.println(jsonObject); 
 	        dataMap.put("roleResource", jsonObject.toString());
-	        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+	        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 	    }
     	return dataMap;
     }
