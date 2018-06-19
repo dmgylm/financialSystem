@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Organization;
-import cn.financial.service.InformationService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
