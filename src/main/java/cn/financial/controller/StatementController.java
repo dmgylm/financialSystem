@@ -159,15 +159,15 @@ public class StatementController {
                 statement.setDelStatus(1);
                 Integer i = statementService.insertStatement(statement);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("result", "新增成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("result", "新增失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
