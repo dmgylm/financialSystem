@@ -148,7 +148,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                         node.setId(organization.getCode());
                         node.setParentId(organization.getParentId().toString());
                         node.setText(organization.getOrgName());
-                        node.setNodeData(organization);
+//                        node.setNodeData(organization);
+                        node.setPid(organization.getId());
                         nodes.add(node);
                     }
                     JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
