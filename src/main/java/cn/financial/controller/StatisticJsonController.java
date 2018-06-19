@@ -50,9 +50,9 @@ public class StatisticJsonController {
     @RequestMapping(value = "/staticjson", method = RequestMethod.POST)
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        List<String> valuemode = new ArrayList<String>();
+        List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("");
         try {
-            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),statisticService.jsonValuemode(valuemode));
+            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),valuemode);
             dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
             dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", ja);

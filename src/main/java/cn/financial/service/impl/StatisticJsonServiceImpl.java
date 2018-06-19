@@ -89,12 +89,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	}
 
 
-	@Override
-	public List<JSONObject> jsonValuemode(List<String> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 	/*
 	 * 将前台选择的分级进行处理(non-Javadoc)
