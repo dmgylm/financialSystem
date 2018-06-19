@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.financial.model.Budget;
 import cn.financial.model.User;
 import cn.financial.service.BudgetService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -29,7 +31,7 @@ import cn.financial.util.UuidUtil;
 @RequestMapping("/tering")
 public class BudgetController {
  
-    
+    /*
         @Autowired
         private  BudgetService budgetService;
 
@@ -37,14 +39,14 @@ public class BudgetController {
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
      
-        /**
+        *//**
          * 根据条件查预算数据
          * 
          * @param request
          * @param map
          *            
          * @return
-         */
+         *//*
         @RequiresPermissions("tering:view")
         @RequestMapping(value="/budget/listBy", method = RequestMethod.POST)
         public Map<String, Object> listbudgetBy(HttpServletRequest request) {
@@ -97,48 +99,48 @@ public class BudgetController {
                     map.put("start",start);
                 }
                 List<Budget> list = budgetService.listBudgetBy(map);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", list);
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
         }
         
-        /**
+        *//**
          * 根据id查询预算数据
          * 
          * @param request
          * @param id
          *           
          * @return
-         */
+         *//*
         @RequiresPermissions("tering:view")
         @RequestMapping(value="/budget/listById", method = RequestMethod.POST)
         public Map<String, Object> selectbudgetById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Budget  budget=budgetService.selectBudgetById(id);
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", budget);
             } catch (Exception e) {
-                dataMap.put("resultCode", 400);
-                dataMap.put("resultDesc", "查询失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
         }
         
-        /**
+        *//**
          * 新增预算数据
          * @param request
          * @param response
          * @return
-         */
+         *//*
         @RequiresPermissions("tering:create")
         @RequestMapping(value="/budget/insert", method = RequestMethod.POST)
         public Map<String, Object> insertbudget(HttpServletRequest request, HttpServletResponse response,Budget budget){
@@ -152,25 +154,25 @@ public class BudgetController {
                budget.setDelStatus(1);
                 Integer i = budgetService.insertBudget(budget);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("result", "新增成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("result", "新增失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
         }
         
-        /**
+        *//**
          * 修改预算数据
          * @param request
          * @return
-         */
+         *//*
         @RequiresPermissions("tering:update")
         @RequestMapping(value="/budget/update", method = RequestMethod.POST)
         public Map<String, Object> updatebudget(HttpServletRequest request,Budget budget) {
@@ -182,25 +184,25 @@ public class BudgetController {
                 budget.setDelStatus(1);
                 Integer i = budgetService.updateBudget(budget);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "修改成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "修改失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
         }
         
-        /**
+        *//**
          * 删除预算数据 （修改Status为0）
          * @param request
          * @return
-         */
+         *//*
         @RequiresPermissions("tering:update")
         @RequestMapping(value="/budget/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
@@ -209,17 +211,17 @@ public class BudgetController {
                 String id = request.getParameter("id");
                 Integer i = budgetService.deleteBudget(id);
                 if (i == 1) {
-                    dataMap.put("resultCode", 200);
-                    dataMap.put("resultDesc", "删除成功!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 } else {
-                    dataMap.put("resultCode", 400);
-                    dataMap.put("resultDesc", "删除失败!");
+                    dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                    dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
                 }
             } catch (Exception e) {
-                dataMap.put("resultCode", 500);
-                dataMap.put("resultDesc", "服务器异常!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
-        }
+        }*/
 }
