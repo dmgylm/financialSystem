@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Organization;
+import cn.financial.service.InformationService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -27,7 +28,9 @@ import cn.financial.util.ElementXMLUtils;
  */
 public class ArchitectureController {
 	@Autowired
-	private OrganizationService service;
+	private OrganizationService organizationservice;
+	@Autowired
+	private InformationService infoservice;
 	/**
 	 *   组织架构节点
 	 * @param request
@@ -41,7 +44,7 @@ public class ArchitectureController {
 		 String[] ids = id.split(",");//分割逗号
 		 List<String> listid=Arrays.asList(); 
 		 listid.addAll(Arrays.asList(ids));
-		 List<Organization> list = service.listOrganization(listid);
+		 List<Organization> list = organizationservice.listOrganization(listid);
 		 List<String> listmap=new ArrayList<String>();
     	  for (Organization organization : list) {
     		   String his_permission = organization.getHis_permission();
@@ -50,17 +53,14 @@ public class ArchitectureController {
              } 
      	 JSONObject obj=new JSONObject();
      	  //查询对应的节点的数据
-    	 List<Organization> listshow = service.listOrganizationcode(listmap);
+    	 List<Organization> listshow = organizationservice.listOrganizationcode(listmap);
     	 JSONArray json=JSONArray.fromObject(listshow); 
     	  try {
     		  obj.put("rows",json);
-       	      obj.put("resultCode",ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-       	      obj.put("resultDesc",ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+       	      obj.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 		    } catch (Exception e) {
-              obj.put("resultCode",ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "code"));
-	     	  obj.put("resultDesc",ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, "description"));
+              obj.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
 		    }
     	    return obj;
 	}
-   
 }
