@@ -29,8 +29,8 @@ import cn.financial.util.ElementXMLUtils;
 public class ArchitectureController {
 	@Autowired
 	private OrganizationService organizationservice;
-	@Autowired
-	private InformationService infoservice;
+	//@Autowired
+	//private InformationService infoservice;
 	/**
 	 *   组织架构节点
 	 * @param request
