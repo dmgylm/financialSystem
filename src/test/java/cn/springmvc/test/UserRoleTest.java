@@ -19,7 +19,7 @@ import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
         "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml"})
+        "classpath:conf/spring-shiro.xml", "classpath:conf/spring-redis.xml"})
 /**
  * 用户角色关联表测试
  * @author gs

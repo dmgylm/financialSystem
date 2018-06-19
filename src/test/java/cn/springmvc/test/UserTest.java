@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.User;
 import cn.financial.service.UserService;
+import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
         "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml"})
+        "classpath:conf/spring-shiro.xml","classpath:conf/spring-redis.xml"})
 /**
  * 用户测试
  * @author gs
@@ -25,22 +29,41 @@ public class UserTest {
     @Autowired
     private UserService service;
     
-    /*@Autowired
-    private PasswordHelper PasswordHelper;
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    //新增   测试类执行没更新缓存
+    @Autowired
+    private cn.financial.util.shiro.PasswordHelper PasswordHelper;
+    //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    //登录测试方法
+    @Test
+    public void login(){  
+        //构建SecurityManager环境
+        //DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
+        //defaultSecurityManager.setRealm(realms);
+        //主体提交认证请求
+        //SecurityUtils.setSecurityManager(defaultSecurityManager);
+        Subject subject  = SecurityUtils.getSubject();//获得主体
+        UsernamePasswordToken token = new UsernamePasswordToken("aa","123456");//通过自定义UserRealm进行认证（继承AuthorizingRealm）
+        subject.login(token);
+        System.out.println("isAnthenticated:"+subject.isAuthenticated());//是否认证(true为登录成功)
+        subject.isAuthenticated();
+    }
+    /*//新增   测试类执行没更新缓存
     @Test
     public void insertTest() {
         User user = new User();
         user.setId(UuidUtil.getUUID());
         user.setSalt(UuidUtil.getUUID());
-        user.setName("admin1");
+        user.setName("测试");
         user.setRealName("3333");      
         user.setPwd("Welcome1");
         user.setJobNumber("743211124420888");
-        //加密密码 
-        PasswordHelper.encryptPassword(user);
         try {
+            Integer flag = service.countUserName("测试","");//查询用户名是否存在(真实姓名可以重复)
+            if(flag>0){
+                System.out.println("用户名不能重复");
+                return;
+            }
+            //加密密码 
+            PasswordHelper.encryptPassword(user);
             System.out.println(service.insertUser(user));
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -50,10 +73,10 @@ public class UserTest {
     @Test
     public void updateTest() {
         User user = new User();
-        user.setId("1ec2ae3b2c2743f6a6a7c428c2550199");
-        //user.setName("gggggggggggggggg");
-        user.setRealName("拖拖拖");
-        user.setPwd("3333");
+        user.setId("56ffb0e9e4c549718e01eb2d18e466ca");
+        user.setName("hhhh");
+        user.setRealName("啦啦啦");
+        user.setPwd("4444");
         user.setSalt(UuidUtil.getUUID());
         //user.setJobNumber("7432111244208");
         //加密密码
@@ -96,7 +119,7 @@ public class UserTest {
     //根据name,pwd查询
     @Test
     public void ListNameTest() {
-        Integer flag = service.countUserName("哈哈好","555666");
+        Integer flag = service.countUserName("aa","");
         System.out.println(flag);
     }
     //根据id查询
