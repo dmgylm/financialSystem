@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +52,10 @@ public class StatisticJsonController {
         List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("");
         try {
             JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),valuemode);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("resultData", ja);
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
-            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
