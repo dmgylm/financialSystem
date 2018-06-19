@@ -29,6 +29,8 @@ import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
+import net.sf.json.JSONObject;
 
 /**
  * 登录认证
@@ -93,7 +95,7 @@ public class MainController {
      * 登出
      * @return
      */
-    @RequestMapping(value = "/subLogout", method = RequestMethod.POST)  
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)  
     @ResponseBody  
     public Map<String, Object> logout() {  
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -131,7 +133,23 @@ public class MainController {
 	                roleResource.addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
 	            }  
 	        }
-	        dataMap.put("roleResource", roleResource);
+	        List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+	        JSONObject jsonObject = null;
+	        if(roleResource.size()>0){
+	            for (RoleResource rss : roleResource) {
+	                TreeNode<RoleResource> node = new TreeNode<>();
+	                node.setId(rss.getCode().toString());
+	                String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+	                node.setParentId(b);
+	                node.setName(rss.getName());
+	               // node.setNodeData(rss);
+	                nodes.add(node);
+	            }
+	            jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+	        }
+            
+            //System.out.println(jsonObject); 
+	        dataMap.put("roleResource", jsonObject.toString());
 	        dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
             dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
 	    }

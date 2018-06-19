@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Resource;
+import cn.financial.model.RoleResource;
 import cn.financial.service.ResourceService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONObject;
 
 /**
  * 资源权限表
@@ -40,11 +45,26 @@ public class ResourceController {
      */
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<Resource> resource = resourceService.listResource();
-            dataMap.put("resourceList", resource);
+            List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+            JSONObject jsonObject = null;
+            if(resource.size()>0){
+                for (Resource rss : resource) {
+                    TreeNode<RoleResource> node = new TreeNode<>();
+                    node.setId(rss.getCode().toString());
+                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                    node.setParentId(b);
+                    node.setName(rss.getName());
+                   // node.setNodeData(rss);
+                    nodes.add(node);
+                }
+                jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+            }
+            dataMap.put("resourceList", jsonObject.toString());
             dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
             dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
         } catch (Exception e) {
@@ -63,6 +83,7 @@ public class ResourceController {
      */
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -89,6 +110,7 @@ public class ResourceController {
      */
     @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try { 
@@ -147,6 +169,7 @@ public class ResourceController {
      */
     @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -210,6 +233,7 @@ public class ResourceController {
      */
     @RequiresPermissions("permission:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
     public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
