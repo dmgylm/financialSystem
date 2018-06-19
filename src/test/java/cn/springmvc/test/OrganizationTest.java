@@ -36,8 +36,8 @@ public class OrganizationTest {
      */
     @Test
     public void XMLreturnValue() {
-        String returnValue = ElementXMLUtils.returnValue("RUN_SUCCESSFULLY", "code");
-        System.out.println(returnValue);
+        HashMap<String, String> returnValue = ElementXMLUtils.returnValue("RUN_SUCCESSFULLY");
+        System.out.println(returnValue.toString());
     }
 
     /**
