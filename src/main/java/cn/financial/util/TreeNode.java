@@ -24,7 +24,7 @@ public class TreeNode<T> {
     /**
      * 树节点显示文本
      */
-    private String text;
+//    private String text;
 
     /**
      * 树节点名称，内容和text一样 该字段主要是为了兼容Ext和zTree
@@ -35,13 +35,26 @@ public class TreeNode<T> {
      * 是否为叶子节点
      */
     private Boolean leaf = true;
-    private Boolean expanded = false;
-    private T nodeData;
+    //private Boolean expanded = false;
+//    private T nodeData;
 
     /**
      * 是否为父节点，该字段和leaf重复，主要是为了兼容Ext和zTree
      */
-    private Boolean isParent = false;
+    //private Boolean isParent = false;
+    
+    /**
+     * 节点的数据库id,这里用String兼容
+     */
+    private String pid;
+    
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
 
     /**
      * 子节点，如果没有子节点，则列表长度为0
@@ -64,13 +77,13 @@ public class TreeNode<T> {
         this.parentId = parentId;
     }
 
-    public String getText() {
-        return text;
-    }
+//    public String getText() {
+//        return text;
+//    }
 
     public void setText(String text) {
         this.name = text;
-        this.text = text;
+//        this.text = text;
     }
 
     public String getName() {
@@ -79,16 +92,16 @@ public class TreeNode<T> {
 
     public void setName(String name) {
         this.name = name;
-        this.text = name;
+//        this.text = name;
     }
 
-    public Boolean getExpanded() {
-        return expanded;
-    }
-
-    public void setExpanded(Boolean expanded) {
-        this.expanded = expanded;
-    }
+//    public Boolean getExpanded() {
+//        return expanded;
+//    }
+//
+//    public void setExpanded(Boolean expanded) {
+//        this.expanded = expanded;
+//    }
 
     public List<TreeNode<T>> getChildren() {
         return children;
@@ -96,29 +109,29 @@ public class TreeNode<T> {
 
     public void setLeaf(Boolean leaf) {
         this.leaf = leaf;
-        this.isParent = !leaf;
+//        this.isParent = !leaf;
     }
 
     public Boolean getLeaf() {
         return this.leaf;
     }
 
-    public Boolean getIsParent() {
-        return isParent;
-    }
+//    public Boolean getIsParent() {
+//        return isParent;
+//    }
 
     public void setIsParent(Boolean isParent) {
-        this.isParent = isParent;
+//        this.isParent = isParent;
         this.leaf = !isParent;
     }
 
-    public T getNodeData() {
-        return nodeData;
-    }
-
-    public void setNodeData(T nodeData) {
-        this.nodeData = nodeData;
-    }
+//    public T getNodeData() {
+//        return nodeData;
+//    }
+//
+//    public void setNodeData(T nodeData) {
+//        this.nodeData = nodeData;
+//    }
 
     /**
      * 把树节点列表构造成树，最后返回树的根节点，如果传入的列表有多个根节点，会动态创建一个根节点。
