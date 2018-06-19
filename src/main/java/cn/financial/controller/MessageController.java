@@ -1,8 +1,6 @@
 package cn.financial.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.service.MessageService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -160,12 +160,12 @@ public class MessageController {
                     }
                 }
                 dataMap.put("resultstatus", unreadmessage);//未读的条数
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "查询成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
                 dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -245,12 +245,12 @@ public class MessageController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Message message = messageService.getMessageById(id);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询成功!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             dataMap.put("resultData", message);
         } catch (Exception e) {
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "查询失败!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -283,15 +283,15 @@ public class MessageController {
             map.put("id", id);
         	Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "修改失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -314,15 +314,15 @@ public class MessageController {
         try {
             Integer i = messageService.deleteMessageById(id);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "删除失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -352,15 +352,15 @@ public class MessageController {
 				message.setFileurl(request.getParameter("fileUrl"));//汇总表文件的路径
 				Integer i1 = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i1)) {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "增加成功!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, "description"));
             } else {
-                dataMap.put("resultCode", 200);
-                dataMap.put("resultDesc", "增加失败!");
+                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "code"));
+                dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, "description"));
             }
         } catch (Exception e) {
-            dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "服务器异常!");
+            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "code"));
+            dataMap.put("resultDesc", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, "description"));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
