@@ -3,20 +3,15 @@ package cn.financial.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import cn.financial.model.Organization;
-import cn.financial.service.InformationService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -29,8 +24,6 @@ import cn.financial.util.ElementXMLUtils;
 public class ArchitectureController {
 	@Autowired
 	private OrganizationService organizationservice;
-	@Autowired
-	private InformationService infoservice;
 	/**
 	 *   组织架构节点
 	 * @param request
@@ -63,21 +56,5 @@ public class ArchitectureController {
 		    }
     	    return obj;
 	}
-	
-	@RequestMapping(value="updateBudget")
-	@ResponseBody
-	public JSONObject updateBudget(HttpServletRequest request,HttpServletResponse response){
-		JSONObject obj=new JSONObject();
-		try {
-			  String json=request.getParameter("json");
-			  JSONArray jsonObject=infoservice.listbudget(json);
-			  obj.put("rows",jsonObject);
-       	      obj.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-		 } catch (Exception e) {
-			  obj.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
-		 }
-		
-		return obj;
-		
-	}
+
 }
