@@ -5,10 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.financial.service.InformationService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -18,12 +16,13 @@ import net.sf.json.JSONObject;
  *
  */
 public class JsonDisposeProcess {
-
-	/*public static  void shortJson(){
+  @Autowired
+  private static  JsonDetail jsondetail;
+	public static  void shortJson(){
 		String path = "C:/Users/whg/Desktop/解析后文件.txt";
 		JSONObject newObj = simplifyJson(readFileContent(path));
 		System.out.println(newObj);
-	}*/
+	}
 	/**
 	 * 获取文件内容
 	 * @param path
@@ -51,14 +50,14 @@ public class JsonDisposeProcess {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONObject simplifyJson(String json,String jsonStr) {
+	public static JSONObject simplifyJson(String jsonStr) {
 		JSONObject obj = JSONObject.fromObject(jsonStr);
 		JSONObject newObj = new JSONObject();
 		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
 			String key = iter.next();
 			JSONArray arr = obj.getJSONArray(key);
 			JSONObject newArr = new JSONObject();
-			newArr =InformationService.generateSimplifyJson(json,arr,key);
+			newArr =jsondetail.generateSimplifyJson(arr,key);
 			newObj.put(key, newArr);
 		}
 		return newObj;

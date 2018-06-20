@@ -1,8 +1,10 @@
 package cn.financial.util;
 
+import org.springframework.stereotype.Service;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
+@Service
 public class JsonDetail {
 	/**
 	 * 生成简化数据
