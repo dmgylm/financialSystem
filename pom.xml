@@ -378,7 +378,8 @@
 			    <configuration>
 			        <webResources>
 			            <resource>
-			                <directory>src/main/webapp</directory>
+			                <directory>src/main/resources</directory>
+			                <targetPath>WEB-INF/classes</targetPath>
 			                <filtering>true</filtering>
 			            </resource>
 			        </webResources>
