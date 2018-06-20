@@ -45,13 +45,12 @@ public class StatisticJsonController {
      * @return 返回结果为总的json数据
      */
     @ResponseBody
-    @RequiresPermissions("statistic:view")
     @RequestMapping(value = "/staticjson", method = RequestMethod.POST)
     public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("");
+        List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("valuemode");
         try {
-            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("jsondata")),valuemode);
+            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("cachemodel")),valuemode);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("resultData", ja);
         } catch (Exception e) {
