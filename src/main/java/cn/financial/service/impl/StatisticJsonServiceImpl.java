@@ -1,6 +1,5 @@
 package cn.financial.service.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,9 +34,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      */
 	public JSONObject jsonCalculation(JSONObject model ,List<JSONObject> valueList) {
 		
-        long start = new Date().getTime();
-		
-		JSONArray json = new JSONArray();
 		Map<String,Object> item = new HashMap<String, Object>();
 		for (int k = 0; k < valueList.size(); k++) {
 			JSONObject valueJson = valueList.get(k);
@@ -60,6 +56,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		
 		Iterator<String> it = model.keySet().iterator();
 		while (it.hasNext()) {
+			JSONArray json = new JSONArray();
 			String modelKey = it.next();
 			JSONArray modelArr = model.getJSONArray(modelKey);
 			for (int i = 0; i < modelArr.size(); i++) {
@@ -79,11 +76,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				json.add(rowjar);
 			}
 			model.put(modelKey, json);
-			json.clear();
 		}
-		
-        long end = new Date().getTime();
-        System.out.println("init Time:"+(end-start));
 		
 		return model;
 	}
