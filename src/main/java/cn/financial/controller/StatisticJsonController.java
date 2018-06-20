@@ -45,8 +45,8 @@ public class StatisticJsonController {
      * @return 返回结果为总的json数据
      */
     @ResponseBody
-    @RequestMapping(value = "/staticjson", method = RequestMethod.POST)
-    public Map<String, Object> staticjson(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/staticJson", method = RequestMethod.POST)
+    public Map<String, Object> staticJson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("valuemode");
         try {
