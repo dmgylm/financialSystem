@@ -3,7 +3,6 @@ package cn.financial.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +11,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,6 +49,9 @@ public class UserController {
     private UserRoleService userRoleService;
     @Autowired
     private PasswordHelper passwordHelper;
+    @Autowired
+    @Qualifier("apiRedisTemplate")
+    private RedisTemplate redis;
     
     /*密码校验规则：
      * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
@@ -58,7 +62,7 @@ public class UserController {
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
     /**
-     * 修改密码
+     * 修改（当前登录用户）密码
      * @param request
      * @param response
      */
@@ -67,32 +71,29 @@ public class UserController {
     @ResponseBody
     public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String oldPwd = null, newPwd = null, userId = null;
+        String oldPwd = null, newPwd = null;
         
-        User newuser = (User) request.getAttribute("user");
-        User users = userService.getUserById(newuser.getId());//查询当前登录用户密码,salt
+        User newuser = (User) request.getAttribute("user");//获取当前登录用户密码,salt
         
         try{
             if(null!=request.getParameter("oldPwd") && !"".equals(request.getParameter("oldPwd"))){
                 User userPwd = new User();
                 userPwd.setPwd(request.getParameter("oldPwd"));
-                userPwd.setSalt(users.getSalt());
+                userPwd.setSalt(newuser.getSalt());
                 passwordHelper.encryptPassword(userPwd);
-                oldPwd = userPwd.getPwd();//旧密码(页面传入)
+                oldPwd = userPwd.getPwd();//旧密码加密(页面传入)
             }
             if(null!=request.getParameter("newPwd") && !"".equals(request.getParameter("newPwd"))){
                 newPwd = request.getParameter("newPwd");//新密码
             }
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
+            
             if(newPwd.matches(regEx)){//密码规则校验
-                if(oldPwd.equals(users.getPwd())) {//判断旧密码与原密码是否相等
+                if(oldPwd.equals(newuser.getPwd())) {//判断旧密码与原密码是否相等
                     if(oldPwd.equals(newPwd)){
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
                     }else{
                         User user = new User();
-                        user.setId(userId);
+                        user.setId(newuser.getId());
                         user.setPwd(newPwd);
                         user.setSalt(UuidUtil.getUUID());
                         Integer userList = userService.updateUser(user);
@@ -224,23 +225,28 @@ public class UserController {
                 jobNumber = request.getParameter("jobNumber");//工号
             }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
+            Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
             if(flag>0){
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE));
+                return dataMap;
+            }
+            if(jobNumberFlag>0){
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE));
+                return dataMap;
+            }
+            User user = new User();
+            user.setId(UuidUtil.getUUID());
+            user.setSalt(UuidUtil.getUUID());
+            user.setName(name);
+            user.setRealName(realName);
+            user.setPwd("Welcome1");//用户新增默认密码为Welcome1
+            user.setJobNumber(jobNumber);
+            int userList = userService.insertUser(user);
+            if(userList>0){
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
-                User user = new User();
-                user.setId(UuidUtil.getUUID());
-                user.setSalt(UuidUtil.getUUID());
-                user.setName(name);
-                user.setRealName(realName);
-                user.setPwd("Welcome1");//用户新增默认密码为Welcome1
-                user.setJobNumber(jobNumber);
-                int userList = userService.insertUser(user);
-                if(userList>0){
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
-            } 
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            }
             
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
@@ -249,7 +255,7 @@ public class UserController {
         return dataMap;
     }
     /**
-     * 管理员重置密码
+     * 管理员重置密码(解锁用户)
      * @param request
      * @param response
      * @param userId
@@ -265,7 +271,15 @@ public class UserController {
             if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
                 userId = request.getParameter("userId");//用户id
             }
-            String resetPwd = getRandomString(6);//生成随机重置密码
+            User users = userService.getUserById(userId);
+            if(users.getName()!=null && !users.getName().equals("")){
+                Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+users.getName()+"_status");//获取是否锁定
+                if(locking != null){
+                    redis.delete(users.getName());
+                    redis.delete("financialSystem"+"_cache_"+users.getName()+"_status");//清除key
+                }
+            }
+            String resetPwd = UuidUtil.getRandomPassword(6);//生成随机重置密码
             User user = new User();
             user.setId(userId);
             user.setSalt(UuidUtil.getUUID());
@@ -284,21 +298,6 @@ public class UserController {
         }
         
         return dataMap;
-    }
-    
-    public static String getRandomString(int length){  
-        String str="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
-        Random random=new Random();  
-          
-        StringBuffer sb=new StringBuffer();  
-          
-        for(int i=0;i<length;i++){  
-              
-            int number =random.nextInt(62);  
-              
-            sb.append(str.charAt(number));  
-        }  
-        return sb.toString();  
     }
     /**
      * 修改用户
