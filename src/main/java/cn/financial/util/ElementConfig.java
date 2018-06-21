@@ -43,4 +43,7 @@ public class ElementConfig {
     
     //重置密码
     public static final String RESET_PWD = "RESET_PWD";
+    
+    //工号已存在
+    public static final String JOBNUMBER_EXISTENCE = "JOBNUMBER_EXISTENCE";
 }
