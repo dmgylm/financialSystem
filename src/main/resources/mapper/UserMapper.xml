@@ -31,11 +31,14 @@
     <select id="getUserByName" parameterType="STRING" resultType="user">
     	SELECT id,name,realName,pwd,jobNumber,status,salt,createTime,updateTime FROM user WHERE name=#{name} and status = 1
     </select>
-    <!--根据name查询用户-->  
+    <!--根据name/jobNumber查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
-         SELECT COUNT(name) FROM user WHERE name=#{name} and status=1
-         <if test="pwd!=null and pwd!=''">
-            and pwd=#{pwd}
+         SELECT COUNT(name) FROM user WHERE status=1
+         <if test="name!=null and name!=''">
+            and name=#{name}
+         </if>
+         <if test="jobNumber!=null and jobNumber!=''">
+            and jobNumber=#{jobNumber}
          </if>
     </select>
     <!--修改用户-->
