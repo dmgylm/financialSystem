@@ -17,9 +17,9 @@ import cn.financial.model.User;
 import cn.financial.service.UserService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml","classpath:conf/spring-redis.xml"})
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml","classpath:spring/spring-redis.xml"})
 /**
  * 用户测试
  * @author gs
@@ -116,10 +116,10 @@ public class UserTest {
         }
         
     }
-    //根据name,pwd查询
+    //根据name,jobNumber查询
     @Test
     public void ListNameTest() {
-        Integer flag = service.countUserName("aa","");
+        Integer flag = service.countUserName("","74321");
         System.out.println(flag);
     }
     //根据id查询
