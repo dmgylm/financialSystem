@@ -22,7 +22,7 @@
     <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
         insert into dataModule(id,moduleKey,moduleName,moduleData,versionNumber,founder,statue,startTime,createTime) 
-        values (#{id},#{moduleName},#{moduleData},#{versionNumber},#{founder},#{statue},curdate())
+        values (#{id},#{moduleKey},#{moduleName},#{moduleData},#{versionNumber},#{founder},#{statue},curdate())
     </insert>
    
     <!--修改模板-->
