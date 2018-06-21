@@ -1,7 +1,15 @@
 package cn.financial.dao;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +31,10 @@ public class MongoDBDao {
 
 	@Autowired  
     private MongoTemplate mongoTemplate;
+	
+	private Class<NetWork> classType;  
+	
+	private   ConcurrentMap<String, Method> WRITE_METHODS = new ConcurrentHashMap<String, Method>();
 	
 	
 	 /**  
@@ -115,14 +127,32 @@ public class MongoDBDao {
 		DBObject query1 = new BasicDBObject(); //setup the query criteria 设置查询条件
 		/*query1.put("id", new BasicDBObject("$in", idList));
 		query1.put("time", (new BasicDBObject("$gte", startTime)).append("$lte", endTime));*/
-		DBCursor dbCursor =mongoTemplate.getCollection("netWork").find(query1).limit(3000);
+		
 		List<NetWork> list=new ArrayList<NetWork>();
+		try {
+			
+			/*DBCursor  dbCursor =mongoTemplate.getCollection("netWork").find(query1);
 		while (dbCursor.hasNext()){
 		    DBObject object=dbCursor.next();
 		    NetWork te=new NetWork();
 		    te.setId(object.get("_id").toString());
 		    te.setValue(object.get("value"));
 		    list.add(te);
+		}*/
+			//Iterator<DBObject>  dbList= mongoTemplate.getCollection("dataTest").find(query1);  
+			//List<T> list = new ArrayList<T>();  
+			Iterator<DBObject>  dbList =mongoTemplate.getCollection("netWork").find(query1);
+			for (;dbList.hasNext();) {  
+				//DBObject object=(DBObject) iter.next();  
+				/*NetWork te=new NetWork();
+			    te.setId(object.get("_id").toString());
+			    te.setValue(object.get("value"));*/
+				/*NetWork te=toModel(object);  
+				list.add(te);*/
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
 		}
 		return list;
     } 
@@ -155,17 +185,29 @@ public class MongoDBDao {
 					dbCursor.close();
 				}
 			}*/
-			DBCursor dbCursor =mongoTemplate.getCollection("dataTest").find(query1).limit(3000);
+			
+			/*DBCursor dbCursor =mongoTemplate.getCollection("dataTest").find(query1);
 			//System.out.println(dbCursor.count()); 
 			List<Object> lists = new ArrayList<Object>();
 			while (dbCursor.hasNext()){
 				DBObject object=dbCursor.next();
-				/*DataTest te=new DataTest();
+				DataTest te=new DataTest();
 				te.setId(object.get("_id").toString());
 				te.setValue(object.get("value"));
-				list.add(te);*/
+				list.add(te);
 				lists.add(object.get("value"));
-			}
+			}*/
+			
+			Iterator<DBObject>  dbList= mongoTemplate.getCollection("dataTest").find(query1);  
+	        //List<T> list = new ArrayList<T>();  
+	        for (Iterator iter = dbList; iter.hasNext();) {  
+	        	DBObject object=(DBObject) iter.next();  
+	        	DataTest te=new DataTest();
+				te.setId(object.get("_id").toString());
+				te.setValue(object.get("value"));
+				//DataTest te = toModel(object);  
+				list.add(te);
+	        }  
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -178,6 +220,22 @@ public class MongoDBDao {
 		
 		return list;
     } 
+	
+	public NetWork toModel(DBObject dbObject) throws InstantiationException,  
+	    IllegalAccessException {  
+//		NetWork t = (NetWork) classType.newInstance();  
+		NetWork t = new NetWork();
+		//GetMethods();  
+		for (Entry<String, Method> entry : WRITE_METHODS.entrySet()) {  
+		    try {  
+		        entry.getValue().invoke(t, dbObject.get(entry.getKey()));  
+		    } catch (Exception e) {  
+		        e.printStackTrace();  
+		    }  
+		}  
+		
+		return t;  
+	}  
 	
 	 /**  
      * 按条件查询, 分页  
