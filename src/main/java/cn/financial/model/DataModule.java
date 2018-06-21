@@ -11,6 +11,8 @@ public class DataModule {
 	private String moduleName;
 	
 	private String versionNumber;
+
+	private String moduleData;//模板数据
 	
 	private String founder; //创建人
 	
@@ -84,6 +86,14 @@ public class DataModule {
 
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
+	}
+
+	public String getModuleData() {
+		return moduleData;
+	}
+
+	public void setModuleData(String moduleData) {
+		this.moduleData = moduleData;
 	}
     
     

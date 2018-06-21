@@ -36,15 +36,17 @@ public class DataModuleController {
 		try {
 			JSONObject json=JSONObject.fromObject(jsonData);
 			Map<Object, Object> map = new HashMap<>();
-			if(null!=json.getString("moduleName") && !"".equals(json.getString("moduleName"))){
+			String moduleName = json.getString("moduleName");
+			if(null!= moduleName && !"".equals(moduleName)){
                // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
-				map.put("moduleName",json.getString("moduleName"));
+				map.put("moduleName",moduleName);
             }
 			List<DataModule> list=dataModuleService.listDataModule(map);
 			dataMap.put("dataModuleList", list);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "成功");
 		} catch (Exception e) {
+			logger.error("",e);
 			dataMap.put("resultCode", 500);
             dataMap.put("resultDesc", "系统错误");
 		}
