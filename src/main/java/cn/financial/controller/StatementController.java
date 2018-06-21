@@ -105,7 +105,6 @@ public class StatementController {
                 }
                 List<Statement> list = statementService.listStatementBy(map);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                
                 dataMap.put("resultData", list);
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
