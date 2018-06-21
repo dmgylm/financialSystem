@@ -17,8 +17,9 @@ import cn.financial.service.impl.CapitalServiceImpl;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml" })
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
 public class CapitalTest {
 
     @Autowired
@@ -67,6 +68,8 @@ public class CapitalTest {
     @Test
     public void getAllCapital() {
         Map<Object, Object> map = new HashMap<>();
+        map.put("pageSize",10);
+        map.put("start",1);
         List<Capital> list = capitalServiceImpl.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {

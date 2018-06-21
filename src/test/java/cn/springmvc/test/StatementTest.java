@@ -16,9 +16,9 @@ import cn.financial.service.impl.StatementServiceImpl;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml" })
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
 public class StatementTest {
 
     @Autowired
@@ -58,6 +58,8 @@ public class StatementTest {
     @Test
     public void listStatementBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
+        map.put("pageSize",10);
+        map.put("start",1);
         List<Statement> list = statementService.listStatementBy(map);
         System.out.println(list.size());
         for (int i = 0; i < list.size(); i++) {
