@@ -38,11 +38,11 @@ public class UserServiceImpl implements  UserService{
         return userDao.listUser(map);
     }
     /**
-     * 根据name查询
+     * 根据name/jobNumber查询
      */
     @Override
-    public Integer countUserName(String name, String pwd) {
-        return userDao.countUserName(name, pwd);
+    public Integer countUserName(String name, String jobNumber) {
+        return userDao.countUserName(name, jobNumber);
     }
     /**
      * 根据id查询
