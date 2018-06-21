@@ -19,11 +19,11 @@ public interface UserDAO {
      */
     List<User> listUser(Map<Object, Object> map);
     /**
-     * 根据name查询用户
+     * 根据name/jobNumber查询用户
      * @param name
      * @return
      */
-    Integer countUserName(@Param("name")String name, @Param("pwd")String pwd);
+    Integer countUserName(@Param("name")String name, @Param("jobNumber")String jobNumber);
     /**
      * 根据id查询用户
      * @param userId
