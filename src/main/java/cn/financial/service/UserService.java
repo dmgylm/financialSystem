@@ -13,11 +13,11 @@ public interface UserService {
      */
     List<User> listUser(Map<Object, Object> map);
     /**
-     * 根据name查询用户
+     * 根据name/jobNumber查询用户
      * @param name
      * @return
      */
-    Integer countUserName(String name ,String pwd);
+    Integer countUserName(String name ,String jobNumber);
     /**
      * 根据id查询用户
      * @param userId
