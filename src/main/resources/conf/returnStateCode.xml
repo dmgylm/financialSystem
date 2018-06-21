@@ -60,4 +60,8 @@
         <code>211</code>
         <description>请重置您的密码</description>
     </Result>
+    <Result name="JOBNUMBER_EXISTENCE">
+        <code>212</code>
+        <description>工号已存在</description>
+    </Result>
 </StateCode>
