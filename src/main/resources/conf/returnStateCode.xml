@@ -3,11 +3,11 @@
 <StateCode>
 	<Result name="RUN_SUCCESSFULLY">
 		<code>200</code>
-		<description>成功 </description>
+		<description>成功</description>
 	</Result>
 	<Result name="RUN_ERROR">
         <code>400</code>
-        <description>失败 </description>
+        <description>失败</description>
     </Result>
     <Result name="RUN_FAILURE">
         <code>500</code>
