@@ -19,9 +19,8 @@ import net.sf.json.JSONObject;
 public class JsonDisposeProcess {
   @Autowired
   private static  JsonDetail jsondetail;
-  private JsonConvertProcess  jsonconvert;
-     @Test
-	 public  void shortJson(){
+  private static JsonConvertProcess  jsonconvert;
+	 public static void shortJson(){
 		String path = "C:/Users/whg/Desktop/解析后文件.txt";
 		JSONObject newObj = JSONObject.fromObject(jsonconvert.readFileContent(path));
 		String paths="C:/Users/whg/Desktop/解析后文件测试.txt";
