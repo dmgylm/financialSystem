@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import net.sf.json.JSONArray;
@@ -18,31 +19,18 @@ import net.sf.json.JSONObject;
 public class JsonDisposeProcess {
   @Autowired
   private static  JsonDetail jsondetail;
-	public static  void shortJson(){
+  private JsonConvertProcess  jsonconvert;
+     @Test
+	 public  void shortJson(){
 		String path = "C:/Users/whg/Desktop/解析后文件.txt";
-		JSONObject newObj = simplifyJson(readFileContent(path));
-		System.out.println(newObj);
+		JSONObject newObj = JSONObject.fromObject(jsonconvert.readFileContent(path));
+		String paths="C:/Users/whg/Desktop/解析后文件测试.txt";
+		JSONObject json=JSONObject.fromObject(jsonconvert.readFileContent(paths));
+		JSONObject mergin=jsonconvert.mergeJson(newObj,json);
+		JSONObject simplifyJson=simplifyJson(mergin.toString());
+		System.out.println(simplifyJson);
 	}
-	/**
-	 * 获取文件内容
-	 * @param path
-	 * @return
-	 */
-	public static String readFileContent(String path){
-		StringBuffer sb = new StringBuffer();
-		try {
-			File file = new File(path );
-			@SuppressWarnings("resource")
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String tmp = null;
-			while((tmp = reader.readLine())!=null){
-				sb.append(tmp);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
+
 	/**
 	 * 简化Json数据
 	 * 将其简化为只有Key和Value数据
