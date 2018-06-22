@@ -185,6 +185,7 @@ public class OrganizationTest {
 
     /**
      * 移动组织机构
+     * @throws Exception 
      */
     @Test
     public void moveOrganization() {
