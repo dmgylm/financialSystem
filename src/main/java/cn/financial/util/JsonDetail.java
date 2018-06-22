@@ -34,10 +34,11 @@ public class JsonDetail {
 						}
 					}
 					if(type == HtmlGenerate.BOX_TYPE_BUDGET){//预算的,type=4
-						String key = json.getString("key");
-
-						String value=jsonCombined(jsonlist,newObj,key);
-						nJson.put(key, value);
+						  String key = json.getString("key");
+						  JSONObject js=JSONObject.fromObject(jsonlist);//传过来的json数据
+						  JSONObject ss=JSONObject.fromObject(js.get(newObj));
+						  String value=ss.get(key).toString();
+						  nJson.put(key, value);
 					}
 				}
 			}
@@ -45,34 +46,7 @@ public class JsonDetail {
 		return nJson;
 	}
 	
-	public static String jsonCombined(String  json,String object,String key) {
-		try {
-			String value="";
-		    JSONObject js=JSONObject.fromObject(json.toString());
-		    if(js.has(object)){
-		    	JSONObject ss=JSONObject.fromObject(js.get(object));
-		    	if(ss.has(key)){
-		    		 value=ss.get(key).toString();
-		    	}
-		    	else{
-		    		value="0";
-		    	}
-		    }
-		    else{
-		    	value="0";
-		    }
-		
-			return value;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-		
-	}
 
-	public static  String ss(String json) {
-		
-		return json;
-	}
+
 
 }
