@@ -66,7 +66,6 @@ public class OrganizationController {
             }
             User user = (User) request.getAttribute("user");
             organization.setuId(user.getId());// 提交人id
-            organization.setOrgkey(UuidUtil.getUUID());// 与模版对应的一个唯一值
             if (null != request.getParameter("parentOrgId") && !"".equals(request.getParameter("parentOrgId"))) {
                 // 新增的时候这里保存的是此节点的code
                 i = organizationService.saveOrganization(organization, request.getParameter("parentOrgId"));

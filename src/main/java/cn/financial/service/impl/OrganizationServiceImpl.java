@@ -62,6 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organization.setParentId(org.get(0).getCode());// 父id
             organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
             organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
+            organization.setOrgkey(code);// 与模版对应的一个唯一值
             return organizationDAO.saveOrganization(organization);
         } else {
             return 0;
@@ -364,7 +365,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                     organization1.setCode(code1);
                     organization1.setParentId(parentId1);
                     organization1.setHis_permission(orga.getHis_permission() + "," + code1);
-                    organization.setOrgkey(orga.getOrgkey());
+                    organization1.setOrgkey(orga.getOrgkey());
                     organizationDAO.saveOrganization(organization1);
                 }
             }
