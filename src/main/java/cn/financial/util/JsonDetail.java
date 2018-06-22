@@ -29,7 +29,7 @@ public class JsonDetail {
 					if(type == HtmlGenerate.BOX_TYPE_INPUT|| type == HtmlGenerate.BOX_TYPE_FORMULA){
 						if(json.containsKey("key")) {
 							String key = json.getString("key");
-							Object value="0";
+							Object value=json.get("value");
 							nJson.put(key, value);
 						}
 					}
