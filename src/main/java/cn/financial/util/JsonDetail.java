@@ -47,9 +47,21 @@ public class JsonDetail {
 	
 	public static String jsonCombined(String  json,String object,String key) {
 		try {
+			String value="";
 		    JSONObject js=JSONObject.fromObject(json.toString());
-			JSONObject ss=JSONObject.fromObject(js.get(object));
-			String value=ss.get(key).toString();
+		    if(js.has(object)){
+		    	JSONObject ss=JSONObject.fromObject(js.get(object));
+		    	if(ss.has(key)){
+		    		 value=ss.get(key).toString();
+		    	}
+		    	else{
+		    		value="0";
+		    	}
+		    }
+		    else{
+		    	value="0";
+		    }
+		
 			return value;
 		} catch (Exception e) {
 			e.printStackTrace();
