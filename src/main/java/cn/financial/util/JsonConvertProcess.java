@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import org.springframework.stereotype.Service;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
+@Service
 public class JsonConvertProcess {
 	
 	/**
