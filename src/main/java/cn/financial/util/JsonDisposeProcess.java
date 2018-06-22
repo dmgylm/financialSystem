@@ -19,13 +19,12 @@ import net.sf.json.JSONObject;
 public class JsonDisposeProcess {
   @Autowired
   private static  JsonDetail jsondetail;
-  private static JsonConvertProcess  jsonconvert;
-	 public static void shortJson(){
+	 public  void  shortJson(){
 		String path = "C:/Users/whg/Desktop/解析后文件.txt";
-		JSONObject newObj = JSONObject.fromObject(jsonconvert.readFileContent(path));
+		JSONObject newObj = JSONObject.fromObject(JsonConvertProcess.readFileContent(path));
 		String paths="C:/Users/whg/Desktop/解析后文件测试.txt";
-		JSONObject json=JSONObject.fromObject(jsonconvert.readFileContent(paths));
-		JSONObject mergin=jsonconvert.mergeJson(newObj,json);
+		JSONObject json=JSONObject.fromObject(JsonConvertProcess.readFileContent(paths));
+		JSONObject mergin=JsonConvertProcess.mergeJson(newObj,json);
 		JSONObject simplifyJson=simplifyJson(mergin.toString());
 		System.out.println(simplifyJson);
 	}
