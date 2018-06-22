@@ -13,15 +13,18 @@
 			jdbcType="VARCHAR"></result>
 		<result property="orgName" column="orgName" javaType="string"
 			jdbcType="VARCHAR"></result>
-		<result property="createTime" column="createTime" javaType="string"
-			jdbcType="TIMESTAMP"></result>
-		<result property="updateTime" column="updateTime" javaType="string"
-			jdbcType="TIMESTAMP"></result>
-		<result property="uId" column="uId" javaType="string" jdbcType="VARCHAR"></result>
+		<result property="createTime" column="createTime"
+			javaType="string" jdbcType="TIMESTAMP"></result>
+		<result property="updateTime" column="updateTime"
+			javaType="string" jdbcType="TIMESTAMP"></result>
+		<result property="uId" column="uId" javaType="string"
+			jdbcType="VARCHAR"></result>
 		<result property="status" column="status" javaType="int"
 			jdbcType="INTEGER"></result>
 		<result property="his_permission" column="his_permission"
 			javaType="string" jdbcType="VARCHAR"></result>
+		<result property="orgkey" column="orgkey" javaType="string"
+			jdbcType="VARCHAR"></result>
 
 	</resultMap>
 
@@ -35,68 +38,73 @@
 		orgName,
 		createTime,
 		uId,
-		his_permission
+		his_permission,
+		orgkey
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR},#{orgkey,jdbcType=VARCHAR})
 	</insert>
-	
-    <!--查询该节点以及节点以下的  -->
-    <select id="listOrganization"  resultType="Organization">
-    	select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-		from
-		organization
-		where
-		status = 1
-     <include refid="query_organization_find"></include>
-    </select>
-    
-    <select id="listOrganizationcode" resultType="Organization">
-      select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-		from
-		organization
-		where
-		status = 1
-     <include refid="query_organization_code"></include>
-   </select>
-    
-        <sql id="query_organization_find">
-   
-           and id in
-          <foreach item="item" collection="list" open="(" separator="," close=")">
-			#{item,jdbcType=VARCHAR}
-          </foreach>
-        </sql>
-        
-         <sql id="query_organization_code">
-            and code in 
-		<foreach item="item"  collection="code" open="(" separator="," close=")">  
-			#{item,jdbcType=VARCHAR}  
-		</foreach>
-        </sql>
-	<!-- 根据条件查询组织结构信息 -->
-	<select id="listOrganizationBy" parameterType="map" resultType="Organization">
+
+	<!--查询该节点以及节点以下的 -->
+	<select id="listOrganization" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		from
+		organization
+		where
+		status = 1
+		<include refid="query_organization_find"></include>
+	</select>
+
+	<select id="listOrganizationcode" resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		from
+		organization
+		where
+		status = 1
+		<include refid="query_organization_code"></include>
+	</select>
+
+	<sql id="query_organization_find">
+
+		and id in
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+	</sql>
+
+	<sql id="query_organization_code">
+		and code in
+		<foreach item="item" collection="code" open="(" separator=","
+			close=")">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+	</sql>
+	<!-- 根据条件查询组织结构信息 -->
+	<select id="listOrganizationBy" parameterType="map"
+		resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
 		from
 		organization
 		where
 		status = 1
 		<include refid="query_organization_where"></include>
 	</select>
-	
+
 	<!-- 根据条件查询组织结构信息（包含状态为1和0） -->
-    <select id="listAllOrganizationBy" parameterType="map" resultType="Organization">
-        select
-        id,code,parentId,orgName,createTime,updateTime,uId,his_permission
-        from
-        organization
-        where
-        1 = 1
-        <include refid="query_organization_where"></include>
-    </select>
+	<select id="listAllOrganizationBy" parameterType="map"
+		resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		from
+		organization
+		where
+		1 = 1
+		<include refid="query_organization_where"></include>
+	</select>
 
 	<!-- 根据Id更新组织结构信息 -->
 	<update id="updateOrganizationById" parameterType="map">
@@ -129,16 +137,19 @@
 	</update>
 
 	<!-- 根据条件删除组织结构信息 -->
-	<delete id="deleteOrganizationById" parameterType="java.lang.String">
+	<delete id="deleteOrganizationById"
+		parameterType="java.lang.String">
 		delete
 		from
 		organization
 		where
-		id = #{_parameter,jdbcType=VARCHAR}
+		id =
+		#{_parameter,jdbcType=VARCHAR}
 	</delete>
 
 	<!-- 根据组织结构ID修改状态为0，即已停用 -->
-	<update id="deleteOrganizationByStatus" parameterType="java.lang.String">
+	<update id="deleteOrganizationByStatus"
+		parameterType="java.lang.String">
 		update
 		organization
 		set
@@ -150,10 +161,10 @@
 	</update>
 
 	<!-- 根据code查询该节点下的所有子节点 ,构建成树 -->
-	<select id="listTreeByCodeForSon" parameterType="java.lang.String"
-		resultType="Organization">
+	<select id="listTreeByCodeForSon"
+		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
 		from
 		organization
 		where
@@ -163,10 +174,10 @@
 	</select>
 
 	<!-- 根据code查询该节点下的所有父节点 -->
-	<select id="listTreeByCodeForParent" parameterType="java.lang.String"
-		resultType="Organization">
+	<select id="listTreeByCodeForParent"
+		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
 		from
 		organization
 		where
@@ -174,7 +185,7 @@
 		and
 		status = 1
 	</select>
-	
+
 
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
@@ -206,16 +217,17 @@
 			and his_permission = #{his_permission,jdbcType=VARCHAR}
 		</if>
 	</sql>
-	
+
 	<!-- 获取组织机构为公司的数据 -->
-	<select id="getCompany"  resultType="Organization">
+	<select id="getCompany" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
 		from
 		organization
 		where
 		status = 1
-		and orgName like '%公司%' or orgName ='盛世大联保险事业部'  or orgName='大客户部业务一部'
+		and orgName like '%公司%' or orgName
+		='盛世大联保险事业部' or orgName='大客户部业务一部'
 	</select>
-	
+
 </mapper>
