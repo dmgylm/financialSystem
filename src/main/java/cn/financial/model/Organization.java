@@ -26,6 +26,8 @@ public class Organization {
 
     private String his_permission; // 保存历史权限记录
 
+    private String orgkey;// 和模版对应的一个唯一值
+
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
     public String getId() {
@@ -100,11 +102,19 @@ public class Organization {
         this.his_permission = his_permission;
     }
 
+    public String getOrgkey() {
+        return orgkey;
+    }
+
+    public void setOrgkey(String orgkey) {
+        this.orgkey = orgkey;
+    }
+
     @Override
     public String toString() {
         return "Organization [id=" + id + ", code=" + code + ", parentId=" + parentId + ", orgName=" + orgName
                 + ", createTime=" + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status
-                + ", his_permission=" + his_permission + "]";
+                + ", his_permission=" + his_permission + ", orgkey=" + orgkey + "]";
     }
 
     // public List<User> getUsers() {
