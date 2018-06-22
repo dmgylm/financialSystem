@@ -333,6 +333,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setCode(code);
         organization.setParentId(orgParent.get(0).getCode());
         organization.setHis_permission(org.get(0).getHis_permission() + "," + code);
+        organization.setOrgkey(org.get(0).getOrgkey());
         organizationDAO.saveOrganization(organization);
 
         /*
@@ -343,7 +344,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             Organization orga = iterator.next();
             Map<Object, Object> idmap = new HashMap<>();
             idmap.put("id", orga.getId());
-            idmap.put("uId", uId);
+            // idmap.put("uId", uId);
             // 先修改uid
             Integer idupdate = organizationDAO.updateOrganizationById(idmap);
             if (Integer.valueOf(1).equals(idupdate)) {
@@ -363,6 +364,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                     organization1.setCode(code1);
                     organization1.setParentId(parentId1);
                     organization1.setHis_permission(orga.getHis_permission() + "," + code1);
+                    organization.setOrgkey(orga.getOrgkey());
                     organizationDAO.saveOrganization(organization1);
                 }
             }
