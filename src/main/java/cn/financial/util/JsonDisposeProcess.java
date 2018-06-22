@@ -19,15 +19,6 @@ import net.sf.json.JSONObject;
 public class JsonDisposeProcess {
   @Autowired
   private static  JsonDetail jsondetail;
-	 public  void  shortJson(){
-		String path = "C:/Users/whg/Desktop/解析后文件.txt";
-		JSONObject newObj = JSONObject.fromObject(JsonConvertProcess.readFileContent(path));
-		String paths="C:/Users/whg/Desktop/解析后文件测试.txt";
-		JSONObject json=JSONObject.fromObject(JsonConvertProcess.readFileContent(paths));
-		JSONObject mergin=JsonConvertProcess.mergeJson(newObj,json);
-		JSONObject simplifyJson=simplifyJson(mergin.toString());
-		System.out.println(simplifyJson);
-	}
 
 	/**
 	 * 简化Json数据
@@ -36,14 +27,14 @@ public class JsonDisposeProcess {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONObject simplifyJson(String jsonStr) {
+	public static JSONObject simplifyJson(String json,String jsonStr) {
 		JSONObject obj = JSONObject.fromObject(jsonStr);
 		JSONObject newObj = new JSONObject();
 		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
 			String key = iter.next();
 			JSONArray arr = obj.getJSONArray(key);
 			JSONObject newArr = new JSONObject();
-			newArr =jsondetail.generateSimplifyJson(arr,key);
+			newArr =jsondetail.generateSimplifyJson(json,arr,key);
 			newObj.put(key, newArr);
 		}
 		return newObj;
