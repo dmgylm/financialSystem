@@ -11,6 +11,10 @@ public class DataModule {
 	private String moduleName;
 	
 	private String versionNumber;
+	
+	private String reportType;//报表类型
+
+	private String businessType;//业务板块
 
 	private String moduleData;//模板数据
 	
@@ -94,6 +98,22 @@ public class DataModule {
 
 	public void setModuleData(String moduleData) {
 		this.moduleData = moduleData;
+	}
+
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
 	}
     
     
