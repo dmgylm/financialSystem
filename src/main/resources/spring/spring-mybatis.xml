@@ -79,6 +79,8 @@
   <bean id="transactionManager"
         class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
         p:dataSource-ref="dataSource"/>
+        <!-- 自动扫描事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class = "true"/>
         <context:property-placeholder location="classpath:conf/jdbc.properties"/> 
      
 </beans>
