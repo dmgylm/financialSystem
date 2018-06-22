@@ -73,14 +73,15 @@ public class JsonConvertProcess {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static JSONObject simplifyJson(String jsonStr) {
+	public static JSONObject simplifyJson(String json,String jsonStr) {
 		JSONObject obj = JSONObject.fromObject(jsonStr);
 		JSONObject newObj = new JSONObject();
 		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
 			String key = iter.next();
 			JSONArray arr = obj.getJSONArray(key);
 			JSONObject newArr = new JSONObject();
-			newArr = generateSimplifyJson(arr,newArr);
+			//newArr = generateSimplifyJson(arr,newArr);
+			newArr =JsonDetail.generateSimplifyJson(json,arr,key);
 			newObj.put(key, newArr);
 		}
 		return newObj;
