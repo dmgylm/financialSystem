@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.DocumentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.financial.model.Organization;
 import cn.financial.service.impl.OrganizationServiceImpl;
@@ -23,14 +23,13 @@ import net.sf.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
-        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
-        "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml",
+        "classpath:spring/spring-cache.xml", "classpath:spring/spring-shiro.xml", "classpath:spring/spring-redis.xml" })
 public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
 
-    
     /**
      * 测试获取xml的状态节点
      */
@@ -48,9 +47,10 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("电销");
+        organization2.setOrgName("测试111");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
-        Integer i = service.saveOrganization(organization2, "c09c07b638b4461eb7e48e4fb35fa7cf");
+        organization2.setOrgkey(UuidUtil.getUUID());
+        Integer i = service.saveOrganization(organization2, "0801ba63b13245339cc1bc6737054088");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -63,15 +63,7 @@ public class OrganizationTest {
         List<Organization> list = service.listOrganizationBy(new HashMap<Object, Object>());
         long end = System.currentTimeMillis();
         for (Organization organization : list) {
-            System.out.println("id:" + organization.getId());
-            System.out.println("code:" + organization.getCode());
-            System.out.println("orgName:" + organization.getOrgName());
-            System.out.println("parentId:" + organization.getParentId());
-            System.out.println("createTime:" + organization.getCreateTime());
-            System.out.println("updateTime:" + organization.getUpdateTime());
-            System.out.println("uId:" + organization.getuId());
-            System.out.println("his_permission:" + organization.getHis_permission());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(organization.toString());
         }
         System.out.println(end - start);
     }
@@ -92,15 +84,7 @@ public class OrganizationTest {
         // map.put("his_permission", "");
         List<Organization> list = service.listOrganizationBy(map);
         for (Organization organization : list) {
-            System.out.println("id:" + organization.getId());
-            System.out.println("code:" + organization.getCode());
-            System.out.println("orgName:" + organization.getOrgName());
-            System.out.println("parentId:" + organization.getParentId());
-            System.out.println("createTime:" + organization.getCreateTime());
-            System.out.println("updateTime:" + organization.getUpdateTime());
-            System.out.println("uId:" + organization.getuId());
-            System.out.println("his_permission:" + organization.getHis_permission());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(organization.toString());
         }
     }
 
@@ -111,7 +95,7 @@ public class OrganizationTest {
     public void updateOrganizationById() {
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("id", "7d1ef3a8bc584d739ad3a30ea2ad6c82");
-        //map.put("orgName", "dfsfsfsfsafasfsad");
+        // map.put("orgName", "dfsfsfsfsafasfsad");
         Integer i = service.updateOrganizationById(map);
         System.out.println(i);
     }
@@ -167,12 +151,7 @@ public class OrganizationTest {
             }
             System.out.println(json);
             for (Organization organization : listshow) {
-                System.out.println("id:" + organization.getId());
-                System.out.println("code:" + organization.getCode());
-                System.out.println("parentId:" + organization.getParentId());
-                System.out.println("orgName:" + organization.getOrgName());
-                System.out.println("his_permission:" + organization.getHis_permission());
-                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                System.out.println(organization.toString());
             }
             System.out.println("展示" + listmap);
 
@@ -188,15 +167,7 @@ public class OrganizationTest {
     public void listTreeByOrgId() {
         List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
         for (Organization organization : list) {
-            System.out.println("id:" + organization.getId());
-            System.out.println("code:" + organization.getCode());
-            System.out.println("orgName:" + organization.getOrgName());
-            System.out.println("parentId:" + organization.getParentId());
-            System.out.println("createTime:" + organization.getCreateTime());
-            System.out.println("updateTime:" + organization.getUpdateTime());
-            System.out.println("uId:" + organization.getuId());
-            System.out.println("his_permission:" + organization.getHis_permission());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(organization.toString());
         }
         System.out.println(list.size());
     }
@@ -208,15 +179,7 @@ public class OrganizationTest {
     public void listTreeByOrgIdParent() {
         List<Organization> list = service.listTreeByIdForParent("135831766bf544e4a7f0f34f058116e7");
         for (Organization organization : list) {
-            System.out.println("id:" + organization.getId());
-            System.out.println("code:" + organization.getCode());
-            System.out.println("orgName:" + organization.getOrgName());
-            System.out.println("parentId:" + organization.getParentId());
-            System.out.println("createTime:" + organization.getCreateTime());
-            System.out.println("updateTime:" + organization.getUpdateTime());
-            System.out.println("uId:" + organization.getuId());
-            System.out.println("his_permission:" + organization.getHis_permission());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(organization.toString());
         }
     }
 
@@ -225,9 +188,9 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "c64bb8ec6a9a47008c4f6fcfb51a9bfc";
-        String parentOrgId = "4698d2836e944d509c4e2edc1fb793a7";
-        service.moveOrganization("aa", id, parentOrgId);
+        String id = "0801ba63b13245339cc1bc6737054088";
+        String parentOrgId = "3020a10d0362455a9c6709562a908591";
+        service.moveOrganization("dasdasdsadasdas", id, parentOrgId);
     }
 
     /**
@@ -249,15 +212,7 @@ public class OrganizationTest {
     public void getCompanyNameBySon() {
         Organization organization = service.getCompanyNameBySon("06e37893beb249b7a3a34eb4cc61d7ef");
         if (null != organization) {
-            System.out.println("id:" + organization.getId());
-            System.out.println("code:" + organization.getCode());
-            System.out.println("orgName:" + organization.getOrgName());
-            System.out.println("parentId:" + organization.getParentId());
-            System.out.println("createTime:" + organization.getCreateTime());
-            System.out.println("updateTime:" + organization.getUpdateTime());
-            System.out.println("uId:" + organization.getuId());
-            System.out.println("his_permission:" + organization.getHis_permission());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(organization.toString());
         }
     }
 
