@@ -139,7 +139,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 // list =
                 // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
                 // java代码递归查询
-                // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+                // getOrganizationSonList(list,
+                // organizationByIds.get(0).getCode());
                 // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
                 getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
                 if (!CollectionUtils.isEmpty(list)) {
@@ -149,7 +150,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                         node.setId(organization.getCode());
                         node.setParentId(organization.getParentId().toString());
                         node.setText(organization.getOrgName());
-//                        node.setNodeData(organization);
+                        // node.setNodeData(organization);
                         node.setPid(organization.getId());
                         nodes.add(node);
                     }
@@ -181,7 +182,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 // list =
                 // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
                 // java代码递归查询
-                // getOrganizationSonList(list, organizationByIds.get(0).getCode());
+                // getOrganizationSonList(list,
+                // organizationByIds.get(0).getCode());
                 // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
                 getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
             }
@@ -259,9 +261,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return list;
     }
-    
+
     /**
      * 根据id查询该节点及所有其父节点
+     * 
      * @param departList
      * @param result
      * @param code
@@ -281,7 +284,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    } 
+    }
 
     /**
      * 移动组织机构
@@ -289,9 +292,9 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @Override
-    public Integer moveOrganization(String uId, String id, String parentOrgId) {
+    public Integer moveOrganization(String uId, String id, String parentOrgId){
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
@@ -343,14 +346,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         Iterator<Organization> iterator = list.iterator();
         while (iterator.hasNext()) {
             Organization orga = iterator.next();
-            Map<Object, Object> idmap = new HashMap<>();
-            idmap.put("id", orga.getId());
-            // idmap.put("uId", uId);
-            // 先修改uid
-            Integer idupdate = organizationDAO.updateOrganizationById(idmap);
-            if (Integer.valueOf(1).equals(idupdate)) {
-                // 停用
-                organizationDAO.deleteOrganizationByStatus(orga.getId());
+            // 停用
+            Integer intde = organizationDAO.deleteOrganizationByStatus(orga.getId());
+            if (Integer.valueOf(1).equals(intde)) {
                 /*
                  * 添加子节点
                  */
@@ -420,16 +418,13 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationDAO.getCompany();
     }
 
-	
+    public List<Organization> listOrganizationcode(List<String> listmap) {
+        return organizationDAO.listOrganizationcode(listmap);
+    }
 
-	public List<Organization> listOrganizationcode(List<String> listmap) {
-		return organizationDAO.listOrganizationcode(listmap);
-	}
+    public List<Organization> listOrganization(List<String> list) {
 
-
-public List<Organization> listOrganization(List<String> list) {
-		
-		return organizationDAO.listOrganization(list);
-	}
+        return organizationDAO.listOrganization(list);
+    }
 
 }
