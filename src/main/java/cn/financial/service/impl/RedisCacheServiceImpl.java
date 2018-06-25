@@ -1,4 +1,4 @@
-package cn.financial.util;
+package cn.financial.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -6,8 +6,10 @@ import org.springframework.data.redis.cache.RedisCacheElement;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Component;
 
+import cn.financial.service.RedisCacheService;
+
 @Component
-public class RedisCacheUtils {
+public class RedisCacheServiceImpl implements RedisCacheService{
 	
 	@Autowired
 	private RedisCacheManager cacheRedisCacheManager;
