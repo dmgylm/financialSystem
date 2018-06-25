@@ -3,8 +3,9 @@ package cn.financial.service;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Organization;
-import net.sf.json.JSONObject;
 
 /**
  * 组织结构service接口层
