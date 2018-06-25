@@ -6,12 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.OrganizationDAO;
 import cn.financial.model.Organization;
@@ -26,6 +28,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Service("OrganizationServiceImpl")
+@CacheConfig(cacheNames="organization")
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
@@ -123,41 +126,48 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
+    @Cacheable(key="'orga_'+#id")
     public JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
-        // 根据id查询到该节点信息
-        Map<Object, Object> map = new HashMap<>();
-        map.put("id", id);
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
-        // 当前节点
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            list.add(organizationByIds.get(0));
-            if (!CollectionUtils.isEmpty(departList)) {
-                // sql函数递归查询
-                // list =
-                // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
-                // java代码递归查询
-                // getOrganizationSonList(list,
-                // organizationByIds.get(0).getCode());
-                // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
-                getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
-                if (!CollectionUtils.isEmpty(list)) {
-                    List<TreeNode<Organization>> nodes = new ArrayList<>();
-                    for (Organization organization : list) {
-                        TreeNode<Organization> node = new TreeNode<>();
-                        node.setId(organization.getCode());
-                        node.setParentId(organization.getParentId().toString());
-                        node.setText(organization.getOrgName());
-                        // node.setNodeData(organization);
-                        node.setPid(organization.getId());
-                        nodes.add(node);
-                    }
-                    JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
-                    return jsonObject;
+        if (id == null || "".equals(id)) {
+            list.addAll(departList);
+        } else {
+            // 根据id查询到该节点信息
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);
+            // 当前节点
+            List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(organizationByIds)) {
+                list.add(organizationByIds.get(0));
+                if (!CollectionUtils.isEmpty(departList)) {
+                    // sql函数递归查询
+                    // list =
+                    // organizationDAO.listTreeByCodeForSon(organizationByIds.get(0).getCode());
+                    // java代码递归查询
+                    // getOrganizationSonList(list,
+                    // organizationByIds.get(0).getCode());
+                    // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+                    getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
                 }
             }
+        }
+        if (!CollectionUtils.isEmpty(list)) {
+            List<TreeNode<Organization>> nodes = new ArrayList<>();
+            for (Organization organization : list) {
+                TreeNode<Organization> node = new TreeNode<>();
+                node.setId(organization.getCode());
+                node.setParentId(organization.getParentId().toString());
+                node.setText(organization.getOrgName());
+                // node.setNodeData(organization);
+                node.setPid(organization.getId());
+                nodes.add(node);
+            }
+            net.sf.json.JSONObject jsonObject1 = net.sf.json.JSONObject.fromObject(TreeNode.buildTree(nodes));
+            JSONObject jsonObject = (JSONObject) JSONObject.parse(jsonObject1.toString());
+            System.out.println( "jsonObject:"+ jsonObject.toString());
+            return jsonObject;
         }
         return null;
     }
