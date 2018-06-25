@@ -55,6 +55,15 @@
            statistics="true">
     </cache>
 
+    <cache name="dataModule"
+           maxEntriesLocalHeap="2000"
+           eternal="false"
+           timeToIdleSeconds="3600"
+           timeToLiveSeconds="0"
+           overflowToDisk="false"
+           statistics="true">
+    </cache>
+
 
     <cache name="token"
            maxEntriesLocalHeap="2000"

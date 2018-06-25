@@ -21,12 +21,20 @@
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC
     </select>
+    
+    <!--根据条件查看单个模板-->
+    <select id="getDataModule" parameterType="map" resultType="dataModule">
+        SELECT id,moduleKey,moduleName,reportType,businessType,versionNumber,founder,statue,startTime,createTime,updateTime FROM dataModule WHERE 1 = 1
+        <include refid="query_dataModule_where"></include>
+        ORDER BY versionNumber DESC LIMIT 0,1
+    </select>
+    
     <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
         insert into dataModule(id,moduleKey,moduleName,reportType,businessType,moduleData,versionNumber,founder,statue,startTime,createTime) 
         values (#{id},#{moduleKey},#{moduleName},#{reportType},#{businessType},#{moduleData},#{versionNumber},#{founder},#{statue},curdate())
     </insert>
-   
+
     <!--修改模板-->
     <!-- <update id="updateUser" parameterType="user">
          UPDATE user
@@ -58,6 +66,12 @@
         </if>
         <if test="versionNumber!=null and versionNumber!=''">
             and versionNumber = #{versionNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="businessType!=null and businessType!=''">
+            and businessType = #{businessType,jdbcType=VARCHAR}
+        </if>
+        <if test="reportType!=null and reportType!=''">
+            and reportType = #{reportType,jdbcType=VARCHAR}
         </if>
         <if test="founder!=null and founder!=''">
             and founder = #{founder,jdbcType=VARCHAR}
