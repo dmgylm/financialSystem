@@ -1,12 +1,14 @@
 package cn.financial.model;
 
+import java.io.Serializable;
+
 /**
  * 组织架构实体类
  * 
  * @author zlf 2018/01/13
  *
  */
-public class Organization {
+public class Organization implements Serializable {
 
     private String id; // 组织架构表id
 
@@ -27,6 +29,8 @@ public class Organization {
     private String his_permission; // 保存历史权限记录
 
     private String orgkey;// 和模版对应的一个唯一值
+
+    private Integer orgType;// 1：汇总，2：公司，3：部门 (默认是汇总)
 
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
@@ -110,11 +114,19 @@ public class Organization {
         this.orgkey = orgkey;
     }
 
+    public Integer getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(Integer orgType) {
+        this.orgType = orgType;
+    }
+
     @Override
     public String toString() {
         return "Organization [id=" + id + ", code=" + code + ", parentId=" + parentId + ", orgName=" + orgName
                 + ", createTime=" + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status
-                + ", his_permission=" + his_permission + ", orgkey=" + orgkey + "]";
+                + ", his_permission=" + his_permission + ", orgkey=" + orgkey + ", orgType=" + orgType + "]";
     }
 
     // public List<User> getUsers() {
