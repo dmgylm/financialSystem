@@ -115,7 +115,10 @@ public class OrganizationTest {
      */
     @Test
     public void TreeByOrgId() {
-        JSONObject string = service.TreeByIdForSon("");
+        long start = System.currentTimeMillis();
+        com.alibaba.fastjson.JSONObject string = service.TreeByIdForSon("");
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
         System.out.println(string.toString());
     }
 
