@@ -35,10 +35,8 @@
  
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
-            insert into capital(id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status)
-            values (#{id},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
-            #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status})
+            insert into capital(id,info,createTime,uId,year,month,status)
+            values (#{id},#{info},now(),#{uId},#{year},#{month},#{status})
        </insert>
       
        <!-- 查询所有的资金数据 -->
@@ -53,8 +51,7 @@
        
        <!--根据id查询资金数据 -->
        <select id="selectCapitalById" parameterType="String" resultMap="capital" >
-           SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
+           SELECT id,info,createTime,updateTime,uId,year,month,status
            FROM capital 
            WHERE id = #{id} and status=1
            ORDER BY createTime DESC
@@ -62,8 +59,7 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status 
+         SELECT id,info,createTime,updateTime,uId,year,month,status 
          FROM capital
          WHERE status=1 
          <include refid="query_capital_where"></include>
@@ -73,8 +69,7 @@
        
        <!--导出根据多个id查询 -->
        <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
-           SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
+           SELECT id,info,createTime,updateTime,uId,year,month,status
            FROM capital 
            WHERE status=1 and id in 
             <foreach collection="list" item="id" index="index" open="(" separator="," close=")" >
@@ -87,28 +82,11 @@
       <update id="updateCapital" parameterType="capital">
          UPDATE capital
         <trim prefix="set" suffixOverrides=",">
-            <if test="plate!=null and plate!=''">plate = #{plate},</if>
-            <if test="BU!=null and BU!=''">BU = #{BU},</if>
-            <if test="regionName!=null and regionName!=''">regionName = #{regionName},</if>
-            <if test="province!=null and province!=''">province = #{province},</if>
-            <if test="city!=null and city!=''">city = #{city},</if>
-            <if test="company!=null and company!=''">company = #{company},</if>
-            <if test="accountName!=null and accountName!=''">accountName = #{accountName},</if>
-            <if test="accountBank!=null and accountBank!=''">accountBank = #{accountBank},</if>
-            <if test="account!=null and account!=''">account = #{account},</if>
-            <if test="accountNature!=null and accountNature!=''">accountNature = #{accountNature},</if>
-            <if test="tradeTime!=null and tradeTime!=''"> tradeTime = #{tradeTime},</if>
-            <if test="startBlack!=null and startBlack!=''">startBlack = #{startBlack},</if>
-            <if test="incom!=null and incom!=''">incom = #{incom},</if>
-            <if test="pay!=null and pay!=''">pay = #{pay},</if>
-            <if test="endBlack!=null and endBlack!=''">endBlack = #{endBlack},</if>
-            <if test="abstrac!=null and abstrac!=''">abstrac = #{abstrac},</if>
-            <if test="classify!=null and classify!=''">classify = #{classify},</if>
+            <if test="info!=null and info!=''">info = #{info},</if>
             updateTime= now(),
             <if test="uId!=null and uId!=''">uId = #{uId},</if>
             <if test="year !=null and year!=''">year = #{year},</if>
             <if test="month!=null and month!=''">month = #{month},</if>
-            <if test="remarks!=null and remarks!=''">remarks = #{remarks},</if>
             <if test="status!=null and status!=''"> status = #{status}</if>
         </trim>
          where id = #{id}
@@ -125,57 +103,9 @@
         <if test="id!=null and id!=''">
              and id = #{id}
         </if>
-        <if test=" plate!=null and plate!=''">
-             and plate = #{plate}
+        <if test=" info!=null and info!=''">
+             and info = #{info}
         </if>
-        <if test=" BU!=null and BU!=''">
-             and BU = #{BU}
-        </if>
-        <if test=" regionName!=null and regionName!=''">
-             and regionName = #{regionName}
-        </if>
-        <if test=" province!=null and province!=''">
-             and province = #{province}
-        </if>
-        <if test=" city!=null and city!=''">
-             and city = #{city}
-        </if>
-        <if test=" company!=null and company!=''">
-             and company LIKE CONCAT('%',#{company},'%') 
-        </if>
-        <if test="accountName!=null and accountName!=''">
-             and accountName = #{accountName}
-        </if>
-        <if test="accountBank!=null and accountBank!=''">
-             and accountBank = #{accountBank}
-         </if>
-         <if test="account!=null and account!=''">
-             and account = #{account}
-         </if>
-         <if test="accountNature!=null and accountNature!=''">
-             and accountNature = #{accountNature}
-         </if>
-         <if test="tradeTime!=null and tradeTime!=''">
-             and  tradeTime = #{tradeTime}
-          </if>
-          <if test="startBlack!=null and startBlack!=''">
-             and startBlack = #{startBlack} 
-          </if>
-          <if test="incom!=null and incom!=''">
-             and incom = #{incom}
-          </if>
-          <if test="pay!=null and pay!=''">
-             and pay = #{pay}
-          </if>
-          <if test="endBlack!=null and endBlack!=''">
-             and endBlack = #{endBlack}
-          </if>
-          <if test="abstrac!=null and abstrac!=''">
-             and abstrac = #{abstrac}
-          </if>
-          <if test="classify!=null and classify!=''">
-              and classify = #{classify}
-          </if>
          <if test="createTime!=null and createTime!=''">
             and createTime = #{createTime}
          </if>
@@ -190,9 +120,6 @@
          </if>
          <if test="month!=null and month!=''">
             and month = #{month}
-         </if>
-         <if test="remarks!=null and remarks!=''">
-            and remarks = #{remarks}
          </if>
          <if test="status!=null and status!=''">
             and status = #{status}
