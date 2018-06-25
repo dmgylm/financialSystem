@@ -90,9 +90,6 @@ public class StatementController {
                 if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
                     map.put("sId",Integer.getInteger(request.getParameter("sId")));
                 }
-                if(request.getParameter("orgName")!=null && !request.getParameter("orgName").equals("")){
-                    map.put("orgName",new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
-                }
                 Integer pageSize=0;
                 if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
                     pageSize=Integer.parseInt(request.getParameter("pageSize"));
