@@ -11,7 +11,7 @@ public class Capital {
 	
          private String id;   //资金表id
     	 
-         /*private String plate; //板块
+         private String plate; //板块
          
          private String BU; //事业部
          
@@ -44,9 +44,8 @@ public class Capital {
          private String abstrac; //摘要
          
          private String classify; //项目分类
-          private  String remarks; //备注
-*/    	 
-         private String info;  //字段json
+         
+         private  String remarks; //备注
          
     	 private String createTime; //创建时间
     	 
@@ -65,15 +64,33 @@ public class Capital {
              super();
          }
          
-         public  Capital(String id,String info,String createTime,String updateTime,String uId,
-                 Integer year,Integer month,Integer status){
+         public  Capital(String id,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
+                 String tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
+                 String createTime,String updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
              this.id=id;
-             this.info=info;
+             this.plate=plate;
+             this.BU=BU;
+             this.regionName=regionName;
+             this.province=province;
+             this.city=city;
+             this.company=company;
+             this.accountName=accountName;
+             this.accountBank=accountBank;
+             this.account=account;
+             this.accountNature=accountNature;
+             this.tradeTime=tradeTime;
+             this.startBlack=startBlack;
+             this.incom=incom;
+             this.pay=pay;
+             this.endBlack=endBlack;
+             this.abstrac=abstrac;
+             this.classify=classify;
              this.createTime=createTime;
              this.updateTime=updateTime;
              this.uId=uId;
              this.year=year;
              this.month=month;
+             this.remarks=remarks;
              this.status=status;
          }
     
@@ -133,12 +150,148 @@ public class Capital {
             this.status = status;
         }
 
-        public String getInfo() {
-            return info;
+        public String getPlate() {
+            return plate;
         }
 
-        public void setInfo(String info) {
-            this.info = info;
+        public void setPlate(String plate) {
+            this.plate = plate;
         }
-       
+
+        public String getBU() {
+            return BU;
+        }
+
+        public void setBU(String bU) {
+            BU = bU;
+        }
+
+        public String getRegionName() {
+            return regionName;
+        }
+
+        public void setRegionName(String regionName) {
+            this.regionName = regionName;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getCompany() {
+            return company;
+        }
+
+        public void setCompany(String company) {
+            this.company = company;
+        }
+
+        public String getAccountName() {
+            return accountName;
+        }
+
+        public void setAccountName(String accountName) {
+            this.accountName = accountName;
+        }
+
+        public String getAccountBank() {
+            return accountBank;
+        }
+
+        public void setAccountBank(String accountBank) {
+            this.accountBank = accountBank;
+        }
+
+        public String getAccount() {
+            return account;
+        }
+
+        public void setAccount(String account) {
+            this.account = account;
+        }
+
+        public String getAccountNature() {
+            return accountNature;
+        }
+
+        public void setAccountNature(String accountNature) {
+            this.accountNature = accountNature;
+        }
+
+        public String getTradeTime() {
+            return tradeTime;
+        }
+
+        public void setTradeTime(String tradeTime) {
+            this.tradeTime = tradeTime;
+        }
+
+        public Integer getStartBlack() {
+            return startBlack;
+        }
+
+        public void setStartBlack(Integer startBlack) {
+            this.startBlack = startBlack;
+        }
+
+        public Integer getIncom() {
+            return incom;
+        }
+
+        public void setIncom(Integer incom) {
+            this.incom = incom;
+        }
+
+        public Integer getPay() {
+            return pay;
+        }
+
+        public void setPay(Integer pay) {
+            this.pay = pay;
+        }
+
+        public Integer getEndBlack() {
+            return endBlack;
+        }
+
+        public void setEndBlack(Integer endBlack) {
+            this.endBlack = endBlack;
+        }
+
+        public String getAbstrac() {
+            return abstrac;
+        }
+
+        public void setAbstrac(String abstrac) {
+            this.abstrac = abstrac;
+        }
+
+        public String getClassify() {
+            return classify;
+        }
+
+        public void setClassify(String classify) {
+            this.classify = classify;
+        }
+
+        public String getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(String remarks) {
+            this.remarks = remarks;
+        }
+
 }
