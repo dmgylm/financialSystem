@@ -36,27 +36,34 @@ public class CapitalTest {
     public void insertCapital() throws UnsupportedEncodingException, ParseException {
         Capital capital =new Capital();
         capital.setId(UuidUtil.getUUID());
-        capital.setPlate("1235");
-        capital.setBU("1234");
-        capital.setRegionName("1111");
-        capital.setProvince("1111");
-        capital.setCity("11");
-        capital.setCompany("1");
-        capital.setAccountName("1");
-        capital.setAccountBank("1");
-        capital.setAccount("13445");
-        capital.setAccountNature("123234");
-        capital.setTradeTime("2018-01-02");
-        capital.setStartBlack(1200);
-        capital.setIncom(20000);
-        capital.setPay(8000);
-        capital.setEndBlack(1293);
-        capital.setAbstrac("113");
-        capital.setClassify("123");
+        String plate = "板块1";
+        String BU = "事业部1";
+        String regionName="大区名称1";
+        String province="省份1";
+        String city="城市1";
+        String company="公司1";
+        String accountName="账户名1";
+        String accountBank="开户行1";
+        String account="账户1";
+        String accountNature="账户性质1";
+        String tradeTime="2018-06-21";
+        String startBlack="期初余额";
+        String income="本期收入1";
+        String pay="本期支出1";
+        String endBlack="期末余额1";
+        String abstrac="摘要1";
+        String classify="项目分类1";
+        String remarks="备注1";
+        String json = "{\"plate\":\"" + plate + "\",\"BU\":" + BU+ ",\"regionName\":" + regionName+ ",\"province\":" +province+ ""
+                + ",\"city\":" + city+ ",\"company\":" + company+ ",\"accountName\":" + accountName+ ",\"accountBank\":" + accountBank+ ""
+                + ",\"account\":" + account+ ",\"accountNature\":" + accountNature+ ",\"tradeTime\":" + tradeTime+ ""
+                + ",\"startBlack\":" + startBlack+ ",\"income\":" + income+ ",\"pay\":" + pay+ ",\"endBlack\":" + endBlack+ ""
+                + ",\"abstrac\":" + abstrac+ ",\"classify\":" + classify+ ",\"remarks\":" + remarks+ "}";
+        System.out.println(json);
+        capital.setInfo(json);
         capital.setuId("1234");
         capital.setYear(2018);
         capital.setMonth(6);
-        capital.setRemarks("23455");
         capital.setStatus(1);
         Integer i = capitalServiceImpl.insertCapital(capital);
         System.out.println(i);
@@ -100,10 +107,35 @@ public class CapitalTest {
        /*String info="111";
         info = new String(info.getBytes("ISO-8859-1"), "UTF-8");*/
         Capital capital=new Capital();
-        capital.setId("b5d06e8791de436480d819835e32ab46");
+        capital.setId("46e59822b90445a9b0a13f3d7f053d5b");
+        String plate = "板块3";
+        String BU = "事业部3";
+        String regionName="大区名称3";
+        String province="省份3";
+        String city="城市3";
+        String company="公司3";
+        String accountName="账户名3";
+        String accountBank="开户行3";
+        String account="账户3";
+        String accountNature="账户性质3";
+        String tradeTime="2018-06-21";
+        String startBlack="期初余额3";
+        String income="本期收入3";
+        String pay="本期支出3";
+        String endBlack="期末余额3";
+        String abstrac="摘要3";
+        String classify="项目分类3";
+        String remarks="备注3";
+        String json = "{\"plate\":\"" + plate + "\",\"BU\":" + BU+ ",\"regionName\":" + regionName+ ",\"province\":" +province+ ""
+                + ",\"city\":" + city+ ",\"company\":" + company+ ",\"accountName\":" + accountName+ ",\"accountBank\":" + accountBank+ ""
+                + ",\"account\":" + account+ ",\"accountNature\":" + accountNature+ ",\"tradeTime\":" + tradeTime+ ""
+                + ",\"startBlack\":" + startBlack+ ",\"income\":" + income+ ",\"pay\":" + pay+ ",\"endBlack\":" + endBlack+ ""
+                + ",\"abstrac\":" + abstrac+ ",\"classify\":" + classify+ ",\"remarks\":" + remarks+ "}";
+        System.out.println(json);
+        capital.setInfo(json);
         capital.setuId("9685618f583c416ab835683d1eba09ea");
         capital.setYear(2018);
-        capital.setMonth(1);
+        capital.setMonth(6);
         capital.setStatus(1);
         Integer i = capitalServiceImpl.updateCapital(capital);
             System.out.println("结果"+i);
