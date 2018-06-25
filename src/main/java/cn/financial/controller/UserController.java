@@ -123,6 +123,7 @@ public class UserController {
      * @param response
      */
     //@RequiresRoles("超级管理员")
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
@@ -180,6 +181,7 @@ public class UserController {
      * @param id
      * @return
      */
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse response){
@@ -209,6 +211,7 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
@@ -261,7 +264,7 @@ public class UserController {
      * @param userId
      * @param pwd
      */
-    @RequiresPermissions("user:update")
+    @RequiresPermissions("permission:reset")
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
@@ -300,7 +303,7 @@ public class UserController {
         return dataMap;
     }
     /**
-     * 修改用户
+     * 超级管理员修改用户信息
      * @param request
      * @param response
      * @param name
@@ -309,7 +312,7 @@ public class UserController {
      * @param updateTime
      * @param oId
      */
-    @RequiresPermissions("user:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
@@ -356,12 +359,12 @@ public class UserController {
         return dataMap;
     }
     /**
-     * 删除用户
+     * 超级管理员删除用户
      * @param request
      * @param response
      * @param userId
      */
-    @RequiresPermissions("user:update")
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse response){
@@ -512,7 +515,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("permission:view")
+    @RequiresPermissions({"permission:view","role:view"})
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listUserRole(HttpServletRequest request,HttpServletResponse response){
@@ -539,7 +542,7 @@ public class UserController {
      * @param uid
      * @param rid
      */
-    @RequiresPermissions("permission:create")
+    @RequiresPermissions({"permission:create","role:create"})
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
@@ -587,7 +590,7 @@ public class UserController {
      * @param rid
      * @param updateTime
      */
-    @RequiresPermissions("permission:create")
+    @RequiresPermissions({"permission:update","role:update"})
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateUserRole(HttpServletRequest request,HttpServletResponse response){

@@ -134,7 +134,7 @@ public class ResourceController {
             resource.setUrl(url);
             resource.setPermssion(permssion);
             if(parent != null && !"".equals(parent)){  
-                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"0".equals(parent.getParentId())){
                     resource.setParentId(parent.getParentId()+"/"+parent.getCode());
                 }else{
                     resource.setParentId("1");
@@ -194,7 +194,7 @@ public class ResourceController {
             resource.setUrl(url);
             resource.setPermssion(permssion);
             if(parent != null && !"".equals(parent)){  
-                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+                if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"0".equals(parent.getParentId())){
                     resource.setParentId(parent.getParentId());
                 }else{
                     resource.setParentId("1");
