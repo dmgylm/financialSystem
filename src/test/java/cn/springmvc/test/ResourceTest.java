@@ -17,9 +17,9 @@ import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml","classpath:conf/spring-redis.xml"})
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml","classpath:spring/spring-redis.xml"})
 /**
  * 资源权限表测试
  * @author gs
@@ -32,14 +32,14 @@ public class ResourceTest {
     //新增
     @Test
     public void insertTest() {
-        Resource parent = service.getResourceById("","31");//根据code查询对应功能权限parentId(父id是否存在)
+        Resource parent = service.getResourceById("","1");//根据code查询对应功能权限parentId(父id是否存在)
         Resource resource = new Resource();
         resource.setId(UuidUtil.getUUID());
         resource.setName("6666666666");
-        resource.setUrl("/444444");
+        resource.setUrl("");
         resource.setPermssion("444444");
         if(parent != null && !"".equals(parent)){
-            if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
+            if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"0".equals(parent.getParentId())){
                 resource.setParentId(parent.getParentId()+"/"+parent.getCode());
             }else{
                 resource.setParentId("1");
