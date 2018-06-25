@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
+//import net.sf.json.JSONObject;
 
 /**
  * 组织结构相关操作
