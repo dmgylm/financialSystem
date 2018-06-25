@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.DataModule;
 import cn.financial.service.DataModuleService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import net.sf.json.JSONObject;
 
 @Controller
@@ -51,6 +53,47 @@ public class DataModuleController {
             dataMap.put("resultDesc", "系统错误");
 		}
 		
+		return dataMap;
+	}
+	
+	/**
+	 * 根据ID查询模板
+	 * @param dataModuleId
+	 * @return
+	 */
+	@RequestMapping(value = "/getDataModule")
+    @ResponseBody
+	public Map<String,Object> getDataModule(String dataModuleId){
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		try {
+			DataModule bean = dataModuleService.getDataModule(dataModuleId);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			dataMap.put("dataModule", bean);
+		} catch (Exception e) {
+			logger.error("查询错误",e);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+		}
+		return dataMap;
+	}
+	
+	/**
+	 * 根据报表类型及业务板块查询最新版本模板
+	 * @param reportType
+	 * @param businessType
+	 * @return
+	 */
+	@RequestMapping(value = "/getNewestDataModule")
+	@ResponseBody
+	public Map<String,Object> getNewestDataModule(String reportType,String businessType){
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		try {
+			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			dataMap.put("dataModule", bean);
+		} catch (Exception e) {
+			logger.error("查询错误",e);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+		}
 		return dataMap;
 	}
 	

@@ -26,4 +26,8 @@ public interface DataModuleService {
      * @return
      */
     Integer updateDataModule(String dataModuleId);
+
+	DataModule getDataModule(String dataModuleId);
+
+	DataModule getDataModule(String reportType, String businessType);
 }

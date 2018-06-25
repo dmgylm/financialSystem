@@ -26,6 +26,13 @@ public interface DataModuleDao {
      * @return
      */
     Integer updateDataModule(String dataModuleId);
+
+    /**
+     * 根据ID获取数据模板
+     * @param dataModuleId
+     * @return
+     */
+	DataModule getDataModule(Map<String,Object> params);
     
     
 }
