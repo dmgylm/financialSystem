@@ -25,7 +25,8 @@
 			javaType="string" jdbcType="VARCHAR"></result>
 		<result property="orgkey" column="orgkey" javaType="string"
 			jdbcType="VARCHAR"></result>
-
+        <result property="orgType" column="orgType" javaType="int"
+            jdbcType="INTEGER"></result>
 	</resultMap>
 
 	<!-- 新增组织结构节点信息 -->
@@ -48,7 +49,7 @@
 	<!--查询该节点以及节点以下的 -->
 	<select id="listOrganization" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -58,7 +59,7 @@
 
 	<select id="listOrganizationcode" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -86,7 +87,7 @@
 	<select id="listOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -98,7 +99,7 @@
 	<select id="listAllOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -128,6 +129,12 @@
 			<if test="his_permission!=null and his_permission!=''">
 				his_permission = #{his_permission,jdbcType=VARCHAR},
 			</if>
+			<!-- <if test="orgkey!=null and orgkey!=''">
+                orgkey = #{orgkey,jdbcType=VARCHAR},
+            </if> -->
+			<if test="orgType!=null and orgType!=''">
+                orgType = #{orgType,jdbcType=INTEGER},
+            </if>
 			updateTime = now()
 		</trim>
 		where
@@ -164,7 +171,7 @@
 	<select id="listTreeByCodeForSon"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -177,7 +184,7 @@
 	<select id="listTreeByCodeForParent"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
@@ -216,12 +223,15 @@
 		<if test="his_permission!=null and his_permission!=''">
 			and his_permission = #{his_permission,jdbcType=VARCHAR}
 		</if>
+		<if test="orgType!=null and orgType!=''">
+            orgType = #{orgType,jdbcType=INTEGER},
+        </if>
 	</sql>
 
 	<!-- 获取组织机构为公司的数据 -->
 	<select id="getCompany" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
 		from
 		organization
 		where
