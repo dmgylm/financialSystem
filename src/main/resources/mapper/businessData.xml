@@ -22,7 +22,7 @@
        </resultMap> 
           
        <!--新增损益数据 -->
-       <insert id="insertStatement" parameterType="businessData" keyProperty="id">
+       <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
             insert into businessData(id,oId,info,createTime,typeId,uId,year,month,status,delStatus,sId)
             values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId})
        </insert>
@@ -37,7 +37,7 @@
        </select>
        
       <!--  根据id查询损益数据 -->
-       <select id="selectStatementById" parameterType="String" resultMap="businessData" >
+       <select id="selectBusinessDataById" parameterType="String" resultMap="businessData" >
            SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
            FROM businessData
            WHERE id = #{id} and delStatus=1
@@ -45,7 +45,7 @@
        </select>
        
        <!-- 根据条件查询损益数据 -->
-       <select id="listStatementBy" parameterType="map" resultType="businessData">
+       <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
          SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,s.sId,o.orgName
          FROM businessData s,organization o
          WHERE s.delStatus=1 AND s.oId=o.id
@@ -55,7 +55,7 @@
        </select>
        
        <!-- 根据条件修改损益数据 -->
-      <update id="updateStatement" parameterType="businessData">
+      <update id="updateBusinessData" parameterType="businessData">
         update businessData
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">oId = #{oId},</if>
@@ -72,7 +72,7 @@
       </update>
       
       <!-- 删除用户  status=0 -->
-      <update id="deleteStatement">
+      <update id="deleteBusinessData">
         UPDATE businessData SET delStatus=0 WHERE id=#{id}
       </update>
     
