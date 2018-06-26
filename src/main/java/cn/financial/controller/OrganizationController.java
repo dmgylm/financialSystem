@@ -166,7 +166,7 @@ public class OrganizationController {
     }
 
     /**
-     * 停用(级联停用，将此节点下的所有子节点停用)，根据组织结构ID修改状态为0，即已停用
+     * 停用(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)，根据组织结构ID修改状态为0，即已停用
      * 
      * @param request
      * @return
@@ -180,12 +180,20 @@ public class OrganizationController {
             Integer i = 0;
             User user = (User) request.getAttribute("user");
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                i = organizationService.deleteOrganizationByStatusCascade(user.getId(), request.getParameter("id"));
-            }
-            if (Integer.valueOf(1).equals(i)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                // 这里判断此节点下是否存在没有被停用的节点。
+                HashMap<Object, Object> mmp = new HashMap<Object, Object>();
+                mmp.put("id", request.getParameter("id"));
+                Boolean boolean1 = organizationService.hasOrganizationSon(mmp);
+                if (!boolean1) {
+                    i = organizationService.deleteOrganizationById(request.getParameter("id"), user);
+                    if (Integer.valueOf(1).equals(i)) {
+                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    } else {
+                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                    }
+                } else {
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE));
+                }
             }
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
