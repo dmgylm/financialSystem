@@ -5,7 +5,7 @@ package cn.financial.model;
  * @author lmn
  *
  */
-public class Statement {
+public class BusinessData {
 	
         private String id;   //损益表id
             	 
@@ -31,11 +31,11 @@ public class Statement {
         
         private Integer sId; //1表示损益表   2表示预算表
     
-        public Statement() {
+        public BusinessData() {
             super();
         }
         
-        public  Statement(String id,String oId,String info,String createTime,String updateTime,
+        public  BusinessData(String id,String oId,String info,String createTime,String updateTime,
                 String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId){
             this.id=id;
             this.oId=oId;

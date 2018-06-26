@@ -2,11 +2,13 @@ package cn.financial.service.impl;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.financial.dao.StatementDao;
-import cn.financial.model.Statement;
-import cn.financial.service.StatementService;
+
+import cn.financial.dao.BusinessDataDao;
+import cn.financial.model.BusinessData;
+import cn.financial.service.BusinessDataService;
 
 /**
  * 损益表 ServiceImpl
@@ -14,53 +16,53 @@ import cn.financial.service.StatementService;
  *
  */
 @Service("StatementServiceImpl")
-public class StatementServiceImpl implements StatementService{
+public class BusinessDataServiceImpl implements BusinessDataService{
     
             
             @Autowired
-            private StatementDao statementDao;
+            private BusinessDataDao businessData;
 
             /**
              * 新增损益数据
              */
             @Override
-            public Integer insertStatement(Statement statement) {
+            public Integer insertStatement(BusinessData statement) {
                 // TODO Auto-generated method stub
-                return statementDao.insertStatement(statement);
+                return businessData.insertStatement(statement);
             }
 
             /**
              * 修改损益数据
              */
-            public Integer updateStatement(Statement statement) {
-                return statementDao.updateStatement(statement);
+            public Integer updateStatement(BusinessData statement) {
+                return businessData.updateStatement(statement);
             }
 
             /**
              * 查询所有的损益数据
              */
             @Override
-            public List<Statement> getAll() {
+            public List<BusinessData> getAll() {
                 // TODO Auto-generated method stub
-                return statementDao.getAll();
+                return businessData.getAll();
             }
 
             /**
              * 根据id查询损益数据
              */
             @Override
-            public Statement selectStatementById(String id) {
+            public BusinessData selectStatementById(String id) {
                 // TODO Auto-generated method stub
-                return statementDao.selectStatementById(id);
+                return businessData.selectStatementById(id);
             }
 
             /**
              * 根据条件查询损益数据
              */
             @Override
-            public List<Statement> listStatementBy(Map<Object, Object> map) {
+            public List<BusinessData> listStatementBy(Map<Object, Object> map) {
                 // TODO Auto-generated method stub
-                return statementDao.listStatementBy(map);
+                return businessData.listStatementBy(map);
             }
 
             /**
@@ -69,7 +71,7 @@ public class StatementServiceImpl implements StatementService{
             @Override
             public Integer deleteStatement(String id) {
                 // TODO Auto-generated method stub
-                return statementDao.deleteStatement(id);
+                return businessData.deleteStatement(id);
             }
             
 }

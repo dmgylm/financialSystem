@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.Capital;
-import cn.financial.model.Statement;
+import cn.financial.model.BusinessData;
 import cn.financial.model.User;
-import cn.financial.service.StatementService;
+import cn.financial.service.BusinessDataService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
@@ -29,12 +29,12 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Controller
-@RequestMapping("/statement")
-public class StatementController {
+@RequestMapping("/businessData")
+public class BusinessDataController {
  
     
         @Autowired
-        private  StatementService statementService;
+        private  BusinessDataService statementService;
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
@@ -100,7 +100,7 @@ public class StatementController {
                     start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
                     map.put("start",start);
                 }
-                List<Statement> list = statementService.listStatementBy(map);
+                List<BusinessData> list = statementService.listStatementBy(map);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", list);
             } catch (Exception e) {
@@ -123,7 +123,7 @@ public class StatementController {
         public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                Statement  statement=statementService.selectStatementById(id);
+                BusinessData  statement=statementService.selectStatementById(id);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 
                 dataMap.put("resultData", statement);
@@ -143,7 +143,7 @@ public class StatementController {
          */
         @RequiresPermissions("statement:create")
         @RequestMapping(value="/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertStatement(HttpServletRequest request,Statement statement){
+        public Map<String, Object> insertStatement(HttpServletRequest request,BusinessData statement){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
                 User user = (User) request.getAttribute("user");
@@ -175,7 +175,7 @@ public class StatementController {
          */
         @RequiresPermissions("statement:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        public Map<String, Object> updateStatement(HttpServletRequest request,Statement statement) {
+        public Map<String, Object> updateStatement(HttpServletRequest request,BusinessData statement) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 User user = (User) request.getAttribute("user");

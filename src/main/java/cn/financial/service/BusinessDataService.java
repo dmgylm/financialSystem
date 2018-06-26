@@ -3,20 +3,20 @@ package cn.financial.service;
 import java.util.List;
 import java.util.Map;
 
-import cn.financial.model.Statement;
+import cn.financial.model.BusinessData;
 
 /**
  * 损益表Service
  * @author lmn
  *
  */
-public interface StatementService {
+public interface BusinessDataService {
     /**
      * 新增损益表数据
      * @param statement
      * @return 
      */
-    Integer insertStatement(Statement statement);
+    Integer insertStatement(BusinessData statement);
     
     /**
      * 删除损益数据 （status=0）
@@ -30,25 +30,25 @@ public interface StatementService {
      * @param statement
      * @return
      */
-    Integer updateStatement(Statement statement);  
+    Integer updateStatement(BusinessData statement);  
    
     /**
      * 查询损益表所有的数据
      * @return
      */
-    List<Statement> getAll();
+    List<BusinessData> getAll();
      
     /**
      * 根据id查询损益表数据
      * @param id
      * @return
      */
-    Statement selectStatementById(String id);
+    BusinessData selectStatementById(String id);
      
     /**
      * 根据条件查询损益表数据
      * @param map
      * @return
      */
-    List<Statement> listStatementBy(Map<Object, Object> map);  
+    List<BusinessData> listStatementBy(Map<Object, Object> map);  
 }

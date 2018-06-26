@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
-import cn.financial.model.Statement;
-import cn.financial.service.StatementService;
+import cn.financial.model.BusinessData;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.UuidUtil;
@@ -27,13 +27,13 @@ public class QuartzJob implements Job{
 	
 	private MessageServiceImpl messageService;
 	private OrganizationServiceImpl organizationService;
-	private StatementService statementService;
+	private BusinessDataService statementService;
     protected Logger logger = LoggerFactory.getLogger(QuartzJob.class);
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-		statementService = (StatementService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
+		statementService = (BusinessDataService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
 		List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
 		List<Organization> orgCompany=organizationService.getCompany();
 		Map<Object, Object> map;
@@ -64,7 +64,7 @@ public class QuartzJob implements Job{
 				
 				if( !organizationService.hasOrganizationSon(map) ) {
 				    Organization rog = organizationService.getCompanyNameBySon(orglist.get(i).getId());
-					Statement statement = new Statement();
+					BusinessData statement = new BusinessData();
 			        statement.setId(UuidUtil.getUUID());
 			        statement.setoId(rog.getId());//分公司id
 			        statement.setTypeId(orglist.get(i).getId());//部门（根据部门id查分公司id）

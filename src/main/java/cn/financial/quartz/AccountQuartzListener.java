@@ -15,7 +15,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import cn.financial.model.Budget;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
-import cn.financial.model.Statement;
+import cn.financial.model.BusinessData;
 import cn.financial.model.UserRole;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.impl.UserRoleServiceImpl;
