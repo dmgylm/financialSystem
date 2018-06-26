@@ -64,16 +64,20 @@ public class CapitalTest {
 
     /**
      * 根据条件查资金数据 (不传数据就是查询所有的)
+     * @throws UnsupportedEncodingException 
      */
     @Test
-    public void getAllCapital() {
+    public void getAllCapital() throws UnsupportedEncodingException {
         Map<Object, Object> map = new HashMap<>();
+        map.put("plate","好");
+        map.put("tradeTimeBeg","2018-06-01 00:00:00");
+        map.put("tradeTimeEnd","2018-06-30 00:00:00");
         map.put("pageSize",10);
-        map.put("start",1);
+        map.put("start",0);
         List<Capital> list = capitalServiceImpl.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("第"+(i+1)+"条数据Id是："+list.get(i).getId());
+            System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
         }
     }
 
