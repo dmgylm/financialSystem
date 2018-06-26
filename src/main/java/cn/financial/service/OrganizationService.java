@@ -42,7 +42,7 @@ public interface OrganizationService {
     Integer updateOrganizationById(Map<Object, Object> map);
 
     /**
-     * 接口（根据ID删除组织结构信息）
+     * 接口（根据ID删除组织结构信息(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)）
      * 
      * @param id
      * @return
@@ -90,7 +90,7 @@ public interface OrganizationService {
     Integer moveOrganization(String uId, String id, String parentOrgId);
 
     /**
-     * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门；其他节点只能通过id查询）
+     * 根据条件判断是否该节点存在子节点
      * 
      * @param id
      * @return

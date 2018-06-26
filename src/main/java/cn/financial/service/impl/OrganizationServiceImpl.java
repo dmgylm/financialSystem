@@ -103,7 +103,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             idmap.put("uId", user.getId());
             Integer upInteg = organizationDAO.updateOrganizationById(idmap);
             if (Integer.valueOf(1).equals(upInteg)) {
-                resultInt = organizationDAO.deleteOrganizationById(id);
+                resultInt = organizationDAO.deleteOrganizationByStatus(id);
             }
         }
         return resultInt;
@@ -402,20 +402,21 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据id判断是否该节点存在子节点根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门；
-     * 其他节点只能通过id查询）
+     * 根据条件判断是否该节点存在子节点
      */
     @Override
     public Boolean hasOrganizationSon(Map<Object, Object> map) {
         Boolean flag = false;
         // 查询到当前节点
-        List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(organizationByIds)) {
-            Map<Object, Object> mapp = new HashMap<>();
-            mapp.put("parentId", organizationByIds.get(0).getCode());
-            List<Organization> list = organizationDAO.listOrganizationBy(mapp);
-            if (!CollectionUtils.isEmpty(list)) {
-                flag = true;
+        if (!map.isEmpty() && map.size()>0) {
+            List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(organizationByIds)) {
+                Map<Object, Object> mapp = new HashMap<>();
+                mapp.put("parentId", organizationByIds.get(0).getCode());
+                List<Organization> list = organizationDAO.listOrganizationBy(mapp);
+                if (!CollectionUtils.isEmpty(list)) {
+                    flag = true;
+                }
             }
         }
         return flag;
@@ -426,17 +427,14 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     public Organization getCompanyNameBySon(String id) {
-        List<Organization> parent = listTreeByIdForParent(id);
-        if (!CollectionUtils.isEmpty(parent)) {
-            for (Organization o : parent) {
-                if (o.getOrgName().contains("公司")) {
-                    return o;
-                }
-                if (o.getOrgName().contains("盛世大联保险事业部")) {
-                    return o;
-                }
-                if (o.getOrgName().contains("大客户部业务一部")) {
-                    return o;
+        if (id != null && !"".equals(id)) {
+            List<Organization> parent = listTreeByIdForParent(id);
+            if (!CollectionUtils.isEmpty(parent)) {
+                for (Organization o : parent) {
+                    Integer orgType = o.getOrgType();
+                    if (orgType ==2) {
+                        return o;
+                    }
                 }
             }
         }

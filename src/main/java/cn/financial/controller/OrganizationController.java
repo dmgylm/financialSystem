@@ -26,7 +26,6 @@ import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
-//import net.sf.json.JSONObject;
 
 /**
  * 组织结构相关操作
@@ -64,7 +63,10 @@ public class OrganizationController {
             String uuid = UuidUtil.getUUID();
             organization.setId(uuid);// 组织结构id
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                organization.setOrgName(new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                organization.setOrgName(new String(request.getParameter("orgName").toString().trim().getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+            }
+            if (null != request.getParameter("orgType") && !"".equals(request.getParameter("orgType"))) {
+                organization.setOrgType(Integer.parseInt(request.getParameter("orgType").toString().trim()));// 类别（汇总，公司，部门）
             }
             User user = (User) request.getAttribute("user");
             organization.setuId(user.getId());// 提交人id
@@ -306,7 +308,7 @@ public class OrganizationController {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点（这里的name必须是公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
+     * 根据条件判断是否该节点存在子节点
      * 
      * @param request
      * @param response
