@@ -40,10 +40,11 @@
 		createTime,
 		uId,
 		his_permission,
-		orgkey
+		orgkey,
+		orgType
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR},#{orgkey,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR},#{orgkey,jdbcType=VARCHAR},#{orgType,jdbcType=INTEGER})
 	</insert>
 
 	<!--查询该节点以及节点以下的 -->
@@ -236,8 +237,7 @@
 		organization
 		where
 		status = 1
-		and orgName like '%公司%' or orgName
-		='盛世大联保险事业部' or orgName='大客户部业务一部'
+		and orgType = 2
 	</select>
 
 </mapper>
