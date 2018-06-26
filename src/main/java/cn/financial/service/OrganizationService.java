@@ -6,6 +6,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
+import cn.financial.model.User;
 
 /**
  * 组织结构service接口层
@@ -46,7 +47,7 @@ public interface OrganizationService {
      * @param id
      * @return
      */
-    Integer deleteOrganizationById(String id);
+    Integer deleteOrganizationById(String id, User user);
 
     /**
      * 接口（伪删除 <根据组织结构ID修改状态为0，即已删除> ）,停用(级联停用，将此节点下的所有子节点停用)
@@ -103,13 +104,15 @@ public interface OrganizationService {
      * @return
      */
     Organization getCompanyNameBySon(String id);
+
     /**
      * 获取组织结构为公司的数据
+     * 
      * @return
      */
     List<Organization> getCompany();
 
-	List<Organization> listOrganization(List<String> ids);
+    List<Organization> listOrganization(List<String> ids);
 
-	List<Organization> listOrganizationcode(List<String> listmap);
+    List<Organization> listOrganizationcode(List<String> listmap);
 }
