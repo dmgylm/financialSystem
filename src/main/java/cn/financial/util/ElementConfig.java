@@ -46,4 +46,7 @@ public class ElementConfig {
     
     //工号已存在
     public static final String JOBNUMBER_EXISTENCE = "JOBNUMBER_EXISTENCE";
+    
+    // 此节点下存在未停用的节点，请先停用子节点
+    public static final String ORGANIZA_DELEFALSE = "ORGANIZA_DELEFALSE";
 }
