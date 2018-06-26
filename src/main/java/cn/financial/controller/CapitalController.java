@@ -71,17 +71,34 @@ public class CapitalController {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                //公司名称
-                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
-                    map.put("company",new String(request.getParameter("company").getBytes("ISO-8859-1"), "UTF-8"));
+                if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
+                    map.put("plate",request.getParameter("plate"));
                 }
-                //账户性质
+                if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
+                    map.put("BU",request.getParameter("BU"));
+                }
+                if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
+                    map.put("regionName",request.getParameter("regionName"));
+                }
+                if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
+                    map.put("province",request.getParameter("province"));
+                }
+                if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
+                    map.put("city",request.getParameter("city"));
+                }
                 if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                    map.put("accountNature",new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
+                    map.put("accountNature",request.getParameter("accountNature"));
                 }
-                //项目分类
+                //开始交易日期  
+                if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
+                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));
+                }
+                //结束交易日期
+                if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
+                    map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));
+                }
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                    map.put("classify",new String(request.getParameter("classify").getBytes("ISO-8859-1"), "UTF-8"));
+                    map.put("classify",request.getParameter("classify"));
                 }
                 //提交人
                 if(uId!=null && !uId.equals("")){
@@ -116,7 +133,7 @@ public class CapitalController {
          *           
          * @return
          */
-        @RequiresPermissions("resource:view")
+        @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
@@ -352,7 +369,7 @@ public class CapitalController {
         /***
          * 导入
          */
-       /* @RequiresPermissions("capital:upload")*/
+        @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
         @ResponseBody
         public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
@@ -393,6 +410,13 @@ public class CapitalController {
                       capital.setYear(Calendar.YEAR);
                       capital.setMonth(Calendar.MONTH);
                       capital.setStatus(1);
+                    /*  System.out.println("id:"+capital.getId()+"plate"+capital.getPlate()+"BU:"+capital.getBU()+"RegionName:"
+                       +capital.getRegionName()+"Province:"+capital.getProvince()+"city:"+capital.getCity()+"Company:"
+                       +capital.getCompany()+"AccountName:"+capital.getAccountName()+"AccountBank:"+capital.getAccountBank()+
+                       "Account:"+capital.getAccount()+"AccountNature:"+capital.getAccountNature()+"TradeTime:"+capital.getTradeTime()
+                       +"StartBlack:"+capital.getStartBlack()+"Incom:"+capital.getIncom()+"Pay:"+capital.getPay()
+                       +"EndBlack:"+capital.getEndBlack()+"Abstrac:"+capital.getAbstrac()+"Classify:"+capital.getClassify()
+                       +"Remarks:"+capital.getRemarks()+"uId:"+capital.getuId()+"Year:"+capital.getYear()+"Month:"+capital.getMonth());*/
                       a = capitalService.insertCapital(capital);
                  }
                 if (a == 1) {
