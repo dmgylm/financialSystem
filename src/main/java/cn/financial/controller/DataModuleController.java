@@ -97,9 +97,22 @@ public class DataModuleController {
 		return dataMap;
 	}
 	
-	public Map<String,Object> createDataModule(){
+	/**
+	 * 
+	 * @param reportType 报表类型
+	 * @param businessType 业务类型
+	 * @param html html代码
+	 * @param firstRowNum 横向标题前缀(模块)
+	 * @param secondRowNum 横向标题后缀(科目)
+	 * @param firstColNum 纵向标题前缀
+	 * @param secondColNum 纵向标题后缀
+	 * @return
+	 */
+	public Map<String, Object> editDataModule(String reportType,String businessType,String html, Integer firstRowNum,
+			Integer secondRowNum, Integer firstColNum, Integer secondColNum) {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
+			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
 			dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "成功");
 		} catch (Exception e) {

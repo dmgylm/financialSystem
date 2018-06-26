@@ -3,6 +3,7 @@ package cn.financial.service;
 import java.util.List;
 import java.util.Map;
 
+import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
 
 public interface DataModuleService {
@@ -30,4 +31,8 @@ public interface DataModuleService {
 	DataModule getDataModule(String dataModuleId);
 
 	DataModule getDataModule(String reportType, String businessType);
+
+	void editDataModule(String reportType, String businessType, String html, Integer firstRowNum,
+			Integer secondRowNum, Integer firstColNum, Integer secondColNum) throws FormulaAnalysisException;
+
 }

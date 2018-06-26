@@ -21,11 +21,11 @@ public interface DataModuleDao {
     Integer insertDataModule(DataModule dataModule);
     
     /**
-     * 删除数据模板（即修改模板状态）
+     * 修改模板状态
      * @param dataModuleId
      * @return
      */
-    Integer updateDataModule(String dataModuleId);
+    Integer updateDataModuleState(String dataModuleId);
 
     /**
      * 根据ID获取数据模板
