@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import cn.financial.model.Statement;
-import cn.financial.service.impl.StatementServiceImpl;
+import cn.financial.model.BusinessData;
+import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +22,7 @@ import cn.financial.util.UuidUtil;
 public class StatementTest {
 
     @Autowired
-    private StatementServiceImpl statementService;
+    private BusinessDataServiceImpl businessDataService;
     
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
@@ -35,20 +35,18 @@ public class StatementTest {
     public void insertStatement() throws UnsupportedEncodingException, ParseException {
         String info="第wu个";
         info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
-        Statement statement=new Statement();
-        statement.setId(UuidUtil.getUUID());
-        statement.setoId("5");
-        statement.setInfo(info);
-        statement.setCreateTime("2018-02-18");
-        statement.setUpdateTime("2018-03-20");
-        statement.setTypeId("5");
-        statement.setuId("9685618f583c416ab835683d1eba09ea");
-        statement.setYear(2018);
-        statement.setMonth(3);
-        statement.setStatus(1);
-        statement.setDelStatus(2);
-        statement.setsId(1);
-        Integer i = statementService.insertStatement(statement);
+        BusinessData businessData=new BusinessData();
+        businessData.setId(UuidUtil.getUUID());
+        businessData.setoId("5");
+        businessData.setInfo(info);
+        businessData.setTypeId("5");
+        businessData.setuId("9685618f583c416ab835683d1eba09ea");
+        businessData.setYear(2018);
+        businessData.setMonth(3);
+        businessData.setStatus(1);
+        businessData.setDelStatus(2);
+        businessData.setsId(1);
+        Integer i = businessDataService.insertBusinessData(businessData);
         System.out.println(i);
     }
 
@@ -60,12 +58,11 @@ public class StatementTest {
         Map<Object, Object> map = new HashMap<Object, Object>();
         map.put("pageSize",10);
         map.put("start",1);
-        List<Statement> list = statementService.listStatementBy(map);
+        List<BusinessData> list = businessDataService.listBusinessDataBy(map);
         System.out.println(list.size());
         for (int i = 0; i < list.size(); i++) {
             System.out.println("开始"+list.get(i).getId()+"--"+list.get(i).getoId()+"--"
-                     +list.get(i).getInfo()+"--"+sdf.format(list.get(i).getCreateTime())+"--"
-                     +sdf.format(list.get(i).getUpdateTime())+"--"+list.get(i).getTypeId()+"--"
+                     +list.get(i).getInfo()+"--"+"--"+list.get(i).getTypeId()+"--"
                      +list.get(i).getuId()+"--"+list.get(i).getYear()+"--"
                      +list.get(i).getMonth()+"--"+list.get(i).getStatus());
             
@@ -77,11 +74,10 @@ public class StatementTest {
      */
     @Test
     public void getStatementById(){
-        String id = "2";
-        Statement statement = statementService.selectStatementById(id);
+        String id = "ca85a6e99b8949a886ee50efac06ab06";
+        BusinessData statement = businessDataService.selectBusinessDataById(id);
         System.out.println("开始"+statement.getId()+"--"+statement.getoId()+"--"
-                +statement.getInfo()+"--"+sdf.format(statement.getCreateTime())+"--"
-                +sdf.format(statement.getUpdateTime())+"--"+statement.getTypeId()+"--"
+                +statement.getInfo()+"--"+"--"+statement.getTypeId()+"--"
                 +statement.getuId()+"--"+statement.getYear()+"--"
                 +statement.getMonth()+"--"+statement.getStatus());
     }
@@ -95,19 +91,17 @@ public class StatementTest {
     public void updateStatement() throws UnsupportedEncodingException, ParseException {
         String info="第2个";
         info = new String(info.getBytes("ISO-8859-1"), "UTF-8");
-        Statement statement=new Statement();
+        BusinessData statement=new BusinessData();
         statement.setId("2");
         statement.setoId("5");
         statement.setInfo(info);
-        statement.setCreateTime("2018-02-18");
-        statement.setUpdateTime("2018-03-20");
         statement.setTypeId("5");
         statement.setuId("9685618f583c416ab835683d1eba09ea");
         statement.setYear(2018);
         statement.setMonth(3);
         statement.setStatus(1);
         statement.setsId(1);
-        Integer i = statementService.updateStatement(statement);
+        Integer i = businessDataService.updateBusinessData(statement);
             System.out.println("结果"+i);
      }
 
@@ -118,7 +112,7 @@ public class StatementTest {
      */
     @Test
     public void deleteStatement(){
-        Integer i = statementService.deleteStatement("2");
+        Integer i = businessDataService.deleteBusinessData("2");
          System.out.println("结果"+i);
     }
 
