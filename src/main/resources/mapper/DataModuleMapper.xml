@@ -48,12 +48,8 @@
 		 </trim>
 		 WHERE id=#{id}
     </update> -->
-    <!--删除用户（状态为0，即已删除）-->
-    <!-- <delete id="deleteUser" parameterType="STRING">
-         DELETE FROM user WHERE id = #{userId}
-    </delete> -->
-    <update id="updateDataModule">
-        UPDATE dataModule SET versionNumber=versionNumber+1,updateTime = curdate() WHERE id=#{id}
+    <update id="updateDataModuleState">
+        UPDATE dataModule SET state=0,updateTime = curdate() WHERE id=#{id}
     </update>
     
     <!--定义一个sql片段 -->
