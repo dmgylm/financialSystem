@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +13,17 @@ import cn.financial.dao.DataModuleDao;
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
 import cn.financial.service.DataModuleService;
+import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
-import cn.financial.util.StringUtils;
 
 @Service("DataModuleServiceImpl")
 public class DataModuleServiceImpl implements DataModuleService{
 
 	@Autowired
 	private DataModuleDao dataModuleDao;
+	
+	@Autowired
+	private RedisCacheService redisCacheService;
 	
 	/**
 	 * 获取模板列表
@@ -84,6 +86,8 @@ public class DataModuleServiceImpl implements DataModuleService{
 		bean.setModuleData(json);
 		bean.setStatue(DataModule.STATUS_CONSUMED);
 		dataModuleDao.insertDataModule(bean);
+		//清除数据模板缓存
+		redisCacheService.removeAll("dataModule");
 	}
 	
 }
