@@ -12,67 +12,61 @@ import cn.financial.service.BusinessDataService;
 
 /**
  * 损益表 ServiceImpl
+ * 
  * @author lmn
  *
  */
-@Service("StatementServiceImpl")
-public class BusinessDataServiceImpl implements BusinessDataService{
-    
-            
-            @Autowired
-            private BusinessDataDao businessData;
+@Service("BusinessDataServiceImpl")
+public class BusinessDataServiceImpl implements BusinessDataService {
 
-            /**
-             * 新增损益数据
-             */
-            @Override
-            public Integer insertStatement(BusinessData statement) {
-                // TODO Auto-generated method stub
-                return businessData.insertStatement(statement);
-            }
+	@Autowired
+	private BusinessDataDao businessDataDao;
 
-            /**
-             * 修改损益数据
-             */
-            public Integer updateStatement(BusinessData statement) {
-                return businessData.updateStatement(statement);
-            }
+	/**
+	 * 新增损益数据
+	 */
+	@Override
+	public Integer insertBusinessData(BusinessData businessData) {
+		return businessDataDao.insertBusinessData(businessData);
+	}
 
-            /**
-             * 查询所有的损益数据
-             */
-            @Override
-            public List<BusinessData> getAll() {
-                // TODO Auto-generated method stub
-                return businessData.getAll();
-            }
+	/**
+	 * 修改损益数据
+	 */
+	public Integer updateBusinessData(BusinessData statement) {
+		return businessDataDao.updateBusinessData(statement);
+	}
 
-            /**
-             * 根据id查询损益数据
-             */
-            @Override
-            public BusinessData selectStatementById(String id) {
-                // TODO Auto-generated method stub
-                return businessData.selectStatementById(id);
-            }
+	/**
+	 * 查询所有的损益数据
+	 */
+	@Override
+	public List<BusinessData> getAll() {
+		return businessDataDao.getAll();
+	}
 
-            /**
-             * 根据条件查询损益数据
-             */
-            @Override
-            public List<BusinessData> listStatementBy(Map<Object, Object> map) {
-                // TODO Auto-generated method stub
-                return businessData.listStatementBy(map);
-            }
+	/**
+	 * 根据id查询损益数据
+	 */
+	@Override
+	public BusinessData selectBusinessDataById(String id) {
+		return businessDataDao.selectBusinessDataById(id);
+	}
 
-            /**
-             * 删除损益数据
-             */
-            @Override
-            public Integer deleteStatement(String id) {
-                // TODO Auto-generated method stub
-                return businessData.deleteStatement(id);
-            }
-            
+	/**
+	 * 根据条件查询损益数据
+	 */
+	@Override
+	public List<BusinessData> listBusinessDataBy(Map<Object, Object> map) {
+		return businessDataDao.listBusinessDataBy(map);
+	}
+
+	/**
+	 * 删除损益数据
+	 */
+	@Override
+	public Integer deleteBusinessData(String id) {
+		return businessDataDao.deleteBusinessData(id);
+	}
+
 }
- 

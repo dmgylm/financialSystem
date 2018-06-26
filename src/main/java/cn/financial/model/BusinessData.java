@@ -1,5 +1,7 @@
 package cn.financial.model;
 
+import java.util.Date;
+
 /**
  * 损益表model
  * @author lmn
@@ -13,13 +15,15 @@ public class BusinessData {
             	 
         private String info;  //内容
             	 
-        private String createTime; //创建时间
+        private Date createTime; //创建时间
             	 
-        private String updateTime; //更新时间
+        private Date updateTime; //更新时间
             	 
         private String typeId;    //版块Id(来源于组织结构表）
             	 
         private String uId; // 提交人id
+
+        private String dataModuleId; // 提交人id
             	
         private Integer year;   //年份
             	 
@@ -35,7 +39,7 @@ public class BusinessData {
             super();
         }
         
-        public  BusinessData(String id,String oId,String info,String createTime,String updateTime,
+        public  BusinessData(String id,String oId,String info,Date createTime,Date updateTime,
                 String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId){
             this.id=id;
             this.oId=oId;
@@ -76,21 +80,6 @@ public class BusinessData {
     	}
     
     
-    	public String getCreateTime() {
-            return createTime;
-        }
-
-        public void setCreateTime(String createTime) {
-            this.createTime = createTime;
-        }
-
-        public String getUpdateTime() {
-            return updateTime;
-        }
-
-        public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
-        }
 
         public String getTypeId() {
     		return typeId;
@@ -147,6 +136,30 @@ public class BusinessData {
         public void setsId(Integer sId) {
             this.sId = sId;
         }
+
+		public String getDataModuleId() {
+			return dataModuleId;
+		}
+
+		public void setDataModuleId(String dataModuleId) {
+			this.dataModuleId = dataModuleId;
+		}
+
+		public Date getCreateTime() {
+			return createTime;
+		}
+
+		public void setCreateTime(Date createTime) {
+			this.createTime = createTime;
+		}
+
+		public Date getUpdateTime() {
+			return updateTime;
+		}
+
+		public void setUpdateTime(Date updateTime) {
+			this.updateTime = updateTime;
+		}
         
 
 }

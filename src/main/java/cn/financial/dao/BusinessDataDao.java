@@ -13,24 +13,24 @@ public interface BusinessDataDao {
     
     /**
      * 新增损益表数据
-     * @param statement
+     * @param businessData
      * @return 
      */
-    Integer insertStatement(BusinessData statement);
+    Integer insertBusinessData(BusinessData businessData);
     
     /**
      * 删除损益数据 （status=0）
-     * @param statement
+     * @param businessData
      * @return
      */
-    Integer deleteStatement(String id);
+    Integer deleteBusinessData(String id);
     
     /**
      * 修改损益表数据
-     * @param statement
+     * @param businessData
      * @return
      */
-    Integer updateStatement(BusinessData statement);  
+    Integer updateBusinessData(BusinessData businessData);  
    
     /**
      * 查询损益表所有的数据
@@ -43,13 +43,13 @@ public interface BusinessDataDao {
      * @param id
      * @return
      */
-    BusinessData selectStatementById(String id);
+    BusinessData selectBusinessDataById(String id);
      
     /**
      * 根据条件查询损益表数据
      * @param map
      * @return
      */
-    List<BusinessData> listStatementBy(Map<Object, Object> map);       
+    List<BusinessData> listBusinessDataBy(Map<Object, Object> map);       
                
 }

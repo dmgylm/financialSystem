@@ -34,7 +34,7 @@ public class BusinessDataController {
  
     
         @Autowired
-        private  BusinessDataService statementService;
+        private  BusinessDataService businessDataService;
 
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
@@ -46,9 +46,9 @@ public class BusinessDataController {
          *            
          * @return
          */
-        @RequiresPermissions("statement:view")
+        @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        public Map<String, Object> listStatementBy(HttpServletRequest request) {
+        public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Map<Object, Object> map = new HashMap<>();
@@ -100,7 +100,7 @@ public class BusinessDataController {
                     start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
                     map.put("start",start);
                 }
-                List<BusinessData> list = statementService.listStatementBy(map);
+                List<BusinessData> list = businessDataService.listBusinessDataBy(map);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", list);
             } catch (Exception e) {
@@ -118,15 +118,15 @@ public class BusinessDataController {
          *           
          * @return
          */
-        @RequiresPermissions("statement:view")
+        @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
-        public Map<String, Object> selectStatementById(HttpServletRequest request, String id) {
+        public Map<String, Object> selectBusinessDataById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                BusinessData  statement=statementService.selectStatementById(id);
+                BusinessData  businessData=businessDataService.selectBusinessDataById(id);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 
-                dataMap.put("resultData", statement);
+                dataMap.put("resultData", businessData);
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 
@@ -141,18 +141,18 @@ public class BusinessDataController {
          * @param response
          * @return
          */
-        @RequiresPermissions("statement:create")
+        @RequiresPermissions("businessData:create")
         @RequestMapping(value="/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertStatement(HttpServletRequest request,BusinessData statement){
+        public Map<String, Object> insertBusinessData(HttpServletRequest request,BusinessData businessData){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                statement.setId(UuidUtil.getUUID());
-                statement.setuId(uId);
-                statement.setStatus(2);
-                statement.setDelStatus(1);
-                Integer i = statementService.insertStatement(statement);
+                businessData.setId(UuidUtil.getUUID());
+                businessData.setuId(uId);
+                businessData.setStatus(2);
+                businessData.setDelStatus(1);
+                Integer i = businessDataService.insertBusinessData(businessData);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                     
@@ -173,16 +173,16 @@ public class BusinessDataController {
          * @param request
          * @return
          */
-        @RequiresPermissions("statement:update")
+        @RequiresPermissions("businessData:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        public Map<String, Object> updateStatement(HttpServletRequest request,BusinessData statement) {
+        public Map<String, Object> updateBusinessData(HttpServletRequest request,BusinessData businessData) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                statement.setuId(uId);
-                statement.setDelStatus(1);
-                Integer i = statementService.updateStatement(statement);
+                businessData.setuId(uId);
+                businessData.setDelStatus(1);
+                Integer i = businessDataService.updateBusinessData(businessData);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                     
@@ -203,13 +203,13 @@ public class BusinessDataController {
          * @param request
          * @return
          */
-        @RequiresPermissions("statement:update")
+        @RequiresPermissions("businessData:update")
         @RequestMapping(value="/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
             String id = request.getParameter("id");
             try {
-                Integer i =statementService.deleteStatement(id);
+                Integer i =businessDataService.deleteBusinessData(id);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                     
@@ -230,14 +230,14 @@ public class BusinessDataController {
          * @param response
          * @throws Exception 
          *//*
-        @RequiresPermissions("statement:download")
+        @RequiresPermissions("businessData:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response,String id) throws Exception{
             OutputStream os = null;
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                Statement  statement=statementService.selectStatementById(id);
+                BusinessData  statement=statementService.selectStatementById(id);
                 List<String[]> strList=new ArrayList<>();
                 String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};

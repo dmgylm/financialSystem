@@ -81,7 +81,7 @@ public class QuartzBudget implements Job{
                 statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
                 statement.setDelStatus(1);
                 statement.setsId(2);//1表示损益表   2表示预算表
-                Integer flag = statementService.insertStatement(statement);
+                Integer flag = statementService.insertBusinessData(statement);
 	            if (flag != 1) {
 	            	 logger.error("预算报表数据新增失败");
 	            	}
