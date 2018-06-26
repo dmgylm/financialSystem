@@ -359,12 +359,12 @@ public class UserController {
         return dataMap;
     }
     /**
-     * 超级管理员删除用户
+     * 管理员删除用户(停用)
      * @param request
      * @param response
      * @param userId
      */
-    @RequiresPermissions("permission:update")
+    @RequiresPermissions("permission:stop")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse response){
