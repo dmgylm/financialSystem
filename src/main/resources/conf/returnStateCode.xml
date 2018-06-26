@@ -64,4 +64,9 @@
         <code>212</code>
         <description>工号已存在</description>
     </Result>
+    
+    <Result name="ORGANIZA_DELEFALSE">
+        <code>213</code>
+        <description>此节点下存在未停用的节点，请先停用子节点</description>
+    </Result>
 </StateCode>
