@@ -62,12 +62,23 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT plate,BU,regionName,province,city,accountNature,tradeTime,classify,status 
+         SELECT plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,uId,remarks,status 
          FROM capital
          WHERE status=1 
          <include refid="query_capital_where"></include>
          ORDER BY tradeTime DESC
          LIMIT #{start},#{pageSize}
+       </select>
+       
+        <!-- 根据条件查询资金数据-->
+       <select id="getAllCapital" parameterType="map" resultType="Capital">
+         SELECT plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,uId,remarks,status 
+         FROM capital
+         WHERE status=1 
+         <include refid="query_capital_where"></include>
+         ORDER BY tradeTime DESC
        </select>
        
        <!--导出根据多个id查询 -->
@@ -121,9 +132,7 @@
       
       <!--定义一个sql -->
      <sql id="query_capital_where">
-       <!--  <if test="id!=null and id!=''">
-             and id = #{id}
-        </if> -->
+     
         <if test=" plate!=null and plate!=''">
              and plate LIKE CONCAT('%',#{plate},'%')
              <!--  = like '%#{plate}%' -->
@@ -140,60 +149,48 @@
         <if test=" city!=null and city!=''">
              and city =  LIKE CONCAT('%',#{city},'%') 
         </if>
-       <!--  <if test=" company!=null and company!=''">
+        <if test=" company!=null and company!=''">
              and company LIKE CONCAT('%',#{company},'%') 
         </if>
         <if test="accountName!=null and accountName!=''">
-             and accountName = #{accountName}
+             and accountName LIKE CONCAT('%',#{accountName},'%')
         </if>
         <if test="accountBank!=null and accountBank!=''">
-             and accountBank = #{accountBank}
+             and accountBank LIKE CONCAT('%',#{accountBank},'%')
          </if>
          <if test="account!=null and account!=''">
-             and account = #{account}
-         </if> -->
+             and account LIKE CONCAT('%',#{account},'%')
+         </if> 
          <if test="accountNature!=null and accountNature!=''">
              and accountNature LIKE CONCAT('%',#{accountNature},'%')
          </if>
          <if test="tradeTime!=null and tradeTime!=''">
              and  tradeTime = tradeTime between '#{tradeTimeBeg}' and '#{tradeTimeEnd}'
           </if>
-          <!-- <if test="startBlack!=null and startBlack!=''">
-             and startBlack = #{startBlack} 
+          <if test="startBlack!=null and startBlack!=''">
+             and startBlack LIKE CONCAT('%',#{startBlack},'%') 
           </if>
           <if test="incom!=null and incom!=''">
-             and incom = #{incom}
+             and incom LIKE CONCAT('%',#{incom},'%')
           </if>
           <if test="pay!=null and pay!=''">
-             and pay = #{pay}
+             and pay LIKE CONCAT('%',#{pay},'%')
           </if>
           <if test="endBlack!=null and endBlack!=''">
-             and endBlack = #{endBlack}
+             and endBlack LIKE CONCAT('%',#{endBlack},'%')
           </if>
           <if test="abstrac!=null and abstrac!=''">
-             and abstrac = #{abstrac}
-          </if> -->
+             and abstrac LIKE CONCAT('%',#{abstrac},'%')
+          </if> 
           <if test="classify!=null and classify!=''">
               and classify LIKE CONCAT('%',#{classify},'%')
           </if>
-        <!--  <if test="createTime!=null and createTime!=''">
-            and createTime = #{createTime}
-         </if>
-         <if test="updateTime!=null and updateTime!=''">
-            and updateTime=#{updateTime}
-         </if> -->
          <if test="uId!=null and uId!=''">
             and uId = #{uId}
          </if>
-         <!-- <if test="year !=null and year!=''">
-            and year = #{year}
-         </if>
-         <if test="month!=null and month!=''">
-            and month = #{month}
-         </if>
          <if test="remarks!=null and remarks!=''">
-            and remarks = #{remarks}
-         </if> -->
+            and remarks LIKE CONCAT('%',#{remarks},'%')
+         </if>
          <!-- <if test="status!=null and status!=''">
             and status = #{status}
          </if> -->
