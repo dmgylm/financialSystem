@@ -5,6 +5,26 @@ public class DataModule {
 	public final static int STATUS_NOVALID = 0;	//无效
 	
 	public final static int STATUS_CONSUMED = 1;	//有效
+	
+	/**
+	 * 损益
+	 */
+	public final static String REPORT_TYPE_PROFIT_LOSS = "PROFIT_LOSS";
+
+	/**
+	 * 税金
+	 */
+	public final static String REPORT_TYPE_TAX = "TAX";
+
+	/**
+	 * 考核
+	 */
+	public final static String REPORT_TYPE_ASSESSMENT = "ASSESSMENT";
+
+	/**
+	 * 预算
+	 */
+	public final static String REPORT_TYPE_BUDGET = "BUDGET";
 
 	private String id;
 	
