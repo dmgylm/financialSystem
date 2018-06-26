@@ -11,15 +11,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSON;
 
 import cn.financial.model.Organization;
+import cn.financial.model.User;
 import cn.financial.service.impl.OrganizationServiceImpl;
+import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.JsonToHtmlUtil;
-import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -50,10 +48,11 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("测试111");
+        organization2.setOrgName("测试iudhuashduasudhi");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
         organization2.setOrgkey(UuidUtil.getUUID());
-        Integer i = service.saveOrganization(organization2, "0801ba63b13245339cc1bc6737054088");
+        organization2.setOrgType(2);
+        Integer i = service.saveOrganization(organization2, "d54707e3330c42c58250bbfa0fbc00a7");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -104,13 +103,26 @@ public class OrganizationTest {
     }
 
     /**
-     * 伪删除（根据条件删除组织结构信息）(级联删除)
+     * 停用(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "5dd58617f174473888857f389c822c75";
-        Integer i = service.deleteOrganizationByStatusCascade("aa", id);
-        System.out.println(i);
+        String id = "3dbf3bc31e2a45b5af5beb06d62dfccb";
+        HashMap<Object, Object> mmp = new HashMap<Object, Object>();
+        mmp.put("id", id);
+        Boolean boolean1 = service.hasOrganizationSon(mmp);
+        if (!boolean1) {
+            User user = new User();
+            user.setId(id);
+            Integer i = service.deleteOrganizationById(id, user);
+            if (Integer.valueOf(1).equals(i)) {
+                System.out.println(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            } else {
+                System.out.println(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            }
+        } else {
+            System.out.println(ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE));
+        }
     }
 
     /**
@@ -201,15 +213,24 @@ public class OrganizationTest {
     }
 
     /**
-     * 根据id或者name判断是否该节点存在子节点（这里的name主要是指公司名称，查询该公司是否有部门； 其他节点只能通过id查询）
+     * 根据条件判断是否该节点存在子节点
      */
     @Test
     public void hasOrganizationSon() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("id", "3bc0148a12064532b4f0fef4ba08aa6d");// 组织id
+        map.put("id", "d54707e3330c42c58250bbfa0fbc00a7");// 组织id
         // map.put("orgName", "上市");// 组织架构名
         Boolean boolean1 = service.hasOrganizationSon(map);
         System.out.println(boolean1);
+    }
+    
+    /**
+     * 根据条件判断是否该节点存在子节点
+     */
+    @Test
+    public void getCompany() {
+        List<Organization> list = service.getCompany();
+        System.out.println(list.toString());
     }
 
     /**
