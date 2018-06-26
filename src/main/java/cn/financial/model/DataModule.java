@@ -47,6 +47,28 @@ public class DataModule {
 	private String createTime; // 创建时间
 
     private String updateTime; // 更新时间
+    
+    public static String getReprtTypeName(String reportType){
+    	String reportTypeName = null;
+    	switch (reportType) {
+    	case REPORT_TYPE_PROFIT_LOSS:
+    		reportTypeName = "损益";
+    		break;
+    	case REPORT_TYPE_TAX:
+    		reportTypeName = "税金";
+    		break;
+    	case REPORT_TYPE_ASSESSMENT:
+    		reportTypeName = "考核";
+    		break;
+    	case REPORT_TYPE_BUDGET:
+    		reportTypeName = "预算";
+    		break;
+
+		default:
+			break;
+		}
+    	return reportTypeName;
+    }
 
 	public String getId() {
 		return id;

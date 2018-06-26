@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.financial.dao.DataModuleDao;
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
+import cn.financial.model.Organization;
 import cn.financial.service.DataModuleService;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
 
@@ -24,6 +26,9 @@ public class DataModuleServiceImpl implements DataModuleService{
 	
 	@Autowired
 	private RedisCacheService redisCacheService;
+	
+	@Autowired
+	private OrganizationService organizationService;
 	
 	/**
 	 * 获取模板列表
@@ -81,13 +86,27 @@ public class DataModuleServiceImpl implements DataModuleService{
 		
 		DataModule bean = new DataModule();
 		bean.setVersionNumber(String.valueOf(versionNumber+1));
-		bean.setBusinessType(businessType);
 		bean.setReportType(reportType);
+		bean.setBusinessType(businessType);
 		bean.setModuleData(json);
 		bean.setStatue(DataModule.STATUS_CONSUMED);
+		bean.setModuleName(getDataModuleName(reportType,businessType));
 		dataModuleDao.insertDataModule(bean);
 		//清除数据模板缓存
 		redisCacheService.removeAll("dataModule");
 	}
+
+	/**
+	 * 生成模板名称
+	 * @param reportType
+	 * @param businessType
+	 * @return
+	 */
+	private String getDataModuleName(String reportType, String businessType) {
+		Organization org = organizationService.getCompanyNameBySon(businessType);
+		String reportTypeName = DataModule.getReprtTypeName(reportType);
+		return org + reportTypeName;
+	}
+	
 	
 }
