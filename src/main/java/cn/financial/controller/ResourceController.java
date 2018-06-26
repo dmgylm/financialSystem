@@ -43,7 +43,7 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("permission:view")
+    @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
@@ -79,7 +79,7 @@ public class ResourceController {
      * @param resourceId
      * @return
      */
-    @RequiresPermissions("permission:view")
+    @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
@@ -104,7 +104,7 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("permission:create")
+    @RequiresPermissions("jurisdiction:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
@@ -160,7 +160,7 @@ public class ResourceController {
      * @param request
      * @param response
      */
-    @RequiresPermissions("permission:update")
+    @RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
@@ -221,7 +221,7 @@ public class ResourceController {
      * @param response
      * @param resourceId
      */
-    @RequiresPermissions("permission:update")
+    /*@RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
@@ -243,5 +243,5 @@ public class ResourceController {
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
-    }
+    }*/
 }

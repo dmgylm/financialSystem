@@ -170,7 +170,7 @@ public class RoleController {
      * @param response
      * @param roleId
      */
-    @RequiresPermissions("role:update")
+    /*@RequiresPermissions("role:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
@@ -192,14 +192,14 @@ public class RoleController {
             this.logger.error(e.getMessage(), e);
         }  
         return dataMap;
-    }
+    }*/
     
     /**
      * 查询所有/根据角色id查对应的功能权限(角色功能权限关联表)
      * @param request
      * @param response
      */
-    @RequiresPermissions({"permission:view","role:view"})
+    @RequiresPermissions({"jurisdiction:view","role:view"})
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
@@ -227,7 +227,7 @@ public class RoleController {
      * @param rid
      * @param createTime
      */
-    @RequiresPermissions({"permission:create","role:create"})
+    @RequiresPermissions({"jurisdiction:create","role:create"})
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
@@ -276,7 +276,7 @@ public class RoleController {
      * @param rid
      * @param updateTime
      */
-    /*@RequiresPermissions({"permission:update","role:update"})
+    @RequiresPermissions({"jurisdiction:update","role:update"})
     @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateRoleResource(HttpServletRequest request,HttpServletResponse response){
@@ -320,5 +320,5 @@ public class RoleController {
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
-    }*/
+    }
 }
