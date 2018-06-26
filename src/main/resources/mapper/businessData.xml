@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.financial.dao.StatementDao">
+<mapper namespace="cn.financial.dao.BusinessDataDao">
      
-       <resultMap id="statement" type="cn.financial.model.Statement">
+       <resultMap id="businessData" type="cn.financial.model.BusinessData">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="info" property="info"  />
@@ -22,41 +22,41 @@
        </resultMap> 
           
        <!--新增损益数据 -->
-       <insert id="insertStatement" parameterType="statement" keyProperty="id">
-            insert into income_statement(id,oId,info,createTime,typeId,uId,year,month,status,delStatus,sId)
+       <insert id="insertStatement" parameterType="businessData" keyProperty="id">
+            insert into businessData(id,oId,info,createTime,typeId,uId,year,month,status,delStatus,sId)
             values (#{id},#{oId},#{info},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId})
        </insert>
       
       
        <!-- 查询所有的损益数据 -->
-       <select id="getAll" resultMap="statement">  
+       <select id="getAll" resultMap="businessData">  
         select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
-        from  income_statement 
+        from  businessData 
         where delStatus=1 
         ORDER BY createTime DESC
        </select>
        
       <!--  根据id查询损益数据 -->
-       <select id="selectStatementById" parameterType="String" resultMap="statement" >
+       <select id="selectStatementById" parameterType="String" resultMap="businessData" >
            SELECT id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
-           FROM income_statement
+           FROM businessData
            WHERE id = #{id} and delStatus=1
            ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询损益数据 -->
-       <select id="listStatementBy" parameterType="map" resultType="Statement">
+       <select id="listStatementBy" parameterType="map" resultType="businessData">
          SELECT s.id,s.oId,s.info,s.createTime,s.updateTime,s.typeId,s.uId,s.year,s.month,s.status,s.delStatus,s.sId,o.orgName
-         FROM income_statement s,organization o
+         FROM businessData s,organization o
          WHERE s.delStatus=1 AND s.oId=o.id
-         <include refid="query_income_statement_where"></include>
+         <include refid="query_businessData_where"></include>
          ORDER BY createTime DESC
          LIMIT #{start},#{pageSize}
        </select>
        
        <!-- 根据条件修改损益数据 -->
-      <update id="updateStatement" parameterType="statement">
-        update income_statement
+      <update id="updateStatement" parameterType="businessData">
+        update businessData
         <trim prefix="set" suffixOverrides=",">
             <if test=" oId!=null and oId!=''">oId = #{oId},</if>
             <if test="info!=null and info!=''">info = #{info},</if>
@@ -73,11 +73,11 @@
       
       <!-- 删除用户  status=0 -->
       <update id="deleteStatement">
-        UPDATE income_statement SET delStatus=0 WHERE id=#{id}
+        UPDATE businessData SET delStatus=0 WHERE id=#{id}
       </update>
     
       <!--sql-->
-     <sql id="query_income_statement_where">
+     <sql id="query_businessData_where">
         <if test="id!=null and id!=''">
             and s.id = #{id}
         </if>
