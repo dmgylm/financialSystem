@@ -130,11 +130,10 @@ public class OrganizationTest {
      */
     @Test
     public void TreeByOrgId() {
-        long start = System.currentTimeMillis();
-        com.alibaba.fastjson.JSONObject string = service.TreeByIdForSon("");
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
-        System.out.println(string.toString());
+        long start1 = System.currentTimeMillis();
+        com.alibaba.fastjson.JSONObject string1 = service.TreeByIdForSon("");
+        long end1 = System.currentTimeMillis();
+        System.out.println(end1 - start1);
     }
 
     /**
@@ -203,7 +202,8 @@ public class OrganizationTest {
 
     /**
      * 移动组织机构
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     @Test
     public void moveOrganization() {
@@ -223,7 +223,7 @@ public class OrganizationTest {
         Boolean boolean1 = service.hasOrganizationSon(map);
         System.out.println(boolean1);
     }
-    
+
     /**
      * 根据条件判断是否该节点存在子节点
      */
@@ -242,6 +242,34 @@ public class OrganizationTest {
         if (null != organization) {
             System.out.println(organization.toString());
         }
+    }
+
+    /**
+     * 获取所有部门
+     */
+    @Test
+    public void getDep() {
+        long start = System.currentTimeMillis();
+        List<Organization> dep = service.getDep();
+        long end = System.currentTimeMillis();
+        JSONArray fromObject = JSONArray.fromObject(dep);
+        System.out.println(end - start);
+        System.out.println(fromObject);
+        System.out.println(dep.size());
+    }
+    
+    /**
+     * 根据某个节点，查询到父级的某个节点
+     */
+    @Test
+    public void getOrgaUpFromOne() {
+        long start = System.currentTimeMillis();
+        Organization dep = service.getOrgaUpFromOne("e9f092f70b2e423b8cd9598eadf9077e", "94a24264738f42d6ac52d7e8806ba345");
+        JSONObject fromObject = JSONObject.fromObject(dep);
+        System.out.println(fromObject);
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
+//        System.out.println(dep.toString());
     }
 
     /**
