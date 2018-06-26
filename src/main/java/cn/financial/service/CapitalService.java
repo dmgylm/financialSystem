@@ -56,9 +56,9 @@ public interface CapitalService {
     List<Capital> listCapitalBy(Map<Object, Object> map);
     
     /**
-     * 导出根据多个id查询
-     * @param id
+     * 导出所有的查询出的数据
+     * @param map
      * @return
      */
-    List<Capital> listCapitalById(List<String> ids);
+    List<Capital> getAllCapital(Map<Object, Object> map);
 }

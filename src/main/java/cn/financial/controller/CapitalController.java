@@ -72,34 +72,62 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
-                    map.put("plate",request.getParameter("plate"));
+                    map.put("plate",request.getParameter("plate")); //板块
                 }
                 if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
-                    map.put("BU",request.getParameter("BU"));
+                    map.put("BU",request.getParameter("BU"));//事业部
                 }
                 if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
-                    map.put("regionName",request.getParameter("regionName"));
+                    map.put("regionName",request.getParameter("regionName"));//大区名称
                 }
                 if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
-                    map.put("province",request.getParameter("province"));
+                    map.put("province",request.getParameter("province"));//省份
                 }
-                if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                    map.put("city",request.getParameter("city"));
+               /* if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
+                    map.put("city",new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
+                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
+                    map.put("company",request.getParameter("company"));//公司名称
                 }
+                /*if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
+                    map.put("accountName",request.getParameter("accountName"));
+                }*/
+                if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
+                    map.put("accountBank",request.getParameter("accountBank"));//开户行
+                }
+                /*if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
+                    map.put("account",request.getParameter("account"));
+                }*/
                 if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                    map.put("accountNature",request.getParameter("accountNature"));
+                    map.put("accountNature",request.getParameter("accountNature"));//账户性质
                 }
-                //开始交易日期  
                 if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
-                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));
+                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));//交易起始日期
                 }
-                //结束交易日期
                 if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
-                    map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));
+                    map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
                 }
+                /*if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
+                    map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
+                }
+                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
+                    map.put("incom",Integer.getInteger(request.getParameter("incom")));
+                }
+                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
+                    map.put("pay",Integer.getInteger(request.getParameter("pay")));
+                }
+                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
+                    map.put("endBlack",Integer.getInteger(request.getParameter("endBlack")));
+                }
+                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
+                    map.put("abstrac",new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                    map.put("classify",request.getParameter("classify"));
+                    map.put("classify",request.getParameter("classify"));//项目分类
                 }
+               /* if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
+                    map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
                 //提交人
                 if(uId!=null && !uId.equals("")){
                     map.put("uId",uId);
@@ -442,12 +470,75 @@ public class CapitalController {
         @RequiresPermissions("capital:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
-        public void export(HttpServletRequest request,HttpServletResponse response,String[] id) throws Exception{
+        public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                List<String> ids = Arrays.asList(id);
-                List<Capital> list = capitalService.listCapitalById(ids);
+                Map<Object, Object> map = new HashMap<>();
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
+                    map.put("plate",request.getParameter("plate")); //板块
+                }
+                if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
+                    map.put("BU",request.getParameter("BU"));//事业部
+                }
+                if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
+                    map.put("regionName",request.getParameter("regionName"));//大区名称
+                }
+                if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
+                    map.put("province",request.getParameter("province"));//省份
+                }
+               /* if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
+                    map.put("city",new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
+                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
+                    map.put("company",request.getParameter("company"));//公司名称
+                }
+                /*if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
+                    map.put("accountName",request.getParameter("accountName"));
+                }*/
+                if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
+                    map.put("accountBank",request.getParameter("accountBank"));//开户行
+                }
+                /*if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
+                    map.put("account",request.getParameter("account"));
+                }*/
+                if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
+                    map.put("accountNature",request.getParameter("accountNature"));//账户性质
+                }
+                if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
+                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));//交易起始日期
+                }
+                if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
+                    map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
+                }
+                /*if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
+                    map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
+                }
+                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
+                    map.put("incom",Integer.getInteger(request.getParameter("incom")));
+                }
+                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
+                    map.put("pay",Integer.getInteger(request.getParameter("pay")));
+                }
+                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
+                    map.put("endBlack",Integer.getInteger(request.getParameter("endBlack")));
+                }
+                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
+                    map.put("abstrac",new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
+                if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
+                    map.put("classify",request.getParameter("classify"));//项目分类
+                }
+               /* if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
+                    map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
+                }*/
+                //提交人
+                if(uId!=null && !uId.equals("")){
+                    map.put("uId",uId);
+                }
+                List<Capital> list = capitalService.getAllCapital(map);
                 List<String[]> strList=new ArrayList<>();
                 String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};

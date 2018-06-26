@@ -73,10 +73,14 @@ public class CapitalServiceImpl implements CapitalService{
         return capitalDao.deleteCapital(id);
     }
 
+    
+    /**
+     * 导出所有的查询数据
+     */
     @Override
-    public List<Capital> listCapitalById(List<String> ids) {
+    public List<Capital> getAllCapital(Map<Object, Object> map) {
         // TODO Auto-generated method stub
-        return capitalDao.listCapitalById(ids);
+        return capitalDao.getAllCapital(map);
     }
     
 }
