@@ -164,9 +164,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 node.setPid(organization.getId());
                 nodes.add(node);
             }
-            net.sf.json.JSONObject jsonObject1 = net.sf.json.JSONObject.fromObject(TreeNode.buildTree(nodes));
-            JSONObject jsonObject = (JSONObject) JSONObject.parse(jsonObject1.toString());
-            System.out.println( "jsonObject:"+ jsonObject.toString());
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             return jsonObject;
         }
         return null;
