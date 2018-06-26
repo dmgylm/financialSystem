@@ -273,6 +273,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点的所有父节点
      */
     @Override
+    @Cacheable(key="'listTreeByIdForParent'+#id")
     public List<Organization> listTreeByIdForParent(String id) {
         List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
@@ -408,7 +409,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     public Boolean hasOrganizationSon(Map<Object, Object> map) {
         Boolean flag = false;
         // 查询到当前节点
-        if (!map.isEmpty() && map.size()>0) {
+        if (!map.isEmpty() && map.size() > 0) {
             List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
             if (!CollectionUtils.isEmpty(organizationByIds)) {
                 Map<Object, Object> mapp = new HashMap<>();
@@ -432,9 +433,52 @@ public class OrganizationServiceImpl implements OrganizationService {
             if (!CollectionUtils.isEmpty(parent)) {
                 for (Organization o : parent) {
                     Integer orgType = o.getOrgType();
-                    if (orgType ==2) {
+                    if (orgType == 2) {
                         return o;
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有部门
+     * 
+     * @return
+     */
+    @Override
+    public List<Organization> getDep() {
+        List<Organization> result = new ArrayList<>();
+        // 得到所有组织结构
+        List<Organization> orgaAll = organizationDAO.listOrganizationBy(new HashMap<>());
+        if (!CollectionUtils.isEmpty(orgaAll)) {
+            for (Organization or : orgaAll) {
+                Map<Object, Object> mapp = new HashMap<>();
+                mapp.put("id", or.getId());
+                Boolean boolean1 = hasOrganizationSon(mapp);
+                if (!boolean1) {
+                    result.add(or);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     *  根据某个节点，查询到父级的某个节点
+     */
+    @Override
+    public Organization getOrgaUpFromOne(String id, String orgKey) {
+        if ("".equals(orgKey) || orgKey==null || orgKey.length()==0) {
+            return null;
+        }
+        // 该节点及其父节点的集合
+        List<Organization> listTreeByIdForParent = listTreeByIdForParent(id);
+        if (!CollectionUtils.isEmpty(listTreeByIdForParent)) {
+            for (Organization organization : listTreeByIdForParent) {
+                if (organization.getOrgkey().equals(orgKey)) {
+                    return organization;
                 }
             }
         }
