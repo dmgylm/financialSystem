@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.OrganizationDAO;
 import cn.financial.model.Organization;
+import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
@@ -28,7 +29,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Service("OrganizationServiceImpl")
-@CacheConfig(cacheNames="organization")
+@CacheConfig(cacheNames = "organization")
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
@@ -87,10 +88,25 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     /**
-     * 根据ID删除组织结构信息
+     * 根据ID删除组织结构信息(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)
      */
-    public Integer deleteOrganizationById(String id) {
-        return organizationDAO.deleteOrganizationById(id);
+    public Integer deleteOrganizationById(String id, User user) {
+        Integer resultInt = 0;
+        // 根据id查询到该节点信息
+        Map<Object, Object> map = new HashMap<>();
+        map.put("id", id);
+        List<Organization> org = organizationDAO.listOrganizationBy(map);
+        if (!CollectionUtils.isEmpty(org)) {
+            // 修改此节点的操作人为当前登录人
+            Map<Object, Object> idmap = new HashMap<>();
+            idmap.put("id", id);
+            idmap.put("uId", user.getId());
+            Integer upInteg = organizationDAO.updateOrganizationById(idmap);
+            if (Integer.valueOf(1).equals(upInteg)) {
+                resultInt = organizationDAO.deleteOrganizationById(id);
+            }
+        }
+        return resultInt;
     }
 
     /**
@@ -99,24 +115,30 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional
     public Integer deleteOrganizationByStatusCascade(String uId, String id) {
         Integer i = 0;
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
         List<Organization> org = organizationDAO.listOrganizationBy(map);
+        List<Organization> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(org)) {
-            // 根据该节点的code查询到其下所有子节点信息的集合
-            List<Organization> list = organizationDAO.listTreeByCodeForSon(org.get(0).getCode());
-            Iterator<Organization> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                Organization orga = iterator.next();
-                Map<Object, Object> idmap = new HashMap<>();
-                idmap.put("id", orga.getId());
-                idmap.put("uId", uId);
-                // 先修改uid
-                Integer idupdate = organizationDAO.updateOrganizationById(idmap);
-                if (Integer.valueOf(1).equals(idupdate)) {
-                    i = organizationDAO.deleteOrganizationByStatus(orga.getId());
-                }
+            list.add(org.get(0));
+            if (!CollectionUtils.isEmpty(departList)) {
+                // 递归在所有的组织结构中找到我们需要的组织结构极其下所有子结构
+                getOrganizationSonList2(departList, list, org.get(0).getCode());
+            }
+        }
+        Iterator<Organization> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            Organization orga = iterator.next();
+            Map<Object, Object> idmap = new HashMap<>();
+            idmap.put("id", orga.getId());
+            idmap.put("uId", uId);
+            // 先修改uid
+            Integer idupdate = organizationDAO.updateOrganizationById(idmap);
+            if (Integer.valueOf(1).equals(idupdate)) {
+                i = organizationDAO.deleteOrganizationByStatus(orga.getId());
             }
         }
         return i;
@@ -126,7 +148,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
-    @Cacheable(key="'orga_'+#id")
+    @Cacheable(key = "'orga_'+#id")
     public JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
@@ -300,9 +322,9 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Integer moveOrganization(String uId, String id, String parentOrgId){
+    public Integer moveOrganization(String uId, String id, String parentOrgId) {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
