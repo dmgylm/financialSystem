@@ -28,7 +28,7 @@ public interface DataModuleDao {
     Integer updateDataModuleState(String dataModuleId);
 
     /**
-     * 根据ID获取数据模板
+     * 根据参数获取单个数据模板
      * @param dataModuleId
      * @return
      */
