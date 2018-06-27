@@ -77,7 +77,7 @@ public class OrganizationMoveController {
     			}
     		}
     		
-    		serviceImpl.moveOrganization(uid, id, parentOrgId);
+    	//	serviceImpl.moveOrganization(uid, id, parentOrgId);
     		
     		Map<Object, Object> map1 = new HashMap<>();
     		map1.put("orgkey", orgkey);
