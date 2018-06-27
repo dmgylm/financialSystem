@@ -48,11 +48,11 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("测试22");
-        organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
+        organization2.setOrgName("测试1w13w1w13");
+        organization2.setuId("404ed3a5442c4ed78331d6c77077958f");
         organization2.setOrgkey(UuidUtil.getUUID());
         organization2.setOrgType(3);
-        Integer i = service.saveOrganization(organization2, "7d40383a157948ad8f3f81ef52bab970");
+        Integer i = service.saveOrganization(organization2, "cbd8e5d5d5c4440fa12a9a308c7c23e0");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -208,11 +208,10 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "7d40383a157948ad8f3f81ef52bab970";
+        String id = "cffae17c29b94554ab071b653383b701";
         String parentOrgId = "45fd1abb1f1742e487f6919a031fc988";
         User u = new User();
-        u.setId("uhuasdasfk22ewwd");
-        u.setName("张三");
+        u.setId("3ab47227d7ec441aad625e76c32b46b7");
         service.moveOrganization(u, id, parentOrgId);
     }
 
