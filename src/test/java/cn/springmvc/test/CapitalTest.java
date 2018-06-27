@@ -80,7 +80,23 @@ public class CapitalTest {
             System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
         }
     }
-
+    
+    /**
+     * 根据条件查资金数据 (不传数据就是查询所有的)  导出的查询方法
+     * @throws UnsupportedEncodingException 
+     */
+    @Test
+    public void getCapital() throws UnsupportedEncodingException {
+        Map<Object, Object> map = new HashMap<>();
+        map.put("plate","1");
+        List<Capital> list = capitalServiceImpl.getAllCapital(map);
+        System.out.println("所有的数据长度"+list.size());
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
+        }
+    }
+    
+    
     /**
      * 根据ID查询资金信息
      */
