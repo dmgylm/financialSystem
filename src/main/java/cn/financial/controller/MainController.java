@@ -68,8 +68,43 @@ public class MainController {
         UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));   
         try {
             subject.login(token);
-            session.setAttribute("password", request.getParameter("password"));
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            String userName = request.getParameter("username");
+            String passWord = request.getParameter("password");
+            if(passWord!=null && !passWord.equals("")){
+                if(passWord.equals("Welcome1")){
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+                    return dataMap;
+                }
+            }
+            if(userName!=null && !"".equals(userName)){
+                List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
+                List<RoleResource> roleResource = new ArrayList<RoleResource>();
+                if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
+                    for(UserRole list:userRole){
+                        roleResource.addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
+                    }  
+                }
+                List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+                JSONObject jsonObject = null;
+                if(roleResource.size()>0){
+                    for (RoleResource rss : roleResource) {
+                        TreeNode<RoleResource> node = new TreeNode<>();
+                        node.setId(rss.getCode().toString());
+                        String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                        node.setParentId(b);
+                        node.setName(rss.getName());
+                       // node.setNodeData(rss);
+                        nodes.add(node);
+                    }
+                    jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+                }
+                
+                //System.out.println(jsonObject); 
+                dataMap.put("roleResource", jsonObject.toString());
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }
+            //session.setAttribute("password", request.getParameter("password"));
+            //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
@@ -105,7 +140,7 @@ public class MainController {
      * @param respons
      * @return
      */
-	@RequestMapping(value="/index", method = RequestMethod.POST)
+	/*@RequestMapping(value="/index", method = RequestMethod.POST)
 	@ResponseBody
     public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response, HttpSession session){
 	    Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -146,5 +181,5 @@ public class MainController {
 	        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 	    }
     	return dataMap;
-    }
+    }*/
 }
