@@ -124,7 +124,7 @@ public class OrganizationController {
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("resultData", list);
+            dataMap.put("data", list);
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
@@ -229,7 +229,7 @@ public class OrganizationController {
             jsonTree = organizationService.TreeByIdForSon(id);
             if (jsonTree != null) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", jsonTree);
+                dataMap.put("data", jsonTree);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
@@ -259,7 +259,7 @@ public class OrganizationController {
             }
             if (!CollectionUtils.isEmpty(list)) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", list);
+                dataMap.put("data", list);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
@@ -329,7 +329,7 @@ public class OrganizationController {
             }
             Boolean flag = organizationService.hasOrganizationSon(map);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("resultData", flag);
+            dataMap.put("data", flag);
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
