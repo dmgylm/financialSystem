@@ -381,7 +381,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organizationMove.setId(UuidUtil.getUUID());
             organizationMove.setHis_Id(org.get(0).getId());
             organizationMove.setNew_Id(new_id);
-            organizationMove.setModifier(user.getName());
+            organizationMove.setModifier(user.getId());
             moveDao.saveOrganizationMove(organizationMove);
         }
 
@@ -418,7 +418,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                         organizationMove.setId(UuidUtil.getUUID());
                         organizationMove.setHis_Id(orga.getId());
                         organizationMove.setNew_Id(new_id1);
-                        organizationMove.setModifier(user.getName());
+                        organizationMove.setModifier(user.getId());
                         moveDao.saveOrganizationMove(organizationMove);
                     }
                 }
