@@ -48,11 +48,11 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("测试iudhuashduasudhi");
+        organization2.setOrgName("测试1122");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
         organization2.setOrgkey(UuidUtil.getUUID());
         organization2.setOrgType(2);
-        Integer i = service.saveOrganization(organization2, "d54707e3330c42c58250bbfa0fbc00a7");
+        Integer i = service.saveOrganization(organization2, "3c1c0986079941c8ad47b93ecfa577e7");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -134,6 +134,7 @@ public class OrganizationTest {
         com.alibaba.fastjson.JSONObject string1 = service.TreeByIdForSon("");
         long end1 = System.currentTimeMillis();
         System.out.println(end1 - start1);
+        System.out.println(string1.toString());
     }
 
     /**
@@ -220,17 +221,20 @@ public class OrganizationTest {
         Map<Object, Object> map = new HashMap<>();
         map.put("id", "d54707e3330c42c58250bbfa0fbc00a7");// 组织id
         // map.put("orgName", "上市");// 组织架构名
+        long start = System.currentTimeMillis();
         Boolean boolean1 = service.hasOrganizationSon(map);
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
         System.out.println(boolean1);
     }
 
     /**
-     * 根据条件判断是否该节点存在子节点
+     * 获取所有公司
      */
     @Test
     public void getCompany() {
         List<Organization> list = service.getCompany();
-        System.out.println(list.toString());
+        System.out.println(JSONArray.fromObject(list).toString());
     }
 
     /**
@@ -249,14 +253,14 @@ public class OrganizationTest {
      */
     @Test
     public void getDep() {
-        long start = System.currentTimeMillis();
-        List<Organization> dep = service.getDep();
-        long end = System.currentTimeMillis();
-        JSONArray fromObject = JSONArray.fromObject(dep);
-        System.out.println(end - start);
-        System.out.println(fromObject);
-        System.out.println(dep.size());
+        long start1 = System.currentTimeMillis();
+        List<Organization> re = service.getDep();
+        long end1 = System.currentTimeMillis();
+        System.out.println(end1 - start1);
+        System.out.println(re.size());
+//        System.out.println(JSONArray.fromObject(re).toString());
     }
+    
     
     /**
      * 根据某个节点，查询到父级的某个节点
