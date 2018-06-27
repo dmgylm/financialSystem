@@ -95,9 +95,9 @@ public class MessageController {
      * @throws ParseException 
      */
     @RequiresPermissions("capital:view")
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         Map<Object, Object> mapn = new HashMap<Object, Object>();
@@ -160,10 +160,10 @@ public class MessageController {
                     }
                 }
                 dataMap.put("resultstatus", unreadmessage);//未读的条数
-                dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("resultData", list);
         } catch (Exception e) {
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -243,10 +243,10 @@ public class MessageController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Message message = messageService.getMessageById(id);
-            dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("resultData", message);
         } catch (Exception e) {
-        	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -279,12 +279,12 @@ public class MessageController {
             map.put("id", id);
         	Integer i = messageService.updateMessageById(map);
             if (Integer.valueOf(1).equals(i)) {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-        	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -307,12 +307,12 @@ public class MessageController {
         try {
             Integer i = messageService.deleteMessageById(id);
             if (Integer.valueOf(1).equals(i)) {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-        	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
@@ -342,12 +342,12 @@ public class MessageController {
 				message.setFileurl(request.getParameter("fileUrl"));//汇总表文件的路径
 				Integer i1 = messageService.saveMessage(message);
             if (Integer.valueOf(1).equals(i1)) {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {
-            	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-        	dataMap.put("resultCode", ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
