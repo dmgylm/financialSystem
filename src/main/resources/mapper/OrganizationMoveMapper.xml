@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 组织架构移动信息记录表 -->
+<mapper namespace="cn.financial.dao.OrganizationMoveDao" >
+	<!-- POJO对应数据库字段 -->
+	<resultMap type="OrganizationMove" id="organizationMoveResultMap">
+		<id property="id" column="id" jdbcType="VARCHAR" ></id>
+		<result property="his_Id" column="his_Id" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="new_Id" column="new_Id" javaType="string"
+			jdbcType="VARCHAR"></result>
+		<result property="createTime" column="createTime"
+			javaType="string" jdbcType="TIMESTAMP"></result>
+		<result property="updateTime" column="updateTime"
+			javaType="string" jdbcType="TIMESTAMP"></result>
+		<result property="modifier" column="modifier" javaType="string"
+			jdbcType="VARCHAR"></result>
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="saveOrganizationMove" parameterType="OrganizationMove" keyProperty="id" >
+		insert into organization_move(
+			id,
+			his_Id,
+			new_Id,
+			createTime,
+			modifier
+		)
+		values
+		(#{id,jdbcType=VARCHAR},#{his_Id,jdbcType=VARCHAR},#{new_Id,jdbcType=VARCHAR},now(),#{modifier,jdbcType=VARCHAR})
+	</insert>
+	
+</mapper>
