@@ -48,11 +48,11 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("测试1122");
+        organization2.setOrgName("测试22");
         organization2.setuId("1cb54fff435b4fff8aa7c1fa391f519b");
         organization2.setOrgkey(UuidUtil.getUUID());
-        organization2.setOrgType(2);
-        Integer i = service.saveOrganization(organization2, "3c1c0986079941c8ad47b93ecfa577e7");
+        organization2.setOrgType(3);
+        Integer i = service.saveOrganization(organization2, "7d40383a157948ad8f3f81ef52bab970");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -208,9 +208,12 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "0801ba63b13245339cc1bc6737054088";
-        String parentOrgId = "3020a10d0362455a9c6709562a908591";
-        service.moveOrganization("dasdasdsadasdas", id, parentOrgId);
+        String id = "7d40383a157948ad8f3f81ef52bab970";
+        String parentOrgId = "45fd1abb1f1742e487f6919a031fc988";
+        User u = new User();
+        u.setId("uhuasdasfk22ewwd");
+        u.setName("张三");
+        service.moveOrganization(u, id, parentOrgId);
     }
 
     /**
@@ -256,24 +259,24 @@ public class OrganizationTest {
         long start1 = System.currentTimeMillis();
         List<Organization> re = service.getDep();
         long end1 = System.currentTimeMillis();
-        System.out.println(end1 - start1);
-        System.out.println(re.size());
-//        System.out.println(JSONArray.fromObject(re).toString());
+        System.out.println(JSONArray.fromObject(re).toString());
+        // System.out.println(end1 - start1);
+        // System.out.println(re.size());
     }
-    
-    
+
     /**
      * 根据某个节点，查询到父级的某个节点
      */
     @Test
     public void getOrgaUpFromOne() {
         long start = System.currentTimeMillis();
-        Organization dep = service.getOrgaUpFromOne("e9f092f70b2e423b8cd9598eadf9077e", "94a24264738f42d6ac52d7e8806ba345");
+        Organization dep = service.getOrgaUpFromOne("e9f092f70b2e423b8cd9598eadf9077e",
+                "94a24264738f42d6ac52d7e8806ba345");
         JSONObject fromObject = JSONObject.fromObject(dep);
         System.out.println(fromObject);
         long end = System.currentTimeMillis();
         System.out.println(end - start);
-//        System.out.println(dep.toString());
+        // System.out.println(dep.toString());
     }
 
     /**
