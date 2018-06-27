@@ -56,7 +56,7 @@ public class ResourceTest {
     //修改
     @Test
     public void updateTest() {
-        Resource parent = service.getResourceById("f14cdee2deb24271a912918a7f74ce19","");//根据code查询对应功能权限parentId(父id是否存在)
+        Resource parent = service.getResourceById("f14cdee2deb24271a912918a7f74ce19","");//根据code查询对应功能权限parentId
         Resource resource = new Resource();
         resource.setId("f14cdee2deb24271a912918a7f74ce19");
         resource.setName("4444444");
@@ -71,7 +71,6 @@ public class ResourceTest {
             resource.setParentId("1"); 
         }
         resource.setPermssion("3333333333");
-        resource.setUpdateTime("2018/05/04");
         try {
             System.out.println(service.updateResource(resource));
         } catch (Exception e) {
@@ -112,8 +111,7 @@ public class ResourceTest {
     //根据id/code查询
     @Test
     public void ListByIdTest() {
-        //35a51fa5b6ed49ad920b30055ea9f4c6  1
-        Resource resource = service.getResourceById("18b0eb4a32fc487aa3d4d43647fae4b4","");
+        Resource resource = service.getResourceById("0dd6008c6e7f4bce8e1d2ada94341ecf","");
         if(resource!=null && !"".equals(resource)){
             System.out.println("id: "+resource.getId()+" name: "+resource.getName()+" code: "+resource.getCode()+
                     " url: "+resource.getUrl()+" parentId: "+resource.getParentId()+" permssion: "+resource.getPermssion()+
