@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,7 @@ import cn.financial.util.UuidUtil;
  *
  */
 @Service("OrganizationServiceImpl")
-@CacheConfig(cacheNames = "organization")
+@Transactional
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
@@ -148,7 +147,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
-    @Cacheable(key = "'orga_'+#id")
+    @Cacheable(value = "TreeByIdForSon", key = "'orga_'+#id")
     public JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
@@ -273,7 +272,6 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点的所有父节点
      */
     @Override
-    @Cacheable(key="'listTreeByIdForParent'+#id")
     public List<Organization> listTreeByIdForParent(String id) {
         List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
@@ -453,24 +451,24 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 得到所有组织结构
         List<Organization> orgaAll = organizationDAO.listOrganizationBy(new HashMap<>());
         if (!CollectionUtils.isEmpty(orgaAll)) {
-            for (Organization or : orgaAll) {
-                Map<Object, Object> mapp = new HashMap<>();
-                mapp.put("id", or.getId());
-                Boolean boolean1 = hasOrganizationSon(mapp);
-                if (!boolean1) {
-                    result.add(or);
+            aaa: for (Organization or : orgaAll) {
+                for (Organization organization : orgaAll) {
+                    if (or.getCode().equals(organization.getParentId())) {
+                        continue aaa;
+                    }
                 }
+                result.add(or);
             }
         }
         return result;
     }
 
     /**
-     *  根据某个节点，查询到父级的某个节点
+     * 根据某个节点，查询到父级的某个节点
      */
     @Override
     public Organization getOrgaUpFromOne(String id, String orgKey) {
-        if ("".equals(orgKey) || orgKey==null || orgKey.length()==0) {
+        if ("".equals(orgKey) || orgKey == null || orgKey.length() == 0) {
             return null;
         }
         // 该节点及其父节点的集合
@@ -495,7 +493,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     public List<Organization> listOrganization(List<String> list) {
-
         return organizationDAO.listOrganization(list);
     }
 
