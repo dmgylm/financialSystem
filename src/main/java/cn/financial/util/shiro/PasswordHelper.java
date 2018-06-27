@@ -21,7 +21,9 @@ public class PasswordHelper {
     private String algorithmName = "md5";
     @Value("${password.hashIterations}")
     private int hashIterations = 2;
-
+    @Value("${password.storedCredentialsHexEncoded}")
+    private String storedCredentialsHexEncoded = "true";
+    
     public void setRandomNumberGenerator(RandomNumberGenerator randomNumberGenerator) {
         this.randomNumberGenerator = randomNumberGenerator;
     }
