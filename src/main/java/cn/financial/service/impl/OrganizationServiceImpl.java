@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +37,14 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationDAO organizationDAO;
-    
+
     @Autowired
     private OrganizationMoveDao moveDao;
 
     /**
      * 新增组织结构
      */
+    @CacheEvict(value = "organizationValue", allEntries = true)
     public Integer saveOrganization(Organization organization, String parentOrgId) {
         String code = null;
         Map<Object, Object> map = new HashMap<Object, Object>();
@@ -87,6 +90,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
+    @CacheEvict(value = "organizationValue", allEntries = true)
     public Integer updateOrganizationById(Map<Object, Object> map) {
         return organizationDAO.updateOrganizationById(map);
     }
@@ -94,6 +98,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据ID删除组织结构信息(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)
      */
+    @CacheEvict(value = "organizationValue", allEntries = true)
     public Integer deleteOrganizationById(String id, User user) {
         Integer resultInt = 0;
         // 根据id查询到该节点信息
@@ -117,6 +122,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 停用(级联停用，将此节点下的所有子节点停用)，根据组织结构ID修改状态为0，即已停用
      */
     @Transactional
+    @CacheEvict(value = "organizationValue", allEntries = true)
     public Integer deleteOrganizationByStatusCascade(String uId, String id) {
         Integer i = 0;
         // 所有的组织结构
@@ -152,7 +158,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的所有子节点,构建成树
      */
     @Override
-    @Cacheable(value = "TreeByIdForSon", key = "'orga_'+#id")
+    @Cacheable(value = "organizationValue", key = "'orga_key_treeById_'+#id")
     public JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
@@ -200,6 +206,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点极其下的所有子节点集合
      */
     @Override
+    @Cacheable(value = "organizationValue", key = "'orga_key_listson_'+#id")
     public List<Organization> listTreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
@@ -277,6 +284,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点的所有父节点
      */
     @Override
+    @Cacheable(value = "organizationValue", key = "'orga_key_listparent_'+#id")
     public List<Organization> listTreeByIdForParent(String id) {
         List<Organization> list = new ArrayList<>();
         // 根据id查询到该节点信息
@@ -326,6 +334,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
+    @CacheEvict(value = "organizationValue", allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer moveOrganization(User user, String id, String parentOrgId) {
@@ -473,6 +482,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @return
      */
     @Override
+    @Cacheable(value = "organizationValue", key = "'orga_key_alldepart'")
     public List<Organization> getDep() {
         List<Organization> result = new ArrayList<>();
         // 得到所有组织结构
