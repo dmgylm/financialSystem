@@ -161,7 +161,7 @@ public class MessageController {
                 }
                 dataMap.put("resultstatus", unreadmessage);//未读的条数
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", list);
+                dataMap.put("data", list);
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
@@ -218,7 +218,7 @@ public class MessageController {
             List<Message> list = messageService.listMessageBy(map);
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询成功!");
-            dataMap.put("resultData", list);
+            dataMap.put("data", list);
         } catch (Exception e) {
             dataMap.put("resultCode", 200);
             dataMap.put("resultDesc", "查询失败!");
@@ -244,7 +244,7 @@ public class MessageController {
         try {
             Message message = messageService.getMessageById(id);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("resultData", message);
+            dataMap.put("data", message);
         } catch (Exception e) {
         	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
