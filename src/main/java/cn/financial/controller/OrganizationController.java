@@ -294,7 +294,7 @@ public class OrganizationController {
                 parentOrgId = request.getParameter("parentId");
             }
             User user = (User) request.getAttribute("user");
-            Integer i = organizationService.moveOrganization(user.getId(), id, parentOrgId);
+            Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } else {

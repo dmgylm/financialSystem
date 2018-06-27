@@ -87,7 +87,7 @@ public interface OrganizationService {
      * @param parentOrgId
      * @return
      */
-    Integer moveOrganization(String uId, String id, String parentOrgId);
+    Integer moveOrganization(User user, String id, String parentOrgId);
 
     /**
      * 根据条件判断是否该节点存在子节点

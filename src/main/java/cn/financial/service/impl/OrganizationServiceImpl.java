@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.OrganizationDAO;
+import cn.financial.dao.OrganizationMoveDao;
 import cn.financial.model.Organization;
+import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.TreeNode;
@@ -33,6 +35,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationDAO organizationDAO;
+    
+    @Autowired
+    private OrganizationMoveDao moveDao;
 
     /**
      * 新增组织结构
@@ -323,7 +328,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Integer moveOrganization(String uId, String id, String parentOrgId) {
+    public Integer moveOrganization(User user, String id, String parentOrgId) {
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
@@ -360,14 +365,25 @@ public class OrganizationServiceImpl implements OrganizationService {
             code = orgParent.get(0).getCode() + "01";
         }
         Organization organization = new Organization();
-        organization.setId(UuidUtil.getUUID());
+        String new_id = UuidUtil.getUUID();
+        organization.setId(new_id);
         organization.setOrgName(org.get(0).getOrgName());
-        organization.setuId(uId);
+        organization.setuId(user.getId());
         organization.setCode(code);
         organization.setParentId(orgParent.get(0).getCode());
         organization.setHis_permission(org.get(0).getHis_permission() + "," + code);
         organization.setOrgkey(org.get(0).getOrgkey());
-        organizationDAO.saveOrganization(organization);
+        organization.setOrgType(org.get(0).getOrgType());
+        Integer saveInteger = organizationDAO.saveOrganization(organization);
+        // 父节点新增成功后，在organization_move表中记录
+        if (Integer.valueOf(1).equals(saveInteger)) {
+            OrganizationMove organizationMove = new OrganizationMove();
+            organizationMove.setId(UuidUtil.getUUID());
+            organizationMove.setHis_Id(org.get(0).getId());
+            organizationMove.setNew_Id(new_id);
+            organizationMove.setModifier(user.getName());
+            moveDao.saveOrganizationMove(organizationMove);
+        }
 
         /*
          * 停用要移动的节点及其所有的子节点
@@ -386,14 +402,25 @@ public class OrganizationServiceImpl implements OrganizationService {
                     String code1 = orga.getCode().replaceFirst(org.get(0).getCode(), organization.getCode());
                     String parentId1 = orga.getParentId().replaceFirst(org.get(0).getCode(), organization.getCode());
                     Organization organization1 = new Organization();
-                    organization1.setId(UuidUtil.getUUID());
+                    String new_id1 = UuidUtil.getUUID();
+                    organization1.setId(new_id1);
                     organization1.setOrgName(orga.getOrgName());
-                    organization1.setuId(uId);
+                    organization1.setuId(user.getId());
                     organization1.setCode(code1);
                     organization1.setParentId(parentId1);
                     organization1.setHis_permission(orga.getHis_permission() + "," + code1);
                     organization1.setOrgkey(orga.getOrgkey());
-                    organizationDAO.saveOrganization(organization1);
+                    organization1.setOrgType(orga.getOrgType());
+                    Integer saveOrganization1 = organizationDAO.saveOrganization(organization1);
+                    // 子节点新增成功后，在organization_move表中记录
+                    if (Integer.valueOf(1).equals(saveOrganization1)) {
+                        OrganizationMove organizationMove = new OrganizationMove();
+                        organizationMove.setId(UuidUtil.getUUID());
+                        organizationMove.setHis_Id(orga.getId());
+                        organizationMove.setNew_Id(new_id1);
+                        organizationMove.setModifier(user.getName());
+                        moveDao.saveOrganizationMove(organizationMove);
+                    }
                 }
             }
         }
