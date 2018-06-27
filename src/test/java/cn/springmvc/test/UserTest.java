@@ -28,9 +28,6 @@ import cn.financial.util.UuidUtil;
 public class UserTest {
     @Autowired
     private UserService service;
-    
-    @Autowired
-    private cn.financial.util.shiro.PasswordHelper PasswordHelper;
     //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //登录测试方法
     @Test
@@ -41,29 +38,27 @@ public class UserTest {
         //主体提交认证请求
         //SecurityUtils.setSecurityManager(defaultSecurityManager);
         Subject subject  = SecurityUtils.getSubject();//获得主体
-        UsernamePasswordToken token = new UsernamePasswordToken("aa","123456");//通过自定义UserRealm进行认证（继承AuthorizingRealm）
+        UsernamePasswordToken token = new UsernamePasswordToken("aa","...5aA");//通过自定义UserRealm进行认证（继承AuthorizingRealm）
         subject.login(token);
         System.out.println("isAnthenticated:"+subject.isAuthenticated());//是否认证(true为登录成功)
         subject.isAuthenticated();
     }
-    /*//新增   测试类执行没更新缓存
+    //新增
     @Test
     public void insertTest() {
         User user = new User();
         user.setId(UuidUtil.getUUID());
         user.setSalt(UuidUtil.getUUID());
-        user.setName("测试");
+        user.setName("gg");
         user.setRealName("3333");      
         user.setPwd("Welcome1");
-        user.setJobNumber("743211124420888");
+        user.setJobNumber("743211124420888999");
         try {
-            Integer flag = service.countUserName("测试","");//查询用户名是否存在(真实姓名可以重复)
+            Integer flag = service.countUserName("gg","");//查询用户名是否存在(真实姓名可以重复)
             if(flag>0){
                 System.out.println("用户名不能重复");
                 return;
             }
-            //加密密码 
-            PasswordHelper.encryptPassword(user);
             System.out.println(service.insertUser(user));
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -79,14 +74,12 @@ public class UserTest {
         user.setPwd("4444");
         user.setSalt(UuidUtil.getUUID());
         //user.setJobNumber("7432111244208");
-        //加密密码
-        PasswordHelper.encryptPassword(user);
         try {
             System.out.println(service.updateUser(user));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }*/
+    }
     //删除
     @Test
     public void deleteTest() {   
