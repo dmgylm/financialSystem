@@ -30,5 +30,19 @@
 		values
 		(#{id,jdbcType=VARCHAR},#{his_Id,jdbcType=VARCHAR},#{new_Id,jdbcType=VARCHAR},now(),#{modifier,jdbcType=VARCHAR})
 	</insert>
-	
+	<!-- 查询 -->
+	<select id="listOrganizationMoveBy" resultType="OrganizationMove">
+		SELECT
+			om.*
+		FROM
+			organization_move om
+		INNER JOIN organization o ON om.his_Id = o.id
+		INNER JOIN organization org ON om.new_Id = org.id
+		WHERE
+		<if test="orgkey!=null and orgkey!=''">
+			o.orgkey = #{orgkey,jdbcType=VARCHAR}
+		</if>
+		ORDER BY
+			om.createTime DESC
+	</select>
 </mapper>
