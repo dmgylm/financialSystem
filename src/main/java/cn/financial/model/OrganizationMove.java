@@ -60,7 +60,5 @@ public class OrganizationMove {
 	public void setModifier(String modifier) {
 		this.modifier = modifier;
 	}
-	
-	
 
 }
