@@ -17,9 +17,9 @@ import cn.financial.model.UserRole;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml", "classpath:conf/spring-redis.xml"})
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml", "classpath:spring/spring-redis.xml"})
 /**
  * 用户角色关联表测试
  * @author gs
@@ -32,7 +32,7 @@ public class UserRoleTest {
     //新增
     @Test
     public void insertTest() {
-        String roleIdStr = "[{\"roleId\":\"732a2b28ea63417fbeceee1ac907fb92\"},{\"roleId\":\"c368fdf292da47c28f8c95e9e6c9fc2c\"},{\"roleId\":\"7136b0ba498f465e975705add4643ba3\"},{\"roleId\":\"21b4e7dd874040d9afcc5256442031ef\"}]";
+        String roleIdStr = "[{\"roleId\":\"732a2b28ea63417fbeceee1ac907fb92\"}]";
         JSONArray sArray = JSON.parseArray(roleIdStr);
         UserRole userRole = null;
         int number = 0;
@@ -44,8 +44,7 @@ public class UserRoleTest {
                     userRole = new UserRole();
                     userRole.setId(UuidUtil.getUUID());
                     userRole.setrId(roleId);
-                    userRole.setuId("b7632238905a48a0b221264b4087ebf8");
-                    userRole.setCreateTime("2018/3/26");
+                    userRole.setuId("56ffb0e9e4c549718e01eb2d18e466ca");
                     number = service.insertUserRole(userRole);
             }
         }
@@ -69,9 +68,9 @@ public class UserRoleTest {
     //修改（根据用户id修改用户角色关联信息）
     @Test
     public void updateUserRoleTest(){
-        int updateNumber = service.deleteUserRole("1beb41326553418f9fc9b45d037a0925");
+        int updateNumber = service.deleteUserRole("56ffb0e9e4c549718e01eb2d18e466ca");
         if(updateNumber>0){
-            String roleIdStr = "[{\"roleId\":\"732a2b28ea63417fbeceee1ac907fb92\"},{\"roleId\":\"c368fdf292da47c28f8c95e9e6c9fc2c\"},{\"roleId\":\"7136b0ba498f465e975705add4643ba3\"},{\"roleId\":\"21b4e7dd874040d9afcc5256442031ef\"}]";
+            String roleIdStr = "[{\"roleId\":\"7136b0ba498f465e975705add4643ba3\"}]";
             JSONArray sArray = JSON.parseArray(roleIdStr);
             UserRole userRole = null;
             int number = 0;
@@ -83,8 +82,7 @@ public class UserRoleTest {
                         userRole = new UserRole();
                         userRole.setId(UuidUtil.getUUID());
                         userRole.setrId(roleId);
-                        userRole.setuId("1beb41326553418f9fc9b45d037a0925");
-                        userRole.setCreateTime("2018/3/26");
+                        userRole.setuId("56ffb0e9e4c549718e01eb2d18e466ca");
                         number = service.updateUserRole(userRole);
                 }
             }
