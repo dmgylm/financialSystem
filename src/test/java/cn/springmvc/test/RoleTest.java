@@ -13,9 +13,9 @@ import cn.financial.model.Role;
 import cn.financial.service.RoleService;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml", "classpath:conf/spring-redis.xml" })
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
+        "classpath:spring/spring-shiro.xml", "classpath:spring/spring-redis.xml" })
 /**
  * 角色测试
  * @author gs
@@ -36,7 +36,7 @@ public class RoleTest {
         }
         Role role = new Role();
         role.setId(UuidUtil.getUUID());
-        role.setRoleName("cccc");
+        role.setRoleName(roleName);
         try {
             System.out.println(service.insertRole(role));
         } catch (Exception e) {
@@ -47,8 +47,8 @@ public class RoleTest {
     @Test
     public void updateTest() {
         Role role = new Role();
-        role.setId("fd1f0ddde52940289009bc89e13243ec");
-        role.setRoleName("vvvvvv");
+        role.setId("732a2b28ea63417fbeceee1ac907fb92");
+        role.setRoleName("制单员2");
         try {
             System.out.println(service.updateRole(role));
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class RoleTest {
     //根据id查询
     @Test
     public void ListByIdTest() {
-        Role role = service.getRoleById("21b4e7dd874040d9afcc5256442031ef");
+        Role role = service.getRoleById("732a2b28ea63417fbeceee1ac907fb92");
         System.out.println("id: "+role.getId()+" roleName: "+role.getRoleName()+
                 " createTime: "+role.getCreateTime()+" updateTime: "+role.getUpdateTime());
     }
