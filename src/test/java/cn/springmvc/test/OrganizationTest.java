@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.service.impl.OrganizaCodeService;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -30,6 +33,8 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
+    @Autowired
+    private OrganizaCodeService orgin;
 
     /**
      * 测试获取xml的状态节点
@@ -140,7 +145,17 @@ public class OrganizationTest {
     /**
      * 查询该节点以及节点以下的
      */
+    @Test
+    public void orgorganiza() {
 
+            List<String> ids = new ArrayList<String>();
+            ids.add("f946a081eda949228537a8746200c3d6");
+            ids.add("cced74c59a9846b5b0a81c0baf235c17");
+            ids.add("f8483e1c85e84323853aeee27b4e8c91");
+            ids.add("e71064dc0fc443fa8893ce489aed8c38");
+            JSONArray json=orgin.organization(ids);
+            System.out.println(json);
+        }
     @Test
     public void orgshow() {
         try {
@@ -168,10 +183,10 @@ public class OrganizationTest {
                 obj.put("resultDesc", "服务器异常");
             }
             System.out.println(json);
-            for (Organization organization : listshow) {
+/*            for (Organization organization : listshow) {
                 System.out.println(organization.toString());
             }
-            System.out.println("展示" + listmap);
+            System.out.println("展示" + listmap);*/
 
         } catch (Exception e) {
             e.printStackTrace();
