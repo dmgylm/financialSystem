@@ -94,7 +94,7 @@ public class OrganizationController {
      * @return
      */
     @ResponseBody
-//    @RequiresPermissions("organization:view")
+    @RequiresPermissions("organization:view")
     @RequestMapping(value = "/listBy")
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
