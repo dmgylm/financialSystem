@@ -25,7 +25,7 @@ public class OrganizaCodeService {
    * @param ids
    * @return  组织架构数据
    */
-  public JSONArray organization(List  ids){
+  public   List<Organization> organization(List  ids){
 	  List<Organization> list = organizationDAO.listOrganization(ids);
 	  List<Organization> codeSonList = new ArrayList<Organization>();
       List<String> listmap = new ArrayList<String>();
@@ -44,8 +44,8 @@ public class OrganizaCodeService {
 		}
 	}
 
-      JSONArray json = JSONArray.fromObject(codeSonList);
-      return json;
+     
+      return codeSonList;
         
 }
 }
