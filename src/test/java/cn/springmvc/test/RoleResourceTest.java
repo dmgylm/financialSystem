@@ -1,6 +1,10 @@
 package cn.springmvc.test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,8 +16,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Resource;
 import cn.financial.model.RoleResource;
+import cn.financial.service.ResourceService;
 import cn.financial.service.RoleResourceService;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
@@ -27,6 +34,9 @@ import cn.financial.util.UuidUtil;
 public class RoleResourceTest {
     @Autowired
     private RoleResourceService service;
+    
+    @Autowired
+    private ResourceService resourceService;
     //新增
     @Test
     public void insertTest() {
@@ -82,6 +92,36 @@ public class RoleResourceTest {
     @Test
     public void ListRoleResourceTest() {
         List<RoleResource> roleResource = service.listRoleResource("4543efa5d6f24922ba6bd96f32d1ca42");
+        List<TreeNode<Resource>> nodes = new ArrayList<>();
+        List<Resource> listre = new ArrayList<>();
+        for (int i = 0; i < roleResource.size(); i++) {
+            String resourceId =roleResource.get(i).getsId();
+            //当前的resource节点
+            Resource resource = resourceService.getResourceById(resourceId, null);
+            listre.add(resource);
+            String[] split = resource.getParentId().split("/");
+            for (int j = 0; j < split.length; j++) {
+                Resource resource1 = resourceService.getResourceById(null, split[j]);
+                listre.add(resource1);
+            }
+        }
+        for (int i = 0; i < listre.size() - 1; i++) {
+            for (int j = listre.size() - 1; j > i; j--) {
+                if (listre.get(j).getId().equals(listre.get(i).getId())) {
+                    listre.remove(j);
+                }
+            }
+        }  
+        for (Resource resource : listre) {
+            TreeNode<Resource> node = new TreeNode<>();
+            node.setId(resource.getCode().toString());
+            String b=resource.getParentId().substring(resource.getParentId().lastIndexOf("/")+1);
+            node.setParentId(b);
+            node.setName(resource.getName());
+            nodes.add(node);
+        }
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+        System.out.println(jsonObject.toString());
         System.out.println("总条数："+roleResource.size());
         for(RoleResource list:roleResource){
             System.out.println(" rId: "+list.getrId() +" sId: "+list.getsId() +" roleName: "+list.getRoleName()+
