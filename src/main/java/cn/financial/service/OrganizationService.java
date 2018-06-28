@@ -128,5 +128,7 @@ public interface OrganizationService {
 
     List<Organization> listOrganization(List<String> ids);
 
-    List<Organization> listOrganizationcode(List<String> listmap);
+/*    List<Organization> listOrganizationcode(List<String> listmap);*/
+    
+
 }
