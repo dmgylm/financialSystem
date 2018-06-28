@@ -83,7 +83,6 @@
          WHERE s.delStatus=1 AND s.id=o.businessDataId
          <include refid="query_businessData_foreachTypeId"></include>	
          <include refid="query_businessData_dateAndId"></include>
-         ORDER BY createTime DESC
        </select>
       
     

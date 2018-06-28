@@ -17,7 +17,7 @@ import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
-import cn.financial.service.OrganizaCodeService;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.FormulaUtil;
 
@@ -34,7 +34,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	private DataModuleService dataModuleService;
 	
     @Autowired
-    private OrganizaCodeService organizaCodeService;
+    private OrganizationService organizationService;
     
     @Autowired
     private BusinessDataService businessDataService;
@@ -59,7 +59,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		String[] startYAndM = startDate.split("/");
 		String[] endYAndM = endDate.split("/");
 		//获取选中的子节点数据
-		List<Organization> codeSonList = organizaCodeService.organization(orgId);
+		List<Organization> codeSonList = organizationService.listOrganization(orgId);
 		List<String> typeIdList = new ArrayList<String>();
 		//将底层数据id拿出来
         for (int i = 0; i < codeSonList.size(); i++) {
@@ -72,10 +72,10 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
         map.put("endYear", endYAndM[0]);
         map.put("startMonth", startYAndM[1]);
         map.put("endMonth", endYAndM[1]);
-    	List<BusinessData> BusinessDataList = businessDataService.listBusinessDataByIdAndDate(map);
+    	List<BusinessData> businessDataList = businessDataService.listBusinessDataByIdAndDate(map);
     	//将查询得来的数据整合添加
-    	for (int j = 0; j < BusinessDataList.size(); j++) {
-    		valveList.add(JSONObject.parseObject(BusinessDataList.get(j).getInfo()));
+    	for (int j = 0; j < businessDataList.size(); j++) {
+    		valveList.add(JSONObject.parseObject(businessDataList.get(j).getInfo()));
 		}
 		
 		return valveList;
