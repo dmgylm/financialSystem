@@ -38,8 +38,13 @@ public class StatisticJsonTest {
     @Test
     public void businessDataTest() {
     	
+    	List<String> typeIdList =new ArrayList<String>();
+    	typeIdList.add("740d5f676b084c00a4d9a1af194b0699");
+    	typeIdList.add("d0f956cb5f5546dca91509ccde2a6e74");
+    	typeIdList.add("37dee02571284bbd89c4ae3e92e0547b");
+    	
         Map<Object, Object> map = new HashMap<>();
-        map.put("typeId", "740d5f676b084c00a4d9a1af194b0699");
+        map.put("typeId", typeIdList);
         map.put("startYear", "2018");
         map.put("endYear", "2018");
         map.put("startMonth", "5");
@@ -55,6 +60,8 @@ public class StatisticJsonTest {
     	
     	List<String> orgid = new ArrayList<String>();
     	orgid.add("740d5f676b084c00a4d9a1af194b0699");
+    	orgid.add("d0f956cb5f5546dca91509ccde2a6e74");
+    	orgid.add("37dee02571284bbd89c4ae3e92e0547b");
     	
     	System.out.println(service.jsonCalculation("0", "66ba42fc04c547318d68d08700770e92", "2018/5", "2018/5", orgid));
     	

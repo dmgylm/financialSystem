@@ -1,7 +1,6 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,20 +56,23 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		String[] endYAndM = endDate.split("/");
 		//获取选中的子节点数据
 		List<Organization> codeSonList = organizaCodeService.organization(orgId);
-		//循环子节点查找对应的数据集合
+		List<String> typeIdList = new ArrayList<String>();
+		//将底层数据id拿出来
         for (int i = 0; i < codeSonList.size(); i++) {
-            Map<Object, Object> map = new HashMap<>();
-            map.put("typeId", codeSonList.get(i).getId());
-            map.put("startYear", startYAndM[0]);
-            map.put("endYear", endYAndM[0]);
-            map.put("startMonth", startYAndM[1]);
-            map.put("endMonth", endYAndM[1]);
-        	List<BusinessData> BusinessDataList = businessDataService.listBusinessDataByIdAndDate(map);
-        	//将查询得来的数据整合添加
-        	for (int j = 0; j < BusinessDataList.size(); j++) {
-        		valveList.add(JSONObject.parseObject(BusinessDataList.get(j).getInfo()));
-			}
+        	typeIdList.add(codeSonList.get(i).getId());
 		} 
+        //查找对应的数据集合
+        Map<Object, Object> map = new HashMap<>();
+        map.put("typeId", typeIdList);
+        map.put("startYear", startYAndM[0]);
+        map.put("endYear", endYAndM[0]);
+        map.put("startMonth", startYAndM[1]);
+        map.put("endMonth", endYAndM[1]);
+    	List<BusinessData> BusinessDataList = businessDataService.listBusinessDataByIdAndDate(map);
+    	//将查询得来的数据整合添加
+    	for (int j = 0; j < BusinessDataList.size(); j++) {
+    		valveList.add(JSONObject.parseObject(BusinessDataList.get(j).getInfo()));
+		}
 		
 		return valveList;
 	}

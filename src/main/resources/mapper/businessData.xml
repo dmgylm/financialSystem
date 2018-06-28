@@ -81,6 +81,7 @@
          SELECT o.info
          FROM businessData s,businessDataInfo o
          WHERE s.delStatus=1 AND s.id=o.businessDataId
+         <include refid="query_businessData_foreachTypeId"></include>	
          <include refid="query_businessData_dateAndId"></include>
          ORDER BY createTime DESC
        </select>
@@ -127,10 +128,16 @@
     </sql>
     
      <!--data sql-->
+     
+    <sql id="query_businessData_foreachTypeId">
+		and s.typeId in
+		<foreach item="item" collection="typeId" open="(" separator=","
+			close=")">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+	</sql>
+     
      <sql id="query_businessData_dateAndId">
-        <if test=" typeId!=null and typeId!=''">
-            and s.typeId = #{typeId}
-        </if>
         <if test="startYear!=null and startYear!=''">
              and  s.year &gt;=  #{startYear,jdbcType=INTEGER}
         </if>
