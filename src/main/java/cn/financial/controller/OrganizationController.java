@@ -54,7 +54,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:create")
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save")
     public Map<String, Object> saveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Integer i = 0;
@@ -94,8 +94,8 @@ public class OrganizationController {
      * @return
      */
     @ResponseBody
-    @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
+//    @RequiresPermissions("organization:view")
+    @RequestMapping(value = "/listBy")
     public Map<String, Object> listOrganizationBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -141,7 +141,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:update")
-    @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
+    @RequestMapping(value = "/updatebyid")
     public Map<String, Object> updateOrganizationById(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -175,7 +175,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:stop")
-    @RequestMapping(value = "/deletebycascade", method = RequestMethod.POST)
+    @RequestMapping(value = "/deletebycascade")
     public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
@@ -217,7 +217,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/getsubnode", method = RequestMethod.POST)
+    @RequestMapping(value = "/getsubnode")
     public Map<Object, Object> getSubnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         String id = "";
@@ -249,7 +249,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/getparnode", method = RequestMethod.POST)
+    @RequestMapping(value = "/getparnode")
     public Map<Object, Object> getParnode(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
@@ -281,7 +281,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions({ "organization:update", "organization:create" })
-    @RequestMapping(value = "/move", method = RequestMethod.POST)
+    @RequestMapping(value = "/move")
     public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         String id = null;
@@ -316,7 +316,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/hasSon", method = RequestMethod.POST)
+    @RequestMapping(value = "/hasSon")
     public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
