@@ -11,12 +11,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.alibaba.fastjson.JSON;
-
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.service.OrganizaCodeService;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -33,8 +30,7 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
-    @Autowired
-    private OrganizaCodeService orgin;
+
 
     /**
      * 测试获取xml的状态节点
@@ -153,46 +149,11 @@ public class OrganizationTest {
             ids.add("cced74c59a9846b5b0a81c0baf235c17");
             ids.add("f8483e1c85e84323853aeee27b4e8c91");
             ids.add("e71064dc0fc443fa8893ce489aed8c38");
-            List<Organization> list=orgin.organization(ids);
+            List<Organization> list=service.listOrganization(ids);
             JSONArray json=JSONArray.fromObject(list);
             System.out.println(json);
         }
-    @Test
-    public void orgshow() {
-        try {
-            List<String> ids = new ArrayList<String>();
-            ids.add("f946a081eda949228537a8746200c3d6");
-            ids.add("cced74c59a9846b5b0a81c0baf235c17");
-            ids.add("f8483e1c85e84323853aeee27b4e8c91");
-            ids.add("e71064dc0fc443fa8893ce489aed8c38");
-            List<Organization> list = service.listOrganization(ids);
-            List<String> listmap = new ArrayList<String>();
-            for (Organization organization : list) {
-                String his_permission = organization.getHis_permission();
-                String[] hps = his_permission.split(",");// 分割逗号
-                listmap.addAll(Arrays.asList(hps));// 所有的his_permission存到listmap当中
-            }
-            JSONObject obj = new JSONObject();
-            // 查询对应的节点的数据
-            List<Organization> listshow = service.listOrganizationcode(listmap);
-            JSONArray json = JSONArray.fromObject(listshow);
-            try {
-                obj.put("rows", json);
-                obj.put("resultCode", 200);
-            } catch (Exception e) {
-                obj.put("resultCode", 500);
-                obj.put("resultDesc", "服务器异常");
-            }
-            System.out.println(json);
-/*            for (Organization organization : listshow) {
-                System.out.println(organization.toString());
-            }
-            System.out.println("展示" + listmap);*/
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+ 
 
     /**
      * 根据id查询该节点下的所有子节点 的集合
