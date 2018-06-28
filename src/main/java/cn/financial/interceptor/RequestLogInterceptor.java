@@ -17,7 +17,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 	    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 	        StringBuffer url = request.getRequestURL();
 	    	@SuppressWarnings("unchecked")
-			Enumeration<String> names = request.getAttributeNames();
+			Enumeration<String> names = request.getParameterNames();
 	    	StringBuffer params = new StringBuffer("?");
 	    	while(names.hasMoreElements()){
 	    		String name = names.nextElement();
