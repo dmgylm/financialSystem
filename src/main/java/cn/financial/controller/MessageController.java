@@ -94,7 +94,7 @@ public class MessageController {
      * @param response
      * @throws ParseException 
      */
-    @RequiresPermissions("capital:view")
+    @RequiresPermissions("message:view")
     @RequestMapping(value = "/listBy", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) throws ParseException {
