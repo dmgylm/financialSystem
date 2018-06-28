@@ -13,7 +13,9 @@ import cn.financial.dao.OrganizationDAO;
 import cn.financial.model.Organization;
 
 import com.alibaba.fastjson.JSONObject;
-
+    /**
+     * @author hsl
+     */
 @Service
 public class OrganizaCodeService {
   @Autowired
