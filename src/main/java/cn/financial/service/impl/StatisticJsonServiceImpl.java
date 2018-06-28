@@ -52,14 +52,13 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@Override
 	public List<JSONObject> findList(String startDate, String endDate,List<String> orgId) {
 		List<JSONObject> valveList = new ArrayList<JSONObject>();
-		
+		//分隔传过来的开始结束时间
 		String[] startYAndM = startDate.split("/");
 		String[] endYAndM = endDate.split("/");
-
+		//获取选中的子节点数据
 		List<Organization> codeSonList = organizaCodeService.organization(orgId);
-         
+		//循环子节点查找对应的数据集合
         for (int i = 0; i < codeSonList.size(); i++) {
-			
             Map<Object, Object> map = new HashMap<>();
             map.put("typeId", codeSonList.get(i).getId());
             map.put("startYear", startYAndM[0]);
@@ -67,7 +66,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
             map.put("startMonth", startYAndM[1]);
             map.put("endMonth", endYAndM[1]);
         	List<BusinessData> BusinessDataList = businessDataService.listBusinessDataByIdAndDate(map);
-        	
+        	//将查询得来的数据整合添加
         	for (int j = 0; j < BusinessDataList.size(); j++) {
         		valveList.add(JSONObject.parseObject(BusinessDataList.get(j).getInfo()));
 			}
