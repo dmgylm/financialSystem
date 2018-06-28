@@ -38,8 +38,8 @@
 			organization_move om
 		INNER JOIN organization o ON om.his_Id = o.id
 		INNER JOIN organization org ON om.new_Id = org.id
-		WHERE
 		<if test="orgkey!=null and orgkey!=''">
+		WHERE
 			o.orgkey = #{orgkey,jdbcType=VARCHAR}
 		</if>
 		ORDER BY
