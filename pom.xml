@@ -149,11 +149,13 @@
         </dependency>
         <!-- 日志文件管理包 -->
         <!-- log start -->
+        <!-- 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+         -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -203,6 +205,7 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>2.4.7</version>
+            
         </dependency>
         <!-- json -->
         <dependency>
@@ -268,7 +271,6 @@
 		    <artifactId>freemarker</artifactId>
 		    <version>2.3.23</version>
 		</dependency>
-		        
 	    <dependency>
 	        <groupId>org.freemarker</groupId>
 	        <artifactId>freemarker-gae</artifactId>
