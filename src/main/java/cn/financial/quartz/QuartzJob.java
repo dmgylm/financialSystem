@@ -33,7 +33,7 @@ public class QuartzJob implements Job{
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-		statementService = (BusinessDataService) AccountQuartzListener.getSpringContext().getBean("StatementServiceImpl");
+		statementService = (BusinessDataService) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
 		List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
 		List<Organization> orgCompany=organizationService.getCompany();
 		Map<Object, Object> map;
