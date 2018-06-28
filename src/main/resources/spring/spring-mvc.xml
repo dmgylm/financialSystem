@@ -112,10 +112,8 @@
     <!-- 拦截器 -->    
     <mvc:interceptors>
        <mvc:interceptor>
-           <mvc:mapping path="/app/**"/><!-- /**拦截所有得URL -->
-           <mvc:exclude-mapping path="/login"/>
-           <mvc:exclude-mapping path="/subLogin"/>
-           <bean id="loginInterceptor" class="cn.financial.util.LoginInterceptor"/>
+           <mvc:mapping path="/**"/><!-- /**拦截所有得URL -->
+           <bean id="loginInterceptor" class="cn.financial.interceptor.RequestLogInterceptor"/>
         </mvc:interceptor> 
     </mvc:interceptors> 
     
