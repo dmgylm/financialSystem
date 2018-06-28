@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
 
@@ -404,7 +407,21 @@ public class UserController {
                 uId = request.getParameter("uId");//用户id
             }
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
-            dataMap.put("userOrganizationList", userOrganization);
+            List<TreeNode<UserOrganization>> nodes = new ArrayList<>();
+            JSONObject jsonObject = null;
+            if(!CollectionUtils.isEmpty(userOrganization)){
+                for (UserOrganization rss : userOrganization) {
+                    TreeNode<UserOrganization> node = new TreeNode<>();
+                    node.setId(rss.getCode());
+                    node.setParentId(rss.getParentId());//父节点
+                    node.setText(rss.getOrgName());//组织架构名称
+                    // node.setNodeData(organization);
+                    node.setPid(rss.getoId());//组织架构id
+                    nodes.add(node);
+                }
+                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+            }
+            dataMap.put("userOrganizationList", jsonObject);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -22,15 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.RoleResource;
-import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
-import net.sf.json.JSONObject;
 
 /**
  * 登录认证
@@ -86,7 +87,7 @@ public class MainController {
                 }
                 List<TreeNode<RoleResource>> nodes = new ArrayList<>();
                 JSONObject jsonObject = null;
-                if(roleResource.size()>0){
+                if(!CollectionUtils.isEmpty(roleResource)){
                     for (RoleResource rss : roleResource) {
                         TreeNode<RoleResource> node = new TreeNode<>();
                         node.setId(rss.getCode().toString());
@@ -96,11 +97,11 @@ public class MainController {
                        // node.setNodeData(rss);
                         nodes.add(node);
                     }
-                    jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+                    jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
                 }
                 
                 //System.out.println(jsonObject); 
-                dataMap.put("roleResource", jsonObject.toString());
+                dataMap.put("roleResource", jsonObject);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }
             //session.setAttribute("password", request.getParameter("password"));

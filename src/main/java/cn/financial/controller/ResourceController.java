@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Resource;
 import cn.financial.model.RoleResource;
 import cn.financial.service.ResourceService;
@@ -24,7 +27,6 @@ import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONObject;
 
 /**
  * 资源权限表
@@ -50,11 +52,11 @@ public class ResourceController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<Resource> resource = resourceService.listResource();
-            List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+            List<TreeNode<Resource>> nodes = new ArrayList<>();
             JSONObject jsonObject = null;
-            if(resource.size()>0){
+            if(!CollectionUtils.isEmpty(resource)){
                 for (Resource rss : resource) {
-                    TreeNode<RoleResource> node = new TreeNode<>();
+                    TreeNode<Resource> node = new TreeNode<>();
                     node.setId(rss.getCode().toString());
                     String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
                     node.setParentId(b);
@@ -62,9 +64,9 @@ public class ResourceController {
                    // node.setNodeData(rss);
                     nodes.add(node);
                 }
-                jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            dataMap.put("resourceList", jsonObject.toString());
+            dataMap.put("resourceList", jsonObject);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
