@@ -17,6 +17,7 @@ import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
+import cn.financial.util.UuidUtil;
 
 @Service("DataModuleServiceImpl")
 public class DataModuleServiceImpl implements DataModuleService{
@@ -80,12 +81,14 @@ public class DataModuleServiceImpl implements DataModuleService{
 		Integer versionNumber = 1;
 		if(dataModule != null) {
 			versionNumber = Integer.parseInt(dataModule.getVersionNumber());
+			dataModule.setStatue(DataModule.STATUS_NOVALID);
+			dataModuleDao.updateDataModuleState(dataModule.getId());
+			versionNumber++;
 		}
-		dataModule.setStatue(DataModule.STATUS_NOVALID);
-		dataModuleDao.updateDataModuleState(dataModule.getId());
 		
 		DataModule bean = new DataModule();
-		bean.setVersionNumber(String.valueOf(versionNumber+1));
+		bean.setId(UuidUtil.getUUID());
+		bean.setVersionNumber(String.valueOf(versionNumber));
 		bean.setReportType(reportType);
 		bean.setBusinessType(businessType);
 		bean.setModuleData(json);
@@ -105,7 +108,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	private String getDataModuleName(String reportType, String businessType) {
 		Organization org = organizationService.getCompanyNameBySon(businessType);
 		String reportTypeName = DataModule.getReprtTypeName(reportType);
-		return org + reportTypeName;
+		return org.getOrgName() + reportTypeName;
 	}
 	
 	

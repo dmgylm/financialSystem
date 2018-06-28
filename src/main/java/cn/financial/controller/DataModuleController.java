@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,27 +32,31 @@ public class DataModuleController {
 	@Autowired
 	private DataModuleService dataModuleService;
 	
+	/**
+	 * 查询模板列表
+	 * @param moduleName 模板名称
+	 * @return
+	 */
+	@RequiresPermissions(value={"data:view","data:search"},logical=Logical.OR)
 	@RequestMapping(value = "/dataModuleList", method = RequestMethod.POST)
     @ResponseBody
-	public Map<String,Object> listDataModule(String jsonData){
+	public Map<String,Object> listDataModule(String moduleName){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		
 		try {
-			JSONObject json=JSONObject.fromObject(jsonData);
+			//JSONObject json=JSONObject.fromObject(jsonData);
 			Map<Object, Object> map = new HashMap<>();
-			String moduleName = json.getString("moduleName");
+			//String moduleName = json.getString("moduleName");
 			if(null!= moduleName && !"".equals(moduleName)){
                // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
 				map.put("moduleName",moduleName);
             }
 			List<DataModule> list=dataModuleService.listDataModule(map);
-			dataMap.put("dataModuleList", list);
-            dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "成功");
+			dataMap.put("data", list);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 		} catch (Exception e) {
 			logger.error("",e);
-			dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "系统错误");
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		
 		return dataMap;
@@ -61,6 +67,7 @@ public class DataModuleController {
 	 * @param dataModuleId
 	 * @return
 	 */
+	@RequiresPermissions("data:search")
 	@RequestMapping(value = "/getDataModule")
     @ResponseBody
 	public Map<String,Object> getDataModule(String dataModuleId){
@@ -68,7 +75,7 @@ public class DataModuleController {
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-			dataMap.put("dataModule", bean);
+			dataMap.put("data", bean);
 		} catch (Exception e) {
 			logger.error("查询错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
@@ -82,6 +89,7 @@ public class DataModuleController {
 	 * @param businessType
 	 * @return
 	 */
+	@RequiresPermissions("data:search")
 	@RequestMapping(value = "/getNewestDataModule")
 	@ResponseBody
 	public Map<String,Object> getNewestDataModule(String reportType,String businessType){
@@ -89,7 +97,7 @@ public class DataModuleController {
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-			dataMap.put("dataModule", bean);
+			dataMap.put("data", bean);
 		} catch (Exception e) {
 			logger.error("查询错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
@@ -98,7 +106,7 @@ public class DataModuleController {
 	}
 	
 	/**
-	 * 
+	 * 修改或新增模板
 	 * @param reportType 报表类型
 	 * @param businessType 业务类型
 	 * @param html html代码
@@ -108,16 +116,17 @@ public class DataModuleController {
 	 * @param secondColNum 纵向标题后缀
 	 * @return
 	 */
+	@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
+	@RequestMapping(value = "/editDataModule")
+	@ResponseBody
 	public Map<String, Object> editDataModule(String reportType,String businessType,String html, Integer firstRowNum,
 			Integer secondRowNum, Integer firstColNum, Integer secondColNum) {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
 			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
-			dataMap.put("resultCode", 200);
-            dataMap.put("resultDesc", "成功");
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 		} catch (Exception e) {
-			dataMap.put("resultCode", 500);
-            dataMap.put("resultDesc", "系统错误");
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		return dataMap;
 	}

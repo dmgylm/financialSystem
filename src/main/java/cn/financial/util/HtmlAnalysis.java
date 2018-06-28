@@ -71,9 +71,9 @@ public class HtmlAnalysis {
 	public HtmlAnalysis(String html,Integer firstRowNum,Integer secondRowNum,Integer firstColNum,Integer secondColNum) {
 		this.doc = Jsoup.parse(html);
 		this.firstRowNum = firstRowNum;
-		this.firstRowNum = secondColNum;
-		this.firstRowNum = firstColNum;
-		this.firstRowNum = secondRowNum;
+		this.secondColNum = secondColNum;
+		this.firstColNum = firstColNum;
+		this.secondRowNum = secondRowNum;
 	}
 
 	public static void main(String[] args) {

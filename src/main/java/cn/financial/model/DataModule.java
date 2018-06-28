@@ -33,6 +33,8 @@ public class DataModule {
 
 	private String id;
 	
+	private String moduleKey;
+	
 	private String moduleName;
 	
 	private String versionNumber;
@@ -89,6 +91,14 @@ public class DataModule {
 
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
+	}
+
+	public String getModuleKey() {
+		return moduleKey;
+	}
+
+	public void setModuleKey(String moduleKey) {
+		this.moduleKey = moduleKey;
 	}
 
 	public String getVersionNumber() {
