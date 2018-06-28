@@ -153,7 +153,7 @@ public class OrganizationTest {
             ids.add("cced74c59a9846b5b0a81c0baf235c17");
             ids.add("f8483e1c85e84323853aeee27b4e8c91");
             ids.add("e71064dc0fc443fa8893ce489aed8c38");
-            JSONArray json=orgin.organization(ids);
+            List<Organization> json=orgin.organization(ids);
             System.out.println(json);
         }
     @Test
