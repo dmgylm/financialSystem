@@ -31,7 +31,7 @@
     
     <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
-        insert into dataModule(id,moduleKey,moduleName,reportType,businessType,moduleData,versionNumber,founder,statue,startTime,createTime) 
+        insert into dataModule(id,moduleKey,moduleName,reportType,businessType,moduleData,versionNumber,founder,statue,createTime) 
         values (#{id},#{moduleKey},#{moduleName},#{reportType},#{businessType},#{moduleData},#{versionNumber},#{founder},#{statue},curdate())
     </insert>
 
@@ -49,7 +49,7 @@
 		 WHERE id=#{id}
     </update> -->
     <update id="updateDataModuleState">
-        UPDATE dataModule SET state=0,updateTime = curdate() WHERE id=#{id}
+        UPDATE dataModule SET statue=0,updateTime = curdate() WHERE id=#{id}
     </update>
     
     <!--定义一个sql片段 -->
