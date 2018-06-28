@@ -15,6 +15,7 @@ import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.BusinessData;
 import cn.financial.service.BusinessDataService;
+import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.UuidUtil;
@@ -25,15 +26,18 @@ import cn.financial.util.UuidUtil;
  */
 public class QuartzJob implements Job{
 	
-	private MessageServiceImpl messageService;
-	private OrganizationServiceImpl organizationService;
-	private BusinessDataService statementService;
+    private MessageServiceImpl messageService;
+
+    private OrganizationServiceImpl organizationService;
+
+    private BusinessDataServiceImpl businessDateService;
+    
     protected Logger logger = LoggerFactory.getLogger(QuartzJob.class);
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-		statementService = (BusinessDataService) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
+		businessDateService = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
 		List<Organization> orglist = organizationService.listOrganizationBy(new HashMap<Object,Object>());
 		List<Organization> orgCompany=organizationService.getCompany();
 		Map<Object, Object> map;
@@ -73,7 +77,7 @@ public class QuartzJob implements Job{
 			        statement.setStatus(2);//提交状态（0 待提交   1已提交  2新增）
 			        statement.setDelStatus(1);
 			        statement.setsId(1);//1表示损益表   2表示预算表
-			        Integer flag = statementService.insertBusinessData(statement);
+			        Integer flag = businessDateService.insertBusinessData(statement);
 			        if(flag!=1) {
 			    	   logger.error("损益报表数据新增失败");
 			       }
