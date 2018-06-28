@@ -26,6 +26,11 @@ public class DataModule {
 	 */
 	public final static String REPORT_TYPE_BUDGET = "BUDGET";
 
+	/**
+	 * 损益简易汇总
+	 */
+	public final static String REPORT_TYPE_SUMMARY_PROFIT_LOSS = "SUMMARY_PROFIT_LOSS";
+
 	private String id;
 	
 	private String moduleName;
