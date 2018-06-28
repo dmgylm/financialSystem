@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
 
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.service.impl.OrganizaCodeService;
+import cn.financial.service.OrganizaCodeService;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
