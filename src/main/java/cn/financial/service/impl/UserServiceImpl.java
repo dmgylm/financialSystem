@@ -9,6 +9,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.util.StringUtils;
+
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserDAO;
 import cn.financial.dao.UserRoleDAO;
@@ -108,8 +110,10 @@ public class UserServiceImpl implements  UserService{
                     }  
                 }
                 for(int i=0;i<roleResource.size();i++){
-                    permissions.add(roleResource.get(i).getPermssion());
-                    System.out.println("权限-----------"+roleResource.get(i).getPermssion());
+                    if(!StringUtils.isEmpty(roleResource.get(i).getPermssion())){
+                        permissions.add(roleResource.get(i).getPermssion());
+                        System.out.println("权限-----------"+roleResource.get(i).getPermssion());
+                    }
                 }
             }
         } catch (Exception e) {
