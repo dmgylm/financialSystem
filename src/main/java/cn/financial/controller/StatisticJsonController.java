@@ -45,14 +45,18 @@ public class StatisticJsonController {
      * @return 返回结果为总的json数据
      */
     @ResponseBody
-    @RequestMapping(value = "/staticJson", method = RequestMethod.POST)
-    public Map<String, Object> staticJson(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/staticJson")
+    public Map<String, Object> staticJson(HttpServletRequest request) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        List<JSONObject> valuemode = (List<JSONObject>) request.getAttribute("valuemode");
+        String reportType = (String) request.getAttribute("reportType");
+        String businessType = (String) request.getAttribute("businessType");
+        String startDate = (String) request.getAttribute("startDate");
+        String endDate = (String) request.getAttribute("endDate");
+        List<String> orgId = (List<String>) request.getAttribute("orgId");
         try {
-            JSONObject ja = statisticService.jsonCalculation(JSONObject.parseObject(request.getParameter("cachemodel")),valuemode);
+            JSONObject ja = statisticService.jsonCalculation(reportType,businessType,startDate,endDate,orgId);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("resultData", ja);
+            dataMap.put("data", ja);
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);

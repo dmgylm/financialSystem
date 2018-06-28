@@ -75,6 +75,16 @@
       <update id="deleteBusinessData">
         UPDATE businessData SET delStatus=0 WHERE id=#{id}
       </update>
+      
+       <!-- 根据选定条件查询损益数据 -->
+       <select id="listBusinessDataByIdAndDate" parameterType="map" resultType="businessData">
+         SELECT o.info
+         FROM businessData s,businessDataInfo o
+         WHERE s.delStatus=1 AND s.id=o.businessDataId
+         <include refid="query_businessData_dateAndId"></include>
+         ORDER BY createTime DESC
+       </select>
+      
     
       <!--sql-->
      <sql id="query_businessData_where">
@@ -116,4 +126,22 @@
          </if>
     </sql>
     
+     <!--data sql-->
+     <sql id="query_businessData_dateAndId">
+        <if test=" typeId!=null and typeId!=''">
+            and s.typeId = #{typeId}
+        </if>
+        <if test="startYear!=null and startYear!=''">
+             and  s.year &gt;=  #{startYear,jdbcType=INTEGER}
+        </if>
+        <if test="endYear!=null and endYear!=''">
+             and  s.year &lt;= #{endYear,jdbcType=INTEGER}
+        </if>
+        <if test="startMonth!=null and startMonth!=''">
+             and  s.month &gt;=  #{startMonth,jdbcType=INTEGER}
+        </if>
+        <if test="endMonth!=null and endMonth!=''">
+             and  s.month &lt;= #{endMonth,jdbcType=INTEGER}
+        </if>
+    </sql>
 </mapper>

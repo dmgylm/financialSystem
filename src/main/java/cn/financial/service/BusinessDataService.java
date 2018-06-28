@@ -50,5 +50,12 @@ public interface BusinessDataService {
      * @param map
      * @return
      */
-    List<BusinessData> listBusinessDataBy(Map<Object, Object> map);  
+    List<BusinessData> listBusinessDataBy(Map<Object, Object> map);
+
+    /**
+     * 根据时间id条件查询损益表数据
+     * @param map
+     * @return
+     */
+	List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);  
 }

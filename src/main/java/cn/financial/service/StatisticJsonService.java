@@ -11,6 +11,10 @@ public interface StatisticJsonService {
      * 统计所有数量
      * @return
      */
-	JSONObject jsonCalculation(JSONObject cachemodel ,List<JSONObject> valuemode);
-	
+	JSONObject jsonCalculation(String reportType, String businessType, String startDate,String endDate,List<String> orgId);
+
+	JSONObject findModel(String reportType, String businessType);
+
+	List<JSONObject> findList(String startDate, String endDate,List<String> orgId);
+
 }

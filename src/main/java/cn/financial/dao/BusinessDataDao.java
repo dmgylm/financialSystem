@@ -51,5 +51,12 @@ public interface BusinessDataDao {
      * @return
      */
     List<BusinessData> listBusinessDataBy(Map<Object, Object> map);       
+    
+    /**
+     * 根据时间id等条件查询损益表数据
+     * @param map
+     * @return
+     */
+    List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);     
                
 }

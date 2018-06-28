@@ -68,5 +68,13 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	public Integer deleteBusinessData(String id) {
 		return businessDataDao.deleteBusinessData(id);
 	}
+	
+	/**
+	 * 根据时间id条件查询损益数据
+	 */
+	@Override
+	public List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map) {
+		return businessDataDao.listBusinessDataByIdAndDate(map);
+	}
 
 }
