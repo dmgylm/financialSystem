@@ -6,7 +6,7 @@ import cn.financial.util.JsonConvertProcess;
 
 public class JsonTest {
 	
-    @Test
+/*    @Test
 	 public  void  shortJson(){
 		String path = "C:/Users/whg/Desktop/解析后文件.txt";
 		JSONObject newObj = JSONObject.fromObject(JsonConvertProcess.readFileContent(path));
@@ -16,7 +16,7 @@ public class JsonTest {
 		JSONObject mergin=JsonConvertProcess.mergeJson(newObj,json);
 		JSONObject simplifyJson=JsonConvertProcess.simplifyJson(jsons,mergin.toString());
 		System.out.println(simplifyJson);
-	}
+	}*/
 
 	
 }
