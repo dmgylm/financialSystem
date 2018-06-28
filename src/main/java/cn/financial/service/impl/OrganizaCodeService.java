@@ -20,6 +20,11 @@ public class OrganizaCodeService {
   private OrganizationServiceImpl organizationServiceImpl;
   @Autowired
   private OrganizationDAO organizationDAO;
+  /**
+   * 
+   * @param ids
+   * @return  组织架构数据
+   */
   public JSONArray organization(List  ids){
 	  List<Organization> list = organizationDAO.listOrganization(ids);
 	  List<Organization> codeSonList = new ArrayList<Organization>();
