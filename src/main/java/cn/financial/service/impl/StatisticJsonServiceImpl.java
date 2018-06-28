@@ -48,6 +48,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		return JSONObject.parseObject(bean.getModuleData());
 	}
     
+	/**
+	 * 获取所选机构底层数据集合
+	 */
 	@Override
 	public List<JSONObject> findList(String startDate, String endDate,List<String> orgId) {
 		List<JSONObject> valveList = new ArrayList<JSONObject>();
