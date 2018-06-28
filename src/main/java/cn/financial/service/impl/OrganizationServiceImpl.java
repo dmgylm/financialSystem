@@ -484,7 +484,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     @Cacheable(value = "organizationValue", key = "'orga_key_alldepart'")
     public List<Organization> getDep() {
-        List<Organization> result = new ArrayList<>();
+        /*List<Organization> result = new ArrayList<>();
         // 得到所有组织结构
         List<Organization> orgaAll = organizationDAO.listOrganizationBy(new HashMap<>());
         if (!CollectionUtils.isEmpty(orgaAll)) {
@@ -497,7 +497,14 @@ public class OrganizationServiceImpl implements OrganizationService {
                 result.add(or);
             }
         }
-        return result;
+        return result;*/
+        Map<Object, Object> map = new HashMap<>();
+        map.put("orgType", 3);
+        List<Organization> result = organizationDAO.listOrganizationBy(map);
+        if (!CollectionUtils.isEmpty(result)) {
+            return result;
+        }
+        return null;
     }
 
     /**
