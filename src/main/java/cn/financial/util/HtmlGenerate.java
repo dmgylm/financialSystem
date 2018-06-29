@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.codec.CharEncoding;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -75,9 +76,10 @@ public class HtmlGenerate {
 		Map<Integer,Map<Integer,JSONObject>> trMap = assembleData(jsonObj);
 		trMap = sortTableRowMap(trMap);
 		Document doc = Jsoup.parse("<html> <head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style> <body></body></html>");
+		doc.outputSettings().charset(CharEncoding.UTF_8).prettyPrint(false);
 		Element table = createTable(doc);
 		assembleTable(trMap,table,htmlType);
-		return doc.toString();
+		return doc.html();
 	}
 
 	/**
