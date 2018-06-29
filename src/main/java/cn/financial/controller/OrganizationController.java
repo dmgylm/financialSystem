@@ -152,6 +152,9 @@ public class OrganizationController {
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 map.put("id", request.getParameter("id"));// 组织id
             }
+            if (null != request.getParameter("orgType") && !"".equals(request.getParameter("orgType"))) {
+                map.put("orgType", request.getParameter("orgType"));// 组织id
+            }
             User user = (User) request.getAttribute("user");
             map.put("uId", user.getId());
             Integer i = organizationService.updateOrganizationById(map);
@@ -175,7 +178,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions("organization:stop")
-    @RequestMapping(value = "/deletebycascade")
+    @RequestMapping(value = "/discontinuate")
     public Map<Object, Object> deleteOrganizationByStatusCascade(HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
