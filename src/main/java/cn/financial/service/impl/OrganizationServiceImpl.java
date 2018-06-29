@@ -83,7 +83,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据条件查询组织结构信息
      */
-    @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
+    // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
     public List<Organization> listOrganizationBy(Map<Object, Object> map) {
         return organizationDAO.listOrganizationBy(map);
     }
