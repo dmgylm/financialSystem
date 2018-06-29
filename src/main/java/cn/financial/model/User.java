@@ -24,8 +24,6 @@ public class User implements Serializable{
     
     private String salt;  //uuid随机数生成
     
-    private Boolean locked = Boolean.FALSE;//记录登陆次数
-    
     public User() {
         super();
     }
@@ -102,12 +100,4 @@ public class User implements Serializable{
 		this.salt = salt;
 	}
 	
-	public Boolean getLocked() {  
-        return locked;  
-    }  
-  
-    public void setLocked(Boolean locked) {  
-        this.locked = locked;  
-    }
-    
 }
