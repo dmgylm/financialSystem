@@ -50,7 +50,7 @@
 	<!--查询该节点以及节点以下的 -->
 	<select id="listOrganization" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -60,7 +60,7 @@
 
 	<select id="listOrganizationcode" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -88,7 +88,7 @@
 	<select id="listOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -100,7 +100,7 @@
 	<select id="listAllOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -172,7 +172,7 @@
 	<select id="listTreeByCodeForSon"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -185,7 +185,7 @@
 	<select id="listTreeByCodeForParent"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
@@ -232,7 +232,7 @@
 	<!-- 获取组织机构为公司的数据 -->
 	<select id="getCompany" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
 		from
 		organization
 		where
