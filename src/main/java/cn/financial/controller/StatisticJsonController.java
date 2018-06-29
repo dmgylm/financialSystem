@@ -55,7 +55,7 @@ public class StatisticJsonController {
         try {
             JSONObject ja = statisticService.jsonCalculation(reportType,businessType,startDate,endDate,JSONArray.parseArray(orgId));
 			HtmlGenerate hg = new HtmlGenerate();
-			String html = hg.generateHtml(ja.toString(),3);
+			String html = hg.generateHtml(ja.toString(),HtmlGenerate.HTML_TYPE_PREVIEW);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             dataMap.put("data", html);
         } catch (Exception e) {
