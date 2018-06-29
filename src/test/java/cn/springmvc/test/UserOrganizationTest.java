@@ -1,8 +1,12 @@
 package cn.springmvc.test;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +17,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Organization;
+import cn.financial.model.Resource;
 import cn.financial.model.UserOrganization;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
@@ -28,6 +36,9 @@ import cn.financial.util.UuidUtil;
 public class UserOrganizationTest {
     @Autowired
     private UserOrganizationService service;
+    @Autowired
+    private OrganizationService organizationService;
+    
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
@@ -64,8 +75,35 @@ public class UserOrganizationTest {
     //查询全部or根据用户id查询
     @Test
     public void ListUserOrganizationTest() {
-        List<UserOrganization> role = service.listUserOrganization("1cb54fff435b4fff8aa7c1fa391f519b");
-        for(UserOrganization list:role){
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        List<Organization> listre = new ArrayList<>();
+        List<UserOrganization> orgList = service.listUserOrganization("3ab47227d7ec441aad625e76c32b46b7");
+        List<TreeNode<Organization>> nodes = new ArrayList<>();
+        for (int i = 0; i < orgList.size(); i++) {
+            String orgId = orgList.get(i).getoId();
+            //当前id信息
+            map.put("id", orgId);
+            List<Organization> userOrgId = organizationService.listOrganizationBy(map); 
+            listre.addAll(userOrgId);
+            //根据当前id查询该节点的所有父节点
+            List<Organization> orgIdList = organizationService.listTreeByIdForParent(orgId);
+            listre.addAll(orgIdList);
+        }
+        if(!CollectionUtils.isEmpty(listre)){
+            for (Organization organization : listre) {
+                TreeNode<Organization> node = new TreeNode<>();
+                node.setId(organization.getCode());
+                node.setParentId(organization.getParentId());
+                node.setName(organization.getOrgName());
+                node.setPid(organization.getId());
+                nodes.add(node);
+            }
+        }
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+        //JSONObject jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
+        System.out.println(jsonObject);
+        System.out.println("总条数："+orgList.size());
+        for(UserOrganization list:orgList){
             System.out.println(" oId: "+list.getoId() +" uId: "+list.getuId() +" jobNumber: "+list.getJobNumber()+
                     " userName: "+list.getName()+" realName: "+list.getRealName()+" code: "+list.getCode()+
                     " ParentId: "+list.getParentId()+" His_permission: "+list.getHis_permission()+
