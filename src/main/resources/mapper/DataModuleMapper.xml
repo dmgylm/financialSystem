@@ -17,7 +17,7 @@
 	</resultMap>    
 	<!--查询全部模板/多条件查询模板列表-->
     <select id="listDataModule" parameterType="map" resultType="dataModule">
-        SELECT id,moduleKey,moduleName,reportType,businessType,versionNumber,founder,statue,startTime,createTime,updateTime FROM dataModule WHERE 1 = 1 
+        SELECT id,moduleKey,moduleName,moduleData,reportType,businessType,versionNumber,founder,statue,startTime,createTime,updateTime FROM dataModule WHERE 1 = 1 
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC
     </select>
