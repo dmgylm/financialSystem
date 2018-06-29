@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.service.MessageService;
@@ -161,9 +163,13 @@ public class MessageController {
                     	unreadmessage+=1;
                     }
                 }
-                dataMap.put("resultstatus", unreadmessage);//未读的条数
+                
+                JSONObject obj = new JSONObject();
+                obj.put("list", list);
+                obj.put("unread", unreadmessage);
+                
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", list);
+                dataMap.put("data", obj);
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
