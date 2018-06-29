@@ -81,4 +81,12 @@ public class ElementConfig {
      * 此节点下存在未停用的节点，请先停用子节点
      */
     public static final String ORGANIZA_DELEFALSE = "ORGANIZA_DELEFALSE";
+    /**
+     * 用户名为空
+     */
+    public static final String USERNAME_NULL_ERROR = "USERNAME_NULL_ERROR";
+    /**
+     * 密码为空
+     */
+    public static final String PASSWORD_NULL_ERROR = "PASSWORD_NULL_ERROR";
 }
