@@ -36,17 +36,18 @@ public class CapitalTest {
     public void insertCapital() throws UnsupportedEncodingException, ParseException {
         Capital capital =new Capital();
         capital.setId(UuidUtil.getUUID());
+        capital.setoId("2a38648b34134859a018d080ae720573");
         capital.setPlate("1235");
         capital.setBU("1234");
         capital.setRegionName("1111");
         capital.setProvince("1111");
         capital.setCity("11");
-        capital.setCompany("1");
+        capital.setCompany("盛世大联保险代理股份有限公司武汉分公司");
         capital.setAccountName("1");
         capital.setAccountBank("1");
         capital.setAccount("13445");
         capital.setAccountNature("123234");
-        capital.setTradeTime("2018-01-02");
+        capital.setTradeTime(sdf.parse("2018-06-28 20:39:17"));
         capital.setStartBlack(1200);
         capital.setIncom(20000);
         capital.setPay(8000);
@@ -69,11 +70,10 @@ public class CapitalTest {
     @Test
     public void getAllCapital() throws UnsupportedEncodingException {
         Map<Object, Object> map = new HashMap<>();
-        map.put("plate","好");
         map.put("tradeTimeBeg","2018-06-01 00:00:00");
         map.put("tradeTimeEnd","2018-06-30 00:00:00");
         map.put("pageSize",10);
-        map.put("start",0);
+        map.put("start",1);
         List<Capital> list = capitalServiceImpl.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -129,7 +129,7 @@ public class CapitalTest {
         capital.setAccountBank("1");
         capital.setAccount("13445");
         capital.setAccountNature("123234");
-        capital.setTradeTime("2018-01-02");
+        capital.setTradeTime(sdf.parse("2018-01-02"));
         capital.setStartBlack(1200);
         capital.setIncom(20000);
         capital.setPay(8000);

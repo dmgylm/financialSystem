@@ -35,25 +35,15 @@
  
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
-            insert into capital(id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            insert into capital(id,oId,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status)
-            values (#{id},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
+            values (#{id},#{oId},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
             #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status})
        </insert>
       
-       <!-- 查询所有的资金数据 -->
-      <!--  <select id="getAllCapital" resultMap="capital">  
-        select id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
-         from capital 
-         where status=1
-         <include refid="query_capital_where"></include>
-         ORDER BY createTime DESC
-       </select> -->
-       
        <!--根据id查询资金数据 -->
        <select id="selectCapitalById" parameterType="String" resultMap="capital" >
-           SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+           SELECT id,oId,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
            FROM capital 
            WHERE id = #{id} and status=1
@@ -62,27 +52,17 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,uId,remarks,status 
-         FROM capital
-         WHERE status=1 
+         SELECT * FROM 
+         capital 
+         WHERE status=1
          <include refid="query_capital_where"></include>
          ORDER BY tradeTime DESC
-         LIMIT #{start},#{pageSize}
        </select>
        
-        <!-- 根据条件查询资金数据-->
-       <select id="getAllCapital" parameterType="map" resultType="Capital">
-         SELECT plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,uId,remarks,status 
-         FROM capital
-         WHERE status=1 
-         <include refid="query_capital_where"></include>
-         ORDER BY tradeTime DESC
-       </select>
+      
        
        <!--导出根据多个id查询 -->
-       <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
+       <!-- <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
            SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
            FROM capital 
@@ -91,12 +71,13 @@
                #{id}
            </foreach>
            ORDER BY createTime DESC
-       </select>
+       </select> -->
        
        <!-- 根据条件修改资金数据--> 
       <update id="updateCapital" parameterType="capital">
          UPDATE capital
         <trim prefix="set" suffixOverrides=",">
+            <if test="oId!=null and oId!=''">oId = #{oId},</if>
             <if test="plate!=null and plate!=''">plate = #{plate},</if>
             <if test="BU!=null and BU!=''">BU = #{BU},</if>
             <if test="regionName!=null and regionName!=''">regionName = #{regionName},</if>
@@ -147,11 +128,11 @@
              and province LIKE CONCAT('%',#{province},'%')
         </if>
         <if test=" city!=null and city!=''">
-             and city =  LIKE CONCAT('%',#{city},'%') 
+             and city  LIKE CONCAT('%',#{city},'%') 
         </if>
-        <if test=" company!=null and company!=''">
-             and company LIKE CONCAT('%',#{company},'%') 
-        </if>
+         <if test=" company!=null and company!=''">
+             and  company  LIKE CONCAT('%',#{company},'%') 
+        </if> 
         <if test="accountName!=null and accountName!=''">
              and accountName LIKE CONCAT('%',#{accountName},'%')
         </if>
@@ -165,7 +146,7 @@
              and accountNature LIKE CONCAT('%',#{accountNature},'%')
          </if>
          <if test="tradeTime!=null and tradeTime!=''">
-             and  tradeTime = tradeTime between '#{tradeTimeBeg}' and '#{tradeTimeEnd}'
+             and  tradeTime = tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd}
           </if>
           <if test="startBlack!=null and startBlack!=''">
              and startBlack LIKE CONCAT('%',#{startBlack},'%') 
@@ -185,12 +166,10 @@
           <if test="classify!=null and classify!=''">
               and classify LIKE CONCAT('%',#{classify},'%')
           </if>
-         <if test="uId!=null and uId!=''">
-            and uId = #{uId}
-         </if>
-         <if test="remarks!=null and remarks!=''">
+         
+         <!-- <if test="remarks!=null and remarks!=''">
             and remarks LIKE CONCAT('%',#{remarks},'%')
-         </if>
+         </if> -->
          <!-- <if test="status!=null and status!=''">
             and status = #{status}
          </if> -->

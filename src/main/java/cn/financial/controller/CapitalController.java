@@ -5,9 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,17 +16,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import cn.financial.model.Capital;
+import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.service.CapitalService;
+import cn.financial.service.OrganizationService;
+import cn.financial.service.UserOrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
@@ -42,9 +46,15 @@ public class CapitalController {
  
     
         @Autowired
-        private  CapitalService capitalService;
+        private  CapitalService capitalService; //资金流水表
+        
+        @Autowired
+        private  UserOrganizationService userOrganizationService; //用户组织的表
+        
+        @Autowired
+        private  OrganizationService organizationService; //组织架构表
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
@@ -65,7 +75,7 @@ public class CapitalController {
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ResponseBody
-        public Map<String, Object> listCapitalBy(HttpServletRequest request) {
+        public Map<String, Object> listCapitalBy(HttpServletRequest request,Integer page,Integer pageSize) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Map<Object, Object> map = new HashMap<>();
@@ -83,69 +93,59 @@ public class CapitalController {
                 if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
                     map.put("province",request.getParameter("province"));//省份
                 }
-               /* if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                    map.put("city",new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
                 if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
                     map.put("company",request.getParameter("company"));//公司名称
                 }
-                /*if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
-                    map.put("accountName",request.getParameter("accountName"));
-                }*/
                 if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
                     map.put("accountBank",request.getParameter("accountBank"));//开户行
                 }
-                /*if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
-                    map.put("account",request.getParameter("account"));
-                }*/
                 if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
                     map.put("accountNature",request.getParameter("accountNature"));//账户性质
                 }
                 if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
-                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));//交易起始日期
+                    map.put("tradeTimeBeg",(request.getParameter("tradeTimeBeg")));//交易起始日期
                 }
                 if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
                     map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
                 }
-                /*if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
-                    map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
-                }
-                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
-                    map.put("incom",Integer.getInteger(request.getParameter("incom")));
-                }
-                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
-                    map.put("pay",Integer.getInteger(request.getParameter("pay")));
-                }
-                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
-                    map.put("endBlack",Integer.getInteger(request.getParameter("endBlack")));
-                }
-                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
-                    map.put("abstrac",new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
                     map.put("classify",request.getParameter("classify"));//项目分类
                 }
-               /* if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
-                    map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
-                //提交人
-                if(uId!=null && !uId.equals("")){
-                    map.put("uId",uId);
-                }
-                Integer pageSize=0;
-                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                    map.put("pageSize",pageSize);
-                }
-                Integer start=0;
-                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                    map.put("start",start);
-                }
-                List<Capital> list = capitalService.listCapitalBy(map);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", list);
+                List<Capital> list = capitalService.listCapitalBy(map); //查询全部符合条件的数据
+                JSONArray arr=JSONArray.fromObject(list);  
                 
+                List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
+                JSONArray jsonArr=JSONArray.fromObject(userOrganization);
+                
+                List<Capital> listData=new ArrayList<>();
+                for (int i = 0; i < jsonArr.size(); i++) { //循环全部数据    
+                    JSONObject jsonObject=jsonArr.getJSONObject(i);
+                    String id=jsonObject.getString("oId"); //找到权限数据里面的oId
+                    //找权限里面的公司名称  去全部数据里面去匹配   如果有这个公司存在的话  这条数据是展示的是需要的   如果没这个公司存在就剔除这条数据
+                    for (int j = 0; j < arr.size(); j++) {
+                        JSONObject jsonObj=arr.getJSONObject(j);
+                        String arrId=jsonObj.get("oId").toString();//找全部资金流水表的oId
+                        if(id.equals(arrId)){  //判断权限oId 和全部数据的oId是否相同  
+                            listData.add(list.get(j));  // 可以显示的资料流水数据
+                        }
+                    }
+                }
+                if(listData.size()>0){  //判断是否有符合权限的数据  没有则是抛出异常  有就进行数据分页传到前台
+                    Integer p=(page - 1) * pageSize; //开始下标
+                    Integer s=page* pageSize;  //结束下标
+                    List<Capital> subList =new ArrayList<>();
+                    if(listData.size()<pageSize){    //判断总得数据长度是否小于每页大小
+                        subList=listData.subList(0,listData.size());
+                    }else if(listData.size()<s){     //判断总得数据长度是否小于结束下标大小
+                        subList=listData.subList(p,listData.size());
+                    }else{
+                        subList=listData.subList(p,s);
+                    }
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    dataMap.put("data", subList);
+                }else{
+                    throw new Exception("您没有权限查看资金流水数据！");
+                }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -170,7 +170,7 @@ public class CapitalController {
                 if(id!=null&&!id.equals("")){
                    Capital  Capital=capitalService.selectCapitalById(id);
                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                   dataMap.put("resultData", Capital);
+                   dataMap.put("data", Capital);
                 }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
@@ -226,7 +226,7 @@ public class CapitalController {
                    capital.setAccountNature(new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
                }
                if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
-                   capital.setTradeTime(request.getParameter("tradeTime"));
+                   capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
                }
                if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
                    capital.setStartBlack(Integer.getInteger(request.getParameter("startBlack")));
@@ -320,7 +320,7 @@ public class CapitalController {
                     capital.setAccountNature(new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
                 }
                 if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
-                    capital.setTradeTime(request.getParameter("tradeTime"));
+                    capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
                 }
                 if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
                     capital.setStartBlack(Integer.getInteger(request.getParameter("startBlack")));
@@ -397,61 +397,94 @@ public class CapitalController {
         /***
          * 导入
          */
+        @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
         @ResponseBody
         public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
+            User user = (User) request.getAttribute("user");
+            String uId = user.getId();
+            List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //根据提交人id查询 本人所拥有的权限
+            JSONArray jsonArr=JSONArray.fromObject(userOrganization);
             if(uploadFile.getSize()>0 && uploadFile.getSize()<5242880){  //判断文件大小是否是5M以下的
               try {
                   int row=1;
                   Integer a=0;
                   List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);//读取excel表格数据
-                  System.out.println(list.size());
-                  for (int i = 0; i < list.size(); i++){
-                      Capital capital=new Capital();
-                      String[] str=list.get(i);
-                      capital.setId(UuidUtil.getUUID());
-                      capital.setPlate(str[0]);
-                      capital.setBU(str[1]);
-                      capital.setRegionName(str[2]);
-                      capital.setProvince(str[3]);
-                      capital.setCity(str[4]);
-                      capital.setCompany(str[5]);
-                      capital.setAccountName(str[6]);
-                      capital.setAccountBank(str[7]);
-                      capital.setAccount(str[8]);
-                      capital.setAccountNature(str[9]);
-                      capital.setTradeTime(str[10]);
-                      capital.setStartBlack(Integer.parseInt(str[11]));
-                      capital.setIncom(Integer.parseInt(str[12]));
-                      capital.setPay(Integer.parseInt(str[13]));
-                      capital.setEndBlack(Integer.parseInt(str[14]));
-                      capital.setAbstrac(str[15]);
-                      capital.setClassify(str[16]);
-                      capital.setRemarks(str[17]);
-                      Calendar calendar = Calendar.getInstance();
-                      calendar.setTime(calendar.getTime());
-                      User user = (User) request.getAttribute("user");
-                      String uId = user.getId();
-                      capital.setuId(uId);
-                      capital.setYear(Calendar.YEAR);
-                      capital.setMonth(Calendar.MONTH);
-                      capital.setStatus(1);
-                    /*  System.out.println("id:"+capital.getId()+"plate"+capital.getPlate()+"BU:"+capital.getBU()+"RegionName:"
-                       +capital.getRegionName()+"Province:"+capital.getProvince()+"city:"+capital.getCity()+"Company:"
-                       +capital.getCompany()+"AccountName:"+capital.getAccountName()+"AccountBank:"+capital.getAccountBank()+
-                       "Account:"+capital.getAccount()+"AccountNature:"+capital.getAccountNature()+"TradeTime:"+capital.getTradeTime()
-                       +"StartBlack:"+capital.getStartBlack()+"Incom:"+capital.getIncom()+"Pay:"+capital.getPay()
-                       +"EndBlack:"+capital.getEndBlack()+"Abstrac:"+capital.getAbstrac()+"Classify:"+capital.getClassify()
-                       +"Remarks:"+capital.getRemarks()+"uId:"+capital.getuId()+"Year:"+capital.getYear()+"Month:"+capital.getMonth());*/
-                      a = capitalService.insertCapital(capital);
+                 try {
+                     Integer num=0;  //判断excel里面是否 存在 没有在权限内的数据    1表示不存在 不存在才能进行导入 0表示存在  抛出异常
+                     for (int i = 0; i < list.size(); i++) {  //判断excel表格里面是否有不符合权限的数据  如果有就不能导入,抛出异常
+                         String[] str=list.get(i);   //在excel得到第i条数据
+                         Map<Object, Object> map = new HashMap<>();
+                         map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
+                         List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
+                         //List<Capital> listData=new ArrayList<>();
+                         if(listOrganization.size()>0){  //如果不存在该公司的组织数据，也不能导入
+                             for (int k = 0; k < jsonArr.size(); k++) { //循环权限里面全部数据    
+                                 JSONObject jsonObject=jsonArr.getJSONObject(k);
+                                 String oId=jsonObject.getString("oId"); //找到权限数据里面的oId
+                                 //找权限里面的oId组织架构id  去全部数据里面去匹配   如果有这个oId的话  证明有新增资金流水的权限
+                                 String id=listOrganization.get(0).getId();
+                                 if(id.equals(oId)){
+                                     num=1;
+                                 }
+                               }
+                              }else{
+                                num=0;
+                                break;
+                              }
+                          }
+                         if(num==1){  //没有不符合权限的数据  进行导入
+                             for (int i = 0; i < list.size(); i++){
+                                 String[] str=list.get(i);   //在excel得到第i条数据
+                                 Capital capital=new Capital();
+                                 capital.setId(UuidUtil.getUUID());
+                                 Map<Object, Object> map = new HashMap<>();
+                                 map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
+                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
+                                 capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
+                                 capital.setPlate(str[0]);
+                                 capital.setBU(str[1]);
+                                 capital.setRegionName(str[2]);
+                                 capital.setProvince(str[3]);
+                                 capital.setCity(str[4]);
+                                 capital.setCompany(str[5]);
+                                 capital.setAccountName(str[6]);
+                                 capital.setAccountBank(str[7]);
+                                 capital.setAccount(str[8]);
+                                 capital.setAccountNature(str[9]);
+                                 capital.setTradeTime(sdf.parse(str[10]));
+                                 capital.setStartBlack(Integer.parseInt(str[11]));
+                                 capital.setIncom(Integer.parseInt(str[12]));
+                                 capital.setPay(Integer.parseInt(str[13]));
+                                 capital.setEndBlack(Integer.parseInt(str[14]));
+                                 capital.setAbstrac(str[15]);
+                                 capital.setClassify(str[16]);
+                                 capital.setRemarks(str[17]);
+                                 Calendar calendar = Calendar.getInstance();
+                                 calendar.setTime(calendar.getTime());
+                                 capital.setuId(uId);
+                                 capital.setYear(Calendar.YEAR);
+                                 capital.setMonth(Calendar.MONTH);
+                                 capital.setStatus(1);
+                                 a = capitalService.insertCapital(capital); //导入新增的数据
+                                 if (a == 1) {
+                                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                                     dataMap.put("result","导入成功！");
+                                 } else {
+                                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                                     dataMap.put("result","导入失败！");
+                                 }
+                             }
+                        }else{
+                            throw new Exception("您没有权限导入资金数据！"); 
+                        }
+                 } catch (Exception e) {
+                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+                     this.logger.error(e.getMessage(), e);
                  }
-                if (a == 1) {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                } else {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
+                 
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                 this.logger.error(e.getMessage(), e);
@@ -489,126 +522,121 @@ public class CapitalController {
                 if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
                     map.put("province",request.getParameter("province"));//省份
                 }
-               /* if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                    map.put("city",new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
                 if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
                     map.put("company",request.getParameter("company"));//公司名称
                 }
-                /*if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
-                    map.put("accountName",request.getParameter("accountName"));
-                }*/
                 if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
                     map.put("accountBank",request.getParameter("accountBank"));//开户行
                 }
-                /*if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
-                    map.put("account",request.getParameter("account"));
-                }*/
                 if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
                     map.put("accountNature",request.getParameter("accountNature"));//账户性质
                 }
                 if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
-                    map.put("tradeTimeBeg",request.getParameter("tradeTimeBeg"));//交易起始日期
+                    map.put("tradeTimeBeg",(request.getParameter("tradeTimeBeg")));//交易起始日期
                 }
                 if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
                     map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
                 }
-                /*if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
-                    map.put("startBlack",Integer.getInteger(request.getParameter("startBlack")));
-                }
-                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
-                    map.put("incom",Integer.getInteger(request.getParameter("incom")));
-                }
-                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
-                    map.put("pay",Integer.getInteger(request.getParameter("pay")));
-                }
-                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
-                    map.put("endBlack",Integer.getInteger(request.getParameter("endBlack")));
-                }
-                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
-                    map.put("abstrac",new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
+                
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
                     map.put("classify",request.getParameter("classify"));//项目分类
                 }
-               /* if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
-                    map.put("remarks",new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
-                }*/
-                //提交人
-                if(uId!=null && !uId.equals("")){
-                    map.put("uId",uId);
+                List<Capital> list = capitalService.listCapitalBy(map); //查询全部符合条件的数据
+                JSONArray arr=JSONArray.fromObject(list);  
+                
+                List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
+                JSONArray jsonArr=JSONArray.fromObject(userOrganization);
+                
+                List<Capital> listData=new ArrayList<>();
+                for (int i = 0; i < jsonArr.size(); i++) { //循环全部数据    
+                    JSONObject jsonObject=jsonArr.getJSONObject(i);
+                    String id=jsonObject.getString("oId"); //找到权限数据里面的oId
+                    //找权限里面的公司名称  去全部数据里面去匹配   如果有这个公司存在的话  这条数据是展示的是需要的   如果没这个公司存在就剔除这条数据
+                    for (int j = 0; j < arr.size(); j++) {
+                        JSONObject jsonObj=arr.getJSONObject(j);
+                        String arrId=jsonObj.get("oId").toString();//找全部资金流水表的oId
+                        if(id.equals(arrId)){  //判断权限oId 和全部数据的oId是否相同  
+                            listData.add(list.get(j));  // 可以显示的资料流水数据
+                        }
+                    }
                 }
-                List<Capital> list = capitalService.getAllCapital(map);
-                List<String[]> strList=new ArrayList<>();
-                String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
-                        "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
-                strList.add(ss);
-                for (int i = 0; i < list.size(); i++) {
-                    String[] str=new String[18];
-                    Capital capital=list.get(i);
-                    if(capital.getPlate()!=null &&!capital.getPlate().equals("")){
-                        str[0]=capital.getPlate();
-                     }
-                    if(capital.getBU()!=null &&!capital.getBU().equals("")){
-                        str[1]=capital.getBU();
-                     }
-                    if(capital.getRegionName()!=null &&!capital.getRegionName().equals("")){
-                        str[2]=capital.getRegionName();
-                     }
-                    if(capital.getProvince()!=null &&!capital.getProvince().equals("")){
-                        str[3]=capital.getProvince();
-                     }
-                    if(capital.getCity()!=null &&!capital.getCity().equals("")){
-                        str[4]=capital.getCity();
-                     }
-                    if(capital.getCompany()!=null &&!capital.getCompany().equals("")){
-                        str[5]=capital.getCompany();
-                     }
-                    if(capital.getAccountName()!=null && !capital.getAccountName().equals("")){
-                       str[6]=capital.getAccountName();
+                
+                if(listData.size()>0){
+                    List<String[]> strList=new ArrayList<>();
+                    String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
+                            "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                    strList.add(ss);
+                    for (int i = 0; i < listData.size(); i++) {
+                        String[] str=new String[18];
+                        Capital capital=list.get(i);
+                        if(capital.getPlate()!=null &&!capital.getPlate().equals("")){
+                            str[0]=capital.getPlate();
+                         }
+                        if(capital.getBU()!=null &&!capital.getBU().equals("")){
+                            str[1]=capital.getBU();
+                         }
+                        if(capital.getRegionName()!=null &&!capital.getRegionName().equals("")){
+                            str[2]=capital.getRegionName();
+                         }
+                        if(capital.getProvince()!=null &&!capital.getProvince().equals("")){
+                            str[3]=capital.getProvince();
+                         }
+                        if(capital.getCity()!=null &&!capital.getCity().equals("")){
+                            str[4]=capital.getCity();
+                         }
+                        if(capital.getCompany()!=null &&!capital.getCompany().equals("")){
+                            str[5]=capital.getCompany();
+                         }
+                        if(capital.getAccountName()!=null && !capital.getAccountName().equals("")){
+                           str[6]=capital.getAccountName();
+                        }
+                        if(capital.getAccountBank()!=null&&!capital.getAccountBank().equals("")){
+                           str[7]=capital.getAccountBank();
+                        }
+                        if(capital.getAccount()!=null&&!capital.getAccount().equals("")){
+                           str[8]=capital.getAccount();
+                        }
+                        if(capital.getAccountNature()!=null &&!capital.getAccountNature().equals("")){
+                           str[9]=capital.getAccountNature();
+                        }
+                        if(capital.getTradeTime()!=null&&!capital.getTradeTime().equals("")){
+                           str[10]=sdf.format(capital.getTradeTime());
+                        }
+                        if(capital.getStartBlack()!=null &&!capital.getStartBlack().equals("")){
+                           str[11]=capital.getStartBlack().toString();
+                        }
+                        if(capital.getIncom()!=null &&!capital.getIncom().equals("")){
+                           str[12]=capital.getIncom().toString();
+                        }
+                        if(capital.getPay()!=null&&!capital.getPay().equals("")){
+                           str[13]=capital.getPay().toString();
+                        }
+                        if(capital.getEndBlack()!=null&&!capital.getEndBlack().equals("")){
+                           str[14]=capital.getEndBlack().toString();
+                        }
+                        if(capital.getAbstrac()!=null&&!capital.getAbstrac().equals("")){
+                            str[15]=capital.getAbstrac();
+                        }
+                        if(capital.getClassify()!=null&&!capital.getClassify().equals("")){
+                            str[16]=capital.getClassify();
+                        }
+                        if(capital.getRemarks()!=null&&!capital.getRemarks().equals("")){
+                            str[17]=capital.getRemarks();
+                        } 
+                            strList.add(str);
                     }
-                    if(capital.getAccountBank()!=null&&!capital.getAccountBank().equals("")){
-                       str[7]=capital.getAccountBank();
-                    }
-                    if(capital.getAccount()!=null&&!capital.getAccount().equals("")){
-                       str[8]=capital.getAccount();
-                    }
-                    if(capital.getAccountNature()!=null &&!capital.getAccountNature().equals("")){
-                       str[9]=capital.getAccountNature();
-                    }
-                    if(capital.getTradeTime()!=null&&!capital.getTradeTime().equals("")){
-                       str[10]=capital.getTradeTime();
-                    }
-                    if(capital.getStartBlack()!=null &&!capital.getStartBlack().equals("")){
-                       str[11]=capital.getStartBlack().toString();
-                    }
-                    if(capital.getIncom()!=null &&!capital.getIncom().equals("")){
-                       str[12]=capital.getIncom().toString();
-                    }
-                    if(capital.getPay()!=null&&!capital.getPay().equals("")){
-                       str[13]=capital.getPay().toString();
-                    }
-                    if(capital.getEndBlack()!=null&&!capital.getEndBlack().equals("")){
-                       str[14]=capital.getEndBlack().toString();
-                    }
-                    if(capital.getAbstrac()!=null&&!capital.getAbstrac().equals("")){
-                        str[15]=capital.getAbstrac();
-                    }
-                    if(capital.getClassify()!=null&&!capital.getClassify().equals("")){
-                        str[16]=capital.getClassify();
-                    }
-                    if(capital.getRemarks()!=null&&!capital.getRemarks().equals("")){
-                        str[17]=capital.getRemarks();
-                    } 
-                        strList.add(str);
+                    response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                    response.setContentType("application/octet-stream");
+                    os = response.getOutputStream();
+                    ExcelUtil.export(strList, os);
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    dataMap.put("result","导出成功！");
+                }else{
+                    throw new Exception("您没有权限导出资金数据！"); 
                 }
-                response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
-                response.setContentType("application/octet-stream");
-                os = response.getOutputStream();
-                ExcelUtil.export(strList, os);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             } catch (IOException e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                dataMap.put("result","导出失败！");
                 e.printStackTrace();
             } finally {
                 if(os != null)

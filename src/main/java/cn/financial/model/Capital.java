@@ -10,6 +10,8 @@ import java.util.Date;
 public class Capital {
 	
          private String id;   //资金表id
+         
+         private String oId;  //组织架构id
     	 
          private String plate; //板块
          
@@ -31,7 +33,7 @@ public class Capital {
          
          private String accountNature; //账户性质
          
-         private String tradeTime; //交易日期
+         private Date tradeTime; //交易日期
          
          private Integer startBlack; //期初余额
          
@@ -64,10 +66,11 @@ public class Capital {
              super();
          }
          
-         public  Capital(String id,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
-                 String tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
+         public  Capital(String id,String oId,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
+                 Date tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
                  String createTime,String updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
              this.id=id;
+             this.oId=oId;
              this.plate=plate;
              this.BU=BU;
              this.regionName=regionName;
@@ -230,11 +233,13 @@ public class Capital {
             this.accountNature = accountNature;
         }
 
-        public String getTradeTime() {
+        
+
+        public Date getTradeTime() {
             return tradeTime;
         }
 
-        public void setTradeTime(String tradeTime) {
+        public void setTradeTime(Date tradeTime) {
             this.tradeTime = tradeTime;
         }
 
@@ -292,6 +297,14 @@ public class Capital {
 
         public void setRemarks(String remarks) {
             this.remarks = remarks;
+        }
+
+        public String getoId() {
+            return oId;
+        }
+
+        public void setoId(String oId) {
+            this.oId = oId;
         }
 
 }
