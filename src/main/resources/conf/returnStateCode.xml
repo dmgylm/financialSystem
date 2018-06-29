@@ -64,9 +64,16 @@
         <code>212</code>
         <description>工号已存在</description>
     </Result>
-    
     <Result name="ORGANIZA_DELEFALSE">
         <code>213</code>
         <description>此节点下存在未停用的节点，请先停用子节点</description>
+    </Result>
+    <Result name="USERNAME_NULL_ERROR">
+        <code>214</code>
+        <description>用户名为空</description>
+    </Result>
+    <Result name="PASSWORD_NULL_ERROR">
+        <code>215</code>
+        <description>密码为空</description>
     </Result>
 </StateCode>
