@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cn.financial.model.BusinessData;
 import cn.financial.model.DataModule;
@@ -53,13 +54,16 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 * 获取所选机构底层数据集合
 	 */
 	@Override
-	public List<JSONObject> findList(String startDate, String endDate,List<String> orgId) {
+	public List<JSONObject> findList(String startDate, String endDate,JSONArray orgId) {
 		List<JSONObject> valveList = new ArrayList<JSONObject>();
 		//分隔传过来的开始结束时间
 		String[] startYAndM = startDate.split("/");
 		String[] endYAndM = endDate.split("/");
+		//将json里数据转换为list类型
+		String js=JSONObject.toJSONString(orgId, SerializerFeature.WriteClassName);
+		List<String> orgList =JSONObject.parseArray(js, String.class) ;
 		//获取选中的子节点数据
-		List<Organization> codeSonList = organizationService.listOrganization(orgId);
+		List<Organization> codeSonList = organizationService.listOrganization(orgList);
 		List<String> typeIdList = new ArrayList<String>();
 		//将底层数据id拿出来
         for (int i = 0; i < codeSonList.size(); i++) {
@@ -85,7 +89,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      * 将符合规则的内容字段进行统计(non-Javadoc)
      * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
      */
-	public JSONObject jsonCalculation(String reportType, String businessType, String startDate, String endDate, List<String> orgId) {
+	public JSONObject jsonCalculation(String reportType, String businessType, String startDate, String endDate, JSONArray orgId) {
 		//获取模板
 		JSONObject model = findModel(reportType,businessType);
 		//获取数据
