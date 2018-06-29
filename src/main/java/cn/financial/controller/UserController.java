@@ -24,9 +24,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
@@ -52,6 +54,8 @@ public class UserController {
     private UserRoleService userRoleService;
     @Autowired
     private PasswordHelper passwordHelper;
+    @Autowired
+    private OrganizationService organizationService;
     @Autowired
     @Qualifier("apiRedisTemplate")
     private RedisTemplate redis;
@@ -406,17 +410,37 @@ public class UserController {
             if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
                 uId = request.getParameter("uId");//用户id
             }
+            //(直接勾选子节点或者全选)
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
-            List<TreeNode<UserOrganization>> nodes = new ArrayList<>();
+            List<TreeNode<Organization>> nodes = new ArrayList<>();
             JSONObject jsonObject = null;
-            if(!CollectionUtils.isEmpty(userOrganization)){
-                for (UserOrganization rss : userOrganization) {
-                    TreeNode<UserOrganization> node = new TreeNode<>();
-                    node.setId(rss.getCode());
-                    node.setParentId(rss.getParentId());//父节点
-                    node.setText(rss.getOrgName());//组织架构名称
-                    // node.setNodeData(organization);
-                    node.setPid(rss.getoId());//组织架构id
+            Map<Object, Object> map = new HashMap<Object, Object>();
+            List<Organization> listre = new ArrayList<>();
+            for (int i = 0; i < userOrganization.size(); i++) {
+                String orgId = userOrganization.get(i).getoId();
+                //当前id信息
+                map.put("id", orgId);
+                List<Organization> userOrgId = organizationService.listOrganizationBy(map); 
+                listre.addAll(userOrgId);
+                //根据当前id查询该节点的所有父节点
+                List<Organization> orgIdList = organizationService.listTreeByIdForParent(orgId);
+                listre.addAll(orgIdList);
+            }
+            
+            if(!CollectionUtils.isEmpty(listre)){
+                for (int i = 0; i < listre.size() - 1; i++) {
+                    for (int j = listre.size() - 1; j > i; j--) {
+                        if (listre.get(j).getId().equals(listre.get(i).getId())) {
+                            listre.remove(j);
+                        }
+                    }
+                } 
+                for (Organization organization : listre) {
+                    TreeNode<Organization> node = new TreeNode<>();
+                    node.setId(organization.getCode());
+                    node.setParentId(organization.getParentId());
+                    node.setName(organization.getOrgName());
+                    node.setPid(organization.getId());
                     nodes.add(node);
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));

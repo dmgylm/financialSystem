@@ -65,12 +65,21 @@ public class MainController {
     @ResponseBody
     public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        String userName = request.getParameter("username");
+        String passWord = request.getParameter("password");
+        if(userName == null || userName.equals("")){
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
+            return dataMap;
+        }
+        if(passWord == null || passWord.equals("")){
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));
+            return dataMap;
+        }
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(request.getParameter("username"),request.getParameter("password"));   
+        UsernamePasswordToken token = new UsernamePasswordToken(userName,passWord);   
         try {
             subject.login(token);
-            String userName = request.getParameter("username");
-            String passWord = request.getParameter("password");
+            //判断密码是否为Welcome1
             if(passWord!=null && !passWord.equals("")){
                 if(passWord.equals("Welcome1")){
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
@@ -90,11 +99,12 @@ public class MainController {
                 if(!CollectionUtils.isEmpty(roleResource)){
                     for (RoleResource rss : roleResource) {
                         TreeNode<RoleResource> node = new TreeNode<>();
-                        node.setId(rss.getCode().toString());
+                        node.setId(rss.getCode().toString());//当前权限code
                         String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                        node.setParentId(b);
-                        node.setName(rss.getName());
-                       // node.setNodeData(rss);
+                        node.setParentId(b);//父id
+                        node.setName(rss.getName());//权限名称
+                        node.setPid(rss.getsId());//当前权限id
+                        //node.setNodeData(rss);
                         nodes.add(node);
                     }
                     jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
@@ -104,8 +114,6 @@ public class MainController {
                 dataMap.put("roleResource", jsonObject);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }
-            //session.setAttribute("password", request.getParameter("password"));
-            //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
@@ -135,52 +143,4 @@ public class MainController {
         currentUser.logout();  
         return dataMap;  
     } 
-    /**
-     * index(根据角色显示对应的功能权限)
-     * @param request
-     * @param respons
-     * @return
-     */
-	/*@RequestMapping(value="/index", method = RequestMethod.POST)
-	@ResponseBody
-    public Map<String, Object> index(HttpServletRequest request, HttpServletResponse response, HttpSession session){
-	    Map<String, Object> dataMap = new HashMap<String, Object>();
-	    User user = (User) request.getAttribute("user");
-	    String userName = user.getName();
-	    String passWord = session.getAttribute("password").toString();
-	    if(passWord!=null && !passWord.equals("")){
-            if(passWord.equals("Welcome1")){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
-                return dataMap;
-            }
-	    }
-	    if(userName!=null && !"".equals(userName)){
-	        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
-	        List<RoleResource> roleResource = new ArrayList<RoleResource>();
-	        if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
-	            for(UserRole list:userRole){
-	                roleResource.addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
-	            }  
-	        }
-	        List<TreeNode<RoleResource>> nodes = new ArrayList<>();
-	        JSONObject jsonObject = null;
-	        if(roleResource.size()>0){
-	            for (RoleResource rss : roleResource) {
-	                TreeNode<RoleResource> node = new TreeNode<>();
-	                node.setId(rss.getCode().toString());
-	                String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-	                node.setParentId(b);
-	                node.setName(rss.getName());
-	               // node.setNodeData(rss);
-	                nodes.add(node);
-	            }
-	            jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
-	        }
-            
-            //System.out.println(jsonObject); 
-	        dataMap.put("roleResource", jsonObject.toString());
-	        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-	    }
-    	return dataMap;
-    }*/
 }

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Resource;
-import cn.financial.model.RoleResource;
 import cn.financial.service.ResourceService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -57,10 +56,11 @@ public class ResourceController {
             if(!CollectionUtils.isEmpty(resource)){
                 for (Resource rss : resource) {
                     TreeNode<Resource> node = new TreeNode<>();
-                    node.setId(rss.getCode().toString());
+                    node.setId(rss.getCode().toString());//当前code
                     String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                    node.setParentId(b);
-                    node.setName(rss.getName());
+                    node.setParentId(b);//父节点
+                    node.setName(rss.getName());//权限名称
+                    node.setPid(rss.getId());//当前权限id
                    // node.setNodeData(rss);
                     nodes.add(node);
                 }
@@ -113,15 +113,15 @@ public class ResourceController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try { 
             String name = null;//功能权限名称
-            String code = null;//父id
+            String parentId = null;//父id
             String url = null;//路径
             String permssion = null;//权限
             
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
             	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             }
-            if( null != request.getParameter("code") && !"".equals(request.getParameter("code")) ) {
-            	code = request.getParameter("code");//父id
+            if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
+                parentId = request.getParameter("parentId");//父id
             }
             if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
             	url = request.getParameter("url");
@@ -129,7 +129,7 @@ public class ResourceController {
             if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
             	permssion = request.getParameter("permssion");
             }
-            Resource parent = resourceService.getResourceById("",code);//根据code查询parentId(父id是否存在)
+            Resource parent = resourceService.getResourceById("",parentId);//根据code查询parentId
             Resource resource = new Resource();
             resource.setId(UuidUtil.getUUID());
             resource.setName(name);
@@ -169,7 +169,7 @@ public class ResourceController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
         	String name = null;
-            String permssion = null;//父id
+            //String permssion = null;
             String url = null;
             //String parentId = null;
             String resourceId = null;
@@ -177,9 +177,9 @@ public class ResourceController {
             if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
             	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
             }
-            if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
-            	permssion = request.getParameter("permssion");//父id
-            }
+            /*if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
+            	permssion = request.getParameter("permssion");
+            }*/
             if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
             	url = request.getParameter("url");
             }
@@ -194,7 +194,7 @@ public class ResourceController {
             resource.setId(resourceId);
             resource.setName(name);
             resource.setUrl(url);
-            resource.setPermssion(permssion);
+            //resource.setPermssion(permssion);
             if(parent != null && !"".equals(parent)){  
                 if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"0".equals(parent.getParentId())){
                     resource.setParentId(parent.getParentId());

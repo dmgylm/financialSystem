@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,12 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
+import cn.financial.service.ResourceService;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.RoleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -40,6 +44,8 @@ public class RoleController {
     private RoleService roleService;
     @Autowired
     private RoleResourceService roleResourceService;
+    @Autowired
+    private ResourceService resourceService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     /**
@@ -210,7 +216,22 @@ public class RoleController {
                 roleId = request.getParameter("roleId");//角色id
             }
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
-            dataMap.put("roleResourceList", roleResource);
+            List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+            JSONObject jsonObject = null;
+            if(!CollectionUtils.isEmpty(roleResource)){
+                for (RoleResource rss : roleResource) {
+                    TreeNode<RoleResource> node = new TreeNode<>();
+                    node.setId(rss.getCode().toString());//当前code
+                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                    node.setParentId(b);//父id
+                    node.setName(rss.getName());//功能权限名称
+                    node.setPid(rss.getsId());//当前权限id
+                    // node.setNodeData(rss);
+                    nodes.add(node);
+                }
+                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+            }
+            dataMap.put("roleResourceList", jsonObject);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
@@ -220,7 +241,7 @@ public class RoleController {
         return dataMap;
     }
     /**
-     * 新增(角色功能权限关联表)
+     * 新增(角色功能权限关联表)必须勾选父节点父节点相当于查看功能
      * @param request
      * @param response
      * @param sid
