@@ -123,10 +123,14 @@ public class OrganizationController {
                 map.put("parentId", request.getParameter("parentId"));// 父id
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("data", list);
+            if (!CollectionUtils.isEmpty(list)) {
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                dataMap.put("data", list);
+            } else {
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
