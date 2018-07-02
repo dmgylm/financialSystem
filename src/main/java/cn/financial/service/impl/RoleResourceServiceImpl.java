@@ -1,13 +1,18 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.model.RoleResource;
 import cn.financial.service.RoleResourceService;
+import cn.financial.util.TreeNode;
 
 /**
  * 角色资源关联表
@@ -49,6 +54,29 @@ public class RoleResourceServiceImpl implements RoleResourceService{
         return roleResourceDao.updateRoleResource(roleResource);
     } 
     
-
+    /**
+     * 根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
+     * @param roleId
+     * @return
+     */
+    public JSONObject roleResourceList(String roleId){
+        List<RoleResource> roleResource = roleResourceDao.listRoleResource(roleId);
+        List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+        JSONObject jsonObject = null;
+        if(!CollectionUtils.isEmpty(roleResource)){
+            for (RoleResource rss : roleResource) {
+                TreeNode<RoleResource> node = new TreeNode<>();
+                node.setId(rss.getCode().toString());//当前code
+                String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                node.setParentId(b);//父id
+                node.setName(rss.getName());//功能权限名称
+                node.setPid(rss.getsId());//当前权限id
+                // node.setNodeData(rss);
+                nodes.add(node);
+            }
+            jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+        }
+        return jsonObject;
+    }
 }
  
