@@ -59,5 +59,11 @@ public interface MessageDAO {
      * @return
      */
     Integer deleteMessageById(String id);
+    
+    /**
+     * 检索所有的消息
+     * @return
+     */
+    List<Message> listAllMessage();
 
 }
