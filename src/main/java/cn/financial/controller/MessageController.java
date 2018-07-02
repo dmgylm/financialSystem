@@ -269,6 +269,7 @@ public class MessageController {
      *            消息id（required = true，必须存在）
      * @return
      */
+    @RequiresPermissions("message:sign")
     @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
