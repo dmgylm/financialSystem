@@ -115,38 +115,33 @@ public class MessageServiceImpl implements MessageService {
         // 根据用户名查询到该用户所对应的角色
         List<UserRole> listUserRole = userRoleDao.listUserRole(user.getName());
         // 查询角色对应的资源
-        if (!CollectionUtils.isEmpty(listUserRole)) {
-            for (UserRole userRole : listUserRole) {
-                // 根据角色id查询到该角色对应的资源
-                List<RoleResource> listRoleResource = roleResourceDao.listRoleResource(userRole.getrId());
-                // 查询有权限的资源
-                if (!CollectionUtils.isEmpty(listRoleResource)) {
-                    for (RoleResource roleResource : listRoleResource) {
-                        // 资源id
-                        String resourceId = roleResource.getsId();
-                        // 如果存在录入中心资源的id，则说明这个登录人是制单员。
-                        if ("0dd6008c6e7f4bce8e1d2ada94341ecf".equals(resourceId)) {
-                            // 查询出所有的消息
-                            List<Message> listAllMessage = messageDao.listAllMessage();
-                            // 根据用户id获取到该用户所对应的组织架构
-                            List<UserOrganization> listUserOrganization = userOrganizationDao.listUserOrganization(user.getId());
-                            if (!CollectionUtils.isEmpty(listAllMessage)) {
-                                for (Message message : listAllMessage) {
-                                    for (UserOrganization userOrganization : listUserOrganization) {
-                                        // 若该用户有这条消息的权限，那么就添加到resultList输出
-                                        if (userOrganization.getoId().equals(message.getoId())) {
-                                            resultList.add(message);
-                                        }
-                                    }
-                                }
+        for (UserRole userRole : listUserRole) {
+            // 根据角色id查询到该角色对应的资源
+            List<RoleResource> listRoleResource = roleResourceDao.listRoleResource(userRole.getrId());
+            // 查询有权限的资源
+            for (RoleResource roleResource : listRoleResource) {
+                // 资源id
+                String resourceId = roleResource.getsId();
+                // 如果存在录入中心资源的id，则说明这个登录人是制单员。
+                if ("0dd6008c6e7f4bce8e1d2ada94341ecf".equals(resourceId)) {
+                    // 查询出所有的消息
+                    List<Message> listAllMessage = messageDao.listAllMessage();
+                    // 根据用户id获取到该用户所对应的组织架构
+                    List<UserOrganization> listUserOrganization = userOrganizationDao
+                            .listUserOrganization(user.getId());
+                    for (Message message : listAllMessage) {
+                        for (UserOrganization userOrganization : listUserOrganization) {
+                            // 若该用户有这条消息的权限，那么就添加到resultList输出
+                            if (userOrganization.getoId().equals(message.getoId())) {
+                                resultList.add(message);
                             }
-                        } else {
-                            Map<Object, Object> map = new HashMap<>();
-                            map.put("uId", user.getId());
-                            // 是管理层
-                            resultList = messageDao.listMessageBy(map);
                         }
                     }
+                } else {
+                    Map<Object, Object> map = new HashMap<>();
+                    map.put("uId", user.getId());
+                    // 是管理层
+                    resultList = messageDao.listMessageBy(map);
                 }
             }
         }
