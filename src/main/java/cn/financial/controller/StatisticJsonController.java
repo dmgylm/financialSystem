@@ -1,7 +1,6 @@
 package cn.financial.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,7 +47,7 @@ public class StatisticJsonController {
      * @return 返回结果为总的json数据
      */
     @ResponseBody
-    @RequiresPermissions("collect:menu")
+    @RequiresPermissions("collect:view")
     @RequestMapping(value = "/staticJson")
     public Map<String, Object> staticJson(String reportType,String businessType,String startDate,String endDate,String orgId) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
