@@ -45,9 +45,9 @@ public class AccountQuartzListener implements ServletContextListener {
 				.getWebApplicationContext(sce.getServletContext());
 		if ( springContext != null ) {
 						try {
-								QuartzManager.addJob(QuartzManager.getsched(), "预算表生成消息提醒任务定时器", QuartzJob.class, "0 0 0 1 1 ? *",null);//每年一月份一号生成预算表
-								QuartzManager.addJob(QuartzManager.getsched(), "损益表生成消息提醒任务定时器", QuartzBudget.class, "0 0 0 11 * ? *",null);//每个月11号生成损益表
-								QuartzManager.addJob(QuartzManager.getsched(), "系统停止录入数据截止日期提醒任务定时器", QuartzStatement.class, "0 0 0 5 * ? *",null);//每个月5号生成系统关账提醒
+								QuartzManager.addJob(QuartzManager.getsched(), "预算表生成消息提醒任务定时器", QuartzBudget.class, "0 0 0 1 1 ?",null);//每年一月份一号生成预算表
+								QuartzManager.addJob(QuartzManager.getsched(), "损益表生成消息提醒任务定时器", QuartzBudget.class, "0 0 0 11 * ?",null);//每个月11号生成损益表
+								QuartzManager.addJob(QuartzManager.getsched(), "系统停止录入数据截止日期提醒任务定时器", QuartzStatement.class, " 0 0 0 5 * ?",null);//每个月5号生成系统关账提醒
 						} catch (SchedulerException e) {
 								e.printStackTrace();
 						}
