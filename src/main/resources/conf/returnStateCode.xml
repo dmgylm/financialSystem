@@ -42,19 +42,19 @@
     </Result>
     <Result name="USER_OLDPWD_ERROR">
         <code>207</code>
-        <description>原密码输入错误</description>
+        <description>密码输入错误，请重新输入</description>
     </Result>
     <Result name="USER_PWDFORMAT_ERROR">
         <code>208</code>
-        <description>密码输入格式错误</description>
+        <description>密码由6～15位数字、大小写字母组成</description>
     </Result>
     <Result name="USERNAME_EXISTENCE">
         <code>209</code>
-        <description>用户名已存在,请重新命名</description>
+        <description>用户已存在，请重新命名</description>
     </Result>
     <Result name="ROLENAME_EXISTENCE">
         <code>210</code>
-        <description>角色名称不能重复</description>
+        <description>角色已存在，请重新命名</description>
     </Result>
     <Result name="RESET_PWD">
         <code>211</code>
