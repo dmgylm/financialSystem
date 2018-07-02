@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import cn.financial.model.Message;
+import cn.financial.model.User;
 
 /**
  * 消息Service业务接口
@@ -61,4 +62,17 @@ public interface MessageService {
      * @return
      */
     Integer deleteMessageById(String id);
+    
+    /**
+     * 检索所有的消息
+     * @return
+     */
+    List<Message> listAllMessage();
+    
+    /**
+     * 根据用户权限检索对应的消息
+     * @param user
+     * @return
+     */
+    List<Message> quartMessageByPower(User user, int page, int pageNums);
 }
