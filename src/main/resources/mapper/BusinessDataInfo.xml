@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.BusinessDataInfoDao">
+       <resultMap id="BusinessDataInfo" type="cn.financial.model.BusinessDataInfo">
+           <id column="id" property="id" jdbcType="INTEGER" />
+           <result column="businessDataId" property="businessDataId" jdbcType="VARCHAR" />
+           <result column="info" property="info" jdbcType="VARCHAR" />
+           <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+           <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+           <result column="uId" property="uId" jdbcType="VARCHAR" />
+          <!--  <association property="users"  resultMap="userResultMap" ></association> -->
+       </resultMap>  
+          
+       <!--新增损益数据 -->
+       <insert id="insertBusinessDataInfo" parameterType="BusinessDataInfo" keyProperty="id">
+            insert into businessDataInfo(id,businessDataId,info,createTime,uId)
+            values (#{id},#{businessDataId},#{info},now(),#{uId})
+       </insert>
+      
+      
+       <!-- 查询所有的损益数据 -->
+       <select id="getAll" parameterType="map" resultMap="BusinessDataInfo">  
+        select *
+        from  businessDataInfo
+        where 1=1
+        <include refid="query_businessDataInfo_where"></include>
+       </select>
+       
+      <!--  根据id查询损益数据 -->
+       <select id="selectBusinessDataInfoById" parameterType="String" resultMap="BusinessDataInfo" >
+           SELECT *
+           FROM businessDataInfo
+           WHERE businessDataId = #{id} 
+       </select>
+       
+       
+       <!-- 根据条件修改损益数据 -->
+      <update id="updateBusinessDataInfo" parameterType="BusinessDataInfo">
+        update businessData
+        <trim prefix="set" suffixOverrides=",">
+            <if test=" businessDataId!=null and businessDataId!=''">businessDataId = #{businessDataId},</if>
+            <if test="info!=null and info!=''">info = #{info},</if>
+            updateTime = now(),
+            <if test="uId!=null and uId!=''">uId = #{uId},</if>
+        </trim>
+         where id = #{id} 
+      </update>
+      
+      <!-- 删除用户  status=0 -->
+      <update id="deleteBusinessDataInfo">
+        UPDATE businessDataInfo SET delStatus=0 WHERE id=#{id}
+      </update>
+    
+      <!--sql-->
+     <sql id="query_businessDataInfo_where">
+        <if test="id!=null and id!=''">
+            and id = #{id}
+        </if>
+        <if test=" businessDataId!=null and businessDataId!=''">
+            and businessDataId= #{businessDataId}
+        </if>
+        <if test="info!=null and info!=''">
+            and s.info = #{info}
+        </if>
+         <if test="createTime!=null and createTime!=''">
+            and createTime =#{createTime}
+         </if>
+         <if test="updateTime!=null and updateTime!=''">
+            and updateTime = #{updateTime}
+         </if>
+    </sql>
+    
+</mapper>
