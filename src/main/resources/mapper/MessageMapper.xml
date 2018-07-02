@@ -64,8 +64,19 @@
 		1 = 1
 		<include refid="query_message_where"></include>
 		order by createTime desc
-		LIMIT #{start},#{pageSize}
+		<!-- LIMIT #{start},#{pageSize} -->
 	</select>
+	
+	<!-- 根据条件查询消息 -->
+    <select id="listAllMessage" resultMap="messageResultMap">
+        select
+        id,status,theme,content,oId,isTag,createTime,updateTime
+        from
+        message
+        where
+        1 = 1
+        order by createTime desc
+    </select>
 
 	<!-- 根据ID查询消息 -->
 	<select id="getMessageById" parameterType="java.lang.String"
@@ -152,6 +163,9 @@
 		<if test="oId!=null and oId!=''">
 			and oId = #{oId,jdbcType=VARCHAR}
 		</if>
+		<if test="uId!=null and uId!=''">
+            and uId = #{uId,jdbcType=VARCHAR}
+        </if>
 		<if test="sName!=null and sName!=''">
 			and sName = #{sName,jdbcType=VARCHAR}
 		</if>
