@@ -12,17 +12,31 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.Message;
+import cn.financial.model.User;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONArray;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:conf/spring.xml", "classpath:conf/spring-mvc.xml",
-        "classpath:conf/spring-mybatis.xml", "classpath:conf/mybatis-config.xml", "classpath:conf/spring-cache.xml",
-        "classpath:conf/spring-shiro.xml" })
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+        "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml",
+        "classpath:spring/spring-cache.xml", "classpath:spring/spring-shiro.xml", "classpath:spring/spring-redis.xml" })
 public class MessageTest {
 
     @Autowired
     private MessageServiceImpl service;
+    
+    /**
+     * 根据用户权限展示相应的消息
+     */
+    @Test
+    public void listMessageforPower() {
+        User user = new User();
+        user.setId("404ed3a5442c4ed78331d6c77077958f");
+        user.setName("aa");
+        List<Message> list = service.quartMessageByPower(user, 4, 2);
+        System.out.println(JSONArray.fromObject(list).toString());
+    }
     
     /**
      * 新增消息表
