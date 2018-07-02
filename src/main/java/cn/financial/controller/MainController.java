@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -27,12 +26,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.RoleResource;
 import cn.financial.model.UserRole;
-import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.TreeNode;
 
 /**
  * 登录认证
@@ -89,9 +86,8 @@ public class MainController {
             }
             if(userName!=null && !"".equals(userName)){
                 List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
-                List<RoleResource> roleResource = new ArrayList<RoleResource>();
                 JSONObject jsonObject = null;
-                if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
+                if(userRole.size()>0){
                     for(UserRole list:userRole){
                         jsonObject = roleResourceService.roleResourceList(list.getrId());
                     }  

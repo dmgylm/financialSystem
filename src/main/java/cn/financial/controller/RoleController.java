@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +22,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
-import cn.financial.service.ResourceService;
-import cn.financial.service.RoleResourceService;
 import cn.financial.service.RoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -45,8 +40,6 @@ public class RoleController {
     private RoleService roleService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
-    @Autowired
-    private ResourceService resourceService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     /**
