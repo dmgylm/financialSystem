@@ -29,6 +29,7 @@ import cn.financial.model.RoleResource;
 import cn.financial.model.UserRole;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
+import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
@@ -44,7 +45,7 @@ public class MainController {
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
-    private RoleResourceService roleResourceService;
+    private RoleResourceServiceImpl roleResourceService;
     /**
      * 跳转登录页面
      * @param request
@@ -89,28 +90,12 @@ public class MainController {
             if(userName!=null && !"".equals(userName)){
                 List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
                 List<RoleResource> roleResource = new ArrayList<RoleResource>();
+                JSONObject jsonObject = null;
                 if(userRole.size()>0){ //CollectionUtils.isEmpty(userRole)
                     for(UserRole list:userRole){
-                        roleResource.addAll(roleResourceService.listRoleResource(list.getrId()));//根据角色id查询对应功能权限信息
+                        jsonObject = roleResourceService.roleResourceList(list.getrId());
                     }  
                 }
-                List<TreeNode<RoleResource>> nodes = new ArrayList<>();
-                JSONObject jsonObject = null;
-                if(!CollectionUtils.isEmpty(roleResource)){
-                    for (RoleResource rss : roleResource) {
-                        TreeNode<RoleResource> node = new TreeNode<>();
-                        node.setId(rss.getCode().toString());//当前权限code
-                        String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                        node.setParentId(b);//父id
-                        node.setName(rss.getName());//权限名称
-                        node.setPid(rss.getsId());//当前权限id
-                        //node.setNodeData(rss);
-                        nodes.add(node);
-                    }
-                    jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
-                }
-                
-                //System.out.println(jsonObject); 
                 dataMap.put("roleResource", jsonObject);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }
