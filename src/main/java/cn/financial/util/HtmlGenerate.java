@@ -26,10 +26,19 @@ public class HtmlGenerate {
 	
 	private static String NONE_DISPLAY_CLASS="display_none";
 	
+	/**
+	 * HTML类型:配置模板
+	 */
 	public static int HTML_TYPE_TEMPLATE = 1;
 
+	/**
+	 * HTML类型:录入页面
+	 */
 	public static int HTML_TYPE_INPUT = 2;
 
+	/**
+	 * HTML类型:查看页面
+	 */
 	public static int HTML_TYPE_PREVIEW = 3;
 	
 	public static int BOX_TYPE_LABEL = 1;//输入框类型(label)
