@@ -306,6 +306,7 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
+    @RequiresPermissions("message:sign")
     @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
     @ResponseBody
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
@@ -332,6 +333,7 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
+    @RequiresPermissions("message:remind")
     @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
     @ResponseBody
     public Map<Object, Object> saveMessageByUser(HttpServletRequest request) {
