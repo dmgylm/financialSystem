@@ -224,6 +224,9 @@
 		<if test="his_permission!=null and his_permission!=''">
 			and his_permission = #{his_permission,jdbcType=VARCHAR}
 		</if>
+        <if test="orgkey!=null and orgkey!=''">
+            and orgkey = #{orgkey,jdbcType=INTEGER}
+        </if>
 		<if test="orgType!=null and orgType!=''">
             and orgType = #{orgType,jdbcType=INTEGER}
         </if>
