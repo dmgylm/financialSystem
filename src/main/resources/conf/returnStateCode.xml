@@ -70,10 +70,10 @@
     </Result>
     <Result name="USERNAME_NULL_ERROR">
         <code>214</code>
-        <description>用户名为空</description>
+        <description>请输入正确的用户名</description>
     </Result>
     <Result name="PASSWORD_NULL_ERROR">
         <code>215</code>
-        <description>密码为空</description>
+        <description>请输入正确的密码</description>
     </Result>
 </StateCode>
