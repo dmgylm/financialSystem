@@ -269,7 +269,6 @@ public class MessageController {
      *            消息id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("message:update")
     @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
@@ -306,7 +305,6 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("message:update")
     @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
     @ResponseBody
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
@@ -333,7 +331,6 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("message:save")
     @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
     @ResponseBody
     public Map<Object, Object> saveMessageByUser(HttpServletRequest request) {
