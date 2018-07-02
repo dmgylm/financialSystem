@@ -118,6 +118,13 @@ public interface OrganizationService {
      * @return
      */
     Organization getOrgaUpFromOne(String id, String orgKey);
+    
+    /**
+     * 根据orgKey查询节点
+     * @param orgKey
+     * @return
+     */
+    Organization getOrgaByKey(String orgKey);
 
     /**
      * 获取组织结构为公司的数据

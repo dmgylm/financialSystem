@@ -106,7 +106,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 * @return
 	 */
 	private String getDataModuleName(String reportType, String businessType) {
-		Organization org = organizationService.getCompanyNameBySon(businessType);
+		Organization org = organizationService.getOrgaByKey(businessType);
 		String reportTypeName = DataModule.getReprtTypeName(reportType);
 		return org.getOrgName() + reportTypeName;
 	}

@@ -527,6 +527,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
         return null;
     }
+    
 
     @Override
     public List<Organization> getCompany() {
@@ -565,6 +566,17 @@ public class OrganizationServiceImpl implements OrganizationService {
      public List<Organization> listOrganization(List<String> list) {
         return organizationDAO.listOrganization(list);
     }*/
+
+	@Override
+	public Organization getOrgaByKey(String orgKey) {
+		Map<Object, Object> map = new HashMap<>();
+        map.put("orgkey", orgKey);
+        List<Organization> listOrg =organizationDAO.listAllOrganizationBy(map);
+		if(!CollectionUtils.isEmpty(listOrg)){
+			return listOrg.get(0);
+		}
+		return null;
+	}
 
 	
 }
