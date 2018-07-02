@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,42 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
-
+    
     protected Logger logger = LoggerFactory.getLogger(MessageController.class);
+    
+    
+    /**
+     * 根据用户权限展示相应的消息
+     * @param request
+     * @param response
+     */
+    @ResponseBody
+    @RequestMapping(value = "/list")
+    @RequiresPermissions("message:view")
+    public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        // 默认一页显示的数据
+        int pageNums = 5;
+        // 默认显示第一页
+        int page = 1;
+        try {
+            User user = (User) request.getAttribute("user");
+            if (null != request.getParameter("page") && !"".equals(request.getParameter("page"))) {
+                page = Integer.parseInt(request.getParameter("page").trim().toString());
+            }
+            List<Message> resultList = messageService.quartMessageByPower(user, page, pageNums);
+            if (!CollectionUtils.isEmpty(resultList)) {
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                dataMap.put("data", resultList);
+            } else {
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            }
+        } catch (Exception e) {
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
 
     /**
      * 新增 消息
