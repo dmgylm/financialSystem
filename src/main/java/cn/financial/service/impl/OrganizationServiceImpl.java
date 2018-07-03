@@ -535,7 +535,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
 
-
+   /**
+    * 1.通过节点id查询对应his_permission
+    * 2.将code等于his_permission的数据查询对应的id
+    * 3.根据id查询该节点极其下的所有子节点集合
+    */
 	@Override
 	public List<Organization> listOrganization(List<String> ids) {
 		  List<Organization> list = organizationDAO.listOrganization(ids);
