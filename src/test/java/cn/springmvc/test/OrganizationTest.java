@@ -150,7 +150,7 @@ public class OrganizationTest {
             ids.add("e71064dc0fc443fa8893ce489aed8c38");
             List<Organization> list=service.listOrganization(ids);
             JSONArray json=JSONArray.fromObject(list);
-            System.out.println(json);
+            System.out.println(json.size());
         }
  
 
