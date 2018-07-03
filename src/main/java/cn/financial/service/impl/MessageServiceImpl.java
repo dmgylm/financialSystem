@@ -13,6 +13,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.dao.MessageDAO;
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserOrganizationDAO;
@@ -109,7 +111,8 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    public List<Message> quartMessageByPower(User user, int page, int pageNums) {
+    public JSONObject quartMessageByPower(User user, int page, int pageNums) {
+        JSONObject resultJsonObject = new JSONObject();
         // 返回的值
         List<Message> resultList = new ArrayList<>();
         // 根据用户名查询到该用户所对应的角色
@@ -175,7 +178,9 @@ public class MessageServiceImpl implements MessageService {
                 result.add(resultList.get(i));
             }
         }
-        return result;
+        resultJsonObject.put("count", resultList.size());
+        resultJsonObject.put("data", result);
+        return resultJsonObject;
     }
 
 }

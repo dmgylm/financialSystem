@@ -74,6 +74,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
             organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
             organization.setOrgkey(UuidUtil.getUUID());// 与模版对应的一个唯一值
+            organization.setOrgPlateId(org.get(0).getOrgPlateId());// 板块Id
             return organizationDAO.saveOrganization(organization);
         } else {
             return 0;
@@ -384,6 +385,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setHis_permission(org.get(0).getHis_permission() + "," + code);
         organization.setOrgkey(org.get(0).getOrgkey());
         organization.setOrgType(org.get(0).getOrgType());
+        organization.setOrgPlateId(orgParent.get(0).getOrgPlateId());
         Integer saveInteger = organizationDAO.saveOrganization(organization);
         // 父节点新增成功后，在organization_move表中记录
         if (Integer.valueOf(1).equals(saveInteger)) {
@@ -421,6 +423,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                     organization1.setHis_permission(orga.getHis_permission() + "," + code1);
                     organization1.setOrgkey(orga.getOrgkey());
                     organization1.setOrgType(orga.getOrgType());
+                    organization1.setOrgPlateId(orgParent.get(0).getOrgPlateId());
                     Integer saveOrganization1 = organizationDAO.saveOrganization(organization1);
                     // 子节点新增成功后，在organization_move表中记录
                     if (Integer.valueOf(1).equals(saveOrganization1)) {
