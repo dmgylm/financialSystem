@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.MessageDAO;
+import cn.financial.dao.OrganizationDAO;
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserOrganizationDAO;
 import cn.financial.dao.UserRoleDAO;
 import cn.financial.model.Message;
+import cn.financial.model.Organization;
 import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
@@ -46,6 +48,9 @@ public class MessageServiceImpl implements MessageService {
     
     @Autowired
     private UserOrganizationDAO userOrganizationDao;
+    
+    @Autowired
+    private OrganizationDAO organizationDao;
 
     /**
      * 新增 消息 节点信息
@@ -148,6 +153,25 @@ public class MessageServiceImpl implements MessageService {
                 }
             }
         }
+        // 去掉可能重复的数据
+        for (int i = 0; i < resultList.size() - 1; i++) {
+            for (int j = resultList.size() - 1; j > i; j--) {
+                if (resultList.get(j).equals(resultList.get(i))) {
+                    resultList.remove(j);
+                }
+            }
+        }
+        // 如果是公司及公司以下的部门，则能看到消息;如果是公司以上级别的不能返回消息
+        for (int i = resultList.size()-1; i >=0; i--) {
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", resultList.get(i).getoId());
+            List<Organization> orga = organizationDao.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(orga)) {
+                if (orga.get(0).getOrgType() == 1) {
+                    resultList.remove(i);
+                }
+            }
+        }
         // 按照创建日期降序排序
         Collections.sort(resultList, new Comparator<Message>() {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -170,6 +194,7 @@ public class MessageServiceImpl implements MessageService {
                 return 0;
             }
         });
+        // 分页
         List<Message> result = new ArrayList<>();
         int start = resultList.size() >= (page - 1) * pageNums ? (page - 1) * pageNums : -1;
         int end = resultList.size() >= pageNums * page ? pageNums * page : resultList.size();
