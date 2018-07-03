@@ -136,6 +136,9 @@
 			<!-- <if test="orgkey!=null and orgkey!=''">
                 orgkey = #{orgkey,jdbcType=VARCHAR},
             </if> -->
+            <if test="orgPlateId!=null and orgPlateId!=''">
+                orgPlateId = #{orgPlateId,jdbcType=VARCHAR},
+            </if>
 			<if test="orgType!=null and orgType!=''">
                 orgType = #{orgType,jdbcType=INTEGER},
             </if>
