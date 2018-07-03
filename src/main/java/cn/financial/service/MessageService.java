@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Message;
 import cn.financial.model.User;
 
@@ -74,5 +76,5 @@ public interface MessageService {
      * @param user
      * @return
      */
-    List<Message> quartMessageByPower(User user, int page, int pageNums);
+    JSONObject quartMessageByPower(User user, int page, int pageNums);
 }
