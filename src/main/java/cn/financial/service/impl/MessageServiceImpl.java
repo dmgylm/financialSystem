@@ -167,7 +167,7 @@ public class MessageServiceImpl implements MessageService {
             map.put("id", resultList.get(i).getoId());
             List<Organization> orga = organizationDao.listOrganizationBy(map);
             if (!CollectionUtils.isEmpty(orga)) {
-                if (orga.get(0).getOrgType() == 1) {
+                if (orga.get(0).getOrgType() == 1 || orga.get(0).getOrgType() == 4) {
                     resultList.remove(i);
                 }
             }
