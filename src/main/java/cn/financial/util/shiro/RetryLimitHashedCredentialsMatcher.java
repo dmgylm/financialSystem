@@ -41,7 +41,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             //if retry count > 3 throw
             throw new ExcessiveAttemptsException();
         }*/
-        int count = 0;
+        /*int count = 0;
         Object obj=redis.opsForValue().get(username);//获取错误次数
         Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+username+"_status");//获取是否锁定
         if(locking!=null){
@@ -53,10 +53,10 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
         }else{
             count=(int)obj+1;//错误次数加1 
             redis.opsForValue().set(username, count, 24, TimeUnit.HOURS);//错误次数加1
-        }
+        }*/
         boolean matches = super.doCredentialsMatch(token, info);//密码验证
         System.out.println(matches+"*****************************************");
-        if(matches) {
+        /*if(matches) {
             //clear retry count
             //passwordRetryCache.remove(username);
             redis.delete(username);//登陆成功清除key
@@ -65,7 +65,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
                 redis.opsForValue().set("financialSystem"+"_cache_"+username+"_status", "N");//锁定账户
                 throw new ExcessiveAttemptsException();
             }
-        }
+        }*/
         return matches;
     }
 }
