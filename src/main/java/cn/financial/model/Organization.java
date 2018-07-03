@@ -30,7 +30,9 @@ public class Organization implements Serializable {
 
     private String orgkey;// 和模版对应的一个唯一值
 
-    private Integer orgType;// 1：汇总，2：公司，3：部门 (默认是汇总)
+    private Integer orgType;// 1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)
+
+    private String orgPlateId;// 板块id
 
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
@@ -122,11 +124,20 @@ public class Organization implements Serializable {
         this.orgType = orgType;
     }
 
+    public String getOrgPlateId() {
+        return orgPlateId;
+    }
+
+    public void setOrgPlateId(String orgPlateId) {
+        this.orgPlateId = orgPlateId;
+    }
+
     @Override
     public String toString() {
         return "Organization [id=" + id + ", code=" + code + ", parentId=" + parentId + ", orgName=" + orgName
                 + ", createTime=" + createTime + ", updateTime=" + updateTime + ", uId=" + uId + ", status=" + status
-                + ", his_permission=" + his_permission + ", orgkey=" + orgkey + ", orgType=" + orgType + "]";
+                + ", his_permission=" + his_permission + ", orgkey=" + orgkey + ", orgType=" + orgType + ", orgPlateId="
+                + orgPlateId + "]";
     }
 
     // public List<User> getUsers() {
