@@ -19,7 +19,7 @@ import cn.financial.util.UuidUtil;
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
-public class StatementTest {
+public class businessDataTest {
 
     @Autowired
     private BusinessDataServiceImpl businessDataService;
@@ -56,8 +56,9 @@ public class StatementTest {
     @Test
     public void listStatementBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("pageSize",10);
-        map.put("start",1);
+        map.put("year",2018);
+        map.put("month",4);
+        map.put("sId", 1);
         List<BusinessData> list = businessDataService.listBusinessDataBy(map);
         System.out.println(list.size());
         for (int i = 0; i < list.size(); i++) {

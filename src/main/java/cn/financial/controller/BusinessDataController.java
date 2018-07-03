@@ -1,10 +1,12 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.financial.model.Capital;
+import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
+import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.service.BusinessDataService;
+import cn.financial.service.OrganizationService;
+import cn.financial.service.UserOrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.ExcelUtil;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -35,7 +40,13 @@ public class BusinessDataController {
     
         @Autowired
         private  BusinessDataService businessDataService;
-
+        
+        @Autowired
+        private  UserOrganizationService userOrganizationService;  //角色的权限
+        
+        @Autowired
+        private  OrganizationService organizationService;  //组织架构
+        
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
         /**
@@ -48,61 +59,85 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
+        @ResponseBody
+        public Map<String, Object> listBusinessDataBy(HttpServletRequest request,Integer page,Integer pageSize) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                if(request.getParameter("id")!=null && !request.getParameter("id").equals("")){
-                   map.put("id", request.getParameter("id"));
-                }
-                if(request.getParameter("oId")!=null && !request.getParameter("oId").equals("")){
-                    map.put("oId",request.getParameter("oId"));
-                }
-                if(request.getParameter("info")!=null && !request.getParameter("info").equals("")){
-                    map.put("info",request.getParameter("info"));
-                }
-                if(request.getParameter("createTime")!=null && !request.getParameter("createTime").equals("")){
-                    map.put("createTime",request.getParameter("createTime"));
-                }
-                if(request.getParameter("updateTime")!=null && !request.getParameter("updateTime").equals("")){
-                    map.put("updateTime",request.getParameter("updateTime"));
-                }
-                if(request.getParameter("typeId")!=null && !request.getParameter("typeId").equals("")){
-                    map.put("typeId",request.getParameter("typeId"));
-                }
-                if(uId!=null && !uId.equals("")){
-                    map.put("uId",uId);
-                }
+                List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
+               /* for (int i = 0; i < userOrganization.size(); i++) {
+                    List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getoId()); //根据oId查出公司以下的部门
+                    JSONArray listTreeByIdForSonJson=JSONArray.fromObject(listTreeByIdForSon);
+                    System.out.println(listTreeByIdForSonJson);
+                }*/
                 if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                    map.put("year",Integer.getInteger(request.getParameter("year")));
+                    map.put("year",request.getParameter("year")); //年份
                 }
                 if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                    map.put("month",Integer.getInteger(request.getParameter("month")));
-                }
-                if(request.getParameter("status")!=null && !request.getParameter("status").equals("")){
-                    map.put("status",Integer.getInteger(request.getParameter("status")));
-                }
-                if(request.getParameter("delStatus")!=null && !request.getParameter("delStatus").equals("")){
-                    map.put("delStatus",Integer.getInteger(request.getParameter("delStatus")));
+                    map.put("month",request.getParameter("month"));  //月份
                 }
                 if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
-                    map.put("sId",Integer.getInteger(request.getParameter("sId")));
+                    map.put("sId",request.getParameter("sId"));  //月份
                 }
-                Integer pageSize=0;
-                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                    map.put("pageSize",pageSize);
+               
+                List<BusinessData> list = businessDataService.listBusinessDataBy(map); //查询所有符合搜索条件的表数据
+                List<BusinessData> businessData=new ArrayList<>();  //所有符合权限的数据
+                for (int i = 0; i < userOrganization.size(); i++) { //循环权限全部数据    
+                    String id=userOrganization.get(i).getoId(); //找到权限数据里面的oId
+                    //找权限的oId和损益表的oId进行筛选
+                    for (int j = 0; j < list.size(); j++) {
+                        String arrId=list.get(j).getoId();//找损益表里面的oId
+                        if(id.equals(arrId)){  //判断权限oId 和全部数据的oId是否相同  
+                           businessData.add(list.get(j));  // 可以显示的损益数据
+                        }
+                    }
                 }
-                Integer start=0;
-                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                    map.put("start",start);
+                //根据oId查询部门信息
+                //循环合格数据的oid 去查询他的所有部门
+                List<Business> businessList=new ArrayList<>();//页面列表排列数据
+                for (int i = 0; i < businessData.size(); i++) {
+                    List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getoId()); //根据oId查出公司以下的部门
+                    for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                        if(listTreeByIdForSon.get(j).getOrgType()==3){ //找到公司以下的节点业务
+                          if(!listTreeByIdForSon.get(j).getOrgName().contains("汇总")){  //含有 汇总的不是业务方式 
+                              Business business=new Business();
+                              business.setYear(businessData.get(i).getYear()); //年份
+                              business.setMonth(businessData.get(i).getMonth()); //月份
+                              business.setUserName(user.getName()); //用户
+                              business.setUpdateTime(businessData.get(i).getUpdateTime()); //操作时间
+                              business.setStatus(businessData.get(i).getStatus());//状态
+                              Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
+                              business.setCompany(CompanyName.getOrgName()); //公司
+                              business.setStructures(listTreeByIdForSon.get(j).getOrgName()); //业务方式
+                              businessList.add(business); 
+                          }
+                        }
+                    }
+                }   
+                //数据分页
+                if(businessList.size()>0){  //判断是否有符合权限的数据  没有则是抛出异常  有就进行数据分页传到前台
+                    Integer p=(page - 1) * pageSize; //开始下标
+                    Integer s=page* pageSize;  //结束下标
+                    Integer totalPage = businessList.size() / pageSize; //总页数
+                    if (businessList.size() % pageSize != 0){
+                        totalPage++;
+                    }
+                    List<Business> subList =new ArrayList<>();
+                    if(businessList.size()<pageSize){    //判断总得数据长度是否小于每页大小
+                        subList=businessList.subList(0,businessList.size());
+                    }else if(businessList.size()<s){     //判断总得数据长度是否小于结束下标大小
+                        subList=businessList.subList(p,businessList.size());
+                    }else{
+                        subList=businessList.subList(p,s);
+                    }
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    dataMap.put("data", subList);
+                    dataMap.put("totalPage", totalPage);
+                }else{
+                    throw new Exception("您没有权限查看损益表数据！");
                 }
-                List<BusinessData> list = businessDataService.listBusinessDataBy(map);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", list);
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -120,16 +155,15 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
+        @ResponseBody
         public Map<String, Object> selectBusinessDataById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 BusinessData  businessData=businessDataService.selectBusinessDataById(id);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                
                 dataMap.put("resultData", businessData);
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;

@@ -133,6 +133,10 @@ public class CapitalController {
                 if(listData.size()>0){  //判断是否有符合权限的数据  没有则是抛出异常  有就进行数据分页传到前台
                     Integer p=(page - 1) * pageSize; //开始下标
                     Integer s=page* pageSize;  //结束下标
+                    Integer totalPage = listData.size() / pageSize; //总页数
+                    if (listData.size() % pageSize != 0){
+                        totalPage++;
+                    }
                     List<Capital> subList =new ArrayList<>();
                     if(listData.size()<pageSize){    //判断总得数据长度是否小于每页大小
                         subList=listData.subList(0,listData.size());
@@ -143,6 +147,7 @@ public class CapitalController {
                     }
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                     dataMap.put("data", subList);
+                    dataMap.put("totalPage", totalPage);
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！");
                 }
@@ -465,8 +470,8 @@ public class CapitalController {
                                  Calendar calendar = Calendar.getInstance();
                                  calendar.setTime(calendar.getTime());
                                  capital.setuId(uId);
-                                 capital.setYear(Calendar.YEAR);
-                                 capital.setMonth(Calendar.MONTH);
+                                 capital.setYear(calendar.get(Calendar.YEAR));
+                                 capital.setMonth(calendar.get(Calendar.MONTH));
                                  capital.setStatus(1);
                                  a = capitalService.insertCapital(capital); //导入新增的数据
                                  if (a == 1) {
