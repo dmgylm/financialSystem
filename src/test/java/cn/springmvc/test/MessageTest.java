@@ -11,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.util.UuidUtil;
-import net.sf.json.JSONArray;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
@@ -34,8 +35,8 @@ public class MessageTest {
         User user = new User();
         user.setId("404ed3a5442c4ed78331d6c77077958f");
         user.setName("aa");
-        List<Message> list = service.quartMessageByPower(user, 4, 2);
-        System.out.println(JSONArray.fromObject(list).toString());
+        JSONObject list = service.quartMessageByPower(user, 4, 2);
+        System.out.println(list.toString());
     }
     
     /**

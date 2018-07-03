@@ -1,7 +1,6 @@
 package cn.springmvc.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import com.alibaba.fastjson.JSON;
+
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.service.impl.OrganizationServiceImpl;
@@ -49,11 +48,11 @@ public class OrganizationTest {
         String id = UuidUtil.getUUID();
         Organization organization2 = new Organization();
         organization2.setId(id);
-        organization2.setOrgName("测试1w13w1w13");
+        organization2.setOrgName("测试1wewqdsa");
         organization2.setuId("404ed3a5442c4ed78331d6c77077958f");
         organization2.setOrgkey(UuidUtil.getUUID());
         organization2.setOrgType(3);
-        Integer i = service.saveOrganization(organization2, "cbd8e5d5d5c4440fa12a9a308c7c23e0");
+        Integer i = service.saveOrganization(organization2, "e33ba2ea061949c59778c73d2868b180");
         System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -185,8 +184,8 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "cffae17c29b94554ab071b653383b701";
-        String parentOrgId = "45fd1abb1f1742e487f6919a031fc988";
+        String id = "e33ba2ea061949c59778c73d2868b180";
+        String parentOrgId = "2a79258d80844960ba32e8e77b1c4b88";
         User u = new User();
         u.setId("3ab47227d7ec441aad625e76c32b46b7");
         service.moveOrganization(u, id, parentOrgId);
