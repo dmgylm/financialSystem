@@ -63,10 +63,11 @@ public class MessageController {
             if (null != request.getParameter("page") && !"".equals(request.getParameter("page"))) {
                 page = Integer.parseInt(request.getParameter("page").trim().toString());
             }
-            List<Message> resultList = messageService.quartMessageByPower(user, page, pageNums);
-            if (!CollectionUtils.isEmpty(resultList)) {
+            JSONObject resultList = messageService.quartMessageByPower(user, page, pageNums);
+            // if (!CollectionUtils.isEmpty(resultList)) {
+            if (resultList != null ) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", resultList);
+                dataMap.putAll(resultList);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
