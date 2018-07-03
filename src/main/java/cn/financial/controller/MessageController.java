@@ -65,7 +65,7 @@ public class MessageController {
             }
             JSONObject resultList = messageService.quartMessageByPower(user, page, pageNums);
             // if (!CollectionUtils.isEmpty(resultList)) {
-            if (resultList != null ) {
+            if (resultList != null && !resultList.isEmpty()) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.putAll(resultList);
             } else {
