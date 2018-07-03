@@ -27,6 +27,8 @@
 			jdbcType="VARCHAR"></result>
         <result property="orgType" column="orgType" javaType="int"
             jdbcType="INTEGER"></result>
+        <result property="orgPlateId" column="orgPlateId" javaType="string"
+            jdbcType="VARCHAR"></result>
 	</resultMap>
 
 	<!-- 新增组织结构节点信息 -->
@@ -41,10 +43,11 @@
 		uId,
 		his_permission,
 		orgkey,
-		orgType
+		orgType,
+		orgPlateId
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR},#{orgkey,jdbcType=VARCHAR},#{orgType,jdbcType=INTEGER})
+		(#{id,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{parentId,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{his_permission,jdbcType=VARCHAR},#{orgkey,jdbcType=VARCHAR},#{orgType,jdbcType=INTEGER},#{orgPlateId,jdbcType=VARCHAR})
 	</insert>
 
 	<!--查询该节点以及节点以下的 -->
@@ -60,7 +63,7 @@
 
 	<select id="listOrganizationcode" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
@@ -88,7 +91,7 @@
 	<select id="listOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
@@ -100,7 +103,7 @@
 	<select id="listAllOrganizationBy" parameterType="map"
 		resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
@@ -172,7 +175,7 @@
 	<select id="listTreeByCodeForSon"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
@@ -185,7 +188,7 @@
 	<select id="listTreeByCodeForParent"
 		parameterType="java.lang.String" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
@@ -230,12 +233,15 @@
 		<if test="orgType!=null and orgType!=''">
             and orgType = #{orgType,jdbcType=INTEGER}
         </if>
+        <if test="orgPlateId!=null and orgPlateId!=''">
+            and orgPlateId = #{orgPlateId,jdbcType=INTEGER}
+        </if>
 	</sql>
 
 	<!-- 获取组织机构为公司的数据 -->
 	<select id="getCompany" resultType="Organization">
 		select
-		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
 		from
 		organization
 		where
