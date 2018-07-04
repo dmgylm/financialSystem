@@ -22,6 +22,8 @@ public class User implements Serializable{
 
     private String updateTime; // 更新时间
     
+    private String expreTime;//密码到期时间
+    
     private String salt;  //uuid随机数生成
     
     public User() {
@@ -90,6 +92,14 @@ public class User implements Serializable{
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getExpreTime() {
+        return expreTime;
+    }
+
+    public void setExpreTime(String expreTime) {
+        this.expreTime = expreTime;
     }
 
     public String getSalt() {
