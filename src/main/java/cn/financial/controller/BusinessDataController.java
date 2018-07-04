@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
@@ -26,7 +28,10 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.UuidUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * 损益表Controller
@@ -58,7 +63,7 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
         public Map<String, Object> listBusinessDataBy(HttpServletRequest request,Integer page,Integer pageSize) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -67,11 +72,17 @@ public class BusinessDataController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
-               /* for (int i = 0; i < userOrganization.size(); i++) {
-                    List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getoId()); //根据oId查出公司以下的部门
-                    JSONArray listTreeByIdForSonJson=JSONArray.fromObject(listTreeByIdForSon);
-                    System.out.println(listTreeByIdForSonJson);
-                }*/
+                JSONArray userOrganizationJson=JSONArray.fromObject(userOrganization);
+                System.out.println(userOrganizationJson);
+                List<UserOrganization> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    Map<Object, Object> listOrganizationByMap = new HashMap<>();
+                    listOrganizationByMap.put("id", userOrganization.get(i).getoId());
+                    List<Organization>  listOrganizationBy= organizationService.listOrganizationBy(listOrganizationByMap);
+                    if(listOrganizationBy.get(0).getOrgType()==2||listOrganizationBy.get(0).getOrgType()==3){ //判断公司及其公司以下的数据
+                        listOrganization.add(userOrganization.get(i));
+                    }
+                }  
                 if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
                     map.put("year",request.getParameter("year")); //年份
                 }
@@ -84,8 +95,8 @@ public class BusinessDataController {
                
                 List<BusinessData> list = businessDataService.listBusinessDataBy(map); //查询所有符合搜索条件的表数据
                 List<BusinessData> businessData=new ArrayList<>();  //所有符合权限的数据
-                for (int i = 0; i < userOrganization.size(); i++) { //循环权限全部数据    
-                    String id=userOrganization.get(i).getoId(); //找到权限数据里面的oId
+                for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
+                    String id=listOrganization.get(i).getoId(); //找到权限数据里面的oId
                     //找权限的oId和损益表的oId进行筛选
                     for (int j = 0; j < list.size(); j++) {
                         String arrId=list.get(j).getoId();//找损益表里面的oId
@@ -99,6 +110,7 @@ public class BusinessDataController {
                 List<Business> businessList=new ArrayList<>();//页面列表排列数据
                 for (int i = 0; i < businessData.size(); i++) {
                     List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getoId()); //根据oId查出公司以下的部门
+                    Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                     for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                         if(listTreeByIdForSon.get(j).getOrgType()==3){ //找到公司以下的节点业务
                           if(!listTreeByIdForSon.get(j).getOrgName().contains("汇总")){  //含有 汇总的不是业务方式 
@@ -108,7 +120,6 @@ public class BusinessDataController {
                               business.setUserName(user.getName()); //用户
                               business.setUpdateTime(businessData.get(i).getUpdateTime()); //操作时间
                               business.setStatus(businessData.get(i).getStatus());//状态
-                              Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                               business.setCompany(CompanyName.getOrgName()); //公司
                               business.setStructures(listTreeByIdForSon.get(j).getOrgName()); //业务方式
                               businessList.add(business); 
@@ -154,14 +165,19 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listById", method = RequestMethod.POST)
+        @RequestMapping(value="/listById", method = RequestMethod.GET)
         @ResponseBody
         public Map<String, Object> selectBusinessDataById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 BusinessData  businessData=businessDataService.selectBusinessDataById(id);
+                JSONObject json= JSONObject.fromObject(businessData.getInfo());
+                HtmlGenerate htmlGenerate=new HtmlGenerate();
+                Integer htmlType=2; //表示录入页面
+                String html= htmlGenerate.generateHtml(json.toString(), htmlType);
+                System.out.println(html);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("resultData", businessData);
+                dataMap.put("resultData", html);
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -175,7 +191,7 @@ public class BusinessDataController {
          * @param response
          * @return
          */
-        @RequiresPermissions("businessData:create")
+       /* @RequiresPermissions("businessData:create")
         @RequestMapping(value="/insert", method = RequestMethod.POST)
         public Map<String, Object> insertBusinessData(HttpServletRequest request,BusinessData businessData){
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -189,10 +205,8 @@ public class BusinessDataController {
                 Integer i = businessDataService.insertBusinessData(businessData);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                    
                 } else {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                    
                 }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
@@ -200,7 +214,7 @@ public class BusinessDataController {
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
-        }
+        }*/
         
         /**
          * 修改损益数据
@@ -219,10 +233,8 @@ public class BusinessDataController {
                 Integer i = businessDataService.updateBusinessData(businessData);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                    
                 } else {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                    
                 }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));

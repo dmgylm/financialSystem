@@ -37,10 +37,9 @@
        
       <!--  根据id查询损益数据 -->
        <select id="selectBusinessDataById" parameterType="String" resultMap="businessData" >
-           SELECT *
-           FROM businessData
-           WHERE id = #{id} and delStatus=1
-           ORDER BY updateTime DESC
+           SELECT * 
+           FROM businessData b,businessDataInfo o
+           WHERE b.id=o.businessDataId AND b.id=#{id} AND b.delStatus=1 AND o.delStatus=1
        </select>
        
        <!-- 根据条件查询损益数据 -->
