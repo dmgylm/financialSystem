@@ -1,5 +1,6 @@
 package cn.springmvc.test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,12 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import cn.financial.model.Organization;
-import cn.financial.model.User;
 import cn.financial.service.impl.OrganizationServiceImpl;
-import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.HttpClient3;
 import cn.financial.util.JsonToHtmlUtil;
-import cn.financial.util.UuidUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -29,6 +28,8 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
+    
+    private HttpClient3 http = new HttpClient3();
 
 
     /**
@@ -42,18 +43,19 @@ public class OrganizationTest {
 
     /**
      * 新增组织结构
+     * @throws UnsupportedEncodingException 
      */
     @Test
     public void saveOrganization() {
-        String id = UuidUtil.getUUID();
-        Organization organization2 = new Organization();
-        organization2.setId(id);
-        organization2.setOrgName("测试1wewqdsa");
-        organization2.setuId("404ed3a5442c4ed78331d6c77077958f");
-        organization2.setOrgkey(UuidUtil.getUUID());
-        organization2.setOrgType(3);
-        Integer i = service.saveOrganization(organization2, "e33ba2ea061949c59778c73d2868b180");
-        System.out.println(i + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        http = new HttpClient3();
+        try {
+            String string = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/save?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    "orgName=测试&orgType=3&parentOrgId=5d9f44219a3a47aaa2a4deae332d1cb8");
+            System.out.println(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -62,12 +64,18 @@ public class OrganizationTest {
     @Test
     public void listOrganization() {
         long start = System.currentTimeMillis();
-        List<Organization> list = service.listOrganizationBy(new HashMap<Object, Object>());
-        long end = System.currentTimeMillis();
-        for (Organization organization : list) {
-            System.out.println(organization.toString());
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/listBy?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    "");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        System.out.println(end - start);
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -75,19 +83,28 @@ public class OrganizationTest {
      */
     @Test
     public void listOrganizationBy() {
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "433971dcf96a4eb88fbb163f7ab56fce");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "0994b84cd9e14a2cb706b53708e67f9b");
         // map.put("code", "01");
         // map.put("orgName", "总裁");
         // map.put("parentId", "0");
-        map.put("createTime", "2018-03-23");
+        //map.put("createTime", "2018-03-23");
         // map.put("updateTime", "");
         // map.put("uId", "1cb54fff435b4fff8aa7c1fa391f519b");
         // map.put("his_permission", "");
-        List<Organization> list = service.listOrganizationBy(map);
-        for (Organization organization : list) {
-            System.out.println(organization.toString());
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/listBy?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -95,11 +112,22 @@ public class OrganizationTest {
      */
     @Test
     public void updateOrganizationById() {
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("id", "7d1ef3a8bc584d739ad3a30ea2ad6c82");
-        // map.put("orgName", "dfsfsfsfsafasfsad");
-        Integer i = service.updateOrganizationById(map);
-        System.out.println(i);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "181b407f574b4f1588aa4ad91a23a582");
+        map.put("orgName", "测测测测vcshishi");
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/updatebyid?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -107,22 +135,21 @@ public class OrganizationTest {
      */
     @Test
     public void deleteOrganizationByStatus() {
-        String id = "3dbf3bc31e2a45b5af5beb06d62dfccb";
-        HashMap<Object, Object> mmp = new HashMap<Object, Object>();
-        mmp.put("id", id);
-        Boolean boolean1 = service.hasOrganizationSon(mmp);
-        if (!boolean1) {
-            User user = new User();
-            user.setId(id);
-            Integer i = service.deleteOrganizationById(id, user);
-            if (Integer.valueOf(1).equals(i)) {
-                System.out.println(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            } else {
-                System.out.println(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            }
-        } else {
-            System.out.println(ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE));
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("id", "181b407f574b4f1588aa4ad91a23a582");
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/discontinuate?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -130,11 +157,21 @@ public class OrganizationTest {
      */
     @Test
     public void TreeByOrgId() {
-        long start1 = System.currentTimeMillis();
-        com.alibaba.fastjson.JSONObject string1 = service.TreeByIdForSon("");
-        long end1 = System.currentTimeMillis();
-        System.out.println(end1 - start1);
-        System.out.println(string1.toString());
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("id", "");
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/getsubnode?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -171,10 +208,21 @@ public class OrganizationTest {
      */
     @Test
     public void listTreeByOrgIdParent() {
-        List<Organization> list = service.listTreeByIdForParent("135831766bf544e4a7f0f34f058116e7");
-        for (Organization organization : list) {
-            System.out.println(organization.toString());
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("id", "2a79258d80844960ba32e8e77b1c4b88");
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/getparnode?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -184,11 +232,22 @@ public class OrganizationTest {
      */
     @Test
     public void moveOrganization() {
-        String id = "e33ba2ea061949c59778c73d2868b180";
-        String parentOrgId = "2a79258d80844960ba32e8e77b1c4b88";
-        User u = new User();
-        u.setId("3ab47227d7ec441aad625e76c32b46b7");
-        service.moveOrganization(u, id, parentOrgId);
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("id", "181b407f574b4f1588aa4ad91a23a582");
+        map.put("parentId", "2a79258d80844960ba32e8e77b1c4b88");
+        long start = System.currentTimeMillis();
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/move?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
@@ -196,14 +255,22 @@ public class OrganizationTest {
      */
     @Test
     public void hasOrganizationSon() {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("id", "d54707e3330c42c58250bbfa0fbc00a7");// 组织id
-        // map.put("orgName", "上市");// 组织架构名
+        HashMap<String, String> map = new HashMap<String, String>();
+        // map.put("id", "5d9f44219a3a47aaa2a4deae332d1cb8");
+        map.put("orgName", "测试");
         long start = System.currentTimeMillis();
-        Boolean boolean1 = service.hasOrganizationSon(map);
+        http = new HttpClient3();
+        String result = "";
+        try {
+            result = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/organization/hasSon?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         long end = System.currentTimeMillis();
-        System.out.println(end - start);
-        System.out.println(boolean1);
+        System.out.println(result);
+        System.out.println("花费时间:" + (end - start));
     }
 
     /**
