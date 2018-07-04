@@ -75,13 +75,18 @@ public class HtmlGenerate {
 		}
 	}
 	
+
+	public String generateHtml(String jsonStr,Integer htmlType){
+		JSONObject jsonObj = JSONObject.fromObject(jsonStr);
+		return generateHtml(jsonObj, htmlType);
+	}
+	
 	/**
 	 * 生成Html
 	 * @param jsonStr
 	 * @return
 	 */
-	public String generateHtml(String jsonStr,Integer htmlType){
-		JSONObject jsonObj = JSONObject.fromObject(jsonStr);
+	public String generateHtml(JSONObject jsonObj,Integer htmlType){
 		Map<Integer,Map<Integer,JSONObject>> trMap = assembleData(jsonObj);
 		trMap = sortTableRowMap(trMap);
 		Document doc = Jsoup.parse("<html> <head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style> <body></body></html>");
