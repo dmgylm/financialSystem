@@ -55,6 +55,8 @@ public class DataModule {
 
     private String updateTime; // 更新时间
     
+    private String dataHtml; //模板数据转换成的html
+    
     public static String getReprtTypeName(String reportType){
     	String reportTypeName = null;
     	switch (reportType) {
@@ -171,6 +173,14 @@ public class DataModule {
 
 	public void setBusinessType(String businessType) {
 		this.businessType = businessType;
+	}
+
+	public String getDataHtml() {
+		return dataHtml;
+	}
+
+	public void setDataHtml(String dataHtml) {
+		this.dataHtml = dataHtml;
 	}
     
     
