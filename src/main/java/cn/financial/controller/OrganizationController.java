@@ -203,6 +203,8 @@ public class OrganizationController {
                 } else {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE));
                 }
+            } else {
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
