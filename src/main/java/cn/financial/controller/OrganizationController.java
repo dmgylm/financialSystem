@@ -102,7 +102,7 @@ public class OrganizationController {
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                map.put("orgName", new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                map.put("orgName", request.getParameter("orgName").trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
             }
             if (null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
                 map.put("createTime", format.parse(request.getParameter("createTime")));// 创建时间
@@ -151,7 +151,7 @@ public class OrganizationController {
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                map.put("orgName", new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                map.put("orgName", request.getParameter("orgName").trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
             }
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 map.put("id", request.getParameter("id"));// 组织id
@@ -329,7 +329,7 @@ public class OrganizationController {
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                map.put("orgName", new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
+                map.put("orgName", request.getParameter("orgName").trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
             }
             if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
                 map.put("id", request.getParameter("id"));
