@@ -32,6 +32,7 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
+import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
@@ -55,7 +56,7 @@ public class UserController {
     @Autowired
     private PasswordHelper passwordHelper;
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationServiceImpl organizationService;
     @Autowired
     @Qualifier("apiRedisTemplate")
     private RedisTemplate redis;
@@ -417,21 +418,16 @@ public class UserController {
                 uId = request.getParameter("uId");//用户id
             }
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
-            List<TreeNode<UserOrganization>> nodes = new ArrayList<>();
+            List<JSONObject> jsonUserOrg = new ArrayList<>();
             JSONObject jsonObject = null;
             if(!CollectionUtils.isEmpty(userOrganization)){
                 for (UserOrganization rss : userOrganization) {
-                    TreeNode<UserOrganization> node = new TreeNode<>();
-                    node.setId(rss.getCode());
-                    node.setParentId(rss.getParentId());//父节点
-                    node.setText(rss.getOrgName());//组织架构名称
-                    // node.setNodeData(organization);
-                    node.setPid(rss.getoId());//组织架构id
-                    nodes.add(node);
+                    //根据id查询该节点下的所有子节点,构建成树
+                    jsonObject = organizationService.TreeByIdForSon(rss.getoId());
+                    jsonUserOrg.add(jsonObject);
                 }
-                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            dataMap.put("userOrganizationList", jsonObject);
+            dataMap.put("userOrganizationList", jsonUserOrg);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
