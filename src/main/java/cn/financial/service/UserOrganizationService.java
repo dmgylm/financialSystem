@@ -1,6 +1,11 @@
 package cn.financial.service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.UserOrganization;
 
@@ -28,5 +33,11 @@ public interface UserOrganizationService {
      * @param userOrganization
      * @return
      */
-    Integer updateUserOrganization(UserOrganization userOrganization);
+    Integer updateUserOrganization(UserOrganization userOrganization); 
+    /**
+     * 根据用户id查询该组织架构节点下的所有子节点,构建成树
+     * @param uId
+     * @return
+     */
+    List<JSONObject> userOrganizationList(String uId);
 }
