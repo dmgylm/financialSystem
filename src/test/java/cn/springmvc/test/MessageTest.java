@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.service.impl.MessageServiceImpl;
+import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,16 +28,27 @@ public class MessageTest {
     @Autowired
     private MessageServiceImpl service;
     
+    private HttpClient3 http = new HttpClient3();
+    
     /**
      * 根据用户权限展示相应的消息
      */
     @Test
     public void listMessageforPower() {
-        User user = new User();
-        user.setId("404ed3a5442c4ed78331d6c77077958f");
-        user.setName("aa");
-        JSONObject list = service.quartMessageByPower(user, 4, 2);
-        System.out.println(list.toString());
+        http = new HttpClient3();
+        try {
+            String string = http.doPost(
+                    "http://192.168.111.162:8083/financialSys/message/list?meta.session.id=0de71fc9-8f12-49db-a474-91b7c4ecdbde",
+                    "");
+            System.out.println(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // User user = new User();
+        // user.setId("404ed3a5442c4ed78331d6c77077958f");
+        // user.setName("aa");
+        // JSONObject list = service.quartMessageByPower(user, 1, 10);
+        // System.out.println(list.toString());
     }
     
     /**
