@@ -89,4 +89,8 @@ public class ElementConfig {
      * 密码为空
      */
     public static final String PASSWORD_NULL_ERROR = "PASSWORD_NULL_ERROR";
+    /**
+     * 密码已失效，请联系管理员
+     */
+    public static final String PASSWORD_INVALID_ERROR = "PASSWORD_INVALID_ERROR";
 }
