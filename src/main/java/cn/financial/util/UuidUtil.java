@@ -1,6 +1,8 @@
 package cn.financial.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -81,5 +83,17 @@ public class UuidUtil {
         }  
         return sb.toString();  
     }
-
+    /**
+     * 计算密码有效期（即日起生效，90天之内有效）
+     * @return
+     */
+    public static String expreTime(){
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, +1);
+        System.out.println("当前日期:"+sf.format(c.getTime()));
+        c.add(Calendar.DATE, +91);
+        System.out.println("增加91天后日期:"+sf.format(c.getTime())+" 00:00:00");
+        return sf.format(c.getTime())+" 00:00:00";
+    }
 }
