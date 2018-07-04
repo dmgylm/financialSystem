@@ -17,6 +17,7 @@ import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.UuidUtil;
 
 @Service("DataModuleServiceImpl")
@@ -53,7 +54,12 @@ public class DataModuleServiceImpl implements DataModuleService{
 	public DataModule getDataModule(String dataModuleId) {
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("id", dataModuleId);
-		return dataModuleDao.getDataModule(params);
+		DataModule dataModule=dataModuleDao.getDataModule(params);
+		HtmlGenerate hg = new HtmlGenerate();
+		String html = hg.generateHtml(dataModule.getModuleData(),hg.HTML_TYPE_TEMPLATE);
+		dataModule.setDataHtml(html);
+		
+		return dataModule;
 	}
 
 	/**
