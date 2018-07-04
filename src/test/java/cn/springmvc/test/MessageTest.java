@@ -35,7 +35,7 @@ public class MessageTest {
         http = new HttpClient3();
         try {
             String string = http.doPost(
-                    "http://192.168.111.162:8083/financialSys/message/list?meta.session.id=0de71fc9-8f12-49db-a474-91b7c4ecdbde",
+                    "http://192.168.111.162:8083/financialSys/message/list?meta.session.id=99936cd4-4d75-4929-b607-70aa9f201690",
                     "");
             System.out.println(string);
         } catch (Exception e) {
