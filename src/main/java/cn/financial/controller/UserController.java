@@ -417,16 +417,7 @@ public class UserController {
             if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
                 uId = request.getParameter("uId");//用户id
             }
-            List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
-            List<JSONObject> jsonUserOrg = new ArrayList<>();
-            JSONObject jsonObject = null;
-            if(!CollectionUtils.isEmpty(userOrganization)){
-                for (UserOrganization rss : userOrganization) {
-                    //根据id查询该节点下的所有子节点,构建成树
-                    jsonObject = organizationService.TreeByIdForSon(rss.getoId());
-                    jsonUserOrg.add(jsonObject);
-                }
-            }
+            List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(uId);
             dataMap.put("userOrganizationList", jsonUserOrg);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
