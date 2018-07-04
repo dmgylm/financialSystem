@@ -79,7 +79,7 @@ public class BusinessDataController {
                     Map<Object, Object> listOrganizationByMap = new HashMap<>();
                     listOrganizationByMap.put("id", userOrganization.get(i).getoId());
                     List<Organization>  listOrganizationBy= organizationService.listOrganizationBy(listOrganizationByMap);
-                    if(listOrganizationBy.get(0).getOrgType()==2||listOrganizationBy.get(0).getOrgType()==3){ //判断公司及其公司以下的数据
+                    if(listOrganizationBy.get(0).getOrgType()==3){ //公司以下的节点的数据
                         listOrganization.add(userOrganization.get(i));
                     }
                 }  
@@ -99,8 +99,8 @@ public class BusinessDataController {
                     String id=listOrganization.get(i).getoId(); //找到权限数据里面的oId
                     //找权限的oId和损益表的oId进行筛选
                     for (int j = 0; j < list.size(); j++) {
-                        String arrId=list.get(j).getoId();//找损益表里面的oId
-                        if(id.equals(arrId)){  //判断权限oId 和全部数据的oId是否相同  
+                        String typeId=list.get(j).getTypeId();//找损益表里面的typeId
+                        if(id.equals(typeId)){  //判断权限oId 和全部数据的typeId是否相同  
                            businessData.add(list.get(j));  // 可以显示的损益数据
                         }
                     }
