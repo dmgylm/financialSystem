@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.Message;
-import cn.financial.model.User;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
