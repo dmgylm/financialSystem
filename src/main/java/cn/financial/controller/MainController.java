@@ -1,6 +1,8 @@
 package cn.financial.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.RoleResource;
+import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.UserRoleService;
+import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -38,7 +42,8 @@ import cn.financial.util.ElementXMLUtils;
  */
 @Controller
 public class MainController {
-    
+    @Autowired
+    private UserService userService;
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
@@ -78,23 +83,27 @@ public class MainController {
         try {
             subject.login(token);
             //判断密码是否为Welcome1
-            if(passWord!=null && !passWord.equals("")){
-                if(passWord.equals("Welcome1")){
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
-                    return dataMap;
-                }
+            if(passWord.equals("Welcome1")){
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+                return dataMap;
             }
-            if(userName!=null && !"".equals(userName)){
-                List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
-                JSONObject jsonObject = null;
-                if(userRole.size()>0){
-                    for(UserRole list:userRole){
-                        jsonObject = roleResourceService.roleResourceList(list.getrId());
-                    }  
-                }
-                dataMap.put("roleResource", jsonObject);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            User user = userService.getUserByName(userName);
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c = Calendar.getInstance();
+            String expreTime = sf.format(c.getTime())+" 00:00:00";
+            if(user.getExpreTime().equals(expreTime)){//判断密码是否到期
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+                return dataMap;
             }
+            List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
+            JSONObject jsonObject = null;
+            if(userRole.size()>0){
+                for(UserRole list:userRole){
+                    jsonObject = roleResourceService.roleResourceList(list.getrId());
+                }  
+            }
+            dataMap.put("roleResource", jsonObject);
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));

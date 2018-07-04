@@ -99,10 +99,12 @@ public class UserController {
                     if(oldPwd.equals(newPwd)){
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
                     }else{
+                        String expreTime = UuidUtil.expreTime();
                         User user = new User();
                         user.setId(newuser.getId());
                         user.setPwd(newPwd);
                         user.setSalt(UuidUtil.getUUID());
+                        user.setExpreTime(expreTime);//密码到期时间
                         Integer userList = userService.updateUser(user);
                         if(userList>0){
                             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
@@ -290,13 +292,15 @@ public class UserController {
                 }
             }
             String resetPwd = UuidUtil.getRandomPassword(6);//生成随机重置密码
+            String expreTime = UuidUtil.expreTime();
             User user = new User();
             user.setId(userId);
             user.setSalt(UuidUtil.getUUID());
             user.setPwd(resetPwd);
-            System.out.println("重置密码："+resetPwd);
+            user.setExpreTime(expreTime);//密码到期时间
             Integer userList = userService.updateUser(user);
             if(userList>0){
+                System.out.println("重置密码："+resetPwd);
                 dataMap.put("resetPwd", resetPwd);
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
@@ -324,7 +328,7 @@ public class UserController {
     @ResponseBody
     public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = null, name = null, realName = null, pwd = null, jobNumber = null;
+        String userId = null, name = null, realName = null, pwd = null, jobNumber = null,expreTime = null;
         try {
             if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
                 name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");//用户名
@@ -340,7 +344,8 @@ public class UserController {
                 if(!pwd.matches(regEx)){//密码规则校验
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
                     return dataMap;
-                }
+                } 
+                expreTime = UuidUtil.expreTime();
             }
             if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
                 jobNumber = request.getParameter("jobNumber");//工号
@@ -352,6 +357,7 @@ public class UserController {
             user.setRealName(realName);
             user.setPwd(pwd);
             user.setJobNumber(jobNumber);
+            user.setExpreTime(expreTime);//密码到期时间
             Integer userList = userService.updateUser(user);
             if(userList>0){
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
@@ -410,37 +416,17 @@ public class UserController {
             if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
                 uId = request.getParameter("uId");//用户id
             }
-            //(直接勾选子节点或者全选)
             List<UserOrganization> userOrganization = userOrganizationService.listUserOrganization(uId);
-            List<TreeNode<Organization>> nodes = new ArrayList<>();
+            List<TreeNode<UserOrganization>> nodes = new ArrayList<>();
             JSONObject jsonObject = null;
-            Map<Object, Object> map = new HashMap<Object, Object>();
-            List<Organization> listre = new ArrayList<>();
-            for (int i = 0; i < userOrganization.size(); i++) {
-                String orgId = userOrganization.get(i).getoId();
-                //当前id信息
-                map.put("id", orgId);
-                List<Organization> userOrgId = organizationService.listOrganizationBy(map); 
-                listre.addAll(userOrgId);
-                //根据当前id查询该节点的所有父节点
-                List<Organization> orgIdList = organizationService.listTreeByIdForParent(orgId);
-                listre.addAll(orgIdList);
-            }
-            
-            if(!CollectionUtils.isEmpty(listre)){
-                for (int i = 0; i < listre.size() - 1; i++) {
-                    for (int j = listre.size() - 1; j > i; j--) {
-                        if (listre.get(j).getId().equals(listre.get(i).getId())) {
-                            listre.remove(j);
-                        }
-                    }
-                } 
-                for (Organization organization : listre) {
-                    TreeNode<Organization> node = new TreeNode<>();
-                    node.setId(organization.getCode());
-                    node.setParentId(organization.getParentId());
-                    node.setName(organization.getOrgName());
-                    node.setPid(organization.getId());
+            if(!CollectionUtils.isEmpty(userOrganization)){
+                for (UserOrganization rss : userOrganization) {
+                    TreeNode<UserOrganization> node = new TreeNode<>();
+                    node.setId(rss.getCode());
+                    node.setParentId(rss.getParentId());//父节点
+                    node.setText(rss.getOrgName());//组织架构名称
+                    // node.setNodeData(organization);
+                    node.setPid(rss.getoId());//组织架构id
                     nodes.add(node);
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
