@@ -193,7 +193,7 @@ public class OrganizationController {
                 HashMap<Object, Object> mmp = new HashMap<Object, Object>();
                 mmp.put("id", request.getParameter("id"));
                 Boolean boolean1 = organizationService.hasOrganizationSon(mmp);
-                if (!boolean1) {
+                if (boolean1) {
                     i = organizationService.deleteOrganizationById(request.getParameter("id"), user);
                     if (Integer.valueOf(1).equals(i)) {
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
