@@ -75,7 +75,7 @@
       
        <!-- 根据选定条件查询损益数据 -->
        <select id="listBusinessDataByIdAndDate" parameterType="map" resultType="businessData">
-         SELECT o.info
+         SELECT o.info,s.typeId
          FROM businessData s,businessDataInfo o
          WHERE s.delStatus=1 AND s.id=o.businessDataId
          <include refid="query_businessData_foreachTypeId"></include>	
