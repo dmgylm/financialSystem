@@ -573,7 +573,7 @@ public class CapitalController {
                     strList.add(ss);
                     for (int i = 0; i < listData.size(); i++) {
                         String[] str=new String[18];
-                        Capital capital=list.get(i);
+                        Capital capital=listData.get(i);
                         if(capital.getPlate()!=null &&!capital.getPlate().equals("")){
                             str[0]=capital.getPlate();
                          }

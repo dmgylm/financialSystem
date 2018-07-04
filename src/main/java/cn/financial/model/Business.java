@@ -77,5 +77,9 @@ public class Business {
             this.updateTime = updateTime;
         }
 
+        public Integer getStatus() {
+            return status;
+        }
+   
        
 }
