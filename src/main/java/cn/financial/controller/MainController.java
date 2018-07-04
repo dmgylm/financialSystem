@@ -1,8 +1,9 @@
 package cn.financial.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +91,9 @@ public class MainController {
             User user = userService.getUserByName(userName);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c = Calendar.getInstance();
-            String expreTime = sf.format(c.getTime())+" 00:00:00";
-            if(user.getExpreTime().equals(expreTime)){//判断密码是否到期
+            String expreTime = sf.format(c.getTime());
+            Date date = sf.parse(user.getExpreTime());
+            if(sf.format(date).equals(expreTime)){//判断密码是否到期
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
@@ -116,6 +118,9 @@ public class MainController {
         } catch (AuthenticationException e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
+        } catch (ParseException e) {
+            System.out.println( "其他错误：" + e.getMessage());
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
         }
         return dataMap; 
