@@ -92,7 +92,7 @@ public class MainController {
             Calendar c = Calendar.getInstance();
             String expreTime = sf.format(c.getTime())+" 00:00:00";
             if(user.getExpreTime().equals(expreTime)){//判断密码是否到期
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
             List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
