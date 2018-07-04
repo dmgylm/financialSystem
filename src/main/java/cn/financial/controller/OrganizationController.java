@@ -63,7 +63,7 @@ public class OrganizationController {
             String uuid = UuidUtil.getUUID();
             organization.setId(uuid);// 组织结构id
             if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                organization.setOrgName(new String(request.getParameter("orgName").toString().trim().getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                organization.setOrgName(request.getParameter("orgName").toString().trim());//(new String(request.getParameter("orgName").toString().trim().getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
             }
             if (null != request.getParameter("orgType") && !"".equals(request.getParameter("orgType"))) {
                 organization.setOrgType(Integer.parseInt(request.getParameter("orgType").toString().trim()));// 类别（汇总，公司，部门）
