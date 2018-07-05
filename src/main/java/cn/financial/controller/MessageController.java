@@ -12,11 +12,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -26,6 +28,7 @@ import cn.financial.service.MessageService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
+import cn.financial.webSocket.FinancialSocketHandler;
 
 /**
  * 消息相关操作
@@ -39,6 +42,21 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+    
+    @Bean
+	public FinancialSocketHandler financialWebSocketHandler() {
+		
+		return new FinancialSocketHandler();
+		
+	}
+    
+    public void sendSocketInfo(String unread) {
+    	
+    	JSONObject jsonObject = new JSONObject();
+        jsonObject.put("unread",unread);
+        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage(jsonObject.toString()));
+    	
+    }
     
     protected Logger logger = LoggerFactory.getLogger(MessageController.class);
     
@@ -193,8 +211,8 @@ public class MessageController {
                 	}
                 }
         		
-                list = messageService.listMessage(map);
-                listm= messageService.listMessage(mapn);
+                list = messageService.listMessageBy(map);
+                listm= messageService.listMessageBy(mapn);
                 for(int k=0;k<listm.size();k++) {
                     if(listm.get(k).getStatus()==0) {
                     	unreadmessage+=1;
@@ -373,8 +391,10 @@ public class MessageController {
     @RequiresPermissions("message:remind")
     @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
     @ResponseBody
-    public Map<Object, Object> saveMessageByUser(HttpServletRequest request) {
+    public Map<Object, Object> saveMessageByUser(HttpServletRequest request,HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
+        List<Message> list = null;
         try {
 				Message message = new Message();
 				message.setId(UuidUtil.getUUID());
@@ -391,6 +411,15 @@ public class MessageController {
             } else {
             	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
+            
+            list = messageService.listMessageBy(map);
+            String unread = null;
+            for(int i=0;i<list.size();i++) {
+                if(list.get(i).getStatus()==0) {
+                	unread+=1;
+                }
+            }
+            sendSocketInfo(unread);
         } catch (Exception e) {
         	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
