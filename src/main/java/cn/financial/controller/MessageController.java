@@ -54,7 +54,7 @@ public class MessageController {
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         // 默认一页显示的数据
-        int pageNums = 5;
+        int pageSize = 5;
         // 默认显示第一页
         int page = 1;
         try {
@@ -62,10 +62,10 @@ public class MessageController {
             if (null != request.getParameter("page") && !"".equals(request.getParameter("page"))) {
                 page = Integer.parseInt(request.getParameter("page").trim().toString());
             }
-            if (null != request.getParameter("pageNums") && !"".equals(request.getParameter("pageNums"))) {
-                pageNums = Integer.parseInt(request.getParameter("pageNums").trim().toString());
+            if (null != request.getParameter("pageSize") && !"".equals(request.getParameter("pageSize"))) {
+            	pageSize = Integer.parseInt(request.getParameter("pageSize").trim().toString());
             }
-            JSONObject resultList = messageService.quartMessageByPower(user, page, pageNums);
+            JSONObject resultList = messageService.quartMessageByPower(user, page, pageSize);
             if (resultList != null && !resultList.isEmpty()) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.putAll(resultList);
@@ -173,10 +173,10 @@ public class MessageController {
             pageSize=Integer.parseInt(request.getParameter("pageSize"));
             map.put("pageSize",pageSize);
         }
-        Integer start=0;
-        if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-            start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-            map.put("start",start);
+        Integer page=0;
+        if(request.getParameter("start")!=null && !request.getParameter("start").equals("")){
+        	page=pageSize * (Integer.parseInt(request.getParameter("start")) - 1);
+            map.put("start",page);
         }
         try {
         		User user = (User) request.getAttribute("user");
