@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ import cn.financial.service.RoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -195,7 +198,7 @@ public class RoleController {
     }*/
     
     /**
-     * 查询所有/根据角色id查对应的功能权限(角色功能权限关联表)
+     * 根据角色id查对应的功能权限(角色功能权限关联表)
      * @param request
      * @param response
      */
@@ -209,7 +212,22 @@ public class RoleController {
             if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
                 roleId = request.getParameter("roleId");//角色id
             }
-            JSONObject jsonObject = roleResourceService.roleResourceList(roleId);
+            List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
+            List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+            JSONObject jsonObject = null;
+            if(!CollectionUtils.isEmpty(roleResource)){
+                for (RoleResource rss : roleResource) {
+                    TreeNode<RoleResource> node = new TreeNode<>();
+                    node.setId(rss.getCode().toString());//当前code
+                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                    node.setParentId(b);//父id
+                    node.setName(rss.getName());//功能权限名称
+                    node.setPid(rss.getsId());//当前权限id
+                    // node.setNodeData(rss);
+                    nodes.add(node);
+                }
+                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+            }
             dataMap.put("roleResourceList", jsonObject);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
