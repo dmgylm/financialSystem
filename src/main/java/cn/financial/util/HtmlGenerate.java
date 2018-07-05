@@ -14,8 +14,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 根据Json数据生成Html
@@ -64,8 +64,8 @@ public class HtmlGenerate {
 			while((tmp = reader.readLine())!=null){
 				sb.append(tmp);
 			}
-			int htmlType = HTML_TYPE_TEMPLATE;
-//			int htmlType = HTML_TYPE_PREVIEW;
+//			int htmlType = HTML_TYPE_TEMPLATE;
+			int htmlType = HTML_TYPE_PREVIEW;
 //			int htmlType = HTML_TYPE_INPUT;
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(sb.toString(),htmlType);
@@ -77,7 +77,7 @@ public class HtmlGenerate {
 	
 
 	public String generateHtml(String jsonStr,Integer htmlType){
-		JSONObject jsonObj = JSONObject.fromObject(jsonStr);
+		JSONObject jsonObj = JSONObject.parseObject(jsonStr);
 		return generateHtml(jsonObj, htmlType);
 	}
 	
@@ -154,10 +154,15 @@ public class HtmlGenerate {
 	 * @param col
 	 */
 	private void setTableCellAttr(Element td, JSONObject col,Boolean display,Integer htmlType) {
-		int inputType = col.getInt("type");
+		int inputType = col.getInteger("type");
 		String name = "";
+		String key = "";
 		if(col.containsKey("name")) {
 			name = col.getString("name");
+		}
+		
+		if(col.containsKey("key")) {
+			key = col.getString("key");
 		}
 		
 		String formula = col.getString("formulaCN");
@@ -169,15 +174,15 @@ public class HtmlGenerate {
 		if (htmlType == HTML_TYPE_TEMPLATE) {
 			generateTemplateContent(td, inputType, name, formula);
 		} else if (htmlType == HTML_TYPE_INPUT) {
-			generateInputContent(td, inputType, name, formula, value);
+			generateInputContent(td, inputType, key,name, formula, value);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
 			generatePreviewContent(td, inputType, name, value);
 		}
 		
 		
 		
-		int colspan = col.getInt("colspan");
-		int rowspan = col.getInt("rowspan");
+		int colspan = col.getInteger("colspan");
+		int rowspan = col.getInteger("rowspan");
 		if(colspan!=1) {
 			td.attr("colspan",""+colspan);
 		}
@@ -216,13 +221,13 @@ public class HtmlGenerate {
 	 * @param formula
 	 * @param value
 	 */
-	private void generateInputContent(Element td, int inputType,
+	private void generateInputContent(Element td, int inputType,String key,
 			String name, String formula,String value) {
 		if(inputType==BOX_TYPE_LABEL) {//Label
 			td.text(name);
 		} else if(inputType==BOX_TYPE_INPUT) {//input
 			Element input = td.appendElement("input");
-			input.attr("name",name);
+			input.attr("name",key);
 			input.attr("value",value);
 			input.addClass("input");
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
@@ -262,11 +267,9 @@ public class HtmlGenerate {
 	 * @param array
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private Map<Integer, Map<Integer, JSONObject>> assembleData(
 			JSONObject array) {
-		
-		for(Iterator<String> iter = array.keys();iter.hasNext();) {
+		for(Iterator<String> iter = array.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
 			JSONArray ja = array.getJSONArray(key);
 			for(int i=0;i<ja.size();i++) {
@@ -288,8 +291,8 @@ public class HtmlGenerate {
 		if(!obj.containsKey("row")) {
 			return;
 		}
-		Integer rowNum = obj.getInt("row");
-		Integer colNum = obj.getInt("col");
+		Integer rowNum = obj.getInteger("row");
+		Integer colNum = obj.getInteger("col");
 		Map<Integer, JSONObject> row = trMap.get(rowNum);
 		if(row==null) {
 			row = new HashMap<Integer, JSONObject>();
