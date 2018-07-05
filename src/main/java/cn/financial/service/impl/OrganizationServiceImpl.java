@@ -193,7 +193,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
                 node.setParentId(organization.getParentId().toString());
-                node.setText(organization.getOrgName());
+                node.setName(organization.getOrgName());
+                node.setOrgType(organization.getOrgType());
                 // node.setNodeData(organization);
                 node.setPid(organization.getId());
                 nodes.add(node);
