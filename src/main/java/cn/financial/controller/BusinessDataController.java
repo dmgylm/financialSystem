@@ -101,12 +101,8 @@ public class BusinessDataController {
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject pidJosn=userOrganization.get(i);
-                    String pid =pidJosn.getString("pid"); //得到组织id
-                    Map<Object, Object> listOrganizationByMap = new HashMap<>();
-                    listOrganizationByMap.put("id", pid);
-                    //查询组织id对应的orgType
-                    List<Organization>  listOrganizationBy= organizationService.listOrganizationBy(listOrganizationByMap); 
-                    if(listOrganizationBy.get(0).getOrgType()==3){ //公司以下的节点的数据
+                    String orgType=pidJosn.getString("orgType");
+                    if(orgType.equals("3")){ //公司以下的节点的数据
                         listOrganization.add(userOrganization.get(i));
                     }
                 } 
