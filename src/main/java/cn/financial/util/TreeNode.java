@@ -24,7 +24,7 @@ public class TreeNode<T> {
     /**
      * 树节点显示文本
      */
-//    private String text;
+    private Integer orgType;
 
     /**
      * 树节点名称，内容和text一样 该字段主要是为了兼容Ext和zTree
@@ -77,13 +77,12 @@ public class TreeNode<T> {
         this.parentId = parentId;
     }
 
-//    public String getText() {
-//        return text;
-//    }
+    public Integer getOrgType() {
+        return orgType;
+    }
 
-    public void setText(String text) {
-        this.name = text;
-//        this.text = text;
+    public void setOrgType(Integer orgType) {
+        this.orgType = orgType;
     }
 
     public String getName() {
@@ -92,7 +91,6 @@ public class TreeNode<T> {
 
     public void setName(String name) {
         this.name = name;
-//        this.text = name;
     }
 
 //    public Boolean getExpanded() {
