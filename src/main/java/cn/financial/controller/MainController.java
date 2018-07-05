@@ -2,6 +2,7 @@ package cn.financial.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -97,13 +98,7 @@ public class MainController {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
-            List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
-            JSONObject jsonObject = null;
-            if(userRole.size()>0){
-                for(UserRole list:userRole){
-                    jsonObject = roleResourceService.roleResourceList(list.getrId());
-                }  
-            }
+            List<JSONObject> jsonObject = roleResourceService.roleResourceList(userName);
             dataMap.put("roleResource", jsonObject);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
