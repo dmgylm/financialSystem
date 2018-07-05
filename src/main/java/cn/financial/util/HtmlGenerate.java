@@ -75,15 +75,21 @@ public class HtmlGenerate {
 		}
 	}
 	
-
+	/**
+	 * 根据Json字符串对象生成Html
+	 * @param jsonStr Json字符串
+	 * @param htmlType Html类型 (模板/录入/查看) @see {@link cn.financial.util.HtmlGenerate} HTML_TYPE_TEMPLATE/HTML_TYPE_INPUT/HTML_TYPE_VIEW
+	 * @return
+	 */
 	public String generateHtml(String jsonStr,Integer htmlType){
 		JSONObject jsonObj = JSONObject.parseObject(jsonStr);
 		return generateHtml(jsonObj, htmlType);
 	}
 	
 	/**
-	 * 生成Html
-	 * @param jsonStr
+	 * 根据Json对象生成Html
+	 * @param jsonObj Json对象 
+	 * @param htmlType Html类型 (模板/录入/查看) @see {@link cn.financial.util.HtmlGenerate} HTML_TYPE_TEMPLATE/HTML_TYPE_INPUT/HTML_TYPE_VIEW
 	 * @return
 	 */
 	public String generateHtml(JSONObject jsonObj,Integer htmlType){
