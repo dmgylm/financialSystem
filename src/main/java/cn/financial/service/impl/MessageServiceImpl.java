@@ -116,7 +116,7 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    public JSONObject quartMessageByPower(User user, int page, int pageNums) {
+    public JSONObject quartMessageByPower(User user, int page, int pageSize) {
         JSONObject resultJsonObject = new JSONObject();
         // 返回的值
         List<Message> resultList = new ArrayList<>();
@@ -196,8 +196,8 @@ public class MessageServiceImpl implements MessageService {
         });
         // 分页
         List<Message> result = new ArrayList<>();
-        int start = resultList.size() >= (page - 1) * pageNums ? (page - 1) * pageNums : -1;
-        int end = resultList.size() >= pageNums * page ? pageNums * page : resultList.size();
+        int start = resultList.size() >= (page - 1) * pageSize ? (page - 1) * pageSize : -1;
+        int end = resultList.size() >= pageSize * page ? pageSize * page : resultList.size();
         if (start != -1) {
             for (int i = start; i < end; i++) {
                 result.add(resultList.get(i));
