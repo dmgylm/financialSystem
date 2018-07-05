@@ -29,7 +29,7 @@
        </select>
        
       <!--  根据id查询损益数据 -->
-       <select id="selectBusinessDataInfoById" parameterType="String" resultMap="BusinessDataInfo" >
+       <select id="selectBusinessDataById" parameterType="String" resultMap="BusinessDataInfo" >
            SELECT *
            FROM businessDataInfo
            WHERE businessDataId = #{id} 
