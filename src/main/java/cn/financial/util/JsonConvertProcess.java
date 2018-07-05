@@ -36,8 +36,10 @@ public class JsonConvertProcess {
 			JSONObject longJson = templateArr.getJSONObject(i);
 			if(longJson.containsKey("key")) {
 				String longKey =  longJson.getString("key");
-				Object shortValue = dataJson.get(longKey);
-				longJson.put("value", shortValue);
+				if(dataJson.containsKey("key")) {
+					Object shortValue = dataJson.get(longKey);
+					longJson.put("value", shortValue);
+				}
 			}
 		}
 	}
