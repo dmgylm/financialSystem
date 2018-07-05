@@ -192,9 +192,9 @@ public class BusinessDataController {
                 BusinessData  businessData=businessDataService.selectBusinessDataById(id);
                 DataModule dm=dmService.getDataModule(businessData.getDataModuleId());
                 BusinessDataInfo busInfo=businessDataInfoService.selectBusinessDataById(id);
-                JSONObject joTemp=(JSONObject) JSONObject.toJSON(dm.getModuleData());
-                JSONObject joInfo=(JSONObject) JSONObject.toJSON(busInfo.getInfo());
-               JsonConvertProcess.mergeJson(joTemp, joInfo);
+                JSONObject joTemp=JSONObject.parseObject(dm.getModuleData());
+                JSONObject joInfo=JSONObject.parseObject(busInfo.getInfo());
+                JsonConvertProcess.mergeJson(joTemp, joInfo);
                 HtmlGenerate htmlGenerate=new HtmlGenerate();
                 //Integer htmlType=htmlType; //表示录入页面
                 String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
