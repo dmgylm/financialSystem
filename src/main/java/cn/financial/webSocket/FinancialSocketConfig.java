@@ -2,7 +2,6 @@ package cn.financial.webSocket;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -18,6 +17,8 @@ public class FinancialSocketConfig extends WebMvcConfigurerAdapter implements We
 		
 		registry.addHandler(financialWebSocketHandler(),"/webSocketServer").
 	    addInterceptors(new FinancialSocketHandshakeInterceptor());
+		registry.addHandler(financialWebSocketHandler(),"/MessageSocketServerInfo").
+		addInterceptors(new FinancialSocketHandshakeInterceptor());
 	}
 	
 	@Bean
