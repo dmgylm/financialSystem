@@ -27,7 +27,7 @@ public class BusinessData {
             	 
         private String uId; // 提交人id
 
-        private String dataModuleId; // 提交人id
+        private String dataModuleId; // 数据模板id
             	
         private Integer year;   //年份
             	 
