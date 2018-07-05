@@ -2,8 +2,9 @@ package cn.financial.util;
 
 import org.springframework.stereotype.Service;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 @Service
 public class JsonDetail {
 	/**
@@ -22,10 +23,10 @@ public class JsonDetail {
 			} else if(obj instanceof JSONObject){
 				JSONObject json = (JSONObject)obj;
 				if(json.containsKey("type")) {
-					if(json.getInt("type")==1) {
+					if(json.getInteger("type")==1) {
 						continue;
 					}					
-					Integer type = json.getInt("type");
+					Integer type = json.getInteger("type");
 					if(type == HtmlGenerate.BOX_TYPE_INPUT|| type == HtmlGenerate.BOX_TYPE_FORMULA){
 						if(json.containsKey("key")) {
 							String key = json.getString("key");
@@ -35,8 +36,8 @@ public class JsonDetail {
 					}
 					if(type == HtmlGenerate.BOX_TYPE_BUDGET){//预算的,type=4
 						  String key = json.getString("key");
-						  JSONObject js=JSONObject.fromObject(jsonlist);//传过来的json数据
-						  JSONObject ss=JSONObject.fromObject(js.get(newObj));
+						  JSONObject js=JSONObject.parseObject(jsonlist);//传过来的json数据
+						  JSONObject ss=JSONObject.parseObject(js.get(newObj).toString());
 						  String value=ss.get(key).toString();
 						  nJson.put(key, value);
 					}

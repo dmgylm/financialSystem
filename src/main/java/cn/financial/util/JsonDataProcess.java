@@ -2,8 +2,10 @@ package cn.financial.util;
 
 import java.util.Iterator;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+
 
 public class JsonDataProcess {
 	/**
@@ -14,9 +16,9 @@ public class JsonDataProcess {
 	 */
 	@SuppressWarnings("unchecked")
 	public static JSONObject simplifyJson(String jsonStr,String json) {
-		JSONObject obj = JSONObject.fromObject(jsonStr);
+		JSONObject obj = JSONObject.parseObject(jsonStr);
 		JSONObject newObj = new JSONObject();
-		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
+		for(Iterator<String> iter = obj.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
 			JSONArray arr = obj.getJSONArray(key);
 			JSONObject newArr = new JSONObject();
