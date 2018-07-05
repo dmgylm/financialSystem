@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.exception.FormulaAnalysisException;
 
@@ -104,7 +104,7 @@ public class HtmlAnalysis {
 		Element table = tables.get(0);
 		JSONArray list = analysisTable(table);
 		Map<String,List<JSONObject>> dataMap = assembleTableData(list);
-		return JSONObject.fromObject(dataMap).toString();
+		return JSONObject.toJSON(dataMap).toString();
 	}
 	
 	/**
