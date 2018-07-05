@@ -5,10 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 
-import org.springframework.stereotype.Service;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class JsonConvertProcess {
 	
@@ -18,7 +16,6 @@ public class JsonConvertProcess {
 	 * @param dataJson 数据Json
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static JSONObject mergeJson(JSONObject templateJson, JSONObject dataJson) {
 		for(Iterator<String> iter = templateJson.keySet().iterator();iter.hasNext();){
 			String key = iter.next();
@@ -65,6 +62,11 @@ public class JsonConvertProcess {
 		}
 		return sb.toString();
 	}
+	
+	public static JSONObject simplifyJson(String jsonStr) {
+		JSONObject json = JSONObject.parseObject(jsonStr);
+		return simplifyJson(json);
+	}
 
 	/**
 	 * 简化Json数据
@@ -72,13 +74,11 @@ public class JsonConvertProcess {
 	 * @param jsonStr
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject simplifyJson(String jsonStr) {
-		JSONObject obj = JSONObject.fromObject(jsonStr);
+	public static JSONObject simplifyJson(JSONObject json) {
 		JSONObject newObj = new JSONObject();
-		for(Iterator<String> iter = obj.keys();iter.hasNext();) {
+		for(Iterator<String> iter = json.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
-			JSONArray arr = obj.getJSONArray(key);
+			JSONArray arr = json.getJSONArray(key);
 			JSONObject newArr = new JSONObject();
 			newArr = generateSimplifyJson(arr,newArr);
 			newObj.put(key, newArr);
@@ -101,11 +101,11 @@ public class JsonConvertProcess {
 			} else if(obj instanceof JSONObject){
 				JSONObject json = (JSONObject)obj;
 				if(json.containsKey("type")) {
-					if(json.getInt("type")==1) {
+					if(json.getInteger("type")==HtmlGenerate.BOX_TYPE_LABEL) {
 						continue;
 					}
 					
-					Integer type = json.getInt("type");
+					Integer type = json.getInteger("type");
 					if (type == HtmlGenerate.BOX_TYPE_INPUT
 							|| type == HtmlGenerate.BOX_TYPE_FORMULA
 							|| type == HtmlGenerate.BOX_TYPE_BUDGET) {
