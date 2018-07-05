@@ -53,48 +53,32 @@ public class QuartzBudget implements Job {
 		businessDataInfoService = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext()
 				.getBean("BusinessDataInfoServiceImpl");
 		System.out.println("启动业务表定时添加任务");
-
+		int sum=0;
+		int zsum=0;
 		String reportType = ""; // reportType，数据模板报表类型。DataModule.REPORT_TYPE_BUDG预算，DataModule.REPORT_TYPE_PROFIT_LOSS损益
 		String msgType = ""; // 消息报表类型损益还是预算
 		int bunType = 0; // 业务表类型。 1损益2预算
 		int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);// 获取当前系统时间几号
+		day=1;
 		if (day == 1) {// 预算
 			reportType = DataModule.REPORT_TYPE_BUDGET;
 			msgType = "预算";
-			bunType = 1;
+			bunType = 2;
 		} else if (day == 11) {
 			reportType = DataModule.REPORT_TYPE_PROFIT_LOSS;
 			msgType = "损益";
-			bunType = 2;
+			bunType = 1;
 		}
 		List<Organization> orgDep = organizationService.getDep();// 获取所有部门
 		List<Organization> orgCompany = organizationService.getCompany();// 获取所有公司
-		Map<Object, Object> mo = new HashMap<>();
-		mo.put("status", 1);
-		mo.put("reportType", reportType);
-		List<DataModule> ldm = dataModuleServiceImpl.listDataModule(mo);
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		int month = Calendar.getInstance().get(Calendar.MONTH);
 		try {
-			for (int i = 0; i < orgCompany.size(); i++) {
-				Message message = new Message();
-				message.setId(UuidUtil.getUUID());
-				message.setStatus(0);
-				message.setTheme(1);
-				message.setContent(year + "年" + month + "月" + orgCompany.get(i).getOrgName() + msgType + "表已生成");
-				message.setoId(orgCompany.get(i).getId());
-				message.setIsTag(0);
-				message.setsName("系统默认");
-				Integer i1 = messageService.saveMessage(message);
-				if (i1 != 1) {
-					logger.error(msgType + "报表发送消息失败");
-				}
-			}
-			for (int k = 0; k < ldm.size(); k++) {// 获取所有预算表数据模板
+			System.out.println("部门条数+"+orgDep.size());
+			
 				for (int i = 0; i < orgDep.size(); i++) { // 获取所有部门
-					Organization orgP = organizationService.getOrgaUpFromOne(orgDep.get(i).getId(),
-							ldm.get(k).getBusinessType());// 获取对应业务板块层数据
-					if (orgP != null) {
+					DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(i).getOrgPlateId());
+					if (dm != null) {
 						Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
 						if (org != null) {
 							BusinessData statement = new BusinessData();
@@ -107,17 +91,18 @@ public class QuartzBudget implements Job {
 							statement.setStatus(2);// 提交状态（0 待提交 1已提交 2新增）
 							statement.setDelStatus(1);
 							statement.setsId(bunType);// 1表示损益表 2表示预算表
-							statement.setDataModuleId(ldm.get(k).getId());// 数据模板id
-
+							statement.setDataModuleId(dm.getId());// 数据模板id
 							Integer flag = businessDataService.insertBusinessData(statement);
+							sum++;
 							if (flag != 1) {
 								logger.error(msgType + "主表数据新增失败");
 							} else {
 								BusinessDataInfo sdi = new BusinessDataInfo();
 								sdi.setId(UuidUtil.getUUID());
 								sdi.setBusinessDataId(sid);
-								sdi.setInfo(JsonConvertProcess.simplifyJson(ldm.get(k).getModuleData()).toString());
+								sdi.setInfo(JsonConvertProcess.simplifyJson(dm.getModuleData()).toString());
 								Integer flagt = businessDataInfoService.insertBusinessDataInfo(sdi);
+								zsum++;
 								if (flagt != 1) {
 									logger.error(msgType + "从表数据新增失败");
 								}
@@ -125,11 +110,26 @@ public class QuartzBudget implements Job {
 						}
 					}
 				}
-			}
+				for (int i = 0; i < orgCompany.size(); i++) {
+					Message message = new Message();
+					message.setId(UuidUtil.getUUID());
+					message.setStatus(0);
+					message.setTheme(1);
+					message.setContent(year + "年" + month+1 + "月" + orgCompany.get(i).getOrgName() + msgType + "表已生成");
+					message.setoId(orgCompany.get(i).getId());
+					message.setIsTag(0);
+					message.setsName("系统默认");
+					Integer i1 = messageService.saveMessage(message);
+					if (i1 != 1) {
+						logger.error(msgType + "报表发送消息失败");
+					}
+				}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		long end = System.currentTimeMillis();
+		System.out.println(sum);
+		System.out.println(zsum);
 		System.out.println("时间花费~~~~");
 		System.out.println(end - start);
 	}
