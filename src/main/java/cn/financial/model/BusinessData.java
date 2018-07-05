@@ -2,6 +2,8 @@ package cn.financial.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 损益表model
  * @author lmn
@@ -15,8 +17,10 @@ public class BusinessData {
             	 
         private String info;  //内容
             	 
+        @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
         private Date createTime; //创建时间
             	 
+        @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
         private Date updateTime; //更新时间
             	 
         private String typeId;    //版块Id(来源于组织结构表）

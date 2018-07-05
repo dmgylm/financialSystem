@@ -2,6 +2,8 @@ package cn.financial.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 资金表model
  * @author lmn
@@ -33,6 +35,7 @@ public class Capital {
          
          private String accountNature; //账户性质
          
+         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
          private Date tradeTime; //交易日期
          
          private Integer startBlack; //期初余额
@@ -49,8 +52,10 @@ public class Capital {
          
          private  String remarks; //备注
          
+         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     	 private String createTime; //创建时间
     	 
+         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     	 private String updateTime; //更新时间
     	 
     	 private String  uId;    //提交人id

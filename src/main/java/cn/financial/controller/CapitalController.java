@@ -73,7 +73,7 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request,Integer page,Integer pageSize) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -172,6 +172,7 @@ public class CapitalController {
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
+                
                 if(id!=null&&!id.equals("")){
                    Capital  Capital=capitalService.selectCapitalById(id);
                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));

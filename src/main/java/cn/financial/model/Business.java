@@ -2,6 +2,8 @@ package cn.financial.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 损益所需要的列表集合
  * @author lmn
@@ -19,6 +21,7 @@ public class Business {
         
         private String userName; //用户
         
+        @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
         private Date updateTime; //操作时间
         
         private Integer status; //状态 （0待提交  1已提交 2新增  3退回）
