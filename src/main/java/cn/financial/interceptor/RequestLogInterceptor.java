@@ -27,10 +27,21 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 	    	StringBuffer requestParams = url.append(params);
 	    	logger.info("前端请求参数: " + requestParams.toString());
 	    	
+	    	addCors(response);
 			return true;
 	    }
-	 
-	    @Override
+	    
+		private void addCors(HttpServletResponse response) {
+			response.setHeader("Access-Control-Allow-Origin", "*");
+	        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+	        response.setHeader("Access-Control-Max-Age", "3600");
+	        response.setHeader("Access-Control-Allow-Headers"," Origin, X-Requested-With, Content-Type, Accept");
+		}
+
+
+
+
+		@Override
 	    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 	    }
 
