@@ -10,14 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.util.FormulaUtil;
 import cn.financial.util.HanyuToPingyinUtils;
@@ -161,8 +160,8 @@ public class AnalysisExcelFormula {
 		for(Iterator<String> iter = dataMap.keySet().iterator();iter.hasNext();) {
 			String k = iter.next();
 			JSONObject json = dataMap.get(k);
-			int row = json.getInt("row");
-			int col = json.getInt("col");
+			int row = json.getInteger("row");
+			int col = json.getInteger("col");
 			String name = null;
 			if(json.containsKey("name")) {
 				name = json.getString("name");
@@ -194,7 +193,7 @@ public class AnalysisExcelFormula {
 			replaceFormula(json);
 			assembleFinalJson(json);
 		}
-		return JSONObject.fromObject(jm).toString();
+		return JSONObject.toJSON(jm).toString();
 	}
 	
 	/**
