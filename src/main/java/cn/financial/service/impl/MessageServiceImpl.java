@@ -111,10 +111,12 @@ public class MessageServiceImpl implements MessageService {
 	public List<Message> quartMessageByPower(User user) {
 		List<UserRole> lur = userRoleDao.listUserRole(user.getName());
 		List<Message> lm = new ArrayList<>();
+		List<Organization>lo=new ArrayList<>();
 		
 		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
-			JSONObject uResource = (JSONObject)roleResourceServiceImpl.roleResourceList(lur.get(i).getrId());
-			JSONArray ja = JSONArray.parseArray(uResource.getString("children"));
+			List<JSONObject> uResource = roleResourceServiceImpl.roleResourceList(lur.get(i).getName());
+			for (int n = 0; n < uResource.size(); n++) {
+				JSONArray ja = JSONArray.parseArray(uResource.get(n).getString("children"));
 			
 			for (int j = 0; j < ja.size(); j++) {
 				JSONObject ob = (JSONObject) ja.get(j);
@@ -126,7 +128,9 @@ public class MessageServiceImpl implements MessageService {
 						int num=Integer.parseInt(obu.get("orgType").toString());
 						System.out.println(num);
 						if (2==num) {// 是公司
-							if(!lm.contains(obu)) {
+							Organization org=new Organization();
+							org.setId(obu.get("pid").toString());
+							if(!lo.contains(org)) {
 								Map<Object, Object> map = new HashMap<>();
 								map.put("oId", obu.get("pid"));
 								List<Message>lms=messageDao.listMessageBy(map);
@@ -137,11 +141,13 @@ public class MessageServiceImpl implements MessageService {
 										}
 									}
 								}
-								
+								lo.add(org);
 							}
 						}else if(3==num) {
 							Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
-							if(!lm.contains(org)) {
+							Organization orgt=new Organization();
+							orgt.setId(org.getId());
+							if(!lo.contains(orgt)) {
 								Map<Object, Object> map = new HashMap<>();
 								map.put("oId", org.getId());
 								List<Message>lms=messageDao.listMessageBy(map);
@@ -152,13 +158,15 @@ public class MessageServiceImpl implements MessageService {
 										}
 									}
 								}
+								lo.add(org);
 							}
 							
 						}
 					}
 				}
-
 			}
+			
+		}
 
 		}
 		Map<Object, Object> map = new HashMap<>();
