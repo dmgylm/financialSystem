@@ -446,7 +446,7 @@ public class MessageController {
             	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
-            String unread = String.valueOf(listUnreadMessage(request, response));
+            String unread = String.valueOf(listUnreadMessage(request, response));//获取未读消息条数
             sendSocketInfo(unread);
             
         } catch (Exception e) {
