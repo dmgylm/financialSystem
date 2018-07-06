@@ -17,14 +17,15 @@
            <result column="status" property="status" jdbcType="INTEGER"/> 
            <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
            <result column="sId" property="sId" jdbcType="INTEGER"/>
+           <result column="dataModuleId" property="dataModuleId" jdbcType="VARCHAR" />
            
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId)
-            values (#{id},#{oId},#{info},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId})
+            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId)
+            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId})
        </insert>
       
     
@@ -48,24 +49,18 @@
          FROM businessData
          WHERE delStatus=1 
          <include refid="query_businessData_where"></include>
-         ORDER BY createTime DESC
+         ORDER BY updateTime DESC
        </select>
        
-       <!-- 根据条件修改损益数据 -->
+      <!-- 根据条件修改损益数据 -->
       <update id="updateBusinessData" parameterType="businessData">
-        update businessData
+        update businessData b,businessDataInfo o
         <trim prefix="set" suffixOverrides=",">
-            <if test=" oId!=null and oId!=''">oId = #{oId},</if>
-            <if test="info!=null and info!=''">info = #{info},</if>
-            updateTime = now(),
-            <if test="typeId !=null and typeId!=''">typeId = #{typeId},</if>
-            <if test="uId!=null and uId!=''">uId = #{uId},</if>
-            <if test="year !=null and year!=''">year = #{year},</if>
-            <if test="month!=null and month!=''">month = #{month},</if>
-            <if test="status!=null and status!=''"> status = #{status}</if>
-            <if test="delStatus!=null and delStatus!=''"> delStatus = #{delStatus}</if>
+            <if test="info!=null and info!=''">o.info = #{info},</if>
+              b.updateTime = now(),
+              o.updateTime = now(),
         </trim>
-         where id = #{id} and sId=#{sId}
+         where b.id = #{id} and b.sId=#{sId} and o.businessDataId=b.id
       </update>
       
       <!-- 删除用户  status=0 -->
@@ -78,7 +73,7 @@
          SELECT o.info,s.typeId,s.oId,s.id
          FROM businessData s,businessDataInfo o
          WHERE s.delStatus=1 AND s.id=o.businessDataId
-         <include refid="query_businessData_foreachTypeId"></include>	
+         <include refid="query_businessData_foreachTypeId"></include>   
          <include refid="query_businessData_dateAndId"></include>
        </select>
       
@@ -99,12 +94,12 @@
      <!--data sql-->
      
     <sql id="query_businessData_foreachTypeId">
-		and s.typeId in
-		<foreach item="item" collection="typeId" open="(" separator=","
-			close=")">
-			#{item,jdbcType=VARCHAR}
-		</foreach>
-	</sql>
+        and s.typeId in
+        <foreach item="item" collection="typeId" open="(" separator=","
+            close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </sql>
      
      <sql id="query_businessData_dateAndId">
         <if test="startYear!=null and startYear!=''">
