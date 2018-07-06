@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -51,70 +52,147 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	}
     
 	/**
-	 * 获取所选机构底层数据集合
+	 * 获取所选机构数据集合
 	 */
 	@Override
-	public List<JSONObject> findList(String startDate, String endDate,JSONArray orgId) {
-		List<JSONObject> valveList = new ArrayList<JSONObject>();
-		//分隔传过来的开始结束时间
-		String[] startYAndM = startDate.split("/");
-		String[] endYAndM = endDate.split("/");
+	public List<Organization> companyList(JSONArray orgId) {
 		//将json里数据转换为list类型
 		String js=JSONObject.toJSONString(orgId, SerializerFeature.WriteClassName);
 		List<String> orgList =JSONObject.parseArray(js, String.class) ;
 		//获取选中的子节点数据
 		List<Organization> codeSonList = organizationService.listOrganization(orgList);
+		
+		return codeSonList;
+	}
+	
+	/**
+	 * 获取最底层数据集合
+	 * @param codeSonList
+	 * @return
+	 */
+	@Override
+	public List<String> typeIdList(List<Organization> codeSonList) {
 		List<String> typeIdList = new ArrayList<String>();
+	       for (int i = 0; i < codeSonList.size(); i++) {
+	        	if(codeSonList.get(i).getOrgType()==3){
+	            	//组装到要整体要查询的集合下
+	            	typeIdList.add(codeSonList.get(i).getId());
+	        	}
+			}
+		return typeIdList;
+	}
+	
+	/**
+	 * 获取底层对应数据的集合(缓存和数据都要使用)
+	 */
+	@Override
+	public List<BusinessData> valueList(String startDate, String endDate,List<String> typeIdList) {
+		//分隔传过来的开始结束时间
+		String[] startYAndM = startDate.split("/");
+		String[] endYAndM = endDate.split("/");
+		
+		Map<Object, Object> map = new HashMap<>();
+		map.put("typeId", typeIdList);
+		map.put("startYear", startYAndM[0]);
+		map.put("endYear", endYAndM[0]);
+		map.put("startMonth", startYAndM[1]);
+		map.put("endMonth", endYAndM[1]);
+		List<BusinessData> businessDataList = businessDataService.listBusinessDataByIdAndDate(map);
+		
+		return businessDataList;
+	}
+	
+	
+	/**
+	 * 获取对应公司数据集合(缓存使用)
+	 * @param codeSonList
+	 * @return
+	 */
+	@Override
+	public Map<String,List<String>> companyCacheList(List<Organization> codeSonList) {
+		Map<String,List<String>> companyList = new HashMap<String, List<String>>();
 		//将底层数据id拿出来
         for (int i = 0; i < codeSonList.size(); i++) {
-        	typeIdList.add(codeSonList.get(i).getId());
-		} 
-        //查找对应的数据集合
-        Map<Object, Object> map = new HashMap<>();
-        map.put("typeId", typeIdList);
-        map.put("startYear", startYAndM[0]);
-        map.put("endYear", endYAndM[0]);
-        map.put("startMonth", startYAndM[1]);
-        map.put("endMonth", endYAndM[1]);
-    	List<BusinessData> businessDataList = businessDataService.listBusinessDataByIdAndDate(map);
-    	//将查询得来的数据整合添加
-    	for (int j = 0; j < businessDataList.size(); j++) {
-    		valveList.add(JSONObject.parseObject(businessDataList.get(j).getInfo()));
+        	if(codeSonList.get(i).getOrgType()==3){
+            	List<String> companyListValve = new ArrayList<String>();
+            	//重新组装底层id到相应公司下
+            	Organization company = organizationService.getCompanyNameBySon(codeSonList.get(i).getId());
+            	if(companyList.containsKey(company.getOrgName())){
+    				companyListValve = companyList.get(company.getOrgName());
+    			}
+    			companyListValve.add(codeSonList.get(i).getId());
+        		companyList.put(company.getOrgName(), companyListValve);
+        	}
+		}
+		return companyList;
+	}
+	
+	/**
+	 * 进行缓存的存储(缓存使用)
+	 */
+	@Override
+    @Cacheable(value = "staticInfoMap", key = "'staticInfoMap_'+#caCheUuid")
+	public Map<String, Map<String, String>> staticInfoMap(Map<String, List<String>> companyList,
+			List<BusinessData> businessDataList,String caCheUuid) {
+		
+    	Map<String,Map<String,String>> redisCacheInfo = new HashMap<String, Map<String,String>>();
+    	//将组合成的公司对应数据计算后重新组合
+    	Iterator<String> it = companyList.keySet().iterator();
+		while (it.hasNext()) {
+			List<JSONObject> departmentValueList = new ArrayList<JSONObject>();
+			String departKey = it.next();//公司
+			List<String> departmentList = companyList.get(departKey);
+			for (int i = 0; i < departmentList.size(); i++) {
+				for (int k = 0; k < businessDataList.size(); k++) {
+					if(businessDataList.get(k).getTypeId().equals(departmentList.get(i))){
+						departmentValueList.add(JSONObject.parseObject(businessDataList.get(k).getInfo()));
+					}
+				}
+			}
+			//数据统计整理
+			Map<String,Object> item = valueListSum(departmentValueList);
+			//整合数据格式
+			Iterator<String> vt = item.keySet().iterator();
+			while (vt.hasNext()) {
+		    	Map<String,String> companyMap = new HashMap<String, String>();
+				String valueKey = vt.next();//key
+				String value = item.get(valueKey).toString();//value
+				if(redisCacheInfo.containsKey(valueKey)){
+					companyMap = redisCacheInfo.get(valueKey);
+				}
+				companyMap.put(departKey, value);
+				redisCacheInfo.put(valueKey, companyMap);
+			}
 		}
 		
-		return valveList;
+		return redisCacheInfo ;
 	}
-    
+
+	
     /*
      * 将符合规则的内容字段进行统计(non-Javadoc)
      * @see cn.financial.service.StatisticService#getStatic(net.sf.json.JSONArray)
      */
-	public JSONObject jsonCalculation(String reportType, String businessType, String startDate, String endDate, JSONArray orgId) {
+
+	@Override
+	public JSONObject jsonCalculation(String reportType, String businessType,List<BusinessData> businessDataList) {
 		//获取模板
 		JSONObject model = findModel(reportType,businessType);
+//		//获取所选机构
+//		List<Organization> codeSonList = companyList(orgId);
+//		//获取最底层数据
+//		List<String> typeIdList = typeIdList(codeSonList);
+//		//获取底层对应数据的集合
+//		List<BusinessData> businessDataList = valueList(startDate,endDate,typeIdList);
 		//获取数据
-		List<JSONObject> valueList = findList(startDate,endDate,orgId);
-		//开始数据计算
-		Map<String,Object> item = new HashMap<String, Object>();
-		for (int k = 0; k < valueList.size(); k++) {
-			JSONObject valueJson = valueList.get(k);
-			Iterator<String> it = valueJson.keySet().iterator();
-			while (it.hasNext()) {
-				String Jsonkey = it.next();
-				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
-				Iterator<String> vt = jsonValve.keySet().iterator();
-				while (vt.hasNext()) {
-					String itemKey = vt.next();
-					Double valve = jsonValve.getDouble(itemKey);
-					itemKey = itemKey.replaceAll("\\.", "_");
-					if(item.containsKey(itemKey)){
-						valve +=(Double)item.get(itemKey);
-					}
-					item.put(itemKey, valve);
-				}
-			}
+		List<JSONObject> valueList = new ArrayList<JSONObject>();
+    	//将查询得来的数据整合添加
+    	for (int j = 0; j < businessDataList.size(); j++) {
+    		valueList.add(JSONObject.parseObject(businessDataList.get(j).getInfo()));
 		}
-		
+		//开始数据计算
+		Map<String,Object> item = valueListSum(valueList);
+		//进行模板填写
 		Iterator<String> it = model.keySet().iterator();
 		while (it.hasNext()) {
 			JSONArray json = new JSONArray();
@@ -126,8 +204,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				Integer type = rowjar.getInteger("type");
 				String itemKey = rowjar.getString("key");
 				String formula = rowjar.getString("reallyFormula");
-				itemKey = itemKey.replaceAll("\\.", "_");
-				formula = formula.replaceAll("\\.", "_");
 				if (type ==2 ||type == 4){
 					//将数据添加到新json里
 					rowjar.put("value", item.get(itemKey));
@@ -141,5 +217,31 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		
 		return model;
 	}
+	
+	//进行分段的计算方法
+	public Map<String,Object> valueListSum(List<JSONObject> valueList){
+		
+		Map<String,Object> item = new HashMap<String, Object>();
+		for (int k = 0; k < valueList.size(); k++) {
+			JSONObject valueJson = valueList.get(k);
+			Iterator<String> it = valueJson.keySet().iterator();
+			while (it.hasNext()) {
+				String Jsonkey = it.next();
+				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
+				Iterator<String> vt = jsonValve.keySet().iterator();
+				while (vt.hasNext()) {
+					String itemKey = vt.next();
+					Double valve = jsonValve.getDouble(itemKey);
+					if(item.containsKey(itemKey)){
+						valve +=(Double)item.get(itemKey);
+					}
+					item.put(itemKey, valve);
+				}
+			}
+		}
+		
+		return item;
+	}
+
 
 }
