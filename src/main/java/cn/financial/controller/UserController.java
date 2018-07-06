@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +22,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
-import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
 
@@ -55,8 +50,6 @@ public class UserController {
     private UserRoleService userRoleService;
     @Autowired
     private PasswordHelper passwordHelper;
-    @Autowired
-    private OrganizationServiceImpl organizationService;
     @Autowired
     @Qualifier("apiRedisTemplate")
     private RedisTemplate redis;
@@ -403,7 +396,7 @@ public class UserController {
     }
     
     /**
-     * 查询所有(用户组织结构关联表)
+     * 根据用户id查询组织结构关联信息(用户组织结构关联表)
      * @param request
      * @param response
      */
