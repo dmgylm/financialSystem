@@ -52,7 +52,7 @@ public class ResourceController {
     	try {
             List<Resource> resource = resourceService.listResource();
             List<TreeNode<Resource>> nodes = new ArrayList<>();
-            JSONObject jsonObject = null;
+            JSONObject jsonObject = new JSONObject();
             if(!CollectionUtils.isEmpty(resource)){
                 for (Resource rss : resource) {
                     TreeNode<Resource> node = new TreeNode<>();

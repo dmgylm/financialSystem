@@ -214,7 +214,7 @@ public class RoleController {
             }
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
             List<TreeNode<RoleResource>> nodes = new ArrayList<>();
-            JSONObject jsonObject = null;
+            JSONObject jsonObject = new JSONObject();
             if(!CollectionUtils.isEmpty(roleResource)){
                 for (RoleResource rss : roleResource) {
                     TreeNode<RoleResource> node = new TreeNode<>();
