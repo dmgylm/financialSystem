@@ -15,10 +15,9 @@ public class FinancialSocketConfig extends WebMvcConfigurerAdapter implements We
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		
-		registry.addHandler(financialWebSocketHandler(),"/webSocketServer").
-	    addInterceptors(new FinancialSocketHandshakeInterceptor());
 		registry.addHandler(financialWebSocketHandler(),"/MessageSocketServerInfo").
 		addInterceptors(new FinancialSocketHandshakeInterceptor());
+		
 	}
 	
 	@Bean
