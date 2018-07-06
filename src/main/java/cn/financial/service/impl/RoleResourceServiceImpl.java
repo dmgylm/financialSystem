@@ -87,6 +87,7 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                         node.setParentId(b);//父id
                         node.setName(rss.getName());//功能权限名称
                         node.setPid(rss.getsId());//当前权限id
+                        node.setOrgType(rss.getPermssion());//权限信息
                         // node.setNodeData(rss);
                         nodes.add(node);
                         map.put(node.getPid(), node);
