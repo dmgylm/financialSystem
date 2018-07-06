@@ -5,14 +5,11 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
-import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.UserOrganization;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
@@ -39,8 +34,6 @@ import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
-
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
  * 损益表Controller
@@ -80,7 +73,7 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> listBusinessDataBy(HttpServletRequest request,Integer page,Integer pageSize) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -180,7 +173,7 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listById", method = RequestMethod.GET)
+        @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> selectBusinessDataById(HttpServletRequest request, String id,int htmlType) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -296,7 +289,7 @@ public class BusinessDataController {
          * @throws Exception 
          */
         @RequiresPermissions("businessData:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
@@ -318,12 +311,8 @@ public class BusinessDataController {
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject pidJosn=userOrganization.get(i);
-                    String pid =pidJosn.getString("pid"); //得到组织id
-                    Map<Object, Object> listOrganizationByMap = new HashMap<>();
-                    listOrganizationByMap.put("id", pid);
-                    //查询组织id对应的orgType
-                    List<Organization>  listOrganizationBy= organizationService.listOrganizationBy(listOrganizationByMap); 
-                    if(listOrganizationBy.get(0).getOrgType()==3){ //公司以下的节点的数据
+                    String orgType=pidJosn.getString("orgType");
+                    if(orgType.equals("3")){ //公司以下的节点的数据
                         listOrganization.add(userOrganization.get(i));
                     }
                 } 
