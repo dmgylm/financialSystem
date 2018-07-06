@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -336,7 +335,7 @@ public class MessageController {
      * @return
      */
     @RequiresPermissions("message:view")
-    @RequestMapping(value = "/getbyid", method = RequestMethod.POST)
+    @RequestMapping(value = "/getById", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -362,7 +361,7 @@ public class MessageController {
      * @return
      */
     @RequiresPermissions("message:sign")
-    @RequestMapping(value = "/updatebyid", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
@@ -399,7 +398,7 @@ public class MessageController {
      * @return
      */
     @RequiresPermissions("message:sign")
-    @RequestMapping(value = "/deletebyid", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
     @ResponseBody
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -430,8 +429,6 @@ public class MessageController {
     @ResponseBody
     public Map<Object, Object> saveMessageByUser(HttpServletRequest request,HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        Map<Object, Object> map = new HashMap<>();
-        List<Message> list = new ArrayList<>();
         try {
 				Message message = new Message();
 				message.setId(UuidUtil.getUUID());
@@ -449,19 +446,34 @@ public class MessageController {
             	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
             
-            list = messageService.listMessageBy(map);
-            int unreadmessage = 0;
-            for(int i=0;i<list.size();i++) {
-                if(list.get(i).getStatus()==0) {
-                	unreadmessage+=1;
-                }
-            }
-            String unread = String.valueOf(unreadmessage);
+            String unread = String.valueOf(listUnreadMessage(request, response));
             sendSocketInfo(unread);
+            
         } catch (Exception e) {
         	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
         return dataMap;
+    }
+    
+    /**
+     * 查询未读消息
+     * @return
+     */
+    @ResponseBody
+    @RequiresPermissions("message:view")
+    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
+    	
+    	User user = (User) request.getAttribute("user");
+        List<Message> list = messageService.quartMessageByPower(user);
+    	
+        int unreadmessage = 0;
+        for(int i=0;i<list.size();i++) {
+            if(list.get(i).getStatus()==0) {
+               unreadmessage++;
+            }
+        }
+        
+        return unreadmessage;
     }
 }
