@@ -3,6 +3,7 @@ package cn.financial.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import cn.financial.dao.UserRoleDAO;
@@ -27,6 +28,7 @@ public class UserRoleServiceImpl implements UserRoleService{
      * @return
      */
     @Override
+    @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer insertUserRole(UserRole user) {
         return userRoleDao.insertUserRole(user);
     }
@@ -35,6 +37,7 @@ public class UserRoleServiceImpl implements UserRoleService{
      * @return
      */
     @Override
+    @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer deleteUserRole(String uId) {
         return userRoleDao.deleteUserRole(uId);
     }
@@ -43,6 +46,7 @@ public class UserRoleServiceImpl implements UserRoleService{
      * @return
      */
     @Override
+    @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer updateUserRole(UserRole user) {
         return userRoleDao.updateUserRole(user);
     }
