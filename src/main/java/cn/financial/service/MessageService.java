@@ -76,5 +76,5 @@ public interface MessageService {
      * @param user
      * @return
      */
-    JSONObject quartMessageByPower(User user, int page, int pageNums);
+    List<Message> quartMessageByPower(User user);
 }
