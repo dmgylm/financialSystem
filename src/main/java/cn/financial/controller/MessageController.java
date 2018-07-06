@@ -1,7 +1,10 @@
 package cn.financial.controller;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +12,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -43,7 +45,7 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
-    
+
     @Bean
 	public FinancialSocketHandler financialWebSocketHandler() {
 		
@@ -82,12 +84,44 @@ public class MessageController {
                 page = Integer.parseInt(request.getParameter("page").trim().toString());
             }
             if (null != request.getParameter("pageSize") && !"".equals(request.getParameter("pageSize"))) {
-            	pageSize = Integer.parseInt(request.getParameter("pageSize").trim().toString());
+                pageSize = Integer.parseInt(request.getParameter("pageSize").trim().toString());
             }
-            JSONObject resultList = messageService.quartMessageByPower(user, page, pageSize);
-            if (resultList != null && !resultList.isEmpty()) {
+            List<Message> lm= messageService.quartMessageByPower(user);//获取消息集合
+            // 按照创建日期降序排序
+            Collections.sort(lm, new Comparator<Message>() {
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                @Override
+                public int compare(Message o1, Message o2) {
+                    long time1;
+                    try {
+                        time1 = df.parse(o1.getCreateTime().toString()).getTime();
+                        long time2 = df.parse(o2.getCreateTime().toString()).getTime();
+                        if (time1 < time2) {
+                            return 1;
+                        } else if (time1 == time2) {
+                            return 0;
+                        } else {
+                            return -1;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return 0;
+                }
+            });
+            // 分页
+            List<Message> result = new ArrayList<>();
+            int start = lm.size() >= (page - 1) * pageSize ? (page - 1) * pageSize : -1;
+            int end = lm.size() >= pageSize * page ? pageSize * page : lm.size();
+            if (start != -1) {
+                for (int i = start; i < end; i++) {
+                    result.add(lm.get(i));
+                }
+            }
+            System.out.println(lm);
+            if (lm != null && !lm.isEmpty()) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.putAll(resultList);
+                dataMap.put("data",lm);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
