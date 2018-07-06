@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserDAO;
 import cn.financial.dao.UserRoleDAO;
-import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.UserService;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements  UserService{
     @Autowired
     private UserRoleDAO userRoleDao;
     @Autowired
-    private RoleResourceDAO roleResourceDao;
+    private RoleResourceServiceImpl roleResourceService;
     @Autowired
     private PasswordHelper passwordHelper;
     
@@ -88,31 +88,28 @@ public class UserServiceImpl implements  UserService{
         return userDao.deleteUser(userId);
     }
     //角色
+    @Cacheable(value = "find_Roles_Permissions", key = "'findRoles_name_'+#username")
     public Set<String> findRoles(String username) {
         List<UserRole> userRole = userRoleDao.listUserRole(username);
         Set<String> roles = new HashSet<String>();
-        for(int i=0;i<userRole.size();i++){
-            roles.add(userRole.get(i).getRoleName());
-            System.out.println("角色-----------"+userRole.get(i).getRoleName());
+        if(!CollectionUtils.isEmpty(userRole)){
+            for(int j=0;j<userRole.size();j++){
+                roles.add(userRole.get(j).getRoleName());
+                System.out.println("角色-----------"+userRole.get(j).getRoleName());
+            }
         }
         return roles;
     }
     //权限
+    @Cacheable(value = "find_Roles_Permissions", key = "'findPermissions_name_'+#username")
     public Set<String> findPermissions(String username) {
         Set<String> permissions = new HashSet<String>();
         try {
             if(username!=null && !"".equals(username)){
-                List<UserRole> userRole = userRoleDao.listUserRole(username);//根据用户名查询对应角色信息
-                List<RoleResource> roleResource = new ArrayList<RoleResource>();
-                if(userRole.size()>0){
-                    for(UserRole list:userRole){
-                        roleResource.addAll(roleResourceDao.listRoleResource(list.getrId())); //根据角色id查询对应功能权限信息
-                    }  
-                }
-                for(int i=0;i<roleResource.size();i++){
-                    if(!StringUtils.isEmpty(roleResource.get(i).getPermssion())){
-                        permissions.add(roleResource.get(i).getPermssion());
-                        System.out.println("权限-----------"+roleResource.get(i).getPermssion());
+                List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
+                if(!CollectionUtils.isEmpty(jsonObject)){
+                    for (JSONObject item : jsonObject) {
+                        this.addOrgTypes(item, permissions);
                     }
                 }
             }
@@ -120,6 +117,24 @@ public class UserServiceImpl implements  UserService{
             e.printStackTrace();
         }
         return permissions;
+    }
+    
+    
+    public static void addOrgTypes(JSONObject json,Set<String> permissions){
+        if(json==null || json.equals("")){
+            return;
+        }
+        if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
+            for (Object item : json.getJSONArray("children")) {
+                JSONObject  itemChildren=(JSONObject)JSONObject.toJSON(item);
+                if(itemChildren.containsKey("orgType") && org.apache.commons.lang.StringUtils.isNotEmpty(itemChildren.getString("orgType"))){
+                    permissions.add(itemChildren.getString("orgType"));
+                    System.out.println("权限-----------"+itemChildren.getString("orgType"));
+                }
+                addOrgTypes(itemChildren,permissions);
+            }
+        }
+         
     }
     
 }
