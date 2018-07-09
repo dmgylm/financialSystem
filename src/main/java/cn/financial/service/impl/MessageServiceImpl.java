@@ -109,6 +109,7 @@ public class MessageServiceImpl implements MessageService {
      * @param user		登陆的用户
      * @param fileUrl	汇总表文件的路径
      */
+    @Override
     public Integer saveMessageByUser(User user, String fileUrl) {
     	
     	MessageController mc = new MessageController();
@@ -138,6 +139,7 @@ public class MessageServiceImpl implements MessageService {
      * 查询未读消息
      * @return
      */
+    @Override
     public Integer listUnreadMessage(User user){
     	
         List<Message> list = quartMessageByPower(user);
