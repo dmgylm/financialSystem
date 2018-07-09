@@ -28,7 +28,6 @@ import cn.financial.model.UserRole;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
-import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
@@ -58,7 +57,7 @@ public class UserController {
      * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
      * 至少6个字符（最多15个字符）、大写与小写字母、至少一个数字，支持特殊符号，但不支持空格
      * */
-    private static final String regEx = "(?!(^[A-Za-z]*$))(?!(^[0-9]*$))(?=(^.*[\\d].*$))(?=(^.*[a-z].*$))(?=(^.*[A-Z].*$))(?!(^.*[\\s].*$))^[0-9A-Za-z\\x21-\\x7e]{6,15}$";
+    private static final String REGEX = "(?!(^[A-Za-z]*$))(?!(^[0-9]*$))(?=(^.*[\\d].*$))(?=(^.*[a-z].*$))(?=(^.*[A-Z].*$))(?!(^.*[\\s].*$))^[0-9A-Za-z\\x21-\\x7e]{6,15}$";
 
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
@@ -88,7 +87,7 @@ public class UserController {
                 newPwd = request.getParameter("newPwd");//新密码
             }
             
-            if(newPwd.matches(regEx)){//密码规则校验
+            if(newPwd.matches(REGEX)){//密码规则校验
                 if(oldPwd.equals(newuser.getPwd())) {//判断旧密码与原密码是否相等
                     if(oldPwd.equals(newPwd)){
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
@@ -157,15 +156,19 @@ public class UserController {
             if (null!=request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
                 map.put("updateTime", request.getParameter("updateTime"));//修改时间
             }
-            Integer pageSize=0;
+            Integer pageSize=10;
             if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
                 pageSize=Integer.parseInt(request.getParameter("pageSize"));
                 map.put("pageSize",pageSize);//条数
+            }else{
+                map.put("pageSize",pageSize);
             }
             Integer start=0;
             if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
                 start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
                 map.put("start",start);//页码
+            }else{
+                map.put("start",start);
             }
             List<User> user = userService.listUser(map);//查询全部map为空
             dataMap.put("userList", user);
@@ -245,7 +248,7 @@ public class UserController {
             user.setSalt(UuidUtil.getUUID());
             user.setName(name);
             user.setRealName(realName);
-            user.setPwd("Welcome1");//用户新增默认密码为Welcome1
+            user.setPwd(User.INITIALCIPHER);//用户新增默认密码为Welcome1
             user.setJobNumber(jobNumber);
             int userList = userService.insertUser(user);
             if(userList>0){
@@ -335,7 +338,7 @@ public class UserController {
             }
             if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
                 pwd = request.getParameter("pwd");//密码
-                if(!pwd.matches(regEx)){//密码规则校验
+                if(!pwd.matches(REGEX)){//密码规则校验
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
                     return dataMap;
                 } 

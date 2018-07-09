@@ -2,7 +2,6 @@ package cn.financial.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,9 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.model.RoleResource;
 import cn.financial.model.User;
-import cn.financial.model.UserRole;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
@@ -85,7 +82,7 @@ public class MainController {
         try {
             subject.login(token);
             //判断密码是否为Welcome1
-            if(passWord.equals("Welcome1")){
+            if(passWord.equals(User.INITIALCIPHER)){
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
                 return dataMap;
             }
@@ -98,7 +95,7 @@ public class MainController {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
-            System.out.println("~~~session"+subject.getSession().getId());
+            System.out.println("~~~session:"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(userName);
             dataMap.put("roleResource", jsonObject);
             dataMap.put("sessionId", subject.getSession().getId());
