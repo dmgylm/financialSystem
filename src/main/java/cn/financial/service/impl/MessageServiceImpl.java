@@ -108,13 +108,14 @@ public class MessageServiceImpl implements MessageService {
      * 
      * @param user		登陆的用户
      * @param fileUrl	汇总表文件的路径
+     * @param urm		未读消息条数
      */
     @Override
     public Integer saveMessageByUser(User user, String fileUrl) {
     	
     	MessageController mc = new MessageController();
         try {
-				Message message = new Message();
+	        	Message message = new Message();
 				message.setId(UuidUtil.getUUID());
 				message.setStatus(0);
 				message.setTheme(1);
@@ -124,34 +125,24 @@ public class MessageServiceImpl implements MessageService {
 				message.setsName("系统");
 				message.setFileurl(fileUrl);//汇总表文件的路径
 				saveMessage(message);
+				
+				List<Message> list = quartMessageByPower(user);
+		    	
+		        int unreadmessage = 0;
+		        for(int i=0;i<list.size();i++) {
+		            if(list.get(i).getStatus()==0) {
+		               unreadmessage++;
+		            }
+		        }
             
-	            String unread = String.valueOf(listUnreadMessage(user));//获取未读消息条数
+	            String unread = String.valueOf(unreadmessage);//获取未读消息条数
 	            mc.sendSocketInfo(unread);
             
         } catch (Exception e) {
-        	e.getMessage();
+        	e.printStackTrace();
         }
         
         return Integer.valueOf(1);
-    }
-    
-    /**
-     * 查询未读消息
-     * @return
-     */
-    @Override
-    public Integer listUnreadMessage(User user){
-    	
-        List<Message> list = quartMessageByPower(user);
-    	
-        int unreadmessage = 0;
-        for(int i=0;i<list.size();i++) {
-            if(list.get(i).getStatus()==0) {
-               unreadmessage++;
-            }
-        }
-        
-        return unreadmessage;
     }
     
 	/**
