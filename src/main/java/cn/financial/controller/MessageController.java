@@ -31,7 +31,6 @@ import cn.financial.model.User;
 import cn.financial.service.MessageService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.UuidUtil;
 import cn.financial.webSocket.FinancialSocketHandler;
 
 /**
@@ -424,56 +423,56 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
-    @RequiresPermissions("message:remind")
-    @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<Object, Object> saveMessageByUser(HttpServletRequest request,HttpServletResponse response) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        try {
-				Message message = new Message();
-				message.setId(UuidUtil.getUUID());
-				message.setStatus(0);
-				message.setTheme(1);
-				message.setContent("汇总损益表已生成");
-				message.setuId(request.getParameter("uid"));//发送指定人的id
-				message.setIsTag(0);
-				message.setsName("系统");
-				message.setFileurl(request.getParameter("fileUrl"));//汇总表文件的路径
-				Integer i1 = messageService.saveMessage(message);
-            if (Integer.valueOf(1).equals(i1)) {
-            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            } else {
-            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            }
-            
-            String unread = String.valueOf(listUnreadMessage(request, response));//获取未读消息条数
-            sendSocketInfo(unread);
-            
-        } catch (Exception e) {
-        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
+//    @RequiresPermissions("message:remind")
+//    @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
+//    @ResponseBody
+//    public Map<Object, Object> saveMessageByUser(HttpServletRequest request,HttpServletResponse response) {
+//        Map<Object, Object> dataMap = new HashMap<Object, Object>();
+//        try {
+//				Message message = new Message();
+//				message.setId(UuidUtil.getUUID());
+//				message.setStatus(0);
+//				message.setTheme(1);
+//				message.setContent("汇总损益表已生成");
+//				message.setuId(request.getParameter("uid"));//发送指定人的id
+//				message.setIsTag(0);
+//				message.setsName("系统");
+//				message.setFileurl(request.getParameter("fileUrl"));//汇总表文件的路径
+//				Integer i1 = messageService.saveMessage(message);
+//            if (Integer.valueOf(1).equals(i1)) {
+//            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+//            } else {
+//            	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+//            }
+//            
+//            String unread = String.valueOf(listUnreadMessage(request, response));//获取未读消息条数
+//            sendSocketInfo(unread);
+//            
+//        } catch (Exception e) {
+//        	dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+//            this.logger.error(e.getMessage(), e);
+//        }
+//        return dataMap;
+//    }
     
     /**
      * 查询未读消息
      * @return
      */
-    @ResponseBody
-    @RequiresPermissions("message:view")
-    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
-    	
-    	User user = (User) request.getAttribute("user");
-        List<Message> list = messageService.quartMessageByPower(user);
-    	
-        int unreadmessage = 0;
-        for(int i=0;i<list.size();i++) {
-            if(list.get(i).getStatus()==0) {
-               unreadmessage++;
-            }
-        }
-        
-        return unreadmessage;
-    }
+//    @ResponseBody
+//    @RequiresPermissions("message:view")
+//    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
+//    	
+//    	User user = (User) request.getAttribute("user");
+//        List<Message> list = messageService.quartMessageByPower(user);
+//    	
+//        int unreadmessage = 0;
+//        for(int i=0;i<list.size();i++) {
+//            if(list.get(i).getStatus()==0) {
+//               unreadmessage++;
+//            }
+//        }
+//        
+//        return unreadmessage;
+//    }
 }
