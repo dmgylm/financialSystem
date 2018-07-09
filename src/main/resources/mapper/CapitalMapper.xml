@@ -52,13 +52,33 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT * FROM 
+         <!-- SELECT * FROM 
          capital 
          WHERE status=1
          <include refid="query_capital_where"></include>
-         ORDER BY tradeTime DESC
+         ORDER BY tradeTime DESC -->
+         SELECT * FROM 
+         capital c,organization o
+         WHERE c.status=1 and o.id=c.oId and c.oId in 
+         <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+               #{oId}
+           </foreach>
+         <include refid="query_capital_where"></include>
+         ORDER BY c.tradeTime DESC
+         LIMIT 0,10
        </select>
        
+       <!-- 根据条件导出资金数据-->
+       <select id="capitalExport" parameterType="map" resultType="Capital">
+         SELECT * FROM 
+         capital c,organization o
+         WHERE c.status=1 and o.id=c.oId and c.oId in 
+         <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+               #{oId}
+           </foreach>
+         <include refid="query_capital_where"></include>
+         ORDER BY c.tradeTime DESC
+       </select>
       
        
        <!--导出根据多个id查询 -->

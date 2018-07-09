@@ -58,8 +58,21 @@
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
                #{typeId}
            </foreach>
+         <include refid="query_businessData_where"></include>  
          ORDER BY b.updateTime DESC
          LIMIT #{start},#{pageSize}
+       </select>
+       
+       <!-- 导出数据查询-->
+       <select id="businessDataExport" parameterType="map" resultType="businessData">
+         SELECT *
+         FROM businessData b,organization o
+         WHERE b.delStatus=1 and o.id=b.oId and b.typeId in 
+            <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
+               #{typeId}
+           </foreach>
+         <include refid="query_businessData_where"></include>  
+         ORDER BY b.updateTime DESC
        </select>
        
       <!-- 根据条件修改损益数据 -->
