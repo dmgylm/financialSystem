@@ -93,14 +93,18 @@ public class BusinessDataController {
                 if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
                     map.put("sId",request.getParameter("sId"));  //月份
                 }
-                Integer pageSize=0;
+                Integer pageSize=10;
                 if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
                     pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                    map.put("pageSize",pageSize);
+                }else{
                     map.put("pageSize",pageSize);
                 }
                 Integer start=0;
                 if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
                     start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                    map.put("start",start);
+                }else{
                     map.put("start",start);
                 }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据

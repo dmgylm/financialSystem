@@ -45,11 +45,21 @@
        
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
-         SELECT *
+         <!-- SELECT *
          FROM businessData
-         WHERE delStatus=1   AND createTime BETWEEN '2018-07-06 00:00:00' AND '2018-07-07 00:00:00'
+         WHERE delStatus=1 
          <include refid="query_businessData_where"></include>
          ORDER BY updateTime DESC
+         LIMIT #{start},#{pageSize}
+         -->
+         SELECT *
+         FROM businessData b,organization o
+         WHERE b.delStatus=1 and o.id=b.oId and b.typeId in 
+            <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
+               #{typeId}
+           </foreach>
+         ORDER BY b.updateTime DESC
+         LIMIT #{start},#{pageSize}
        </select>
        
       <!-- 根据条件修改损益数据 -->
