@@ -94,7 +94,7 @@ public class DataModuleTest {
 	}
 	
 	/**
-	 * 根据业务板块和
+	 * 根据报表类型及业务板块查询最新版本模板
 	 */
 	@Test
 	public void getNewestDataModule(){
