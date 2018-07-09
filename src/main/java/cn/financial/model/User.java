@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class User implements Serializable{
     
     private static final long serialVersionUID = 1L; 
+    
+    public static final String INITIALCIPHER = "Welcome1";//初始密码
 
     private String id; // 用户表id
 
@@ -23,7 +25,7 @@ public class User implements Serializable{
     private String updateTime; // 更新时间
     
     private String expreTime;//密码到期时间
-    
+
     private String salt;  //uuid随机数生成
     
     public User() {
