@@ -47,7 +47,7 @@
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
          SELECT *
          FROM businessData
-         WHERE delStatus=1 
+         WHERE delStatus=1   AND createTime BETWEEN '2018-07-06 00:00:00' AND '2018-07-07 00:00:00'
          <include refid="query_businessData_where"></include>
          ORDER BY updateTime DESC
        </select>
