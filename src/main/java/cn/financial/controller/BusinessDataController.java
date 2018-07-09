@@ -76,7 +76,7 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
