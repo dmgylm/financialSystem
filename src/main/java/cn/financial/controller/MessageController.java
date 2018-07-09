@@ -45,7 +45,7 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
-
+    
     @Bean
 	public FinancialSocketHandler financialWebSocketHandler() {
 		
@@ -75,7 +75,7 @@ public class MessageController {
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         // 默认一页显示的数据
-        int pageSize = 5;
+        int pageSize = 10;
         // 默认显示第一页
         int page = 1;
         try {
@@ -221,22 +221,26 @@ public class MessageController {
    /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
         	map.put("id", request.getParameter("id"));// 消息id
         }*/
-        Integer pageSize=0;
+        Integer pageSize = 10;
         if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
             pageSize=Integer.parseInt(request.getParameter("pageSize"));
             map.put("pageSize",pageSize);
+        }else {
+        	map.put("pageSize", pageSize);
         }
-        Integer page=0;
-        if(request.getParameter("start")!=null && !request.getParameter("start").equals("")){
-        	page=pageSize * (Integer.parseInt(request.getParameter("start")) - 1);
-            map.put("start",page);
+        Integer start = 0;
+        if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+        	start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+            map.put("page",start);
+        }else {
+        	map.put("page", start);
         }
         try {
         		User user = (User) request.getAttribute("user");
         		map.put("uId", user.getId());
         		mapn.put("uId", user.getId());
         		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
-                	if(request.getParameter("status") == "2") {
+                	if(request.getParameter("status").equals("2")) {
                 		map.put("isTag", "1");
                 	}else {
                 		map.put("status", request.getParameter("status"));
@@ -459,20 +463,20 @@ public class MessageController {
      * 查询未读消息
      * @return
      */
-//    @ResponseBody
-//    @RequiresPermissions("message:view")
-//    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
-//    	
-//    	User user = (User) request.getAttribute("user");
-//        List<Message> list = messageService.quartMessageByPower(user);
-//    	
-//        int unreadmessage = 0;
-//        for(int i=0;i<list.size();i++) {
-//            if(list.get(i).getStatus()==0) {
-//               unreadmessage++;
-//            }
-//        }
-//        
-//        return unreadmessage;
-//    }
+    @ResponseBody
+    @RequiresPermissions("message:view")
+    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
+    	
+    	User user = (User) request.getAttribute("user");
+        List<Message> list = messageService.quartMessageByPower(user);
+    	
+        int unreadmessage = 0;
+        for(int i=0;i<list.size();i++) {
+            if(list.get(i).getStatus() == 0) {
+               unreadmessage++;
+            }
+        }
+        
+        return unreadmessage;
+    }
 }
