@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import cn.financial.model.Capital;
 import cn.financial.model.User;
-import cn.financial.service.impl.CapitalServiceImpl;
+import cn.financial.service.CapitalService;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,7 +23,7 @@ import cn.financial.util.UuidUtil;
 public class CapitalTest {
 
     @Autowired
-    private CapitalServiceImpl capitalServiceImpl;
+    private CapitalService capitalService;
     
     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
@@ -59,7 +59,7 @@ public class CapitalTest {
         capital.setMonth(6);
         capital.setRemarks("23455");
         capital.setStatus(1);
-        Integer i = capitalServiceImpl.insertCapital(capital);
+        Integer i = capitalService.insertCapital(capital);
         System.out.println(i);
     }
 
@@ -74,7 +74,7 @@ public class CapitalTest {
         map.put("tradeTimeEnd","2018-06-30 00:00:00");
         map.put("pageSize",10);
         map.put("start",1);
-        List<Capital> list = capitalServiceImpl.listCapitalBy(map);
+        List<Capital> list = capitalService.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
             System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
@@ -89,7 +89,7 @@ public class CapitalTest {
     public void getCapital() throws UnsupportedEncodingException {
         Map<Object, Object> map = new HashMap<>();
         map.put("plate","1");
-        List<Capital> list = capitalServiceImpl.getAllCapital(map);
+        List<Capital> list = capitalService.getAllCapital(map);
         System.out.println("所有的数据长度"+list.size());
         for (int i = 0; i < list.size(); i++) {
             System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
@@ -103,7 +103,7 @@ public class CapitalTest {
     @Test
     public void getCapitalById(){
         String id = "b5d06e8791de436480d819835e32ab46";
-        Capital capital = capitalServiceImpl.selectCapitalById(id);
+        Capital capital = capitalService.selectCapitalById(id);
         System.out.println("开始"+capital.getId()+"--"+capital.getCreateTime()+"--"
                 +capital.getUpdateTime()+"--"
                 +capital.getuId()+"--"+capital.getYear()+"--"
@@ -141,7 +141,7 @@ public class CapitalTest {
         capital.setMonth(6);
         capital.setRemarks("23455");
         capital.setStatus(1);
-        Integer i = capitalServiceImpl.updateCapital(capital);
+        Integer i = capitalService.updateCapital(capital);
             System.out.println("结果"+i);
      }
 
@@ -152,7 +152,7 @@ public class CapitalTest {
      */
     @Test
     public void deleteCapital(){
-        Integer i = capitalServiceImpl.deleteCapital("b5d06e8791de436480d819835e32ab46");
+        Integer i = capitalService.deleteCapital("b5d06e8791de436480d819835e32ab46");
          System.out.println("结果"+i);
     }
 
