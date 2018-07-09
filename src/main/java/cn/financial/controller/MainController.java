@@ -98,8 +98,10 @@ public class MainController {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
+            System.out.println("~~~session"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(userName);
             dataMap.put("roleResource", jsonObject);
+            dataMap.put("sessionId", subject.getSession().getId());
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
