@@ -63,7 +63,6 @@ public class StatisticJsonController {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
         	String caCheUuid = UuidUtil.getUUID();
-        	
      		//获取所选机构
      		List<Organization> codeSonList = statisticService.companyList(JSONArray.parseArray(orgId));
     		//获取最底层数据
@@ -72,13 +71,10 @@ public class StatisticJsonController {
      		Map<String,List<String>> companyList =  statisticService.companyCacheList(codeSonList);
     		//获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
-        	
         	//获取传递到页面的数据集合
         	JSONObject ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);
-    		
         	//存入缓存
     		statisticService.staticInfoMap(companyList,businessDataList,caCheUuid);
-            
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(ja.toString(),HtmlGenerate.HTML_TYPE_PREVIEW);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
