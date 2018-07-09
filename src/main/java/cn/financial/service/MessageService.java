@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.Message;
 import cn.financial.model.User;
 
@@ -70,6 +68,22 @@ public interface MessageService {
      * @return
      */
     List<Message> listAllMessage();
+    
+    /**
+     * 汇总表生成时给指定用户发送消息
+     * 
+     * @param user		登陆的用户
+     * @param fileUrl	汇总表文件的路径
+     * @param uid		发送指定人的id
+     */
+    Integer saveMessageByUser(User user, String fileUrl);
+    
+    /**
+     * 查询未读消息
+     * @param user
+     * @return
+     */
+    Integer listUnreadMessage(User user);
     
     /**
      * 根据用户权限检索对应的消息
