@@ -64,7 +64,7 @@
 		1 = 1
 		<include refid="query_message_where"></include>
 		order by createTime desc
-		<!-- LIMIT #{page},#{pageSize} -->
+		LIMIT #{page},#{pageSize}
 	</select>
 	
 	<!-- 根据条件查询消息 -->
