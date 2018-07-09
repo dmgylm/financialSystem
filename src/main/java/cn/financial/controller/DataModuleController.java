@@ -74,6 +74,7 @@ public class DataModuleController {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
+			bean.setModuleData("");  //清空返回值的json数据
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 			dataMap.put("data", bean);
 		} catch (Exception e) {
@@ -126,6 +127,7 @@ public class DataModuleController {
 			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 		} catch (Exception e) {
+			logger.error("模板修改失败",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		return dataMap;
