@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.controller.MessageController;
 import cn.financial.dao.MessageDAO;
 import cn.financial.dao.UserRoleDAO;
 import cn.financial.model.Message;
@@ -18,6 +19,7 @@ import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.MessageService;
+import cn.financial.util.UuidUtil;
 
 /**
  * 消息Service业务实现类
@@ -99,6 +101,55 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> listAllMessage() {
         List<Message> list = messageDao.listAllMessage();
         return list;
+    }
+    
+    /**
+     * 汇总表生成时给指定用户发送消息
+     * 
+     * @param user		登陆的用户
+     * @param fileUrl	汇总表文件的路径
+     */
+    public Integer saveMessageByUser(User user, String fileUrl) {
+    	
+    	MessageController mc = new MessageController();
+        try {
+				Message message = new Message();
+				message.setId(UuidUtil.getUUID());
+				message.setStatus(0);
+				message.setTheme(1);
+				message.setContent("汇总损益表已生成");
+				message.setuId(user.getId());//发送指定人的id
+				message.setIsTag(0);
+				message.setsName("系统");
+				message.setFileurl(fileUrl);//汇总表文件的路径
+				saveMessage(message);
+            
+	            String unread = String.valueOf(listUnreadMessage(user));//获取未读消息条数
+	            mc.sendSocketInfo(unread);
+            
+        } catch (Exception e) {
+        	e.getMessage();
+        }
+        
+        return Integer.valueOf(1);
+    }
+    
+    /**
+     * 查询未读消息
+     * @return
+     */
+    public Integer listUnreadMessage(User user){
+    	
+        List<Message> list = quartMessageByPower(user);
+    	
+        int unreadmessage = 0;
+        for(int i=0;i<list.size();i++) {
+            if(list.get(i).getStatus()==0) {
+               unreadmessage++;
+            }
+        }
+        
+        return unreadmessage;
     }
     
 	/**
