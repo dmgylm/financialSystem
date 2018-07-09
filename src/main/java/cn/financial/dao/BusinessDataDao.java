@@ -50,7 +50,14 @@ public interface BusinessDataDao {
      * @param map
      * @return
      */
-    List<BusinessData> listBusinessDataBy(Map<Object, Object> map);       
+    List<BusinessData> listBusinessDataBy(Map<Object, Object> map);     
+    
+    /**
+     * 根据条件导出数据
+     * @param map
+     * @return
+     */
+    List<BusinessData> businessDataExport(Map<Object, Object> map);
     
     /**
      * 根据时间id等条件查询损益表数据

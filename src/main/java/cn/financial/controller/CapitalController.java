@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -73,9 +76,9 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
-        public Map<String, Object> listCapitalBy(HttpServletRequest request,Integer page,Integer pageSize) {
+        public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 Map<Object, Object> map = new HashMap<>();
@@ -111,12 +114,37 @@ public class CapitalController {
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
                     map.put("classify",request.getParameter("classify"));//项目分类
                 }
-                List<Capital> list = capitalService.listCapitalBy(map); //查询全部符合条件的数据
-                JSONArray arr=JSONArray.fromObject(list);  
-                
+                Integer pageSize=10;
+                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                    map.put("pageSize",pageSize);
+                }else{
+                    map.put("pageSize",pageSize);
+                }
+                Integer start=0;
+                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                    map.put("start",start);
+                }else{
+                    map.put("start",start);
+                }
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
-                JSONArray jsonArr=JSONArray.fromObject(userOrganization);
-                
+                if(userOrganization.size()>0){
+                 String[] oId=new String[userOrganization.size()];//获取权限的oId
+                 for (int i = 0; i < userOrganization.size(); i++) {
+                     String id=userOrganization.get(i).getoId(); //找到权限数据里面的oId
+                     oId[i]=id;
+                 }  
+                 List<String> oIds = Arrays.asList(oId);
+                 map.put("oId", oIds);//根据权限的typeId查询相对应的数据
+                 List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据
+                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                 dataMap.put("data", list);
+                }else{
+                    throw new Exception("您没有权限查看资金流水数据！"); 
+                }
+               /* List<Capital> list = capitalService.listCapitalBy(map); //查询全部符合条件的数据
+                JSONArray arr=JSONArray.fromObject(list);  
                 List<Capital> listData=new ArrayList<>();
                 for (int i = 0; i < jsonArr.size(); i++) { //循环全部数据    
                     JSONObject jsonObject=jsonArr.getJSONObject(i);
@@ -129,8 +157,8 @@ public class CapitalController {
                             listData.add(list.get(j));  // 可以显示的资料流水数据
                         }
                     }
-                }
-                if(listData.size()>0){  //判断是否有符合权限的数据  没有则是抛出异常  有就进行数据分页传到前台
+                }*/
+               /* if(listData.size()>0){  //判断是否有符合权限的数据  没有则是抛出异常  有就进行数据分页传到前台
                     Integer p=(page - 1) * pageSize; //开始下标
                     Integer s=page* pageSize;  //结束下标
                     Integer totalPage = listData.size() / pageSize; //总页数
@@ -150,7 +178,9 @@ public class CapitalController {
                     dataMap.put("totalPage", totalPage);
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！");
-                }
+                }*/
+                /*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                dataMap.put("data", subList);*/
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -507,7 +537,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @RequestMapping(value="/export",method = RequestMethod.GET)
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
@@ -547,28 +577,17 @@ public class CapitalController {
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
                     map.put("classify",request.getParameter("classify"));//项目分类
                 }
-                List<Capital> list = capitalService.listCapitalBy(map); //查询全部符合条件的数据
-                JSONArray arr=JSONArray.fromObject(list);  
-                
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
-                JSONArray jsonArr=JSONArray.fromObject(userOrganization);
-                
-                List<Capital> listData=new ArrayList<>();
-                for (int i = 0; i < jsonArr.size(); i++) { //循环全部数据    
-                    JSONObject jsonObject=jsonArr.getJSONObject(i);
-                    String id=jsonObject.getString("oId"); //找到权限数据里面的oId
-                    //找权限里面的公司名称  去全部数据里面去匹配   如果有这个公司存在的话  这条数据是展示的是需要的   如果没这个公司存在就剔除这条数据
-                    for (int j = 0; j < arr.size(); j++) {
-                        JSONObject jsonObj=arr.getJSONObject(j);
-                        String arrId=jsonObj.get("oId").toString();//找全部资金流水表的oId
-                        if(id.equals(arrId)){  //判断权限oId 和全部数据的oId是否相同  
-                            listData.add(list.get(j));  // 可以显示的资料流水数据
-                        }
-                    }
-                }
-                
-                if(listData.size()>0){
-                    List<String[]> strList=new ArrayList<>();
+                if(userOrganization.size()>0){
+                 String[] oId=new String[userOrganization.size()];//获取权限的oId
+                 for (int i = 0; i < userOrganization.size(); i++) {
+                     String id=userOrganization.get(i).getoId(); //找到权限数据里面的oId
+                     oId[i]=id;
+                 }  
+                 List<String> oIds = Arrays.asList(oId);
+                 map.put("oId", oIds);//根据权限的typeId查询相对应的数据
+                 List<Capital> listData = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据
+                  List<String[]> strList=new ArrayList<>();
                     String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                             "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
                     strList.add(ss);

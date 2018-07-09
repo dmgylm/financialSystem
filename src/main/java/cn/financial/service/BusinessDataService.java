@@ -51,6 +51,13 @@ public interface BusinessDataService {
      * @return
      */
     List<BusinessData> listBusinessDataBy(Map<Object, Object> map);
+    
+    /**
+     * 根据条件导出数据
+     * @param map
+     * @return
+     */
+    List<BusinessData> businessDataExport(Map<Object, Object> map);
 
     /**
      * 根据时间id条件查询损益表数据

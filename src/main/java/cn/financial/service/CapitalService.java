@@ -55,6 +55,14 @@ public interface CapitalService {
      */
     List<Capital> listCapitalBy(Map<Object, Object> map);
     
+    
+    /**
+     * 根据条件导出资金表数据
+     * @param map
+     * @return
+     */
+    List<Capital> capitalExport(Map<Object, Object> map);
+    
     /**
      * 导出所有的查询出的数据
      * @param map

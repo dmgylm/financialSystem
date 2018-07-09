@@ -75,12 +75,18 @@ public class CapitalServiceImpl implements CapitalService{
 
     
     /**
-     * 导出所有的查询数据
+     * 查询所有的查询数据
      */
     @Override
     public List<Capital> getAllCapital(Map<Object, Object> map) {
         // TODO Auto-generated method stub
         return capitalDao.getAllCapital(map);
+    }
+
+    @Override
+    public List<Capital> capitalExport(Map<Object, Object> map) {
+        // TODO Auto-generated method stub
+        return capitalDao.capitalExport(map);
     }
     
 }

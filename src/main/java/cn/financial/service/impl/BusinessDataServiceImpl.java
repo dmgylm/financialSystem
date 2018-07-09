@@ -77,4 +77,10 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 		return businessDataDao.listBusinessDataByIdAndDate(map);
 	}
 
+    @Override
+    public List<BusinessData> businessDataExport(Map<Object, Object> map) {
+        // TODO Auto-generated method stub
+        return businessDataDao.businessDataExport(map);
+    }
+
 }
