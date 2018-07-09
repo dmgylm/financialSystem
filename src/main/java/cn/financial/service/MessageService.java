@@ -79,13 +79,6 @@ public interface MessageService {
     Integer saveMessageByUser(User user, String fileUrl);
     
     /**
-     * 查询未读消息
-     * @param user
-     * @return
-     */
-    Integer listUnreadMessage(User user);
-    
-    /**
      * 根据用户权限检索对应的消息
      * @param user
      * @return
