@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache name="es" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
- xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd"  
+ xsi:noNamespaceSchemaLocation="classpath:spring/ehcache.xsd"  
  updateCheck="false">
 	<!--  
         diskStore path:用来配置磁盘缓存使用的物理路径  
