@@ -19,8 +19,13 @@ import cn.financial.model.OrganizationMove;
 import cn.financial.service.OrganizationMoveService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 @Controller
+@Api(tags = "组织架构移动记录接口")
 @RequestMapping("/organizationMove")
 public class OrganizationMoveController {
 	
@@ -37,6 +42,9 @@ public class OrganizationMoveController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listBy", method = RequestMethod.POST)
+	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query", required = true)})
 	public Map<String, Object> listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
 		
 		Map<String, Object> dataMap = new HashMap<String, Object>();
