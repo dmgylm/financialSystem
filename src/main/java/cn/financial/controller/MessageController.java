@@ -76,7 +76,7 @@ public class MessageController {
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @RequiresPermissions("message:view")
-    @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息")
+    @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息",response = Message.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="integer", paramType = "query", required = true),
         @ApiImplicitParam(name="page",value="显示第几页",dataType="integer", paramType = "query", required = true)})
@@ -348,7 +348,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:view")
     @RequestMapping(value = "/getById", method = RequestMethod.POST)
-    @ApiOperation(value="根据id查询消息",notes="根据id查询消息")
+    @ApiOperation(value="根据id查询消息",notes="根据id查询消息",response = Message.class)
     @ApiImplicitParams({@ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getMessageById(HttpServletRequest request,
@@ -376,7 +376,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:sign")
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
-    @ApiOperation(value="修改消息",notes="根据id修改消息")
+    @ApiOperation(value="修改消息",notes="根据id修改消息",response = Message.class)
     @ApiImplicitParams({
     	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="integer", paramType = "query"),
          @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="integer", paramType = "query"),
@@ -418,7 +418,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:sign")
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    @ApiOperation(value="删除消息",notes="根据id删除消息")
+    @ApiOperation(value="删除消息",notes="根据id删除消息",response = Message.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
@@ -481,7 +481,7 @@ public class MessageController {
      */
     @ResponseBody
     @RequestMapping(value = "/listUnread", method = RequestMethod.POST)
-    @ApiOperation(value="查询未读消息",notes="根据登陆用户查询未读消息")
+    @ApiOperation(value="查询未读消息",notes="根据登陆用户查询未读消息",response = Message.class)
     @RequiresPermissions("message:view")
     public Map<Object, Object> listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
     	
