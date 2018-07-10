@@ -42,7 +42,7 @@ public class OrganizationMoveController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listBy", method = RequestMethod.POST)
-	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息")
+	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息",response = OrganizationMove.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query", required = true)})
 	public Map<String, Object> listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
