@@ -377,9 +377,9 @@
 	
 	<!-- swagger2 -->
 	<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox-swagger.version}</version>
+			<groupId>com.drore.cloud</groupId>
+			<artifactId>swagger-bootstrap-ui</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
