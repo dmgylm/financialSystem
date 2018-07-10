@@ -134,6 +134,7 @@
         <property name="maxUploadSize"><value>5242880</value></property>
         <property name="defaultEncoding" value="utf-8"></property>     
     </bean>  
-
+    
+    <import resource="swagger.xml"/>
 </beans>   
 <!-- mvc配置文件 -->
