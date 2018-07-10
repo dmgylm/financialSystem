@@ -13,7 +13,8 @@ public class BusinessData {
     
         private static final long serialVersionUID = 1L; 
     
-        public static final Integer NUM = 3;  //orgType常量
+        public static final Integer DEPNUM = 3;  //orgType常量
+        public static final Integer ORGNUM = 2;  //orgType常量
         
         public static final String NAME = "汇总";  //name常量
 	 
