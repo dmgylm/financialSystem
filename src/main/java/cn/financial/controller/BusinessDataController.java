@@ -183,7 +183,7 @@ public class BusinessDataController {
                         //Integer totalPage = businessList.size() / pageSize; //总页数
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                         dataMap.put("data", businessList);
-                        dataMap.put("total", total);
+                        dataMap.put("total", total.size());
                 }else{
                     throw new Exception("您没有权限操作损益表！");
                 }

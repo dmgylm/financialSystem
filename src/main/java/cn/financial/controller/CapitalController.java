@@ -147,15 +147,14 @@ public class CapitalController {
                      Date endTime=list.get(i).getUpdateTime(); //得到更新时间
                      Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
                      Integer editor=list.get(i).getEditor();
-                     if(num<=7||endTime==null){
+                     if(num<=7 && endTime==null){
                          editor=1;//可编辑数据
                      }
                      list.get(i).setEditor(editor);
                 }
-                 
                  dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                  dataMap.put("data", list);
-                 dataMap.put("total", total);
+                 dataMap.put("total", total.size());
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！"); 
                 }
