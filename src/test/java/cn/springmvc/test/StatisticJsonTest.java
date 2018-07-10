@@ -42,7 +42,7 @@ import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
+@ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml","classpath:spring/swagger.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
 public class StatisticJsonTest {
@@ -98,6 +98,8 @@ public class StatisticJsonTest {
     	orgId.add("0303e625211c47ee86efb8007053186b");
     	orgId.add("04668940dfa947cd8a1d95e32e503fc8");
     	
+    	System.out.println(orgId);
+    	
 		//获取所选机构
 		List<Organization> codeSonList = service.companyList(orgId);
 		//获取最底层数据
@@ -117,7 +119,7 @@ public class StatisticJsonTest {
     public void getCacheTest() {
 		
     	//存入缓存
-    	Map<String, Map<String, String>> ja = service.staticInfoMap(null,null,"bf4f24b367014c839ad3704b3c17f46f");
+    	Map<String, Map<String, String>> ja = service.staticInfoMap(null,null,"9ee9313edc334232b7a64a60f27ce5dd");
 		System.out.println(ja);
     	
     }
@@ -138,11 +140,26 @@ public class StatisticJsonTest {
 		params.put("endDate", "2018/5");
 		params.put("orgId", orgId.toString());
 		
-		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticJson;JSESSIONID=1a5157ce-7db3-489a-9f4a-45c81e720642", params);
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticJson;JSESSIONID=8a6b43f7-1a68-437f-a8a3-f8d548bba9e6", params);
 		System.out.println(responseStr);
     	
     	
     }
     
+    
+    @Test
+    public void StatisticJsonSelectTest() throws Exception {
+    	
+		HttpClient3 httpClient = new HttpClient3();
+		
+		Map<String , String> params = new HashMap<String, String>();
+		params.put("infoKey", "guanlifeiyong_zhufanggongjijinbenyueshiji");
+		params.put("caCheUuid", "9ee9313edc334232b7a64a60f27ce5dd");
+		
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticInfo;JSESSIONID=24951a30-34a4-46c7-84fe-855db87a017b", params);
+		System.out.println(responseStr);
+    	
+    	
+    }
 	
 }
