@@ -356,7 +356,7 @@ public class RoleController {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE));
             }
             
         } catch (Exception e) {

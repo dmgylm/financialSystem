@@ -558,7 +558,7 @@ public class UserController {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION));
             }
             
         } catch (Exception e) {
@@ -694,7 +694,7 @@ public class UserController {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 }
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLE));
             }
             
         } catch (Exception e) {
