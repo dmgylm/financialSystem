@@ -2,7 +2,6 @@ package cn.financial.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,6 +31,10 @@ import cn.financial.service.MessageService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.webSocket.FinancialSocketHandler;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 消息相关操作
@@ -39,6 +42,7 @@ import cn.financial.webSocket.FinancialSocketHandler;
  * @author zlf 2018/03/13
  *
  */
+@Api(tags = "消息中心接口")
 @Controller
 @RequestMapping("/message")
 public class MessageController {
@@ -70,23 +74,34 @@ public class MessageController {
      * @param response
      */
     @ResponseBody
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     @RequiresPermissions("message:view")
+    @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="integer", paramType = "query", required = true),
+        @ApiImplicitParam(name="page",value="显示第几页",dataType="integer", paramType = "query", required = true)})
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        // 默认一页显示的数据
-        int pageSize = 10;
-        // 默认显示第一页
-        int page = 1;
         try {
+        	Map<Object, Object> pagingMap = new HashMap<>();
             User user = (User) request.getAttribute("user");
-            if (null != request.getParameter("page") && !"".equals(request.getParameter("page"))) {
-                page = Integer.parseInt(request.getParameter("page").trim().toString());
-            }
+            // 默认一页显示的数据
+            Integer pageSize = 10;
             if (null != request.getParameter("pageSize") && !"".equals(request.getParameter("pageSize"))) {
                 pageSize = Integer.parseInt(request.getParameter("pageSize").trim().toString());
+                pagingMap.put("pageSize", pageSize);
+            }else {
+            	pagingMap.put("pageSize", pageSize);
             }
-            List<Message> lm= messageService.quartMessageByPower(user);//获取消息集合
+            // 默认显示第一页
+            Integer start = 0;
+            if (null != request.getParameter("page") && !"".equals(request.getParameter("page"))) {
+                start = pageSize * (Integer.parseInt(request.getParameter("page").trim().toString()) - 1);
+                pagingMap.put("start", start);
+            }else {
+            	pagingMap.put("start", start);
+            }
+            List<Message> lm = messageService.quartMessageByPower(user,pagingMap);//获取消息集合
             // 按照创建日期降序排序
             Collections.sort(lm, new Comparator<Message>() {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -110,7 +125,7 @@ public class MessageController {
                 }
             });
             // 分页
-            List<Message> result = new ArrayList<>();
+            /*List<Message> result = new ArrayList<>();
             int start = lm.size() >= (page - 1) * pageSize ? (page - 1) * pageSize : -1;
             int end = lm.size() >= pageSize * page ? pageSize * page : lm.size();
             if (start != -1) {
@@ -118,7 +133,7 @@ public class MessageController {
                     result.add(lm.get(i));
                 }
             }
-            System.out.println(lm);
+            System.out.println(lm);*/
             if (lm != null && !lm.isEmpty()) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("data",lm);
@@ -139,8 +154,6 @@ public class MessageController {
      * @param response
      * @return
      *//*
-    @RequiresPermissions("message:create")
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -188,88 +201,85 @@ public class MessageController {
      * @param response
      * @throws ParseException 
      */
-    @RequiresPermissions("message:view")
-    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        Map<Object, Object> map = new HashMap<Object, Object>();
-        Map<Object, Object> mapn = new HashMap<Object, Object>();
-        List<Message> list = new ArrayList<>();
-        List<Message> listm= new ArrayList<>();
-        //Date createTimeOfDate = null;
-        //Date updateTimeOfDate = null;
-        int unreadmessage=0;
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        
-        if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
-        	map.put("theme",Integer.parseInt(request.getParameter("theme")));// 消息主题
-        }
-        if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
-        	map.put("content", request.getParameter("content"));// 消息内容
-        }
-        if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-        	//createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
-        	//map.put("createTime", dateFormat.parse(request.getParameter("createTime")));// 创建时间
-        	map.put("createTime", request.getParameter("createTime"));
-        }
-        if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-        	map.put("updateTime", request.getParameter("updateTime"));
-        	//updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
-        	//map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
-        }
-   /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-        	map.put("id", request.getParameter("id"));// 消息id
-        }*/
-        Integer pageSize = 10;
-        if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-            pageSize=Integer.parseInt(request.getParameter("pageSize"));
-            map.put("pageSize",pageSize);
-        }else {
-        	map.put("pageSize", pageSize);
-        }
-        Integer start = 0;
-        if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-        	start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-            map.put("page",start);
-        }else {
-        	map.put("page", start);
-        }
-        try {
-        		User user = (User) request.getAttribute("user");
-        		map.put("uId", user.getId());
-        		mapn.put("uId", user.getId());
-        		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
-                	if(request.getParameter("status").equals("2")) {
-                		map.put("isTag", "1");
-                	}else {
-                		map.put("status", request.getParameter("status"));
-                	/*	if(null != request.getParameter("isTag") && !"".equals(request.getParameter("isTag"))) {
-                			map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
-                		}*/
-                	}
-                }
-        		
-                list = messageService.listMessageBy(map);
-                listm= messageService.listMessageBy(mapn);
-                for(int k=0;k<listm.size();k++) {
-                    if(listm.get(k).getStatus()==0) {
-                    	unreadmessage+=1;
-                    }
-                }
-                
-                JSONObject obj = new JSONObject();
-                obj.put("list", list);
-                obj.put("unread", unreadmessage);
-                
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", obj);
-        } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
+//    public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+//        Map<String, Object> dataMap = new HashMap<String, Object>();
+//        Map<Object, Object> map = new HashMap<Object, Object>();
+//        Map<Object, Object> mapn = new HashMap<Object, Object>();
+//        List<Message> list = new ArrayList<>();
+//        List<Message> listm= new ArrayList<>();
+//        //Date createTimeOfDate = null;
+//        //Date updateTimeOfDate = null;
+//        int unreadmessage=0;
+//        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        
+//        if(null != request.getParameter("theme") && !"".equals(request.getParameter("theme"))) {
+//        	map.put("theme",Integer.parseInt(request.getParameter("theme")));// 消息主题
+//        }
+//        if(null != request.getParameter("content") && !"".equals(request.getParameter("content"))) {
+//        	map.put("content", request.getParameter("content"));// 消息内容
+//        }
+//        if(null != request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
+//        	//createTimeOfDate = dateFormat.parse(request.getParameter("createTime"));
+//        	//map.put("createTime", dateFormat.parse(request.getParameter("createTime")));// 创建时间
+//        	map.put("createTime", request.getParameter("createTime"));
+//        }
+//        if(null != request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
+//        	map.put("updateTime", request.getParameter("updateTime"));
+//        	//updateTimeOfDate = dateFormat.parse(request.getParameter("updateTime"));
+//        	//map.put("updateTime", dateFormat.parse(request.getParameter("updateTime")));// 更新时间
+//        }
+//   /*     if(null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
+//        	map.put("id", request.getParameter("id"));// 消息id
+//        }*/
+//        Integer pageSize = 10;
+//        if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+//            pageSize=Integer.parseInt(request.getParameter("pageSize"));
+//            map.put("pageSize",pageSize);
+//        }else {
+//        	map.put("pageSize", pageSize);
+//        }
+//        Integer start = 0;
+//        if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+//        	start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+//            map.put("page",start);
+//        }else {
+//        	map.put("page", start);
+//        }
+//        try {
+//        		User user = (User) request.getAttribute("user");
+//        		map.put("uId", user.getId());
+//        		mapn.put("uId", user.getId());
+//        		if (null != request.getParameter("status") && !"".equals(request.getParameter("status"))) {
+//                	if(request.getParameter("status").equals("2")) {
+//                		map.put("isTag", "1");
+//                	}else {
+//                		map.put("status", request.getParameter("status"));
+//                	/*	if(null != request.getParameter("isTag") && !"".equals(request.getParameter("isTag"))) {
+//                			map.put("isTag", request.getParameter("isTag"));// 是否标注(0未标注；1标注)
+//                		}*/
+//                	}
+//                }
+//        		
+//                list = messageService.listMessageBy(map);
+//                listm= messageService.listMessageBy(mapn);
+//                for(int k=0;k<listm.size();k++) {
+//                    if(listm.get(k).getStatus()==0) {
+//                    	unreadmessage+=1;
+//                    }
+//                }
+//                
+//                JSONObject obj = new JSONObject();
+//                obj.put("list", list);
+//                obj.put("unread", unreadmessage);
+//                
+//                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+//                dataMap.put("data", obj);
+//        } catch (Exception e) {
+//            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+//            this.logger.error(e.getMessage(), e);
+//        }
+//        return dataMap;
+//    }
 
     /**
      * 根据条件查询 消息
@@ -278,8 +288,7 @@ public class MessageController {
      * @param response
      * @return
      */
-    /*@RequiresPermissions("capital:view")
-    @RequestMapping(value = "/listBy", method = RequestMethod.POST)
+    /*
     public Map<String, Object> listMessageBy(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         String statusStr = request.getParameter("status");
@@ -339,6 +348,8 @@ public class MessageController {
      */
     @RequiresPermissions("message:view")
     @RequestMapping(value = "/getById", method = RequestMethod.POST)
+    @ApiOperation(value="根据id查询消息",notes="根据id查询消息")
+    @ApiImplicitParams({@ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -365,6 +376,11 @@ public class MessageController {
      */
     @RequiresPermissions("message:sign")
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
+    @ApiOperation(value="修改消息",notes="根据id修改消息")
+    @ApiImplicitParams({
+    	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="integer", paramType = "query"),
+         @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="integer", paramType = "query"),
+         @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> updateMessageById(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "id", required = true) String id) {
@@ -402,6 +418,9 @@ public class MessageController {
      */
     @RequiresPermissions("message:sign")
     @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
+    @ApiOperation(value="删除消息",notes="根据id删除消息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<Object, Object> deleteMessageById(HttpServletRequest request,
             @RequestParam(value = "id", required = true) String id) {
@@ -427,9 +446,6 @@ public class MessageController {
      *            传入的消息表id（required = true，必须存在）
      * @return
      */
-//    @RequiresPermissions("message:remind")
-//    @RequestMapping(value = "/saveMessageByUser", method = RequestMethod.POST)
-//    @ResponseBody
 //    public Map<Object, Object> saveMessageByUser(HttpServletRequest request,HttpServletResponse response) {
 //        Map<Object, Object> dataMap = new HashMap<Object, Object>();
 //        try {
@@ -464,19 +480,34 @@ public class MessageController {
      * @return
      */
     @ResponseBody
+    @RequestMapping(value = "/listUnread", method = RequestMethod.POST)
+    @ApiOperation(value="查询未读消息",notes="根据登陆用户查询未读消息")
     @RequiresPermissions("message:view")
-    public Integer listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
+    public Map<Object, Object> listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
     	
-    	User user = (User) request.getAttribute("user");
-        List<Message> list = messageService.quartMessageByPower(user);
+    	Map<Object, Object> dataMap = new HashMap<Object,Object>();
     	
-        int unreadmessage = 0;
-        for(int i=0;i<list.size();i++) {
-            if(list.get(i).getStatus() == 0) {
-               unreadmessage++;
+    	try {
+    		User user = (User) request.getAttribute("user");
+    		Map<Object, Object> map = new HashMap<>();
+    		map.put("pageSize", 10000);
+    		map.put("start", 0);
+            List<Message> list = messageService.quartMessageByPower(user,map);
+        	
+            int unreadMessage = 0;
+            for(int i=0;i<list.size();i++) {
+                if(list.get(i).getStatus() == 0) {
+                	unreadMessage++;
+                }
             }
-        }
+            
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            dataMap.put("data", unreadMessage);
+    	}catch (Exception e) {
+    		dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+    		this.logger.error(e.getMessage(), e);
+		}
         
-        return unreadmessage;
+        return dataMap;
     }
 }
