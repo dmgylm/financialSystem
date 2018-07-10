@@ -108,7 +108,6 @@ public class MessageServiceImpl implements MessageService {
      * 
      * @param user		登陆的用户
      * @param fileUrl	汇总表文件的路径
-     * @param urm		未读消息条数
      */
     @Override
     public Integer saveMessageByUser(User user, String fileUrl) {
@@ -126,16 +125,19 @@ public class MessageServiceImpl implements MessageService {
 				message.setFileurl(fileUrl);//汇总表文件的路径
 				saveMessage(message);
 				
-				List<Message> list = quartMessageByPower(user);
+				Map<Object, Object> map = new HashMap<>();
+	    		map.put("pageSize", 10000);
+	    		map.put("start", 0);
+				List<Message> list = quartMessageByPower(user,map);
 		    	
-		        int unreadmessage = 0;
+		        int unreadMessage = 0;
 		        for(int i=0;i<list.size();i++) {
 		            if(list.get(i).getStatus()==0) {
-		               unreadmessage++;
+		            	unreadMessage++;
 		            }
 		        }
             
-	            String unread = String.valueOf(unreadmessage);//获取未读消息条数
+	            String unread = String.valueOf(unreadMessage);//获取未读消息条数
 	            mc.sendSocketInfo(unread);
             
         } catch (Exception e) {
@@ -152,73 +154,82 @@ public class MessageServiceImpl implements MessageService {
 	 * @return
 	 */
 	@Override
-	public List<Message> quartMessageByPower(User user) {
+	public List<Message> quartMessageByPower(User user,Map<Object, Object> pagingMap) {
+		
+		final Integer TWO = 2;
+		final Integer ThREE = 3;
+		Integer pageSize = (Integer) pagingMap.get("pageSize");		//每页查询条数
+		Integer start = (Integer) pagingMap.get("start");			//查询页数
+		
 		List<UserRole> lur = userRoleDao.listUserRole(user.getName());
 		List<Message> lm = new ArrayList<>();
-		List<Organization>lo=new ArrayList<>();
+		List<Organization> lo = new ArrayList<>();
 		
 		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
 			List<JSONObject> uResource = roleResourceServiceImpl.roleResourceList(lur.get(i).getName());
 			for (int n = 0; n < uResource.size(); n++) {
 				JSONArray ja = JSONArray.parseArray(uResource.get(n).getString("children"));
 			
-			for (int j = 0; j < ja.size(); j++) {
-				JSONObject ob = (JSONObject) ja.get(j);
-				if (("0dd6008c6e7f4bce8e1d2ada94341ecf").equals(ob.get("pid"))) {// 是制单员
-					List<JSONObject> userOrganization = userOrganizationServiceImpl.userOrganizationList(user.getId()); // 判断
-																														// 权限的数据
-					for (int k = 0; k < userOrganization.size(); k++) {
-						JSONObject obu = (JSONObject) userOrganization.get(k);
-						int num=Integer.parseInt(obu.get("orgType").toString());
-						System.out.println(num);
-						if (2==num) {// 是公司
-							Organization org=new Organization();
-							org.setId(obu.get("pid").toString());
-							if(!lo.contains(org)) {
-								Map<Object, Object> map = new HashMap<>();
-								map.put("oId", obu.get("pid"));
-								List<Message>lms=messageDao.listMessageBy(map);
-								if(lms!=null) {
-									for (int l = 0; l < lms.size(); l++) {
-										if(!lm.contains(lms.get(l))) {
-										lm.add(lms.get(l));//添加消息
-										}
-									}
-								}
-								lo.add(org);
-							}
-						}else if(3==num) {
-							Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
-							Organization orgt=new Organization();
-							orgt.setId(org.getId());
-							if(!lo.contains(orgt)) {
-								Map<Object, Object> map = new HashMap<>();
-								map.put("oId", org.getId());
-								List<Message>lms=messageDao.listMessageBy(map);
-								if(lms!=null) {
-									for (int l = 0; l < lms.size(); l++) {
-										if(!lm.contains(lms.get(l))) {
+				for (int j = 0; j < ja.size(); j++) {
+					JSONObject ob = (JSONObject) ja.get(j);
+					if (("0dd6008c6e7f4bce8e1d2ada94341ecf").equals(ob.get("pid"))) {// 是制单员
+						List<JSONObject> userOrganization = userOrganizationServiceImpl.userOrganizationList(user.getId()); // 判断
+																															// 权限的数据
+						for (int k = 0; k < userOrganization.size(); k++) {
+							JSONObject obu = (JSONObject) userOrganization.get(k);
+							int num=Integer.parseInt(obu.get("orgType").toString());
+							System.out.println(num);
+							if (TWO == num) {// 是公司
+								Organization org=new Organization();
+								org.setId(obu.get("pid").toString());
+								if(!lo.contains(org)) {
+									Map<Object, Object> map = new HashMap<>();
+									map.put("oId", obu.get("pid"));
+									map.put("uId", user.getId());
+									map.put("pageSize", pageSize);
+									map.put("start", start);
+									List<Message> lms = messageDao.listMessageBy(map);
+									if(lms != null) {
+										for (int l = 0; l < lms.size(); l++) {
+											if(!lm.contains(lms.get(l))) {
 											lm.add(lms.get(l));//添加消息
+											}
 										}
 									}
+									lo.add(org);
 								}
-								lo.add(org);
+							}else if(ThREE == num) {
+								Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
+								Organization orgt=new Organization();
+								orgt.setId(org.getId());
+								if(!lo.contains(orgt)) {
+									Map<Object, Object> map = new HashMap<>();
+									map.put("oId", org.getId());
+									map.put("uId", user.getId());
+									map.put("pageSize", pageSize);
+									map.put("start", start);
+									List<Message> lms = messageDao.listMessageBy(map);
+									if(lms != null) {
+										for (int l = 0; l < lms.size(); l++) {
+											if(!lm.contains(lms.get(l))) {
+											lm.add(lms.get(l));//添加消息
+											}
+										}
+									}
+									lo.add(org);
+								}
 							}
-							
 						}
 					}
 				}
 			}
-			
 		}
-
-		}
-		Map<Object, Object> map = new HashMap<>();
-		map.put("uId", user.getId());
-		List<Message>lmsg=messageDao.listMessageBy(map);
-		for(int i=0;i<lmsg.size();i++) {//查询发送给每个用户的消息
-			lm.add(lmsg.get(i));
-		}
+//		Map<Object, Object> map = new HashMap<>();
+//		map.put("uId", user.getId());
+//		List<Message> lmsg = messageDao.listMessageBy(map);
+//		for(int i=0; i<lmsg.size(); i++) {//查询发送给每个用户的消息
+//			lm.add(lmsg.get(i));
+//		}
 		
 		/* List<Message> resultList = new ArrayList<>();
 	        // 根据用户名查询到该用户所对应的角色
@@ -307,7 +318,7 @@ public class MessageServiceImpl implements MessageService {
 	        resultJsonObject.put("count", resultList.size());
 	        resultJsonObject.put("data", result);
 	       */
-		System.out.println(lm);
+		/*System.out.println(lm);*/
 		return lm;
 	}
 
