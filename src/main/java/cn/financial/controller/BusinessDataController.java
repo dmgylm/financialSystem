@@ -93,20 +93,6 @@ public class BusinessDataController {
                 if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
                     map.put("sId",request.getParameter("sId"));  //月份
                 }
-                Integer pageSize=10;
-                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                    map.put("pageSize",pageSize);
-                }else{
-                    map.put("pageSize",pageSize);
-                }
-                Integer start=0;
-                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                    map.put("start",start);
-                }else{
-                    map.put("start",start);
-                }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
@@ -143,7 +129,22 @@ public class BusinessDataController {
                     }
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
-                    List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下的所有数据
+                    List<BusinessData> total = businessDataService.businessDataExport(map); //查询权限下的所有数据 未经分页
+                    Integer pageSize=10;
+                    if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                        pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                        map.put("pageSize",pageSize);
+                    }else{
+                        map.put("pageSize",pageSize);
+                    }
+                    Integer start=0;
+                    if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                        start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                        map.put("start",start);
+                    }else{
+                        map.put("start",start);
+                    }
+                    List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门
                     List<Business> businessList=new ArrayList<>();//页面列表排列数据
@@ -182,7 +183,7 @@ public class BusinessDataController {
                         //Integer totalPage = businessList.size() / pageSize; //总页数
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                         dataMap.put("data", businessList);
-                       // dataMap.put("totalPage", totalPage);
+                        dataMap.put("total", total);
                 }else{
                     throw new Exception("您没有权限操作损益表！");
                 }

@@ -36,9 +36,9 @@
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
             insert into capital(id,oId,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
-            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status)
+            tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status,editor)
             values (#{id},#{oId},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
-            #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status})
+            #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status},#{editor})
        </insert>
       
        <!--根据id查询资金数据 -->
@@ -121,6 +121,7 @@
             <if test="month!=null and month!=''">month = #{month},</if>
             <if test="remarks!=null and remarks!=''">remarks = #{remarks},</if>
             <if test="status!=null and status!=''"> status = #{status}</if>
+            <if test="editor!=null and editor!=''"> editor = #{editor}</if>
         </trim>
          where id = #{id}
       </update>

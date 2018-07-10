@@ -53,10 +53,10 @@ public class Capital {
          private  String remarks; //备注
          
          @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    	 private String createTime; //创建时间
+    	 private Date createTime; //创建时间
     	 
          @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    	 private String updateTime; //更新时间
+    	 private Date updateTime; //更新时间
     	 
     	 private String  uId;    //提交人id
     	
@@ -64,8 +64,9 @@ public class Capital {
     	 
     	 private Integer month; //月份
     
-    	 private Integer status; //状态
+    	 private Integer status; //状态（0 已经删除不存在了 1存在）
     	 
+    	 private Integer editor; //是否可以编辑（默认为0   0 不可编辑  1可以编辑）
     	 
     	 public Capital() {
              super();
@@ -73,7 +74,7 @@ public class Capital {
          
          public  Capital(String id,String oId,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
                  Date tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
-                 String createTime,String updateTime,String uId,Integer year,Integer month,String remarks,Integer status){
+                 Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status,Integer editor){
              this.id=id;
              this.oId=oId;
              this.plate=plate;
@@ -100,6 +101,7 @@ public class Capital {
              this.month=month;
              this.remarks=remarks;
              this.status=status;
+             this.editor=editor;
          }
     
     	public String getId() {
@@ -109,20 +111,20 @@ public class Capital {
     	public void setId(String id) {
     		this.id = id;
     	}
-    
-    	public String getCreateTime() {
+
+        public Date getCreateTime() {
             return createTime;
         }
 
-        public void setCreateTime(String createTime) {
+        public void setCreateTime(Date createTime) {
             this.createTime = createTime;
         }
 
-        public String getUpdateTime() {
+        public Date getUpdateTime() {
             return updateTime;
         }
 
-        public void setUpdateTime(String updateTime) {
+        public void setUpdateTime(Date updateTime) {
             this.updateTime = updateTime;
         }
 
@@ -312,4 +314,12 @@ public class Capital {
             this.oId = oId;
         }
 
+        public Integer getEditor() {
+            return editor;
+        }
+
+        public void setEditor(Integer editor) {
+            this.editor = editor;
+        }
+        
 }

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import cn.financial.service.UserOrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
+import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -76,7 +78,7 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -114,20 +116,6 @@ public class CapitalController {
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
                     map.put("classify",request.getParameter("classify"));//项目分类
                 }
-                Integer pageSize=10;
-                if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                    pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                    map.put("pageSize",pageSize);
-                }else{
-                    map.put("pageSize",pageSize);
-                }
-                Integer start=0;
-                if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                    start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                    map.put("start",start);
-                }else{
-                    map.put("start",start);
-                }
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
                 if(userOrganization.size()>0){
                  String[] oId=new String[userOrganization.size()];//获取权限的oId
@@ -137,9 +125,37 @@ public class CapitalController {
                  }  
                  List<String> oIds = Arrays.asList(oId);
                  map.put("oId", oIds);//根据权限的typeId查询相对应的数据
-                 List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据
+                 List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
+                 Integer pageSize=10;
+                 if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
+                     pageSize=Integer.parseInt(request.getParameter("pageSize"));
+                     map.put("pageSize",pageSize);
+                 }else{
+                     map.put("pageSize",pageSize);
+                 }
+                 Integer start=0;
+                 if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
+                     start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
+                     map.put("start",start);
+                 }else{
+                     map.put("start",start);
+                 }
+                 List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
+                 Date  newTime=new Date();
+                 for (int i = 0; i < list.size(); i++) {
+                     Date begTime=list.get(i).getCreateTime(); //得到开始时间
+                     Date endTime=list.get(i).getUpdateTime(); //得到更新时间
+                     Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+                     Integer editor=list.get(i).getEditor();
+                     if(num<=7||endTime==null){
+                         editor=1;//可编辑数据
+                     }
+                     list.get(i).setEditor(editor);
+                }
+                 
                  dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                  dataMap.put("data", list);
+                 dataMap.put("total", total);
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！"); 
                 }
@@ -202,9 +218,17 @@ public class CapitalController {
         public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                
                 if(id!=null&&!id.equals("")){
                    Capital  Capital=capitalService.selectCapitalById(id);
+                   Date  newTime=new Date();
+                   Date begTime=Capital.getCreateTime(); //得到开始时间
+                   Date endTime=Capital.getUpdateTime(); //得到更新时间
+                   Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+                   Integer editor=Capital.getEditor();
+                   if(num<=7||endTime==null){
+                       editor=1;//可编辑数据
+                   }
+                   Capital.setEditor(editor);
                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                    dataMap.put("data", Capital);
                 }
@@ -215,98 +239,7 @@ public class CapitalController {
             return dataMap;
         }
         
-        /**
-         * 新增资金数据
-         * @param request
-         * @param response
-         * @return
-         */
-        @RequiresPermissions("capital:create")
-        @RequestMapping(value="/insert", method = RequestMethod.POST)
-        @ResponseBody
-        public Map<String, Object> insertCapital(HttpServletRequest request,HttpServletResponse response){
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-           try {
-               User user = (User) request.getAttribute("user");
-               String uId = user.getId();
-               Capital capital =new Capital();
-               capital.setId(UuidUtil.getUUID());
-               if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
-                   capital.setPlate(new String(request.getParameter("plate").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
-                   capital.setBU(new String(request.getParameter("BU").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
-                   capital.setRegionName(new String(request.getParameter("regionName").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
-                   capital.setProvince(new String(request.getParameter("province").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                   capital.setCity(new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
-                   capital.setCompany(new String(request.getParameter("company").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
-                   capital.setAccountName(new String(request.getParameter("accountName").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
-                   capital.setAccountBank(new String(request.getParameter("accountBank").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
-                   capital.setAccount(new String(request.getParameter("account").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                   capital.setAccountNature(new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
-                   capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
-               }
-               if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
-                   capital.setStartBlack(Integer.getInteger(request.getParameter("startBlack")));
-               }
-               if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
-                   capital.setIncom(Integer.getInteger(request.getParameter("incom")));
-               }
-               if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
-                   capital.setPay(Integer.getInteger(request.getParameter("pay")));
-               }
-               if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
-                   capital.setEndBlack(Integer.getInteger(request.getParameter("endBlack")));
-               }
-               if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
-                   capital.setAbstrac(new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                   capital.setClassify(new String(request.getParameter("classify").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
-                   capital.setRemarks(new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
-               }
-               if(uId!=null && !uId.equals("")){
-                   capital.setuId(uId);
-               }
-               if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                   capital.setYear(Integer.getInteger(request.getParameter("year")));
-               }
-               if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                  capital.setMonth(Integer.getInteger(request.getParameter("month")));
-               }
-               capital.setStatus(1);
-               Integer i = capitalService.insertCapital(capital);
-                if (i == 1) {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                } else {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
-            } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-                this.logger.error(e.getMessage(), e);
-            }
-            return dataMap;
-        }
+     
         
         /**
          * 修改资金数据
@@ -389,6 +322,7 @@ public class CapitalController {
                    capital.setMonth(Integer.getInteger(request.getParameter("month")));
                 }
                 capital.setStatus(1);
+                capital.setEditor(0);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
@@ -504,6 +438,7 @@ public class CapitalController {
                                  capital.setYear(calendar.get(Calendar.YEAR));
                                  capital.setMonth(calendar.get(Calendar.MONTH));
                                  capital.setStatus(1);
+                                 capital.setEditor(0);
                                  a = capitalService.insertCapital(capital); //导入新增的数据
                                  if (a == 1) {
                                      dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
