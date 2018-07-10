@@ -90,18 +90,18 @@ public class CapitalController {
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ApiOperation(value="查询资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response = Capital.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer"),
-                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer"),
-                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String")})
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer", paramType = "query"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer", paramType = "query"),
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String", paramType = "query")})
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -235,14 +235,14 @@ public class CapitalController {
          * @return
          */
         @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
-        @ApiImplicitParam(name="id",value="资金表id", required = true, dataType = "String") 
+        @ApiImplicitParams({@ApiImplicitParam(name="id",value="资金的id",dataType="string", paramType = "query", required = true)})
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
-        public Map<String, Object> selectCapitalById(HttpServletRequest request,@PathVariable String id) {
+        public Map<String, Object> selectCapitalById(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                if(id!=null&&!id.equals("")){
+                if(request.getParameter("id")!=null&&!request.getParameter("id").equals("")){
                    Capital  Capital=capitalService.selectCapitalById(request.getParameter("id"));
                    Date  newTime=new Date();
                    Date begTime=Capital.getCreateTime(); //得到开始时间
@@ -274,27 +274,27 @@ public class CapitalController {
         @RequestMapping(value="/update", method = RequestMethod.POST)
         @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)")
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "id", value = "资金流水表id", required = true, dataType = "String"),
-                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "city", value = "所属城市名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountName", value = "账户名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "account", value = "账户", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "tradeTime", value = "交易日期", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "startBlack", value = "期初余额", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "income", value = "本期收入", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "pay", value = "本期支出", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "endBlack", value = "期末余额", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "abstrac", value = "摘要", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "remarks", value = "备注", required = false, dataType = "String")})
+                @ApiImplicitParam(name = "id", value = "资金流水表id", required = true, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "city", value = "所属城市名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "accountName", value = "账户名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "account", value = "账户", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "tradeTime", value = "交易日期", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "startBlack", value = "期初余额", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "income", value = "本期收入", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "pay", value = "本期支出", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "endBlack", value = "期末余额", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "abstrac", value = "摘要", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "remarks", value = "备注", required = false, dataType = "String",paramType = "query")})
         @ResponseBody
         public Map<String, Object> updateCapital(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -525,16 +525,16 @@ public class CapitalController {
         @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = Capital.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String")})
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String",paramType = "query")})
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;

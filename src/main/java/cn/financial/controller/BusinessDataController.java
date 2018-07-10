@@ -86,11 +86,11 @@ public class BusinessDataController {
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = BusinessData.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer"),
-                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer"),
-                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String"),
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer",paramType = "query"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer",paramType = "query"),
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
         public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
@@ -222,8 +222,8 @@ public class BusinessDataController {
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
         @ApiImplicitParams({
-            @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer")})
+            @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer",paramType = "query")})
         @ResponseBody
         public Map<String, Object> selectBusinessDataById(HttpServletRequest request, @PathVariable String id,@PathVariable int htmlType) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -342,9 +342,9 @@ public class BusinessDataController {
         @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response = BusinessData.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
-                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String"),
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
