@@ -376,6 +376,11 @@
 	</dependency>
 	
 	<!-- swagger2 -->
+	<!-- <dependency>
+	  <groupId>com.github.xiaoymin</groupId>
+	  <artifactId>swagger-bootstrap-ui</artifactId>
+	  <version>${springfox-swagger.version}</version>
+	</dependency> -->
 	<dependency>
 			<groupId>com.drore.cloud</groupId>
 			<artifactId>swagger-bootstrap-ui</artifactId>
