@@ -146,12 +146,12 @@
                 /resources/**=anon<!--设置静态资源文件为游客可访问-->
                 /mongoDB/**=anon<!--设置静态资源文件为游客可访问-->
                 /subLogin=anon
-                /swagger-ui.html=anon
+                /doc.html=anon
                 /swagger-resources=anon
                 /configuration/ui=anon
                 /v2/api-docs=anon
-                /webjars/springfox-swagger-ui/**=anon
-                /** = user,sysUser     
+                /webjars/**=anon
+                /** = user,sysUser      
             </value>
         </property>
     </bean>
