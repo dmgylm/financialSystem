@@ -65,69 +65,7 @@ public class UserController {
     private static final String REGEX = "(?!(^[A-Za-z]*$))(?!(^[0-9]*$))(?=(^.*[\\d].*$))(?=(^.*[a-z].*$))(?=(^.*[A-Z].*$))(?!(^.*[\\s].*$))^[0-9A-Za-z\\x21-\\x7e]{6,15}$";
 
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
-    
-    /**
-     * 修改（当前登录用户）密码
-     * @param request
-     * @param response
-     */
-    @RequiresPermissions("user:update")
-    @RequestMapping(value = "/passWord", method = RequestMethod.POST)
-    @ApiOperation(value="修改密码",notes="修改当前登录用户密码")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name="oldPwd",value="旧密码",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="newPwd",value="新密码",dataType="string", paramType = "query", required = true)})
-    @ResponseBody
-    public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        String oldPwd = null, newPwd = null;
-        
-        User newuser = (User) request.getAttribute("user");//获取当前登录用户密码,salt
-        
-        try{
-            if(null!=request.getParameter("oldPwd") && !"".equals(request.getParameter("oldPwd"))){
-                User userPwd = new User();
-                userPwd.setPwd(request.getParameter("oldPwd"));
-                userPwd.setSalt(newuser.getSalt());
-                passwordHelper.encryptPassword(userPwd);
-                oldPwd = userPwd.getPwd();//旧密码加密(页面传入)
-            }
-            if(null!=request.getParameter("newPwd") && !"".equals(request.getParameter("newPwd"))){
-                newPwd = request.getParameter("newPwd");//新密码
-            }
-            
-            if(newPwd.matches(REGEX)){//密码规则校验
-                if(oldPwd.equals(newuser.getPwd())) {//判断旧密码与原密码是否相等
-                    if(oldPwd.equals(newPwd)){
-                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
-                    }else{
-                        String expreTime = UuidUtil.expreTime();
-                        User user = new User();
-                        user.setId(newuser.getId());
-                        user.setPwd(newPwd);
-                        user.setSalt(UuidUtil.getUUID());
-                        user.setExpreTime(expreTime);//密码到期时间
-                        Integer userList = userService.updateUser(user);
-                        if(userList>0){
-                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                        }else{
-                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                        }
-                    }
-                }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR));
-                }
-            }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
-            }
-            
-        } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-            this.logger.error(e.getMessage(), e);
-        }
-        return dataMap;
-    }
-    
+
     /**
      * 查询所有用户/多条件查询用户列表
      * @param request
@@ -292,55 +230,7 @@ public class UserController {
         }
         return dataMap;
     }
-    /**
-     * 管理员重置密码(解锁用户)
-     * @param request
-     * @param response
-     * @param userId
-     * @param pwd
-     */
-    @RequiresPermissions("permission:reset")
-    @RequestMapping(value = "/reset", method = RequestMethod.POST)
-    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)")
-    @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
-    @ResponseBody
-    public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = null;
-        try {
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
-            User users = userService.getUserById(userId);
-            if(users.getName()!=null && !users.getName().equals("")){
-                Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+users.getName()+"_status");//获取是否锁定
-                if(locking != null){
-                    redis.delete(users.getName());
-                    redis.delete("financialSystem"+"_cache_"+users.getName()+"_status");//清除key
-                }
-            }
-            String resetPwd = UuidUtil.getRandomPassword(6);//生成随机重置密码
-            String expreTime = UuidUtil.expreTime();
-            User user = new User();
-            user.setId(userId);
-            user.setSalt(UuidUtil.getUUID());
-            user.setPwd(resetPwd);
-            user.setExpreTime(expreTime);//密码到期时间
-            Integer userList = userService.updateUser(user);
-            if(userList>0){
-                System.out.println("重置密码："+resetPwd);
-                dataMap.put("resetPwd", resetPwd);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            } 
-        } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-            this.logger.error(e.getMessage(), e);
-        }
-        
-        return dataMap;
-    }
+    
     /**
      * 超级管理员修改用户信息
      * @param request
@@ -436,6 +326,116 @@ public class UserController {
         return dataMap;
     }
     
+    /**
+     * 修改（当前登录用户）密码
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions("user:update")
+    @RequestMapping(value = "/passWord", method = RequestMethod.POST)
+    @ApiOperation(value="修改密码",notes="修改当前登录用户密码")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="oldPwd",value="旧密码",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="newPwd",value="新密码",dataType="string", paramType = "query", required = true)})
+    @ResponseBody
+    public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        String oldPwd = null, newPwd = null;
+        
+        User newuser = (User) request.getAttribute("user");//获取当前登录用户密码,salt
+        
+        try{
+            if(null!=request.getParameter("oldPwd") && !"".equals(request.getParameter("oldPwd"))){
+                User userPwd = new User();
+                userPwd.setPwd(request.getParameter("oldPwd"));
+                userPwd.setSalt(newuser.getSalt());
+                passwordHelper.encryptPassword(userPwd);
+                oldPwd = userPwd.getPwd();//旧密码加密(页面传入)
+            }
+            if(null!=request.getParameter("newPwd") && !"".equals(request.getParameter("newPwd"))){
+                newPwd = request.getParameter("newPwd");//新密码
+            }
+            
+            if(newPwd.matches(REGEX)){//密码规则校验
+                if(oldPwd.equals(newuser.getPwd())) {//判断旧密码与原密码是否相等
+                    if(oldPwd.equals(newPwd)){
+                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
+                    }else{
+                        String expreTime = UuidUtil.expreTime();
+                        User user = new User();
+                        user.setId(newuser.getId());
+                        user.setPwd(newPwd);
+                        user.setSalt(UuidUtil.getUUID());
+                        user.setExpreTime(expreTime);//密码到期时间
+                        Integer userList = userService.updateUser(user);
+                        if(userList>0){
+                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                        }else{
+                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                        }
+                    }
+                }else{
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR));
+                }
+            }else{
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
+            }
+            
+        } catch (Exception e) {
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMap;
+    }
+    /**
+     * 管理员重置密码(解锁用户)
+     * @param request
+     * @param response
+     * @param userId
+     * @param pwd
+     */
+    @RequiresPermissions("permission:reset")
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)")
+    @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ResponseBody
+    public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        String userId = null;
+        try {
+            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
+                userId = request.getParameter("userId");//用户id
+            }
+            User users = userService.getUserById(userId);
+            if(users.getName()!=null && !users.getName().equals("")){
+                Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+users.getName()+"_status");//获取是否锁定
+                if(locking != null){
+                    redis.delete(users.getName());
+                    redis.delete("financialSystem"+"_cache_"+users.getName()+"_status");//清除key
+                }
+            }
+            String resetPwd = UuidUtil.getRandomPassword(6);//生成随机重置密码
+            String expreTime = UuidUtil.expreTime();
+            User user = new User();
+            user.setId(userId);
+            user.setSalt(UuidUtil.getUUID());
+            user.setPwd(resetPwd);
+            user.setExpreTime(expreTime);//密码到期时间
+            Integer userList = userService.updateUser(user);
+            if(userList>0){
+                System.out.println("重置密码："+resetPwd);
+                dataMap.put("resetPwd", resetPwd);
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }else{
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            } 
+        } catch (Exception e) {
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            this.logger.error(e.getMessage(), e);
+        }
+        
+        return dataMap;
+    }
     /**
      * 根据用户id查询组织结构关联信息(用户组织结构关联表)
      * @param request

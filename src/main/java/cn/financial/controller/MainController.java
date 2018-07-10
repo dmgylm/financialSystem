@@ -2,13 +2,13 @@ package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -65,14 +65,13 @@ public class MainController {
     @RequestMapping(value="/login", method = RequestMethod.POST)
     @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息")
     @ApiImplicitParams({
-        @ApiImplicitParam(name="username",value="用户名",dataType="string",  required = true),
-        @ApiImplicitParam(name="password",value="密码",dataType="string",  required = true)})
+        @ApiImplicitParam(name="username",value="用户名",dataType="string", paramType = "query",  required = true),
+        @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",  required = true)})
     @ResponseBody
-    public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+    public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            String username = request.getParameter("username");
-            String userName = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+            String userName = new String(request.getParameter("username").getBytes("ISO-8859-1"), "UTF-8");
             String passWord = request.getParameter("password");
             if(userName == null || userName.equals("")){
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
@@ -90,11 +89,11 @@ public class MainController {
                 return dataMap;
             }
             User user = userService.getUserByName(userName);
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c = Calendar.getInstance();
             String expreTime = sf.format(c.getTime());
-            //Date date = sf.parse(user.getExpreTime());
-            if(expreTime.equals(user.getExpreTime())){//判断密码是否到期
+            Date date = sf.parse(user.getExpreTime());
+            if(sf.format(date).equals(expreTime)){//判断密码是否到期
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
