@@ -158,7 +158,8 @@ public class FormulaUtil {
 				}
 				String subFormula = getFormulaByKey(array,attr);
 				if(subFormula==null) {
-					throw new FormulaAnalysisException(attr+" not is found");
+//					throw new FormulaAnalysisException(attr+" not is found");
+					continue;
 				}
 				if(!subFormula.equals("")) {
 					formula = formula.replaceAll(attr, "("+subFormula+")");

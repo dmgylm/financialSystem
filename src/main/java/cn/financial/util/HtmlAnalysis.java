@@ -43,20 +43,21 @@ public class HtmlAnalysis {
 	private Integer secondRowNum ;//横向标题后缀
 	private Integer firstColNum ;//纵向标题前缀
 	private Integer secondColNum;//纵向标题后缀
+	private String REPLACE_REGX = "[：\\%/]";
 	
 	/**
 	 * 构造方法
 	 * @param file Html文件
 	 * @param firstRowNum 横向标题前缀
 	 * @param secondRowNum 横向标题后缀
-	 * @param firstColNum 纵向标题前缀
-	 * @param secondColNum 纵向标题后缀
+	 * @param modelColNum 纵向标题前缀
+	 * @param itemColNum 纵向标题后缀
 	 */
-	public HtmlAnalysis(File file,Integer firstRowNum,Integer secondRowNum,Integer firstColNum,Integer secondColNum) {
+	public HtmlAnalysis(File file,Integer firstRowNum,Integer secondRowNum,Integer modelColNum,Integer itemColNum) {
 		this.firstRowNum = firstRowNum;
-		this.firstRowNum = secondColNum;
-		this.firstRowNum = firstColNum;
-		this.firstRowNum = secondRowNum;
+		this.secondColNum = itemColNum;
+		this.firstColNum = modelColNum;
+		this.secondRowNum = secondRowNum;
 		try {
 			this.doc = Jsoup.parse(file,"UTF-8");
 		} catch (IOException e) {
@@ -68,11 +69,11 @@ public class HtmlAnalysis {
 	 * 构造方法
 	 * @param html Html代码字符串
 	 */
-	public HtmlAnalysis(String html,Integer firstRowNum,Integer secondRowNum,Integer firstColNum,Integer secondColNum) {
+	public HtmlAnalysis(String html,Integer firstRowNum,Integer secondRowNum,Integer modelColNum,Integer itemColNum) {
 		this.doc = Jsoup.parse(html);
 		this.firstRowNum = firstRowNum;
-		this.secondColNum = secondColNum;
-		this.firstColNum = firstColNum;
+		this.secondColNum = itemColNum;
+		this.firstColNum = modelColNum;
 		this.secondRowNum = secondRowNum;
 	}
 
@@ -261,7 +262,7 @@ public class HtmlAnalysis {
 	 */
 	private String removeSpecialChar(String value) {
 		if(value!=null) {
-			value = value.replaceAll("[：\\%]", "");
+			value = value.replaceAll(REPLACE_REGX,"" );
 		}
 		return value;
 	}

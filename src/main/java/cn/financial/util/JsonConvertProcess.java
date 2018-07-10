@@ -4,12 +4,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class JsonConvertProcess {
 	
+	//预算表中的Label单元格字段
+	private JSONArray bugdetLabelArr = new JSONArray();
+		
 	/**
 	 * 将数据Json和模板Json进行合并
 	 * @param templateJson 模板Json
@@ -80,10 +85,17 @@ public class JsonConvertProcess {
 		JSONObject newObj = new JSONObject();
 		for(Iterator<String> iter = json.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
-			JSONArray arr = json.getJSONArray(key);
-			JSONObject newArr = new JSONObject();
-			newArr = generateSimplifyJson(arr,newArr);
-			newObj.put(key, newArr);
+			Object obj = json.get(key);
+			if (obj instanceof JSONArray) {
+				JSONArray arr = (JSONArray) obj;
+				JSONObject newArr = new JSONObject();
+				newArr = generateSimplifyJson(arr,newArr);
+				newObj.put(key, newArr);
+			} else if(obj instanceof JSONObject) {
+				JSONObject no = simplifyJson((JSONObject) obj);
+				newObj.put(key,no);
+			}
+			
 		}
 		return newObj;
 	}
@@ -124,5 +136,79 @@ public class JsonConvertProcess {
 			}
 		}
 		return nJson;
+	}
+	
+	/**
+	 * 生成每月预算Json数据
+	 * @param jsonObj
+	 * @return
+	 */
+	public JSONObject generateMonthlyBudgetJson(JSONObject jsonObj) {
+		bugdetLabelArr.clear();
+		
+		JSONObject budgetJson = new JSONObject();
+		for(Iterator<String> iter = jsonObj.keySet().iterator();iter.hasNext();) {
+			String key = iter.next();
+			JSONArray arr = jsonObj.getJSONArray(key);
+			JSONObject newArr = new JSONObject();
+			
+			generateModuleBudget(arr,newArr);
+			
+			for(Iterator<String> it = newArr.keySet().iterator();it.hasNext();){
+				String month = it.next();
+				JSONObject monthData = budgetJson.getJSONObject(month);
+				if(monthData == null) {
+					monthData = new JSONObject();
+				}
+				JSONArray modelData = monthData.getJSONArray(key);
+				if(modelData == null) {
+					modelData = new JSONArray();
+				}
+				JSONArray monthArr = newArr.getJSONArray(month);
+				modelData.addAll(monthArr);
+				monthData.put(key, modelData);
+				
+				budgetJson.put(month, monthData);
+			}
+		}
+		budgetJson.put("title", bugdetLabelArr);
+		return budgetJson;
+	}
+	
+	private void generateModuleBudget(JSONArray arr, JSONObject newArr) {
+		
+		for(int i=0;i<arr.size();i++) {
+			Object obj = arr.get(i);
+			if (obj instanceof JSONArray) {
+				generateModuleBudget((JSONArray) obj, newArr);
+			} else if(obj instanceof JSONObject){
+				JSONObject json = (JSONObject)obj;
+				String key = json.getString("key");
+				
+				if(json.getInteger("type")==1) {
+					bugdetLabelArr.add(json);
+				}
+				String month = getMonth4Key(key);
+				String replaceMonth = month.replace("yue", "");
+				JSONArray monthArr = newArr.getJSONArray(replaceMonth);
+				if(monthArr == null) {
+					monthArr = new JSONArray();
+				}
+				monthArr.add(json);
+				newArr.put(replaceMonth, monthArr);
+			}
+		}
+	}
+	
+	private String getMonth4Key(String value) {
+		//从字符串中抽取出月份
+		 String pattern = "(([1-9]{1})|(1[0-2]{1})yue)";
+		 Pattern r = Pattern.compile(pattern);
+		 Matcher matcher = r.matcher(value);
+		 String month = "";
+		 if(matcher.find()) {
+			 month = value.substring(matcher.start());
+		 }
+		return month;
 	}
 }

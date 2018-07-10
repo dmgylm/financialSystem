@@ -261,7 +261,9 @@ public class HtmlGenerate {
 //			input.attr("value",col.getString("name"));
 			input.addClass(CLASS_INPUT);
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
-			input.attr("value","="+formula);
+			if(StringUtils.isValid(formula)) {
+				input.attr("value","="+formula);
+			}
 			input.addClass(CLASS_FORMULA);
 		} else if(inputType==BOX_TYPE_BUDGET){
 			input.addClass(CLASS_BUDGET);
@@ -277,9 +279,14 @@ public class HtmlGenerate {
 			JSONObject array) {
 		for(Iterator<String> iter = array.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
-			JSONArray ja = array.getJSONArray(key);
-			for(int i=0;i<ja.size();i++) {
-				putRowToMap(rowMap,ja.getJSONObject(i));
+			Object obj = array.get(key);
+			if(obj instanceof JSONArray) {
+				JSONArray ja = (JSONArray)obj;
+				for(int i=0;i<ja.size();i++) {
+					putRowToMap(rowMap,ja.getJSONObject(i));
+				}
+			} else if(obj instanceof JSONObject) {
+				assembleData((JSONObject) obj);
 			}
 		}
 		
