@@ -157,7 +157,7 @@ public class MessageServiceImpl implements MessageService {
 	public List<Message> quartMessageByPower(User user,Map<Object, Object> pagingMap) {
 		
 		final Integer TWO = 2;
-		final Integer ThREE = 3;
+		final Integer THREE = 3;
 		Integer pageSize = (Integer) pagingMap.get("pageSize");		//每页查询条数
 		Integer start = (Integer) pagingMap.get("start");			//查询页数
 		
@@ -198,7 +198,7 @@ public class MessageServiceImpl implements MessageService {
 									}
 									lo.add(org);
 								}
-							}else if(ThREE == num) {
+							}else if(THREE == num) {
 								Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
 								Organization orgt=new Organization();
 								orgt.setId(org.getId());
