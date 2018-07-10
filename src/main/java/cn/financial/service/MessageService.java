@@ -74,7 +74,6 @@ public interface MessageService {
      * 
      * @param user		登陆的用户
      * @param fileUrl	汇总表文件的路径
-     * @param uid		发送指定人的id
      */
     Integer saveMessageByUser(User user, String fileUrl);
     
@@ -83,5 +82,5 @@ public interface MessageService {
      * @param user
      * @return
      */
-    List<Message> quartMessageByPower(User user);
+    List<Message> quartMessageByPower(User user,Map<Object, Object> pagingMap);
 }
