@@ -40,6 +40,13 @@ public class UserServiceImpl implements  UserService{
         return userDao.listUser(map);
     }
     /**
+     * 查询全部/多条件查询用户列表  总条数
+     */
+    @Override
+    public java.util.List<User> listUserCount(Map<Object, Object> map) {
+        return userDao.listUserCount(map);
+    }
+    /**
      * 根据name/jobNumber查询
      */
     @Override
