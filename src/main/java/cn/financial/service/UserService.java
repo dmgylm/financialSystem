@@ -13,6 +13,11 @@ public interface UserService {
      */
     List<User> listUser(Map<Object, Object> map);
     /**
+     * 查询所有用户/多条件查询用户列表  总条数 
+     * @return
+     */
+    List<User> listUserCount(Map<Object, Object> map);
+    /**
      * 根据name/jobNumber查询用户
      * @param name
      * @return
