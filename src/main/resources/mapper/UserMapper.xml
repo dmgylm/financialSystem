@@ -20,7 +20,11 @@
         <if test="pageSize!=null and pageSize!=''">
         	LIMIT #{start},#{pageSize}
         </if>
-        
+    </select>
+    <!--查询全部用户/多条件查询用户列表 总条数-->
+    <select id="listUserCount" parameterType="map" resultType="user">
+        SELECT id,name,realName,jobNumber,status,createTime,updateTime,expreTime FROM user WHERE 1 = 1 
+        <include refid="query_user_where"></include>
     </select>
     <!--新增用户-->
     <insert id="insertUser" parameterType="user">
