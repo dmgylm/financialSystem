@@ -76,7 +76,7 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -537,7 +537,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
@@ -586,7 +586,7 @@ public class CapitalController {
                  }  
                  List<String> oIds = Arrays.asList(oId);
                  map.put("oId", oIds);//根据权限的typeId查询相对应的数据
-                 List<Capital> listData = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据
+                 List<Capital> listData = capitalService.capitalExport(map); //根据权限oId查询里面的权限数据
                   List<String[]> strList=new ArrayList<>();
                     String[] ss={"模板","事业部","大区名称","省份","城市","公司名称","户名","开户行","账户","账户性质",
                             "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
