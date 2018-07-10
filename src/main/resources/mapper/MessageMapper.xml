@@ -64,7 +64,9 @@
 		1 = 1
 		<include refid="query_message_where"></include>
 		order by createTime desc
-		LIMIT #{page},#{pageSize}
+		<if test="pageSize!=null and pageSize!=''">
+        	LIMIT #{start},#{pageSize}
+        </if>
 	</select>
 	
 	<!-- 根据条件查询消息 -->
@@ -164,7 +166,7 @@
 			and oId = #{oId,jdbcType=VARCHAR}
 		</if>
 		<if test="uId!=null and uId!=''">
-            and uId = #{uId,jdbcType=VARCHAR}
+            or uId = #{uId,jdbcType=VARCHAR}
         </if>
 		<if test="sName!=null and sName!=''">
 			and sName = #{sName,jdbcType=VARCHAR}
