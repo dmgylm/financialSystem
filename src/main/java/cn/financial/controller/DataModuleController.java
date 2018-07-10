@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,8 @@ import cn.financial.service.DataModuleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -30,7 +33,7 @@ import net.sf.json.JSONObject;
 
 @Api(tags = "数据模板配置")
 @Controller
-@RequestMapping("dataModule")
+@RequestMapping("/dataModule")
 public class DataModuleController {
 	
 	protected Logger logger = LoggerFactory.getLogger(DataModuleController.class);
@@ -44,11 +47,12 @@ public class DataModuleController {
 	 * @return
 	 */
 	@RequiresPermissions(value={"data:view","data:search"},logical=Logical.OR)
-	@PostMapping("dataModuleList")
+	@PostMapping("/dataModuleList")
 	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response = DataModule.class)
-	@ApiResponse(code = 200, message = "成功")
+	@ApiImplicitParams({
+		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query")})
     @ResponseBody
-	public Map<String,Object> listDataModule(@ApiParam(name="moduleName",value="模板名称",required=true) String moduleName){
+	public Map<String,Object> listDataModule(String moduleName){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		
 		try {
@@ -78,8 +82,10 @@ public class DataModuleController {
 	@RequiresPermissions("data:search")
 	@PostMapping("getDataModule")
 	@ApiOperation(value = "根据ID查询模板",notes = "根据ID查询模板",response = DataModule.class)
+	@ApiImplicitParams({
+		  @ApiImplicitParam(name="dataModuleId",value="模板id",dataType="string", paramType = "query")})
     @ResponseBody
-	public Map<String,Object> getDataModule(@ApiParam(name="dataModuleId",value="模板id",required=true) String dataModuleId){
+	public Map<String,Object> getDataModule(String dataModuleId){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
@@ -102,10 +108,11 @@ public class DataModuleController {
 	@RequiresPermissions("data:search")
 	@PostMapping("getNewestDataModule")
 	@ApiOperation(value = "根据报表类型及业务板块查询最新版本模板",notes = "根据报表类型及业务板块查询最新版本模板",response = DataModule.class)
+	@ApiImplicitParams({
+		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="businessType",value="businessType",dataType="string", paramType = "query")})
 	@ResponseBody
-	public Map<String,Object> getNewestDataModule(
-			@ApiParam(name="reportType",value="报表类型",required=true) String reportType,
-			@ApiParam(name="businessType",value="业务板块",required=true) String businessType){
+	public Map<String,Object> getNewestDataModule(String reportType,String businessType){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
@@ -132,15 +139,17 @@ public class DataModuleController {
 	@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
 	@PostMapping("editDataModule")
 	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = DataModule.class)
+	@ApiImplicitParams({
+		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="businessType",value="业务板块",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="html",value="模板html",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="firstRowNum",value="横向标题前缀(模块)",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="secondRowNum",value="横向标题后缀(科目)",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="firstColNum",value="纵向标题前缀",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="secondColNum",value="纵向标题后缀",dataType="Integer", paramType = "query")})
 	@ResponseBody
-	public Map<String, Object> editDataModule(
-			@ApiParam(name="reportType",value="报表类型",required=true) String reportType,
-			@ApiParam(name="businessType",value="业务板块",required=true) String businessType,
-			@ApiParam(name="html",value="模板html",required=true) String html, 
-			@ApiParam(name="firstRowNum",value="横向标题前缀(模块)",required=true) Integer firstRowNum,
-			@ApiParam(name="secondRowNum",value="横向标题后缀(科目)",required=true) Integer secondRowNum, 
-			@ApiParam(name="firstColNum",value="纵向标题前缀",required=true) Integer firstColNum, 
-			@ApiParam(name="secondColNum",value="纵向标题后缀",required=true) Integer secondColNum) {
+	public Map<String, Object> editDataModule(String reportType,String businessType,String html, 
+			Integer firstRowNum,Integer secondRowNum,Integer firstColNum, Integer secondColNum) {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		try {
 			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);

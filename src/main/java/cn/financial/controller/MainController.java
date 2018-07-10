@@ -9,8 +9,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -46,6 +48,41 @@ public class MainController {
     private UserService userService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
+    
+    
+    @RequestMapping(value="/test", method = RequestMethod.GET)
+    public String test(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        String userName = "aa";
+        String passWord = "12345aA";
+        
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken(userName,passWord);   
+        try {
+            subject.login(token);
+            return "redirect:/doc";
+        }catch (UnknownAccountException e) {
+            System.out.println( "该用户不存在");
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
+        }catch (IncorrectCredentialsException e) { 
+            System.out.println( "密码或账户错误，请重新输入");
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
+        } catch (ExcessiveAttemptsException e) {  
+            System.out.println("账户已锁，请联系管理员");
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
+        } catch (AuthenticationException e) {  
+            System.out.println( "其他错误：" + e.getMessage());
+            // 其他错误，比如锁定，如果想单独处理请单独catch处理  
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
+        }
+        return "/test"; 
+    }
+    
+    @RequestMapping(value="/doc", produces = "application/json;charset=utf-8")
+    public String getTest(HttpServletRequest request, HttpServletResponse response) {
+        return "redirect:doc.html";
+    }
+    
     /**
      * 跳转登录页面
      * @param request
