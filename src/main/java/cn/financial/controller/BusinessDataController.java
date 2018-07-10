@@ -168,21 +168,24 @@ public class BusinessDataController {
                     List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门
+                    Map<Object,Object> busMap=new HashMap<Object, Object>();
                     List<Business> businessList=new ArrayList<>();//页面列表排列数据
+                    List<Map>lm=new ArrayList<>();
                     for (int i = 0; i < businessData.size(); i++) {
                         List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getTypeId()); //根据oId查出公司以下的部门
                         Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                             if(listTreeByIdForSon.get(j).getOrgType()==BusinessData.DEPNUM){ //找到公司以下的节点业务
-                                  Business business=new Business();
-                                  business.setYear(businessData.get(i).getYear()); //年份
-                                  business.setMonth(businessData.get(i).getMonth()); //月份
-                                  business.setUserName(user.getName()); //用户
-                                  business.setUpdateTime(businessData.get(i).getUpdateTime()); //操作时间
-                                  business.setStatus(businessData.get(i).getStatus());//状态
-                                  business.setCompany(CompanyName.getOrgName()); //公司
-                                  business.setStructures(listTreeByIdForSon.get(j).getOrgName()); //业务方式
-                                  businessList.add(business); 
+                                  	Business business=new Business();
+                                  	busMap=new HashMap<Object, Object>();
+                                  	busMap.put("year", businessData.get(i).getYear());
+	                              	busMap.put("month", businessData.get(i).getMonth());
+	                              	busMap.put("company", CompanyName.getOrgName());
+	                              	busMap.put("structures", listTreeByIdForSon.get(j).getOrgName());
+	                              	busMap.put("updateTime", businessData.get(i).getUpdateTime());
+	                              	busMap.put("createTime", businessData.get(i).getCreateTime());
+	                              	busMap.put("id", businessData.get(i).getId());
+	                              	lm.add(busMap);
                             }
                         }
                     }   
@@ -203,7 +206,7 @@ public class BusinessDataController {
                         }*/
                         //Integer totalPage = businessList.size() / pageSize; //总页数
                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                        dataMap.put("data", businessList);
+                        dataMap.put("data", lm);
                         dataMap.put("total", total.size());
                 }else{
                     throw new Exception("您没有权限操作损益表！");
