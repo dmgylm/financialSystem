@@ -32,6 +32,10 @@ import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 用户(用户角色关联表)(用户组织结构关联表)
@@ -39,6 +43,7 @@ import cn.financial.util.shiro.PasswordHelper;
  * 2018/3/7
  */
 @Controller
+@Api(value="用户controller",tags={"用户操作接口"})
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -68,6 +73,10 @@ public class UserController {
      */
     @RequiresPermissions("user:update")
     @RequestMapping(value = "/passWord", method = RequestMethod.POST)
+    @ApiOperation(value="修改密码",notes="修改当前登录用户密码")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="oldPwd",value="旧密码",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="newPwd",value="新密码",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -127,6 +136,17 @@ public class UserController {
     //@RequiresRoles("超级管理员")
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="status",value="状态",dataType="Integer", paramType = "query"),
+        @ApiImplicitParam(name="createTime",value="创建时间",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="updateTime",value="更新时间",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="pageSize",value="条数",dataType="integer", paramType = "query", required = true),
+        @ApiImplicitParam(name="page",value="页码",dataType="integer", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -171,7 +191,9 @@ public class UserController {
                 map.put("start",start);
             }
             List<User> user = userService.listUser(map);//查询全部map为空
+            List<User> userList = userService.listUserCount(map);//查询总条数
             dataMap.put("userList", user);
+            dataMap.put("userListTotal", userList.size());
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
@@ -189,6 +211,8 @@ public class UserController {
      */
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
+    @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -219,6 +243,11 @@ public class UserController {
      */
     @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @ApiOperation(value="新增用户信息",notes="新增用户信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -272,6 +301,8 @@ public class UserController {
      */
     @RequiresPermissions("permission:reset")
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)")
+    @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -322,6 +353,11 @@ public class UserController {
      */
     @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ApiOperation(value="修改用户信息",notes="超级管理员修改用户信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query")})
     @ResponseBody
     public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -376,6 +412,8 @@ public class UserController {
      */
     @RequiresPermissions("permission:stop")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ApiOperation(value="删除用户",notes="管理员删除用户(停用)")
+    @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -405,6 +443,8 @@ public class UserController {
      */
     @RequiresPermissions({"organization:view","permission:view"})
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
+    @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)")
+    @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -430,6 +470,10 @@ public class UserController {
      */
     @RequiresPermissions({"organization:create","permission:create"})
     @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
+    @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -476,6 +520,10 @@ public class UserController {
      */
     @RequiresPermissions({"organization:update","permission:update"})
     @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
+    @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> updateUserOrganization(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -527,6 +575,8 @@ public class UserController {
      */
     @RequiresPermissions({"permission:view","role:view"})
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
+    @ApiOperation(value="查询用户角色关联信息",notes="查询所有(用户角色关联表)")
+    @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> listUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -554,6 +604,10 @@ public class UserController {
      */
     @RequiresPermissions({"permission:create","role:create"})
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
+    @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleId",value="角色id,传入json格式", paramType = "query", required = true),
+        @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -602,6 +656,10 @@ public class UserController {
      */
     @RequiresPermissions({"permission:update","role:update"})
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
+    @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleId",value = "角色id,传入json格式", paramType = "query", required = true),
+        @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> updateUserRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();

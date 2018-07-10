@@ -1,9 +1,7 @@
 package cn.financial.controller;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -28,11 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
-import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 登录认证
@@ -40,11 +40,10 @@ import cn.financial.util.ElementXMLUtils;
  *
  */
 @Controller
+@Api(value="登录/登出controller",tags={"登录/登出操作接口"})
 public class MainController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRoleService userRoleService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
     /**
@@ -53,7 +52,7 @@ public class MainController {
      * @param response
      * @return
      */
-    @RequestMapping(value="/subLogin", produces = "application/json;charset=utf-8")
+    @RequestMapping(value="/subLogin", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public String getexcel(HttpServletRequest request, HttpServletResponse response) {
         return "login";
     }
@@ -64,34 +63,38 @@ public class MainController {
      * @return
      */
     @RequestMapping(value="/login", method = RequestMethod.POST)
+    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="username",value="用户名",dataType="string",  required = true),
+        @ApiImplicitParam(name="password",value="密码",dataType="string",  required = true)})
     @ResponseBody
     public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userName = request.getParameter("username");
-        String passWord = request.getParameter("password");
-        if(userName == null || userName.equals("")){
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
-            return dataMap;
-        }
-        if(passWord == null || passWord.equals("")){
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));
-            return dataMap;
-        }
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(userName,passWord);   
         try {
+            String username = request.getParameter("username");
+            String userName = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+            String passWord = request.getParameter("password");
+            if(userName == null || userName.equals("")){
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
+                return dataMap;
+            }
+            if(passWord == null || passWord.equals("")){
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));
+                return dataMap;
+            }
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(userName,passWord);   
             subject.login(token);
-            //判断密码是否为Welcome1
-            if(passWord.equals(User.INITIALCIPHER)){
+            if(passWord.equals(User.INITIALCIPHER)){//判断密码是否为Welcome1
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
                 return dataMap;
             }
             User user = userService.getUserByName(userName);
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Calendar c = Calendar.getInstance();
             String expreTime = sf.format(c.getTime());
-            Date date = sf.parse(user.getExpreTime());
-            if(sf.format(date).equals(expreTime)){//判断密码是否到期
+            //Date date = sf.parse(user.getExpreTime());
+            if(expreTime.equals(user.getExpreTime())){//判断密码是否到期
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMap;
             }
@@ -109,12 +112,9 @@ public class MainController {
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
-        } catch (AuthenticationException e) {  
+        } catch (Exception e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
-        } catch (ParseException e) {
-            System.out.println( "其他错误：" + e.getMessage());
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
         }
         return dataMap; 
@@ -124,6 +124,7 @@ public class MainController {
      * @return
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)  
+    @ApiOperation(value="登出",notes="登出")
     @ResponseBody  
     public Map<String, Object> logout() {  
         Map<String, Object> dataMap = new HashMap<String, Object>();

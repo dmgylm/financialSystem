@@ -30,6 +30,10 @@ import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 角色(角色资源关联表)
@@ -37,6 +41,7 @@ import cn.financial.util.UuidUtil;
  * 2018/3/13
  */
 @Controller
+@Api(value="角色controller",tags={"角色操作接口"})
 @RequestMapping("/role")
 public class RoleController {
     @Autowired
@@ -52,6 +57,7 @@ public class RoleController {
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息")
     @ResponseBody
     public Map<String, Object> listRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -74,6 +80,8 @@ public class RoleController {
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleById", method = RequestMethod.POST)
+    @ApiOperation(value="根据角色id查询角色信息",notes="根据角色id查询角色信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getRoleById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -102,6 +110,8 @@ public class RoleController {
      */
     @RequiresPermissions("role:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @ApiOperation(value="新增角色信息",notes="新增角色信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -141,6 +151,10 @@ public class RoleController {
      */
     @RequiresPermissions("role:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ApiOperation(value="修改角色信息",notes="修改角色信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -175,6 +189,8 @@ public class RoleController {
      */
     /*@RequiresPermissions("role:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ApiOperation(value="删除角色信息",notes="删除角色信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true))
     @ResponseBody
     public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -204,6 +220,8 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:view","role:view"})
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
+    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)")
+    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -238,7 +256,7 @@ public class RoleController {
         return dataMap;
     }
     /**
-     * 新增(角色功能权限关联表)必须勾选父节点父节点相当于查看功能
+     * 新增(角色功能权限关联表)必须勾选父节点,父节点相当于查看权限
      * @param request
      * @param response
      * @param sid
@@ -247,6 +265,10 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:create","role:create"})
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
+    @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -296,6 +318,10 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:update","role:update"})
     @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
+    @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> updateRoleResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();

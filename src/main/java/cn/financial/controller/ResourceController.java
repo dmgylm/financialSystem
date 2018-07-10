@@ -26,13 +26,18 @@ import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 /**
- * 资源权限表
+ * 功能权限表
  * @author gs
  * 2018/3/15
  */
 @Controller
+@Api(value="功能权限controller",tags={"功能权限操作接口"})
 @RequestMapping("/resource")
 public class ResourceController {
     @Autowired
@@ -46,6 +51,7 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @ApiOperation(value="查询全部功能权限信息",notes="查询全部功能权限信息")
     @ResponseBody
     public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -83,6 +89,8 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
+    @ApiOperation(value="根据功能权限id查询功能权限信息",notes="根据功能权限id查询功能权限信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -108,6 +116,12 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @ApiOperation(value="新增功能权限信息",notes="新增功能权限信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="name",value="功能权限名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="parentId",value="父节点",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="url",value="路径",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="permssion",value="权限",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -164,6 +178,11 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ApiOperation(value="修改功能权限信息",notes="修改功能权限信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="name",value="功能权限名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="url",value="路径",dataType="string", paramType = "query")})
     @ResponseBody
     public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -225,6 +244,8 @@ public class ResourceController {
      */
     /*@RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ApiOperation(value="删除功能权限信息",notes="删除功能权限信息")
+    @ApiImplicitParams({@ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
         Map<String, Object> dataMap = new HashMap<String, Object>();
