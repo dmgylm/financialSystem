@@ -112,14 +112,14 @@ public class BusinessDataController {
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject pidJosn=userOrganization.get(i);
                     String orgType=pidJosn.getString("orgType");
-                    if(orgType.equals("3")&&!pidJosn.getString("name").contains("汇总")){ //公司以下的节点的数据
+                    if(orgType.equals(BusinessData.NUM)&&!pidJosn.getString("name").contains(BusinessData.NAME)){ //公司以下的节点的数据
                         listOrganization.add(userOrganization.get(i));
-                    }else if(pidJosn.getString("name").contains("汇总")){ //查出汇总一下的子节点
+                    }else if(pidJosn.getString("name").contains(BusinessData.NAME)){ //查出汇总一下的子节点
                       List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(pidJosn.getString("pid")); //根据id查出子节点集合
                       JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                       for (int j = 0; j < jsonArr.size(); j++) {
                         JSONObject json=jsonArr.getJSONObject(j);
-                        if(!json.getString("orgName").contains("汇总")){
+                        if(!json.getString("orgName").contains(BusinessData.NAME)){
                             listOrganization.add(jsonArr.getJSONObject(j)); 
                         }
                       }
@@ -151,7 +151,7 @@ public class BusinessDataController {
                         List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getTypeId()); //根据oId查出公司以下的部门
                         Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
-                            if(listTreeByIdForSon.get(j).getOrgType()==3){ //找到公司以下的节点业务
+                            if(listTreeByIdForSon.get(j).getOrgType()==BusinessData.NUM){ //找到公司以下的节点业务
                                   Business business=new Business();
                                   business.setYear(businessData.get(i).getYear()); //年份
                                   business.setMonth(businessData.get(i).getMonth()); //月份
@@ -319,7 +319,7 @@ public class BusinessDataController {
          * @throws Exception 
          */
         @RequiresPermissions("businessData:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
@@ -342,14 +342,14 @@ public class BusinessDataController {
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject pidJosn=userOrganization.get(i);
                     String orgType=pidJosn.getString("orgType");
-                    if(orgType.equals("3")&&!pidJosn.getString("name").contains("汇总")){ //公司以下的节点的数据
+                    if(orgType.equals(BusinessData.NUM)&&!pidJosn.getString("name").contains(BusinessData.NAME)){ //公司以下的节点的数据
                         listOrganization.add(userOrganization.get(i));
-                    }else if(pidJosn.getString("name").contains("汇总")){ //查出汇总一下的子节点
+                    }else if(pidJosn.getString("name").contains(BusinessData.NAME)){ //查出汇总一下的子节点
                       List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(pidJosn.getString("pid")); //根据id查出子节点集合
                       JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                       for (int j = 0; j < jsonArr.size(); j++) {
                         JSONObject json=jsonArr.getJSONObject(j);
-                        if(!json.getString("orgName").contains("汇总")){
+                        if(!json.getString("orgName").contains(BusinessData.NAME)){
                             listOrganization.add(jsonArr.getJSONObject(j)); 
                         }
                       }
@@ -373,7 +373,7 @@ public class BusinessDataController {
                     }
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
-                    List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下的所有数据
+                    List<BusinessData> businessData = businessDataService.businessDataExport(map); //查询权限下的所有数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门
                     List<Business> businessList=new ArrayList<>();//页面列表排列数据
@@ -381,7 +381,7 @@ public class BusinessDataController {
                         List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getTypeId()); //根据oId查出公司以下的部门
                         Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
-                            if(listTreeByIdForSon.get(j).getOrgType()==3){ //找到公司以下的节点业务
+                            if(listTreeByIdForSon.get(j).getOrgType()==BusinessData.NUM){ //找到公司以下的节点业务
                                   Business business=new Business();
                                   business.setYear(businessData.get(i).getYear()); //年份
                                   business.setMonth(businessData.get(i).getMonth()); //月份

@@ -10,7 +10,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  *
  */
 public class BusinessData {
-	
+    
+        private static final long serialVersionUID = 1L; 
+    
+        public static final Integer NUM = 3;  //orgType常量
+        
+        public static final String NAME = "汇总";  //name常量
+	 
         private String id;   //损益表id
             	 
         private String oId; //组织id
