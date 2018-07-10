@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +24,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.ElementConfig;
@@ -63,7 +63,7 @@ public class StatisticJsonController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合", required = true) 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式)", required = true) 
     	})
 	@ApiResponse(code = 200, message = "成功")
     @PostMapping(value = "/staticJson")
@@ -110,7 +110,7 @@ public class StatisticJsonController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "infoKey", value = "查询详情key", required = true) 
     	})
 	@ApiResponse(code = 200, message = "成功")
-    @GetMapping(value = "/staticInfo")
+    @PostMapping(value = "/staticInfo")
     public Map<String, Object> staticInfo(String caCheUuid,String infoKey) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
