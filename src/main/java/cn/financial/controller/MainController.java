@@ -75,13 +75,13 @@ public class MainController {
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
         }
-        return "/test"; 
+        return "redirect:doc.html"; 
     }
     
-    @RequestMapping(value="/doc", produces = "application/json;charset=utf-8")
-    public String getTest(HttpServletRequest request, HttpServletResponse response) {
-        return "redirect:doc.html";
-    }
+//    @RequestMapping(value="/doc", produces = "application/json;charset=utf-8")
+//    public String getTest(HttpServletRequest request, HttpServletResponse response) {
+//        return "redirect:doc.html";
+//    }
     
     /**
      * 跳转登录页面
