@@ -16,12 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -35,6 +37,10 @@ import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -43,6 +49,7 @@ import com.alibaba.fastjson.JSONObject;
  * @author lmn
  *
  */
+@Api(tags = "损益/预算数据")
 @Controller
 @RequestMapping("/businessData")
 public class BusinessDataController {
@@ -77,6 +84,14 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = BusinessData.class)
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer"),
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String"),
+                })
         @ResponseBody
         public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -91,7 +106,7 @@ public class BusinessDataController {
                     map.put("month",request.getParameter("month"));  //月份
                 }
                 if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
-                    map.put("sId",request.getParameter("sId"));  //月份
+                    map.put("sId",request.getParameter("sId"));  //判断是损益还是预算表  1损益  2 预算
                 }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
@@ -205,8 +220,12 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
+        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
+        @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer")})
         @ResponseBody
-        public Map<String, Object> selectBusinessDataById(HttpServletRequest request, String id,int htmlType) {
+        public Map<String, Object> selectBusinessDataById(HttpServletRequest request, @PathVariable String id,@PathVariable int htmlType) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 BusinessData  businessData=businessDataService.selectBusinessDataById(id);
@@ -258,12 +277,12 @@ public class BusinessDataController {
             }
             return dataMap;
         }*/
-        
-        /**
+       /* 
+        *//**
          * 修改损益数据
          * @param request
          * @return
-         */
+         *//*
         @RequiresPermissions("businessData:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
         public Map<String, Object> updateBusinessData(HttpServletRequest request,BusinessData businessData) {
@@ -286,12 +305,12 @@ public class BusinessDataController {
             }
             return dataMap;
         }
-        
+        */
         /**
          * 删除损益数据 （修改Status为0）
          * @param request
          * @return
-         */
+         *//*
         @RequiresPermissions("businessData:update")
         @RequestMapping(value="/delete", method = RequestMethod.POST)
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
@@ -312,7 +331,7 @@ public class BusinessDataController {
             }
             return dataMap;
         }
-        
+        */
         
         /***
          * 导出下载
@@ -321,6 +340,12 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
+        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response = BusinessData.class)
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String"),
+                })
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;

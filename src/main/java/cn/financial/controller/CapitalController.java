@@ -19,13 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
@@ -37,6 +38,11 @@ import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -45,6 +51,8 @@ import net.sf.json.JSONObject;
  * @author lmn
  *
  */
+
+@Api(tags = "资金流水数据")
 @Controller
 @RequestMapping("/capital")
 public class CapitalController {
@@ -63,6 +71,7 @@ public class CapitalController {
         
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
+        @ApiOperation(value="跳转到导入页面", notes="")
         @RequestMapping(value="/excel", method = RequestMethod.GET)
         public String getexcel(HttpServletRequest request, HttpServletResponse response) {
             return "cel";
@@ -78,7 +87,21 @@ public class CapitalController {
          * @return
          */
         @RequiresPermissions("capital:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @RequestMapping(value="/listBy", method = RequestMethod.POST)
+        @ApiOperation(value="查询资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response = Capital.class)
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer"),
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String")})
         @ResponseBody
         public Map<String, Object> listCapitalBy(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -211,14 +234,16 @@ public class CapitalController {
          *           
          * @return
          */
+        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
+        @ApiImplicitParam(name="id",value="资金表id", required = true, dataType = "String") 
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
-        public Map<String, Object> selectCapitalById(HttpServletRequest request, String id) {
+        public Map<String, Object> selectCapitalById(HttpServletRequest request,@PathVariable String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 if(id!=null&&!id.equals("")){
-                   Capital  Capital=capitalService.selectCapitalById(id);
+                   Capital  Capital=capitalService.selectCapitalById(request.getParameter("id"));
                    Date  newTime=new Date();
                    Date begTime=Capital.getCreateTime(); //得到开始时间
                    Date endTime=Capital.getUpdateTime(); //得到更新时间
@@ -247,6 +272,29 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
+        @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)")
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "id", value = "资金流水表id", required = true, dataType = "String"),
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "city", value = "所属城市名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountName", value = "账户名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "account", value = "账户", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "tradeTime", value = "交易日期", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "startBlack", value = "期初余额", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "income", value = "本期收入", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "pay", value = "本期支出", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "endBlack", value = "期末余额", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "abstrac", value = "摘要", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "remarks", value = "备注", required = false, dataType = "String")})
         @ResponseBody
         public Map<String, Object> updateCapital(HttpServletRequest request) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -335,13 +383,15 @@ public class CapitalController {
             return dataMap;
         }
         
-        /**
+       /* *//**
          * 删除损益数据 （修改Status为0）
          * @param request
          * @return
-         */
+         *//*
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/delete", method = RequestMethod.POST)
+        @ApiOperation(value="删除损益数据 （修改Status为0）", notes="根据id删除资金数据（修改Status为0）")
+        @ApiImplicitParam(name = "id", value = "资金流水表的id", required = true, dataType = "String")
         @ResponseBody
         public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
             Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -360,7 +410,7 @@ public class CapitalController {
                 this.logger.error(e.getMessage(), e);
             }
             return dataMap;
-        }
+        }*/
         
        
         /***
@@ -369,8 +419,9 @@ public class CapitalController {
         @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
+        @ApiOperation(value="资金流水上传", notes="资金流水表上传数据")
         @ResponseBody
-        public void excelImport(MultipartFile uploadFile,HttpServletRequest request) throws IOException{
+        public void excelImport(@ApiParam(value="上传的文件", required = true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
@@ -472,6 +523,18 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
+        @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = Capital.class)
+        @ApiImplicitParams({
+                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String"),
+                @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String")})
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
             OutputStream os = null;
