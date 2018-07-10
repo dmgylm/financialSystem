@@ -93,4 +93,16 @@ public class ElementConfig {
      * 密码已失效，请联系管理员
      */
     public static final String PASSWORD_INVALID_ERROR = "PASSWORD_INVALID_ERROR";
+    /**
+     * 用户组织架构关联信息不存在
+     */
+    public static final String USER_ORGANIZATION = "USER_ORGANIZATION";
+    /**
+     * 用户角色关联系信息不存在
+     */
+    public static final String USER_ROLE = "USER_ROLE";
+    /**
+     * 角色功能权限关联信息不存在
+     */
+    public static final String USER_RESOURCE = "USER_RESOURCE";
 }
