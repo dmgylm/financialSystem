@@ -307,34 +307,34 @@ public class CapitalController {
                     capital.setId(request.getParameter("id"));
                 }
                 if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
-                    capital.setPlate(new String(request.getParameter("plate").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setPlate(request.getParameter("plate"));
                 }
                 if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
-                    capital.setBU(new String(request.getParameter("BU").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setBU(request.getParameter("BU"));
                 }
                 if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
-                    capital.setRegionName(new String(request.getParameter("regionName").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setRegionName(request.getParameter("regionName"));
                 }
                 if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
-                    capital.setProvince(new String(request.getParameter("province").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setProvince(request.getParameter("province"));
                 }
                 if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                    capital.setCity(new String(request.getParameter("city").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setCity(request.getParameter("city"));
                 }
                 if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
-                    capital.setCompany(new String(request.getParameter("company").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setCompany(request.getParameter("company"));
                 }
                 if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
-                    capital.setAccountName(new String(request.getParameter("accountName").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setAccountName(request.getParameter("accountName"));
                 }
                 if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
-                    capital.setAccountBank(new String(request.getParameter("accountBank").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setAccountBank(request.getParameter("accountBank"));
                 }
                 if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
-                    capital.setAccount(new String(request.getParameter("account").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setAccount(request.getParameter("account"));
                 }
                 if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                    capital.setAccountNature(new String(request.getParameter("accountNature").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setAccountNature(request.getParameter("accountNature"));
                 }
                 if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
                     capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
@@ -352,13 +352,13 @@ public class CapitalController {
                     capital.setEndBlack(Integer.getInteger(request.getParameter("endBlack")));
                 }
                 if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
-                    capital.setAbstrac(new String(request.getParameter("abstrac").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setAbstrac(request.getParameter("abstrac"));
                 }
                 if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                    capital.setClassify(new String(request.getParameter("classify").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setClassify(request.getParameter("classify"));
                 }
                 if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
-                    capital.setRemarks(new String(request.getParameter("remarks").getBytes("ISO-8859-1"), "UTF-8"));
+                    capital.setRemarks(request.getParameter("remarks"));
                 }
                 if(uId!=null && !uId.equals("")){
                     capital.setuId(uId);
@@ -525,7 +525,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = Capital.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
