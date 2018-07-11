@@ -131,10 +131,10 @@ public class OrganizationController {
                 map.put("orgName", orgName.trim().toString());//组织架构名
             }
             if (null !=createTime && !"".equals(createTime)) {
-                map.put("createTime", format.parse(createTime));//创建时间
+                map.put("createTime", createTime);//创建时间
             }
             if (null != updateTime && !"".equals(updateTime)) {
-                map.put("updateTime", format.parse(updateTime));//更新时间
+                map.put("updateTime", updateTime);//更新时间
             }
             if (null !=id && !"".equals(id)) {
                 map.put("id", id); // 组织结构id
