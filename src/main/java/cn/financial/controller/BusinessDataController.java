@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
-import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -83,8 +82,8 @@ public class BusinessDataController {
          * @return
          */
         @RequiresPermissions("businessData:view")
-        @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = BusinessData.class)
+        @RequestMapping(value="/listBy", method = RequestMethod.GET)
+        @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = Business.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer",paramType = "query"),
                 @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer",paramType = "query"),
@@ -117,20 +116,6 @@ public class BusinessDataController {
 						   listOrganization.add(userOrganization.get(i));
 						
 					}
-                   /* JSONObject pidJosn=userOrganization.get(i);
-                    String orgType=pidJosn.getString("orgType");
-                    if(orgType.equals(BusinessData.DEPNUM)&&!pidJosn.getString("name").contains(BusinessData.NAME)){ //公司以下的节点的数据
-                        listOrganization.add(userOrganization.get(i));
-                    }else if(pidJosn.getString("name").contains(BusinessData.NAME)){ //查出汇总一下的子节点
-                      List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(pidJosn.getString("pid")); //根据id查出子节点集合
-                      JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                      for (int j = 0; j < jsonArr.size(); j++) {
-                        JSONObject json=jsonArr.getJSONObject(j);
-                        if(!json.getString("orgName").contains(BusinessData.NAME)){
-                            listOrganization.add(jsonArr.getJSONObject(j)); 
-                        }
-                      }
-                    }*/
                 } 
                 if(listOrganization.size()>0){
                     //List<BusinessData> list = businessDataService.listBusinessDataBy(map); //查询所有符合搜索条件的表数据
@@ -169,45 +154,30 @@ public class BusinessDataController {
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门
                     Map<Object,Object> busMap=new HashMap<Object, Object>();
-                    List<Business> businessList=new ArrayList<>();//页面列表排列数据
+                    //List<Business> businessList=new ArrayList<>();//页面列表排列数据
                     List<Map>lm=new ArrayList<>();
                     for (int i = 0; i < businessData.size(); i++) {
                         List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getTypeId()); //根据oId查出公司以下的部门
                         Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                             if(listTreeByIdForSon.get(j).getOrgType()==BusinessData.DEPNUM){ //找到公司以下的节点业务
-                                  	Business business=new Business();
                                   	busMap=new HashMap<Object, Object>();
                                   	busMap.put("year", businessData.get(i).getYear());
 	                              	busMap.put("month", businessData.get(i).getMonth());
 	                              	busMap.put("company", CompanyName.getOrgName());
 	                              	busMap.put("structures", listTreeByIdForSon.get(j).getOrgName());
-	                              	busMap.put("updateTime", businessData.get(i).getUpdateTime());
-	                              	busMap.put("createTime", businessData.get(i).getCreateTime());
+	                              	busMap.put("updateTime", sdf.format(businessData.get(i).getUpdateTime()));
+	                              	busMap.put("createTime", sdf.format(businessData.get(i).getCreateTime()));
 	                              	busMap.put("id", businessData.get(i).getId());
+	                              	busMap.put("userName", user.getName());
+	                              	busMap.put("status", businessData.get(i).getStatus());
 	                              	lm.add(busMap);
                             }
                         }
                     }   
-                   /* //数据分页
-                        Integer p=(page - 1) * pageSize; //开始下标
-                        Integer s=page* pageSize;  //结束下标
-                        Integer totalPage = businessList.size() / pageSize; //总页数
-                        if (businessList.size() % pageSize != 0){
-                            totalPage++;
-                        }
-                        List<Business> subList =new ArrayList<>();
-                        if(businessList.size()<pageSize){    //判断总得数据长度是否小于每页大小
-                            subList=businessList.subList(0,businessList.size());
-                        }else if(businessList.size()<s){     //判断总得数据长度是否小于结束下标大小
-                            subList=businessList.subList(p,businessList.size());
-                        }else{
-                            subList=businessList.subList(p,s);
-                        }*/
-                        //Integer totalPage = businessList.size() / pageSize; //总页数
-                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                        dataMap.put("data", lm);
-                        dataMap.put("total", total.size());
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    dataMap.put("data", lm);
+                    dataMap.put("total", total.size());
                 }else{
                     throw new Exception("您没有权限操作损益表！");
                 }
@@ -348,7 +318,7 @@ public class BusinessDataController {
          * @throws Exception 
          */
         @RequiresPermissions("businessData:download")
-        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @RequestMapping(value="/export",method = RequestMethod.GET)
         @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response = BusinessData.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
@@ -375,19 +345,11 @@ public class BusinessDataController {
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
-                    JSONObject pidJosn=userOrganization.get(i);
-                    String orgType=pidJosn.getString("orgType");
-                    if(orgType.equals(BusinessData.DEPNUM)&&!pidJosn.getString("name").contains(BusinessData.NAME)){ //公司以下的节点的数据
-                        listOrganization.add(userOrganization.get(i));
-                    }else if(pidJosn.getString("name").contains(BusinessData.NAME)){ //查出汇总一下的子节点
-                      List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(pidJosn.getString("pid")); //根据id查出子节点集合
-                      JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                      for (int j = 0; j < jsonArr.size(); j++) {
-                        JSONObject json=jsonArr.getJSONObject(j);
-                        if(!json.getString("orgName").contains(BusinessData.NAME)){
-                            listOrganization.add(jsonArr.getJSONObject(j)); 
-                        }
-                      }
+                    JSONObject obu = (JSONObject) userOrganization.get(i);
+                    int num=Integer.parseInt(obu.get("orgType").toString());
+                    if(num==BusinessData.DEPNUM) {//部门级别
+                           listOrganization.add(userOrganization.get(i));
+                        
                     }
                 } 
                 if(listOrganization.size()>0){
