@@ -2,6 +2,7 @@ package cn.financial.interceptor;
 
 import java.util.Enumeration;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,12 +25,31 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 	    		String value = request.getParameter(name);
 	    		params.append(name).append("=").append(value).append("&");
 	    	}
-	    	StringBuffer requestParams = url.append(params);
-	    	logger.info("前端请求参数: " + requestParams.toString());
+	    	logger.info("前端请求URL: " + url);
+	    	logger.info("前端GET/POST请求参数: " + params.toString());
+	    	String streamString = getInputStream(request);
+	    	logger.info("前端InputStream请求参数: " + streamString);
+	    	
 	    	
 	    	addCors(response);
 			return true;
 	    }
+	    
+	    private String getInputStream(HttpServletRequest request) {
+			try {
+				ServletInputStream is = request.getInputStream();
+				StringBuilder content = new StringBuilder();
+			    byte[] b = new byte[1024];
+			    int lens = -1;
+			    while ((lens = is.read(b)) > 0) {
+			        content.append(new String(b, 0, lens,"UTF-8"));
+			    }
+			    return content.toString();
+			} catch (Exception e) {
+				logger.error("receive KHT Result ERROR", e);
+				return null;
+			}
+		}
 	    
 		private void addCors(HttpServletResponse response) {
 			response.setHeader("Access-Control-Allow-Origin", "*");
