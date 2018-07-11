@@ -22,10 +22,14 @@ public class TreeNode<T> {
     private String parentId;
 
     /**
-     * 树节点显示文本
+     * 权限信息/orgType
      */
     private String orgType;
-
+    /**
+     * 模板信息
+     */
+    private String orgPlateId;
+    private String orgkeyName;
     /**
      * 树节点名称，内容和text一样 该字段主要是为了兼容Ext和zTree
      */
@@ -54,6 +58,14 @@ public class TreeNode<T> {
 
     public void setPid(String pid) {
         this.pid = pid;
+    }
+    
+    public String getOrgkeyName() {
+        return orgkeyName;
+    }
+
+    public void setOrgkeyName(String orgkeyName) {
+        this.orgkeyName = orgkeyName;
     }
 
     /**
@@ -92,7 +104,7 @@ public class TreeNode<T> {
     public void setName(String name) {
         this.name = name;
     }
-
+    
 //    public Boolean getExpanded() {
 //        return expanded;
 //    }
@@ -100,6 +112,14 @@ public class TreeNode<T> {
 //    public void setExpanded(Boolean expanded) {
 //        this.expanded = expanded;
 //    }
+
+    public String getOrgPlateId() {
+        return orgPlateId;
+    }
+
+    public void setOrgPlateId(String orgPlateId) {
+        this.orgPlateId = orgPlateId;
+    }
 
     public List<TreeNode<T>> getChildren() {
         return children;
