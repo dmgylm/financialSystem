@@ -20,7 +20,7 @@
 			jdbcType="TIMESTAMP"></result>
 		<result property="updateTime" column="updateTime" javaType="string"
 			jdbcType="TIMESTAMP"></result>
-		<result property="uid" column="uId" javaType="string"
+		<result property="uId" column="uId" javaType="string"
 			jdbcType="VARCHAR"></result>
 		<result property="fileurl" column="fileurl" javaType="string"
 			jdbcType="VARCHAR"></result>
@@ -54,19 +54,16 @@
 		createTime desc
 	</select> -->
 
-	<!-- 根据条件查询消息 -->
+	<!-- 根据用户权限展示相应的消息 -->
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
-		select
-		id,status,theme,content,oId,isTag,createTime,updateTime
-		from
-		message
-		where
-		1 = 1
-		<include refid="query_message_where"></include>
-		order by createTime desc
-		<if test="pageSize!=null and pageSize!=''">
-        	LIMIT #{start},#{pageSize}
-        </if>
+        select * from message
+        where uId = #{uId,jdbcType=VARCHAR}
+        or	oId in 
+        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
+        	#{item}
+        </foreach>
+        order by createTime desc
+        LIMIT #{start},#{pageSize}
 	</select>
 	
 	<!-- 根据条件查询消息 -->
