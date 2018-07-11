@@ -58,10 +58,12 @@
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
         select * from message
         where uId = #{uId,jdbcType=VARCHAR}
-        or	oId in 
-        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
-        	#{item}
-        </foreach>
+        <if test="oId!=null and oId!=''">
+        	or	oId in 
+	        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
+	        	#{item}
+	        </foreach>
+        </if>
         order by createTime desc
         LIMIT #{start},#{pageSize}
 	</select>
