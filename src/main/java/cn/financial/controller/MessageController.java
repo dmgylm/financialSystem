@@ -98,6 +98,16 @@ public class MessageController {
             	pagingMap.put("start", start);
             }
             List<Message> lm = messageService.quartMessageByPower(user,pagingMap);//获取消息集合
+            
+            Map<Object, Object> map = new HashMap<>();
+    		map.put("pageSize", Message.PAGESIZE);
+    		map.put("start", 0);
+            List<Message> list = messageService.quartMessageByPower(user,map);
+            Integer allSize = list.size();//用户总的消息条数
+            
+            JSONObject obj = new JSONObject();
+	        obj.put("listMessage", lm);
+	        obj.put("allSize", allSize);
             // 按照创建日期降序排序
             /*Collections.sort(lm, new Comparator<Message>() {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -132,7 +142,7 @@ public class MessageController {
             System.out.println(lm);*/
             if (lm != null && !lm.isEmpty()) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data",lm);
+                dataMap.put("data",obj);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
