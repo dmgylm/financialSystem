@@ -40,6 +40,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationMoveDao moveDao;
+    
+    @Autowired
+    private OrganizationService organizationService;
 
     /**
      * 新增组织结构
@@ -190,13 +193,16 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!CollectionUtils.isEmpty(list)) {
             List<TreeNode<Organization>> nodes = new ArrayList<>();
             for (Organization organization : list) {
+                Organization organizationList = organizationService.getOrgaByKey(organization.getOrgPlateId());
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
                 node.setParentId(organization.getParentId().toString());
                 node.setName(organization.getOrgName());
+                node.setOrgkeyName(organizationList.getOrgName());
                 node.setOrgType(organization.getOrgType().toString());
                 // node.setNodeData(organization);
                 node.setPid(organization.getId());
+                node.setOrgPlateId(organization.getOrgPlateId());
                 nodes.add(node);
             }
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
