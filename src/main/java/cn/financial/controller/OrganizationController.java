@@ -66,7 +66,7 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = false),
     })
     @PostMapping(value = "/save")
     public Map<String, Object> saveOrganization(String orgName,String orgType,
@@ -116,7 +116,7 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "createTime", value = "创建时间", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "updateTime", value = "更新时间", required = false),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织结构id", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织结构id", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "code", value = "该组织机构节点的序号", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
@@ -174,8 +174,8 @@ public class OrganizationController {
     @ApiOperation(value = "根据id修改组织结构信息",notes = "根据id修改组织结构信息")
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = false),
     	})
     @PostMapping(value = "/updateByid")
     public Map<String, Object> updateOrganizationById(String id,String orgName,String orgType, HttpServletRequest request, HttpServletResponse response) {
