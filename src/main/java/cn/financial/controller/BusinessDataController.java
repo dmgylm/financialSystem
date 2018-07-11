@@ -166,7 +166,11 @@ public class BusinessDataController {
 	                              	busMap.put("month", businessData.get(i).getMonth());
 	                              	busMap.put("company", CompanyName.getOrgName());
 	                              	busMap.put("structures", listTreeByIdForSon.get(j).getOrgName());
-	                              	busMap.put("updateTime", sdf.format(businessData.get(i).getUpdateTime()));
+	                              	if(businessData.get(i).getUpdateTime()!=null){
+	                              	  busMap.put("updateTime", sdf.format(businessData.get(i).getUpdateTime()));
+	                              	}else{
+	                              	  busMap.put("updateTime","");
+	                              	}
 	                              	busMap.put("createTime", sdf.format(businessData.get(i).getCreateTime()));
 	                              	busMap.put("id", businessData.get(i).getId());
 	                              	busMap.put("userName", user.getName());
