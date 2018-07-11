@@ -40,6 +40,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
  * 损益表Controller
@@ -107,17 +109,26 @@ public class BusinessDataController {
                 }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
+                List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                 	JSONObject obu = (JSONObject) userOrganization.get(i);
 					int num=Integer.parseInt(obu.get("orgType").toString());
 					if(num==BusinessData.DEPNUM) {//部门级别
 						   listOrganization.add(userOrganization.get(i));
-						
-					}
-                } 
-                if(listOrganization.size()>0){
+					}else{//查询以下级别的部门
+                       List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                       JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                       for (int j = 0; j < jsonArr.size(); j++) {
+                         JSONObject json=jsonArr.getJSONObject(j);
+                         if(Integer.parseInt(json.getString("orgType"))==BusinessData.DEPNUM && !json.getString("orgName").contains(BusinessData.NAME)){//部门级别
+                             listTree.add(jsonArr.getJSONObject(j)); 
+                         }
+                       }
+                     }
+                   }
+                if(listOrganization.size()>0 ||listTree.size()>0){
                     //List<BusinessData> list = businessDataService.listBusinessDataBy(map); //查询所有符合搜索条件的表数据
-                    String[] typeId=new String[listOrganization.size()];//获取权限的typeId
+                    String[] typeId=new String[listOrganization.size()+listTree.size()];//获取权限的typeId
                     //List<BusinessData> businessData=new ArrayList<>();  //所有符合权限的数据
                     for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
                         JSONObject pidJosn=userOrganization.get(i);
@@ -130,6 +141,11 @@ public class BusinessDataController {
                                businessData.add(list.get(j));  // 可以显示的损益数据
                             }
                         }*/
+                    }
+                    for (int i = 0; i < listTree.size(); i++) {
+                        String id=listTree.get(i).getString("id");
+                        int m=listOrganization.size();
+                        typeId[m+i]=id;
                     }
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
@@ -206,7 +222,7 @@ public class BusinessDataController {
             @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer",paramType = "query")})
         @ResponseBody
-        public Map<String, Object> selectBusinessDataById(HttpServletRequest request, @PathVariable String id,@PathVariable int htmlType) {
+        public Map<String, Object> selectBusinessDataById(HttpServletRequest request,String id, int htmlType) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
                 BusinessData  businessData=businessDataService.selectBusinessDataById(id);
@@ -346,17 +362,26 @@ public class BusinessDataController {
                 }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
+                List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject obu = (JSONObject) userOrganization.get(i);
                     int num=Integer.parseInt(obu.get("orgType").toString());
                     if(num==BusinessData.DEPNUM) {//部门级别
-                           listOrganization.add(userOrganization.get(i));
-                        
-                    }
+                         listOrganization.add(userOrganization.get(i));
+                    }else{//查询以下级别的部门
+                        List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                        JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                        for (int j = 0; j < jsonArr.size(); j++) {
+                          JSONObject json=jsonArr.getJSONObject(j);
+                          if(Integer.parseInt(json.getString("orgType"))==BusinessData.DEPNUM && !json.getString("orgName").contains(BusinessData.NAME)){//部门级别
+                              listTree.add(jsonArr.getJSONObject(j)); 
+                          }
+                        }
+                      }
                 } 
-                if(listOrganization.size()>0){
+                if(listOrganization.size()>0 ||listTree.size()>0){
                     //List<BusinessData> list = businessDataService.listBusinessDataBy(map); //查询所有符合搜索条件的表数据
-                    String[] typeId=new String[listOrganization.size()];//获取权限的typeId
+                    String[] typeId=new String[listOrganization.size()+listTree.size()];//获取权限的typeId
                     //List<BusinessData> businessData=new ArrayList<>();  //所有符合权限的数据
                     for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
                         JSONObject pidJosn=userOrganization.get(i);
@@ -369,6 +394,11 @@ public class BusinessDataController {
                                businessData.add(list.get(j));  // 可以显示的损益数据
                             }
                         }*/
+                    }
+                    for (int i = 0; i < listTree.size(); i++) {
+                        String id=listTree.get(i).getString("id");
+                        int m=listOrganization.size();
+                        typeId[m+i]=id;
                     }
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
@@ -418,7 +448,17 @@ public class BusinessDataController {
                             str[5]=sdf.format(business.getUpdateTime());
                          }
                         if(business.getStatus()!=null &&! business.getStatus().equals("")){
-                           str[6]=business.getStatus().toString();
+                            if(business.getStatus()==0){
+                                str[6]="待提交"; 
+                            }else if(business.getStatus()==1){
+                                str[6]="待修改";
+                            }else if(business.getStatus()==2){
+                                str[6]="已提交";
+                            }else if(business.getStatus()==3){
+                                str[6]="新增";
+                            }else if(business.getStatus()==4){
+                                str[6]="退回";
+                            }
                         }
                          strList.add(str);
                     }
