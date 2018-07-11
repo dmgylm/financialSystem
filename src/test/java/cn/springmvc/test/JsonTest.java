@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.JsonDataProcess;
 
@@ -22,6 +23,33 @@ public class JsonTest {
 		JSONObject simplifyJson=JsonDataProcess.simplifyJson(mergin.toString(),jsons);
 		System.out.println(simplifyJson);
 	}
+    
+    @Test
+    public  void  simplifyJson(){
+    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
+    	JSONObject jsons=JsonConvertProcess.simplifyJson(newObj);
+    	System.out.println(jsons);
+    }
+
+    @Test
+    public  void  mergeJson(){
+    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
+    	String shortPath = "C:/Users/Admin/Desktop/车管家预算简化.txt";
+    	JSONObject shortObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(shortPath));
+    	JSONObject jsons=JsonConvertProcess.mergeJson(newObj,shortObj);
+    	System.out.println(jsons);
+    }
+    
+    @Test
+    public  void  generateHtml(){
+    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    	JSONObject jsonObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
+    	HtmlGenerate htmlGenerate = new HtmlGenerate();
+    	String json = htmlGenerate.generateHtml(jsonObj, HtmlGenerate.HTML_TYPE_TEMPLATE);
+    	System.out.println(json);
+    }
 
 	
 }

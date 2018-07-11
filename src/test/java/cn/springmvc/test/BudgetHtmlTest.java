@@ -50,20 +50,20 @@ public class BudgetHtmlTest {
 		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/Html budget.html"), null, 2, 1, 2);
 		try {
 			String json = ha.analysis();
+			System.out.println(json);
+//			JSONObject jsonObj = JSONObject.parseObject(json);
 			
-			JSONObject jsonObj = JSONObject.parseObject(json);
-			
-			JsonConvertProcess jcp = new JsonConvertProcess();
-			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(jsonObj);//生成预算模板数据
-			
-			JSONObject simplifyJson = JsonConvertProcess.simplifyJson(budgetJson);
-			System.out.println(simplifyJson);
+//			JsonConvertProcess jcp = new JsonConvertProcess();
+//			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(jsonObj);//生成预算模板数据
+//			
+//			JSONObject simplifyJson = JsonConvertProcess.simplifyJson(budgetJson);
+//			System.out.println(simplifyJson);
 //			System.out.println(budgetJson);
 //			System.out.println(json);
 //			HtmlGenerate hg = new HtmlGenerate();
 //			String html = hg.generateHtml(budgetJson.toJSONString(), HtmlGenerate.HTML_TYPE_TEMPLATE);
 //			System.out.println(html);
-		} catch (FormulaAnalysisException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

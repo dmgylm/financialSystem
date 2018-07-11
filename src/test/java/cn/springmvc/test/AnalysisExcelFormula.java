@@ -52,7 +52,7 @@ public class AnalysisExcelFormula {
 	private static int BOX_TYPE_FORMULA = 3;//输入框类型(公式)
 	private static int BOX_TYPE_BUDGET = 4;//输入框类型(预算)
 	
-	private static int BUDGET_CELL = 4;//预算列
+	private static int BUDGET_CELL = 0;//预算列
 	
 	/**
 	 * 构造方法,读取指定路径的文件到HSSFWorkbook中
@@ -108,6 +108,9 @@ public class AnalysisExcelFormula {
 		
 		for(int i=0;i<lastRowNum;i++) {
 			HSSFRow row = sheet.getRow(i);
+			if(row==null) {
+				continue;
+			}
 			short lastCellNum = row.getLastCellNum();
 			for(int j=0;j<lastCellNum;j++) {
 				HSSFCell cell = row.getCell(j);
@@ -122,6 +125,8 @@ public class AnalysisExcelFormula {
 						cellFormula = cell.getCellFormula();
 					} else if(cellType==HSSFCell.CELL_TYPE_STRING) {
 						cellValue = cell.getStringCellValue();
+//					} else if(cellType==HSSFCell.CELL_TYPE_BLANK) {//空白单元格
+//						continue;
 					}
 					int type = BOX_TYPE_LABEL;
 					if(cellValue!=null && !cellValue.trim().equals("")) {
@@ -131,7 +136,7 @@ public class AnalysisExcelFormula {
 					} else if(cellFormula!=null) {
 						type = BOX_TYPE_FORMULA;
 					}
-					if((type==BOX_TYPE_FORMULA || type==BOX_TYPE_INPUT) && j==BUDGET_CELL) {
+					if((type==BOX_TYPE_FORMULA || type==BOX_TYPE_INPUT) && j==BUDGET_CELL && BUDGET_CELL != 0) {
 						type = BOX_TYPE_BUDGET;
 					}
 					
@@ -263,7 +268,15 @@ public class AnalysisExcelFormula {
 			String colId = attr.substring(0,1);
 			String rowId = attr.substring(1);
 			Integer tmpColId = Integer.parseInt(stringToAscii(colId))-65;
-			String key = getKey(Integer.parseInt(rowId)-1, tmpColId);
+			Integer tmpRowId = null;
+			try {
+				tmpRowId = Integer.parseInt(rowId)-1;
+			} catch (Exception e) {
+			}
+			String key = null;
+			if(tmpRowId != null) {
+				key = getKey(tmpRowId, tmpColId);
+			}
 			if(key!=null) {
 				formula = FormulaUtil.replaceFirst(formula,attr,key);
 			}
