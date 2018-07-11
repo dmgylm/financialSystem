@@ -112,7 +112,7 @@ public class BusinessDataController {
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                 	JSONObject obu = (JSONObject) userOrganization.get(i);
-					int num=Integer.parseInt(obu.get("orgType").toString());
+					Integer num=Integer.parseInt(obu.get("orgType").toString());
 					if(num==BusinessData.DEPNUM) {//部门级别
 						   listOrganization.add(userOrganization.get(i));
 					}else{//查询以下级别的部门
@@ -222,21 +222,25 @@ public class BusinessDataController {
             @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer",paramType = "query")})
         @ResponseBody
-        public Map<String, Object> selectBusinessDataById(HttpServletRequest request,String id, int htmlType) {
+        public Map<String, Object> selectBusinessDataById(HttpServletRequest request,String id, Integer htmlType) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                BusinessData  businessData=businessDataService.selectBusinessDataById(id);
-                DataModule dm=dmService.getDataModule(businessData.getDataModuleId());
-                BusinessDataInfo busInfo=businessDataInfoService.selectBusinessDataById(id);
-                JSONObject joTemp=JSONObject.parseObject(dm.getModuleData());
-                JSONObject joInfo=JSONObject.parseObject(busInfo.getInfo());
-                JsonConvertProcess.mergeJson(joTemp, joInfo);
-                HtmlGenerate htmlGenerate=new HtmlGenerate();
-                //Integer htmlType=htmlType; //表示录入页面
-                String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
-                System.out.println(html);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", html);
+                if(id!=null&&!id.equals("") && htmlType!=null){
+                    BusinessData  businessData=businessDataService.selectBusinessDataById(id);
+                    DataModule dm=dmService.getDataModule(businessData.getDataModuleId());
+                    BusinessDataInfo busInfo=businessDataInfoService.selectBusinessDataById(id);
+                    JSONObject joTemp=JSONObject.parseObject(dm.getModuleData());
+                    JSONObject joInfo=JSONObject.parseObject(busInfo.getInfo());
+                    JsonConvertProcess.mergeJson(joTemp, joInfo);
+                    HtmlGenerate htmlGenerate=new HtmlGenerate();
+                    
+                    String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
+                    System.out.println(html);
+                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    dataMap.put("data", html);   
+                }else{
+                    dataMap.put("result","id或者htmlType为空！");  
+                }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -365,7 +369,7 @@ public class BusinessDataController {
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
                 for (int i = 0; i < userOrganization.size(); i++) {
                     JSONObject obu = (JSONObject) userOrganization.get(i);
-                    int num=Integer.parseInt(obu.get("orgType").toString());
+                    Integer num=Integer.parseInt(obu.get("orgType").toString());
                     if(num==BusinessData.DEPNUM) {//部门级别
                          listOrganization.add(userOrganization.get(i));
                     }else{//查询以下级别的部门
