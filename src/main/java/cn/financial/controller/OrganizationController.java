@@ -69,7 +69,8 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = true),
     })
     @PostMapping(value = "/save")
-    public Map<String, Object> saveOrganization(String orgName,String orgType,String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> saveOrganization(String orgName,String orgType,
+    		String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         Integer i = 0;
         try {
@@ -77,7 +78,7 @@ public class OrganizationController {
             String uuid = UuidUtil.getUUID();
             organization.setId(uuid);// 组织结构id
             if (null != orgName && !"".equals(orgName)) {
-                organization.setOrgName(orgName.toString().trim());//(new String(request.getParameter("orgName").toString().trim().getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                organization.setOrgName(orgName.toString().trim());// 组织架构名
             }
             if (null != orgType && !"".equals(orgType)) {
                 organization.setOrgType(Integer.parseInt(orgType.toString().trim()));// 类别（汇总，公司，部门）
@@ -112,13 +113,13 @@ public class OrganizationController {
     @ApiOperation(value = "根据条件查询组织结构信息",notes = "根据条件查询组织结构信息")
     @PostMapping(value="/listBy")
     @ApiImplicitParams({ 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "createTime", value = "创建时间", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "updateTime", value = "更新时间", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "createTime", value = "创建时间", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "updateTime", value = "更新时间", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织结构id", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "code", value = "该组织机构节点的序号", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "code", value = "该组织机构节点的序号", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
     })
     public Map<String, Object> listOrganizationBy(String orgName,String createTime,String updateTime,
     		String id,String code,String uId, String parentId,HttpServletRequest request, HttpServletResponse response) {
@@ -127,13 +128,13 @@ public class OrganizationController {
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
-                map.put("orgName", orgName.trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                map.put("orgName", orgName.trim().toString());//组织架构名
             }
             if (null !=createTime && !"".equals(createTime)) {
-                map.put("createTime", format.parse(createTime));// 创建时间
+                map.put("createTime", format.parse(createTime));//创建时间
             }
             if (null != updateTime && !"".equals(updateTime)) {
-                map.put("updateTime", format.parse(updateTime));// 更新时间
+                map.put("updateTime", format.parse(updateTime));//更新时间
             }
             if (null !=id && !"".equals(id)) {
                 map.put("id", id); // 组织结构id
@@ -176,13 +177,13 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
     	})
-    @PostMapping(value = "/updatebyid")
+    @PostMapping(value = "/updateByid")
     public Map<String, Object> updateOrganizationById(String id,String orgName,String orgType, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
-                map.put("orgName",orgName.trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));// 组织架构名
+                map.put("orgName",orgName.trim().toString());//组织架构名
             }
             if (null !=id && !"".equals(id)) {
                 map.put("id", id);// 组织id
@@ -217,7 +218,7 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
-    @PostMapping(value = "/discontinuate")
+    @PostMapping(value = "/disconTinuate")
     public Map<Object, Object> deleteOrganizationByStatusCascade(String id,HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
@@ -265,10 +266,9 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
-    @PostMapping(value = "/getsubnode")
+    @PostMapping(value = "/getSubnode")
     public Map<Object, Object> getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        //String id = "";
         try {
             JSONObject jsonTree = new JSONObject();
             if (null !=id && !"".equals(id)) {
@@ -301,7 +301,7 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
-    @PostMapping(value = "/getparnode")
+    @PostMapping(value = "/getParnode")
     public Map<Object, Object> getParnode(String id,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
@@ -332,18 +332,22 @@ public class OrganizationController {
      * @return
      */
     @ResponseBody
-    @RequiresPermissions({ "organization:update", "organization:create" })
-    @RequestMapping(value = "/move")
-    public Map<Object, Object> moveOrganization(HttpServletRequest request, HttpServletResponse response) {
+    @RequiresPermissions(value={ "organization:update", "organization:create" },logical=Logical.OR)
+    @ApiOperation(value = "移动组织机构",notes = "移动组织机构")
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
+    	})
+    @PostMapping(value = "/move")
+    public Map<Object, Object> moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
-        String id = null;
         String parentOrgId = null;
         try {
-            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                id = request.getParameter("id");
+            if (null != id && !"".equals(id)) {
+                id =id;
             }
-            if (null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId"))) {
-                parentOrgId = request.getParameter("parentId");
+            if (null !=parentId && !"".equals(parentId)) {
+                parentOrgId =parentId;
             }
             User user = (User) request.getAttribute("user");
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
@@ -361,23 +365,27 @@ public class OrganizationController {
 
     /**
      * 根据条件判断是否该节点存在子节点
-     * 
      * @param request
      * @param response
      * @return
      */
     @ResponseBody
-    @RequiresPermissions("organization:view")
-    @RequestMapping(value = "/hasSon")
-    public Map<Object, Object> hasOrganizationSon(HttpServletRequest request, HttpServletResponse response) {
+    @RequiresPermissions(value={"organization:view" },logical=Logical.OR)
+    @ApiOperation(value = "根据条件判断是否该节点存在子节点",notes = "根据条件判断是否该节点存在子节点")
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "id", required = true),
+    	})
+    @PostMapping(value = "/hasSon")
+    public Map<Object, Object> hasOrganizationSon(String id,String orgName,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         try {
             Map<Object, Object> map = new HashMap<>();
-            if (null != request.getParameter("orgName") && !"".equals(request.getParameter("orgName"))) {
-                map.put("orgName", request.getParameter("orgName").trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
+            if (null !=orgName && !"".equals(orgName)) {
+                map.put("orgName",orgName.trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
             }
-            if (null != request.getParameter("id") && !"".equals(request.getParameter("id"))) {
-                map.put("id", request.getParameter("id"));
+            if (null != id && !"".equals(id)) {
+                map.put("id", id);
             }
             Boolean flag = organizationService.hasOrganizationSon(map);
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
