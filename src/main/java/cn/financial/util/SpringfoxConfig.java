@@ -1,7 +1,6 @@
 package cn.financial.util;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -12,10 +11,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@Configuration
-@EnableWebMvc
-@EnableSwagger2
-@ComponentScan(basePackages="cn.financial.controller")
+@Configuration  //让Spring来加载该类配置
+@EnableWebMvc   //启用Mvc，非springboot框架需要引入注解@EnableWebMvc
+@EnableSwagger2   //启用Swagger2
 public class SpringfoxConfig {
 
 	@Bean
