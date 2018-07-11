@@ -14,6 +14,7 @@ public class JsonConvertProcess {
 	
 	//预算表中的Label单元格字段
 	private JSONArray bugdetLabelArr = new JSONArray();
+	private static Object Object;
 		
 	/**
 	 * 将数据Json和模板Json进行合并
@@ -24,9 +25,15 @@ public class JsonConvertProcess {
 	public static JSONObject mergeJson(JSONObject templateJson, JSONObject dataJson) {
 		for(Iterator<String> iter = templateJson.keySet().iterator();iter.hasNext();){
 			String key = iter.next();
-			JSONArray longLst = templateJson.getJSONArray(key);
-			JSONObject shortLst = dataJson.getJSONObject(key);
-			mergeDetail(longLst,shortLst);
+			Object templateObj = templateJson.get(key);
+			JSONObject shortData = dataJson.getJSONObject(key);
+			if (templateObj instanceof JSONArray) {
+				JSONArray longLst = (JSONArray) templateObj;
+				mergeDetail(longLst,shortData);
+			} else if (templateObj instanceof JSONObject) {
+				JSONObject longData = (JSONObject) templateObj;
+				mergeJson(longData, shortData);
+			}
 		}
 		return templateJson;
 	}
@@ -41,7 +48,7 @@ public class JsonConvertProcess {
 			JSONObject longJson = templateArr.getJSONObject(i);
 			if(longJson.containsKey("key")) {
 				String longKey =  longJson.getString("key");
-				if(dataJson.containsKey("key")) {
+				if(dataJson.containsKey(longKey)) {
 					Object shortValue = dataJson.get(longKey);
 					longJson.put("value", shortValue);
 				}

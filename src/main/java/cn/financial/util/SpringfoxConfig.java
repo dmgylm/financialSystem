@@ -26,7 +26,7 @@ public class SpringfoxConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("服务平台 API").description("").termsOfServiceUrl("http://localhost:8080").version("1.0").build();
+        return new ApiInfoBuilder().title("服务平台 API").description("").version("1.0").build();
     }
     
 }
