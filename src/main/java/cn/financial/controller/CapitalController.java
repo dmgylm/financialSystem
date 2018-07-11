@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -420,8 +421,10 @@ public class CapitalController {
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
         @ApiOperation(value="资金流水上传", notes="资金流水表上传数据")
+        @ApiImplicitParams({@ApiImplicitParam(name = "file", value = "文件流对象,接收数组格式", required = true,dataType = "MultipartFile",paramType = "query")
+           })
         @ResponseBody
-        public void excelImport(@ApiParam(value="上传的文件", required = true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
+        public void excelImport(@RequestParam(value="file") MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
