@@ -24,8 +24,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
-import cn.financial.model.DataModule;
+
 import cn.financial.model.Organization;
+import cn.financial.model.StaticInfo;
+import cn.financial.model.StaticJson;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -57,7 +59,7 @@ public class StatisticJsonController {
      */
     @ResponseBody
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
-	@ApiOperation(value = "根据组织统计数据",notes = "根据组织统计数据")
+	@ApiOperation(value = "根据组织统计数据",notes = "根据组织统计数据",response = StaticJson.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块", required = true),
@@ -104,7 +106,7 @@ public class StatisticJsonController {
      */
     @ResponseBody
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
-	@ApiOperation(value = "根据key查询详情",notes = "根据key查询详情")
+	@ApiOperation(value = "根据key查询详情",notes = "根据key查询详情",response = StaticInfo.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "caCheUuid", value = "缓存id", required = true), 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "infoKey", value = "查询详情key", required = true) 
