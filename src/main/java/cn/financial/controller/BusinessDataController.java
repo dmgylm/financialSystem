@@ -233,7 +233,6 @@ public class BusinessDataController {
                     JSONObject joInfo=JSONObject.parseObject(busInfo.getInfo());
                     JsonConvertProcess.mergeJson(joTemp, joInfo);
                     HtmlGenerate htmlGenerate=new HtmlGenerate();
-                    
                     String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
                     System.out.println(html);
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
