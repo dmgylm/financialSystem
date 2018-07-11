@@ -1,29 +1,11 @@
 package cn.financial.model;
 
-public class StaticInfo {
+import io.swagger.annotations.ApiModelProperty;
 
-	private String resultCode;
-	
-	private String resultDesc;
-	
+public class StaticInfo extends ResultUtils {
+
+	@ApiModelProperty(value = "返回所选key对应具体公司数据")
 	private String data;
-
-
-	public String getResultCode() {
-		return resultCode;
-	}
-
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
-	}
-
-	public String getResultDesc() {
-		return resultDesc;
-	}
-
-	public void setResultDesc(String resultDesc) {
-		this.resultDesc = resultDesc;
-	}
 
 	public String getData() {
 		return data;
@@ -32,6 +14,5 @@ public class StaticInfo {
 	public void setData(String data) {
 		this.data = data;
 	}
-
 
 }

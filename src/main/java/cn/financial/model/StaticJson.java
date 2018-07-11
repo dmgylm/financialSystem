@@ -1,27 +1,13 @@
 package cn.financial.model;
 
-public class StaticJson {
+import io.swagger.annotations.ApiModelProperty;
 
-	private String resultCode;
-	private String resultDesc;
+public class StaticJson extends ResultUtils{
+
+	@ApiModelProperty(value = "返回html表单")
 	private String data;
+	@ApiModelProperty(value = "返回缓存id")
 	private String caCheId;
-
-	public String getResultCode() {
-		return resultCode;
-	}
-
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
-	}
-
-	public String getResultDesc() {
-		return resultDesc;
-	}
-
-	public void setResultDesc(String resultDesc) {
-		this.resultDesc = resultDesc;
-	}
 
 	public String getData() {
 		return data;
