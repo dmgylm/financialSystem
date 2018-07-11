@@ -181,7 +181,7 @@ public class MessageServiceImpl implements MessageService {
 						for (int k = 0; k < userOrganization.size(); k++) {
 							JSONObject obu = (JSONObject) userOrganization.get(k);
 							int num=Integer.parseInt(obu.get("orgType").toString());
-							System.out.println(num);
+//							System.out.println(num);
 							if (TWO == num) {// 是公司
 								Organization org=new Organization();
 								org.setId(obu.get("pid").toString());
@@ -229,8 +229,10 @@ public class MessageServiceImpl implements MessageService {
 				}
 			}
 		}
+		if(oIdList.size()>0) {
+			filter.put("oId", oIdList);
+		}
 		filter.put("uId", user.getId());
-		filter.put("oId", oIdList);
 		filter.put("pageSize", pageSize);
 		filter.put("start", start);
 		lm = messageDao.listMessageBy(filter);
