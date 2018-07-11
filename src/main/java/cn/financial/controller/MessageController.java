@@ -1,9 +1,5 @@
 package cn.financial.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +99,7 @@ public class MessageController {
             }
             List<Message> lm = messageService.quartMessageByPower(user,pagingMap);//获取消息集合
             // 按照创建日期降序排序
-            Collections.sort(lm, new Comparator<Message>() {
+            /*Collections.sort(lm, new Comparator<Message>() {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 @Override
                 public int compare(Message o1, Message o2) {
@@ -123,7 +119,7 @@ public class MessageController {
                     }
                     return 0;
                 }
-            });
+            });*/
             // 分页
             /*List<Message> result = new ArrayList<>();
             int start = lm.size() >= (page - 1) * pageSize ? (page - 1) * pageSize : -1;
@@ -490,7 +486,7 @@ public class MessageController {
     	try {
     		User user = (User) request.getAttribute("user");
     		Map<Object, Object> map = new HashMap<>();
-    		map.put("pageSize", 10000);
+    		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
             List<Message> list = messageService.quartMessageByPower(user,map);
         	
