@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cn.financial.model.BusinessData;
@@ -22,6 +24,7 @@ import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.FormulaUtil;
+import cn.financial.util.StringUtils;
 
 /**
  * 统计service实现层
@@ -175,6 +178,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
      */
 
 	@Override
+	@JSONField(serialize = true)
 	public JSONObject jsonCalculation(String reportType, String businessType,List<BusinessData> businessDataList) {
 		//获取模板
 		JSONObject model = findModel(reportType,businessType);
@@ -197,25 +201,45 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		while (it.hasNext()) {
 			JSONArray json = new JSONArray();
 			String modelKey = it.next();
-			JSONArray modelArr = model.getJSONArray(modelKey);
-			for (int i = 0; i < modelArr.size(); i++) {
-				JSONObject rowjar = modelArr.getJSONObject(i);
-				//判断输入是否是需要整合的
-				Integer type = rowjar.getInteger("type");
-				String itemKey = rowjar.getString("key");
-				String formula = rowjar.getString("reallyFormula");
-				if (type ==2 ||type == 4){
-					//将数据添加到新json里
-					rowjar.put("value", item.get(itemKey));
-				}else if(type ==3 && !formula.contains("SUM")){
-					rowjar.put("value", FormulaUtil.calculationByFormula(item,formula));
+			if(model.get(modelKey) instanceof JSONObject){
+				JSONObject downValve = model.getJSONObject(modelKey);
+				Iterator<String> dt = downValve.keySet().iterator();
+				while (dt.hasNext()) {
+					String downKey = dt.next();
+					downValve = completeMap(downValve,downKey,item,json);
 				}
-				json.add(rowjar);
+				model.put(modelKey, downValve);
+			}else{
+				model = completeMap(model,modelKey,item,json);
 			}
-			model.put(modelKey, json);
 		}
 		
+		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
+		String bytes = JSON.toJSONString(model,feature);  
+		return (JSONObject) JSONObject.parse(bytes);
+	}
+	
+	//进行整合数据
+	public JSONObject completeMap(JSONObject model,String modelKey,Map<String,Object> item,JSONArray json){
+		
+		JSONArray modelArr = model.getJSONArray(modelKey);
+		for (int i = 0; i < modelArr.size(); i++) {
+			JSONObject rowjar = modelArr.getJSONObject(i);
+			//判断输入是否是需要整合的
+			Integer type = rowjar.getInteger("type");
+			String itemKey = rowjar.getString("key");
+			String formula = rowjar.getString("reallyFormula");
+			if (type ==2 ||type == 4){
+				//将数据添加到新json里
+				rowjar.put("value", item.get(itemKey));
+			}else if(type ==3 && StringUtils.isValid(formula) && !formula.contains("SUM")){
+				rowjar.put("value", FormulaUtil.calculationByFormula(item,formula));
+			}
+			json.add(rowjar);
+		}
+		model.put(modelKey, json);
 		return model;
+		
 	}
 	
 	//进行分段的计算方法
@@ -231,11 +255,25 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				Iterator<String> vt = jsonValve.keySet().iterator();
 				while (vt.hasNext()) {
 					String itemKey = vt.next();
-					Double valve = jsonValve.getDouble(itemKey);
-					if(item.containsKey(itemKey)){
-						valve +=(Double)item.get(itemKey);
+					//判断是否为JSONObject
+					if(jsonValve.get(itemKey) instanceof JSONObject){
+						JSONObject downValve = jsonValve.getJSONObject(itemKey);
+						Iterator<String> dt = downValve.keySet().iterator();
+						while (dt.hasNext()) {
+							String downKey = dt.next();
+							Double valve = downValve.getDouble(downKey);
+							if(item.containsKey(downKey)){
+								valve +=(Double)item.get(downKey);
+							}
+							item.put(downKey, valve);
+						}
+					}else{
+						Double valve = jsonValve.getDouble(itemKey);
+						if(item.containsKey(itemKey)){
+							valve +=(Double)item.get(itemKey);
+						}
+						item.put(itemKey, valve);
 					}
-					item.put(itemKey, valve);
 				}
 			}
 		}

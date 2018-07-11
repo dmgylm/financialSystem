@@ -3,11 +3,6 @@ package cn.springmvc.test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-
-
-
-
 import java.util.Map;
 
 import org.junit.Test;
@@ -16,23 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import org.springframework.test.context.web.WebAppConfiguration;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
@@ -42,6 +23,7 @@ import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml","classpath:spring/swagger.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
@@ -77,17 +59,16 @@ public class StatisticJsonTest {
     public void StatisticJsonTest() {
     	
     	JSONArray orgId = new JSONArray();
-    	orgId.add("0303e625211c47ee86efb8007053186b");
-    	orgId.add("04668940dfa947cd8a1d95e32e503fc8");
+    	orgId.add("088053224bfe404ab97b45efba15d6c0");
     	
 		//获取所选机构
 		List<Organization> codeSonList = service.companyList(orgId);
 		//获取最底层数据
 		List<String> typeIdList = service.typeIdList(codeSonList);
 		//获取底层对应数据的集合
-		List<BusinessData> businessDataList = service.valueList("2018/5","2018/5",typeIdList);
+		List<BusinessData> businessDataList = service.valueList("2015/5","2019/7",typeIdList);
     	
-		System.out.println(service.jsonCalculation("0", "66ba42fc04c547318d68d08700770e92", businessDataList));
+		System.out.println(service.jsonCalculation("BUDGET", "b1503ff8da124fa3bce0bf07f16f56f6", businessDataList)); 
     	
     }
     
@@ -95,8 +76,7 @@ public class StatisticJsonTest {
     public void StatisticCacheTest() {
     	String caCheUuid = UuidUtil.getUUID();
     	JSONArray orgId = new JSONArray();
-    	orgId.add("0303e625211c47ee86efb8007053186b");
-    	orgId.add("04668940dfa947cd8a1d95e32e503fc8");
+    	orgId.add("088053224bfe404ab97b45efba15d6c0");
     	
     	System.out.println(orgId);
     	
@@ -105,7 +85,7 @@ public class StatisticJsonTest {
 		//获取最底层数据
 		List<String> typeIdList = service.typeIdList(codeSonList);
 		//获取底层对应数据的集合
-		List<BusinessData> businessDataList = service.valueList("2018/5","2018/5",typeIdList);
+		List<BusinessData> businessDataList = service.valueList("2018/5","2019/7",typeIdList);
 		//获取对应公司列表
  		Map<String,List<String>> companyList =  service.companyCacheList(codeSonList);
 		
@@ -134,7 +114,7 @@ public class StatisticJsonTest {
     	orgId.add("04668940dfa947cd8a1d95e32e503fc8");
 		
 		Map<String , String> params = new HashMap<String, String>();
-		params.put("reportType", "0");
+		params.put("reportType", "PROFIT_LOSS");
 		params.put("businessType", "66ba42fc04c547318d68d08700770e92");
 		params.put("startDate", "2018/5");
 		params.put("endDate", "2018/5");
