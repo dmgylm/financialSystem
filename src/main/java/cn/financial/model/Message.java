@@ -1,7 +1,5 @@
 package cn.financial.model;
 
-import java.util.Date;
-
 /**
  * 消息实体类
  * 
@@ -9,6 +7,8 @@ import java.util.Date;
  *
  */
 public class Message {
+	
+	public static final Integer PAGESIZE = 100000000;
 
     String id; // 消息id(uoId)
 
@@ -31,6 +31,7 @@ public class Message {
     String uId;//用户接收信息
  
     String fileurl;//文件路径
+    
     public String getId() {
         return id;
     }
@@ -121,7 +122,7 @@ public class Message {
 	@Override
     public String toString() {
         return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", oId="
-                + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+"]";
+                + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+",fileurl="+fileurl+"]";
     }
 
 }
