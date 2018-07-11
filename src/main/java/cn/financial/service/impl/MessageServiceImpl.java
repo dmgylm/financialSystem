@@ -112,6 +112,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer saveMessageByUser(User user, String fileUrl) {
     	
+    	Integer n = 0;
     	MessageController mc = new MessageController();
         try {
 	        	Message message = new Message();
@@ -123,10 +124,10 @@ public class MessageServiceImpl implements MessageService {
 				message.setIsTag(0);
 				message.setsName("系统");
 				message.setFileurl(fileUrl);//汇总表文件的路径
-				saveMessage(message);
+				n = saveMessage(message);
 				
 				Map<Object, Object> map = new HashMap<>();
-	    		map.put("pageSize", 10000);
+	    		map.put("pageSize", Message.PAGESIZE);
 	    		map.put("start", 0);
 				List<Message> list = quartMessageByPower(user,map);
 		    	
@@ -144,7 +145,7 @@ public class MessageServiceImpl implements MessageService {
         	e.printStackTrace();
         }
         
-        return Integer.valueOf(1);
+        return n;
     }
     
 	/**
@@ -164,6 +165,8 @@ public class MessageServiceImpl implements MessageService {
 		List<UserRole> lur = userRoleDao.listUserRole(user.getName());
 		List<Message> lm = new ArrayList<>();
 		List<Organization> lo = new ArrayList<>();
+		List<String> oIdList = new ArrayList<String>();
+		Map<Object, Object> filter = new HashMap<Object, Object>();
 		
 		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
 			List<JSONObject> uResource = roleResourceServiceImpl.roleResourceList(lur.get(i).getName());
@@ -183,19 +186,20 @@ public class MessageServiceImpl implements MessageService {
 								Organization org=new Organization();
 								org.setId(obu.get("pid").toString());
 								if(!lo.contains(org)) {
-									Map<Object, Object> map = new HashMap<>();
-									map.put("oId", obu.get("pid"));
-									map.put("uId", user.getId());
-									map.put("pageSize", pageSize);
-									map.put("start", start);
-									List<Message> lms = messageDao.listMessageBy(map);
-									if(lms != null) {
-										for (int l = 0; l < lms.size(); l++) {
-											if(!lm.contains(lms.get(l))) {
-											lm.add(lms.get(l));//添加消息
-											}
-										}
-									}
+//									Map<Object, Object> map = new HashMap<>();
+//									map.put("oId", obu.get("pid"));
+//									map.put("uId", user.getId());
+//									map.put("pageSize", pageSize);
+//									map.put("start", start);
+//									List<Message> lms = messageDao.listMessageBy(map);
+//									if(lms != null) {
+//										for (int l = 0; l < lms.size(); l++) {
+//											if(!lm.contains(lms.get(l))) {
+//											lm.add(lms.get(l));//添加消息
+//											}
+//										}
+//									}
+									oIdList.add((String) obu.get("pid"));
 									lo.add(org);
 								}
 							}else if(THREE == num) {
@@ -203,19 +207,20 @@ public class MessageServiceImpl implements MessageService {
 								Organization orgt=new Organization();
 								orgt.setId(org.getId());
 								if(!lo.contains(orgt)) {
-									Map<Object, Object> map = new HashMap<>();
-									map.put("oId", org.getId());
-									map.put("uId", user.getId());
-									map.put("pageSize", pageSize);
-									map.put("start", start);
-									List<Message> lms = messageDao.listMessageBy(map);
-									if(lms != null) {
-										for (int l = 0; l < lms.size(); l++) {
-											if(!lm.contains(lms.get(l))) {
-											lm.add(lms.get(l));//添加消息
-											}
-										}
-									}
+//									Map<Object, Object> map = new HashMap<>();
+//									map.put("oId", org.getId());
+//									map.put("uId", user.getId());
+//									map.put("pageSize", pageSize);
+//									map.put("start", start);
+//									List<Message> lms = messageDao.listMessageBy(map);
+//									if(lms != null) {
+//										for (int l = 0; l < lms.size(); l++) {
+//											if(!lm.contains(lms.get(l))) {
+//											lm.add(lms.get(l));//添加消息
+//											}
+//										}
+//									}
+									oIdList.add(org.getId());
 									lo.add(org);
 								}
 							}
@@ -224,6 +229,12 @@ public class MessageServiceImpl implements MessageService {
 				}
 			}
 		}
+		filter.put("uId", user.getId());
+		filter.put("oId", oIdList);
+		filter.put("pageSize", pageSize);
+		filter.put("start", start);
+		lm = messageDao.listMessageBy(filter);
+		return lm;
 //		Map<Object, Object> map = new HashMap<>();
 //		map.put("uId", user.getId());
 //		List<Message> lmsg = messageDao.listMessageBy(map);
@@ -319,7 +330,6 @@ public class MessageServiceImpl implements MessageService {
 	        resultJsonObject.put("data", result);
 	       */
 		/*System.out.println(lm);*/
-		return lm;
 	}
 
 }
