@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
+import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -48,7 +49,8 @@ public class MainController {
     private UserService userService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
-    
+    @Autowired
+    private UserOrganizationService userOrganizationService;
     
     @RequestMapping(value="/test", method = RequestMethod.GET)
     public String test(HttpServletRequest request, HttpServletResponse response, HttpSession session){
@@ -136,7 +138,9 @@ public class MainController {
             }
             System.out.println("~~~session:"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(userName);
+            List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
             dataMap.put("roleResource", jsonObject);
+            dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
