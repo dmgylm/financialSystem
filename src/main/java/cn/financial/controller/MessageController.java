@@ -74,8 +74,8 @@ public class MessageController {
     @RequiresPermissions("message:view")
     @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息",response = Message.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="integer", paramType = "query", required = true),
-        @ApiImplicitParam(name="page",value="显示第几页",dataType="integer", paramType = "query", required = true)})
+        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="integer", paramType = "query"),
+        @ApiImplicitParam(name="page",value="显示第几页",dataType="integer", paramType = "query")})
     public Map<String, Object> listMessage(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
@@ -140,7 +140,7 @@ public class MessageController {
                 }
             }
             System.out.println(lm);*/
-            if (lm != null && !lm.isEmpty()) {
+            if (lm.size() >= 0) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("data",obj);
             } else {
