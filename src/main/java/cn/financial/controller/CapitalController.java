@@ -235,7 +235,7 @@ public class CapitalController {
          *           
          * @return
          */
-        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
+        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息",response = Capital.class)
         @ApiImplicitParams({@ApiImplicitParam(name="id",value="资金的id",dataType="string", paramType = "query", required = true)})
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
@@ -421,89 +421,59 @@ public class CapitalController {
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",method = RequestMethod.POST)
         @ApiOperation(value="资金流水上传", notes="资金流水表上传数据")
-        @ApiImplicitParams({@ApiImplicitParam(name = "file", value = "文件流对象,接收数组格式", required = true,dataType = "MultipartFile",paramType = "query")
+        @ApiImplicitParams({@ApiImplicitParam(name ="uploadFile", value = "文件流对象,接收数组格式", required = true,dataType = "MultipartFile",paramType = "query")
            })
         @ResponseBody
-        public void excelImport(@RequestParam(value="file") MultipartFile uploadFile,HttpServletRequest request) throws IOException{
+        public void excelImport( MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             Map<String, Object> dataMap = new HashMap<String, Object>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
-            List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //根据提交人id查询 本人所拥有的权限
-            JSONArray jsonArr=JSONArray.fromObject(userOrganization);
             if(uploadFile.getSize()>0 && uploadFile.getSize()<5242880){  //判断文件大小是否是5M以下的
               try {
                   int row=1;
                   Integer a=0;
                   List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);//读取excel表格数据
                  try {
-                     Integer num=0;  //判断excel里面是否 存在 没有在权限内的数据    1表示不存在 不存在才能进行导入 0表示存在  抛出异常
-                     for (int i = 0; i < list.size(); i++) {  //判断excel表格里面是否有不符合权限的数据  如果有就不能导入,抛出异常
+                     for (int i = 0; i < list.size(); i++){
                          String[] str=list.get(i);   //在excel得到第i条数据
+                         Capital capital=new Capital();
+                         capital.setId(UuidUtil.getUUID());
                          Map<Object, Object> map = new HashMap<>();
                          map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
                          List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
-                         //List<Capital> listData=new ArrayList<>();
-                         if(listOrganization.size()>0){  //如果不存在该公司的组织数据，也不能导入
-                             for (int k = 0; k < jsonArr.size(); k++) { //循环权限里面全部数据    
-                                 JSONObject jsonObject=jsonArr.getJSONObject(k);
-                                 String oId=jsonObject.getString("oId"); //找到权限数据里面的oId
-                                 //找权限里面的oId组织架构id  去全部数据里面去匹配   如果有这个oId的话  证明有新增资金流水的权限
-                                 String id=listOrganization.get(0).getId();
-                                 if(id.equals(oId)){
-                                     num=1;
-                                 }
-                               }
-                              }else{
-                                num=0;
-                                break;
-                              }
-                          }
-                         if(num==1){  //没有不符合权限的数据  进行导入
-                             for (int i = 0; i < list.size(); i++){
-                                 String[] str=list.get(i);   //在excel得到第i条数据
-                                 Capital capital=new Capital();
-                                 capital.setId(UuidUtil.getUUID());
-                                 Map<Object, Object> map = new HashMap<>();
-                                 map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
-                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
-                                 capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
-                                 capital.setPlate(str[0]);
-                                 capital.setBU(str[1]);
-                                 capital.setRegionName(str[2]);
-                                 capital.setProvince(str[3]);
-                                 capital.setCity(str[4]);
-                                 capital.setCompany(str[5]);
-                                 capital.setAccountName(str[6]);
-                                 capital.setAccountBank(str[7]);
-                                 capital.setAccount(str[8]);
-                                 capital.setAccountNature(str[9]);
-                                 capital.setTradeTime(sdf.parse(str[10]));
-                                 capital.setStartBlack(Integer.parseInt(str[11]));
-                                 capital.setIncom(Integer.parseInt(str[12]));
-                                 capital.setPay(Integer.parseInt(str[13]));
-                                 capital.setEndBlack(Integer.parseInt(str[14]));
-                                 capital.setAbstrac(str[15]);
-                                 capital.setClassify(str[16]);
-                                 capital.setRemarks(str[17]);
-                                 Calendar calendar = Calendar.getInstance();
-                                 calendar.setTime(calendar.getTime());
-                                 capital.setuId(uId);
-                                 capital.setYear(calendar.get(Calendar.YEAR));
-                                 capital.setMonth(calendar.get(Calendar.MONTH));
-                                 capital.setStatus(1);
-                                 capital.setEditor(0);
-                                 a = capitalService.insertCapital(capital); //导入新增的数据
-                                 if (a == 1) {
-                                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                                     dataMap.put("result","导入成功！");
-                                 } else {
-                                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                                     dataMap.put("result","导入失败！");
-                                 }
-                             }
-                        }else{
-                            throw new Exception("您没有权限导入资金数据！"); 
-                        }
+                         capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
+                         capital.setPlate(str[0]);
+                         capital.setBU(str[1]);
+                         capital.setRegionName(str[2]);
+                         capital.setProvince(str[3]);
+                         capital.setCity(str[4]);
+                         capital.setCompany(str[5]);
+                         capital.setAccountName(str[6]);
+                         capital.setAccountBank(str[7]);
+                         capital.setAccount(str[8]);
+                         capital.setAccountNature(str[9]);
+                         capital.setTradeTime(sdf.parse(str[10]));
+                         capital.setStartBlack(Integer.parseInt(str[11]));
+                         capital.setIncom(Integer.parseInt(str[12]));
+                         capital.setPay(Integer.parseInt(str[13]));
+                         capital.setEndBlack(Integer.parseInt(str[14]));
+                         capital.setAbstrac(str[15]);
+                         capital.setClassify(str[16]);
+                         capital.setRemarks(str[17]);
+                         Calendar calendar = Calendar.getInstance();
+                         calendar.setTime(calendar.getTime());
+                         capital.setuId(uId);
+                         capital.setYear(calendar.get(Calendar.YEAR));
+                         capital.setMonth(calendar.get(Calendar.MONTH)+1);
+                         capital.setStatus(1);
+                         capital.setEditor(0);
+                         a = capitalService.insertCapital(capital); //导入新增的数据
+                         if (a == 1) {
+                             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                         } else {
+                             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                         }
+                     }          
                  } catch (Exception e) {
                      dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                      this.logger.error(e.getMessage(), e);
