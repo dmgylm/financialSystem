@@ -150,10 +150,9 @@
                 /swagger-resources=anon
                 /configuration/ui=anon
                 /v2/api-docs=anon
-                /WEB-INF/swagger/**=anon
                 /webjars/**=anon
                 /test=anon
-                /doc=anon
+                /doc**=anon
                 /** = user,sysUser      
             </value>
         </property>
