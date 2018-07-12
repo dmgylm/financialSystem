@@ -24,8 +24,8 @@
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId)
-            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId})
+            insert into businessData(id,oId,createTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId)
+            values (#{id},#{oId},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId})
        </insert>
       
     
@@ -61,6 +61,13 @@
          <include refid="query_businessData_where"></include>  
          ORDER BY b.updateTime DESC
          LIMIT #{start},#{pageSize}
+       </select>
+       
+
+       <!--不分页，根据条件查询业务表  -->
+       <select id="getBusinessAllBySomeOne" parameterType="map" resultType="businessData">
+       select  * from businessData where 1=1
+       <include refid="query_businessData_where"></include> 
        </select>
        
        <!-- 导出数据查询-->
@@ -111,6 +118,9 @@
         </if>
         <if test="sId!=null and sId!=''">
             and sId = #{sId}
+        </if>
+        <if test="typeId!=null and typeId!=''">
+            and typeId = #{typeId}
         </if>
     </sql>
     
