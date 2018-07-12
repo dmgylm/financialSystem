@@ -54,9 +54,8 @@ public class DataModuleController {
 	@RequiresPermissions(value={"data:view","data:search"},logical=Logical.OR)
 	@PostMapping("/dataModuleList")
 	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response=DataModulesResult.class)
-	@ApiResponses(value = {@ApiResponse(code = 405, message = "Invalid input", response = DataModule.class) })
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query")})
+		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query",required=false)})
     @ResponseBody
 	public DataModulesResult listDataModule(String moduleName){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -77,7 +76,7 @@ public class DataModuleController {
 			result.setData(list);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
-			logger.error("",e);
+			logger.error("模板列表查询错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		
@@ -93,7 +92,7 @@ public class DataModuleController {
 	@PostMapping("getDataModule")
 	@ApiOperation(value = "根据ID查询模板",notes = "根据ID查询模板",response = DataResult.class)
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="dataModuleId",value="模板id",dataType="string", paramType = "query")})
+		  @ApiImplicitParam(name="dataModuleId",required=true,value="模板id",dataType="string", paramType = "query")})
     @ResponseBody
 	public DataResult getDataModule(String dataModuleId){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -106,7 +105,7 @@ public class DataModuleController {
 			dataResult.setData(bean);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
-			logger.error("查询错误",e);
+			logger.error("根据ID查询模板错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		return dataResult;
@@ -122,8 +121,8 @@ public class DataModuleController {
 	@PostMapping("getNewestDataModule")
 	@ApiOperation(value = "根据报表类型及业务板块查询最新版本模板",notes = "根据报表类型及业务板块查询最新版本模板",response = DataResult.class)
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="businessType",value="业务板块",dataType="string", paramType = "query")})
+		  @ApiImplicitParam(name="reportType",required=true,value="报表类型",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query")})
 	@ResponseBody
 	public DataResult getNewestDataModule(String reportType,String businessType){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -135,7 +134,7 @@ public class DataModuleController {
 			dataResult.setData(bean);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
-			logger.error("查询错误",e);
+			logger.error("根据报表类型及业务板块查询最新版本模板错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		return dataResult;
@@ -156,13 +155,13 @@ public class DataModuleController {
 	@PostMapping("editDataModule")
 	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = ResultUtils.class)
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="businessType",value="业务板块",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="html",value="模板html",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="firstRowNum",value="横向标题前缀(模块)",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="secondRowNum",value="横向标题后缀(科目)",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="firstColNum",value="纵向标题前缀",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="secondColNum",value="纵向标题后缀",dataType="Integer", paramType = "query")})
+		  @ApiImplicitParam(name="reportType",required=true,value="报表类型",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="firstRowNum",required=true,value="横向标题前缀(模块)",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="secondRowNum",required=true,value="横向标题后缀(科目)",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="firstColNum",required=true,value="纵向标题前缀",dataType="Integer", paramType = "query"),
+		  @ApiImplicitParam(name="secondColNum",required=true,value="纵向标题后缀",dataType="Integer", paramType = "query")})
 	@ResponseBody
 	public ResultUtils editDataModule(String reportType,String businessType,String html, 
 			Integer firstRowNum,Integer secondRowNum,Integer firstColNum, Integer secondColNum) {
