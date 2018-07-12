@@ -1,4 +1,4 @@
-package cn.financial.model;
+package cn.financial.model.response;
 
 import io.swagger.annotations.ApiModelProperty;
 

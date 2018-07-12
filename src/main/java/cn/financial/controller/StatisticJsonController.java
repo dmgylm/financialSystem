@@ -24,10 +24,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
-
 import cn.financial.model.Organization;
-import cn.financial.model.StaticInfo;
-import cn.financial.model.StaticJson;
+import cn.financial.model.response.StaticInfo;
+import cn.financial.model.response.StaticJson;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
