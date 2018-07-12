@@ -2,7 +2,7 @@ package cn.financial.model.response;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-@ApiModel(value="DataModule对象",description="查询组织结构信息")
+@ApiModel(value="查询组织结构信息",description="查询组织结构信息")
 public class OrganizaList {
 	
 	@ApiModelProperty(value="组织架构id",name="id",example="")
