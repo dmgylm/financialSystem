@@ -70,7 +70,7 @@ public class CapitalController {
         @Autowired
         private  OrganizationService organizationService; //组织架构表
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
         protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
         
@@ -435,7 +435,12 @@ public class CapitalController {
                   int row=1;
                   Integer a=0;
                   List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);//读取excel表格数据
-                 try {
+                  String[] arr=new String[]{"爱车贷","保险","维修","车管家","技术服务","专车","融资租赁","集团总部"};
+                  List<String> fauCodeList = new ArrayList<String>();
+                  fauCodeList=Arrays.asList(arr);
+                  List<Capital> listCapital=new ArrayList<>();
+                  boolean insertFlag = true;
+                  try {
                      for (int i = 0; i < list.size(); i++){
                          String[] str=list.get(i);   //在excel得到第i条数据
                          Capital capital=new Capital();
@@ -444,24 +449,185 @@ public class CapitalController {
                          map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
                          List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
                          capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
-                         capital.setPlate(str[0]);
-                         capital.setBU(str[1]);
-                         capital.setRegionName(str[2]);
-                         capital.setProvince(str[3]);
-                         capital.setCity(str[4]);
-                         capital.setCompany(str[5]);
-                         capital.setAccountName(str[6]);
-                         capital.setAccountBank(str[7]);
-                         capital.setAccount(str[8]);
-                         capital.setAccountNature(str[9]);
-                         capital.setTradeTime(sdf.parse(str[10]));
-                         capital.setStartBlack(Integer.parseInt(str[11]));
-                         capital.setIncom(Integer.parseInt(str[12]));
-                         capital.setPay(Integer.parseInt(str[13]));
-                         capital.setEndBlack(Integer.parseInt(str[14]));
-                         capital.setAbstrac(str[15]);
-                         capital.setClassify(str[16]);
-                         capital.setRemarks(str[17]);
+                         if(!str[0].equals("")){
+                            boolean bResult = false;
+                            if(fauCodeList.contains(str[0])==true)
+                            {
+                                bResult=true;
+                            }
+                            if(bResult==true){
+                               capital.setPlate(str[0]);
+                            }else{
+                               dataMap.put("result", "Excel表格第"+(i+2)+"行第一个单元格模板不存在，请核对后再上传");
+                               insertFlag=false;
+                               break; 
+                            }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第一个单元格模板不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[1].equals("")){
+                             capital.setBU(str[1]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[2].equals("")){
+                             capital.setRegionName(str[2]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[3].equals("")){
+                             capital.setProvince(str[3]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[4].equals("")){
+                             capital.setCity(str[4]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[5].equals("")){
+                             capital.setCompany(str[5]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第六个单元格公司名称不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[6].equals("")){
+                             capital.setAccountName(str[6]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第七个单元格账户名不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[7].equals("")){
+                             capital.setAccountBank(str[7]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第八个单元格开户行不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[8].equals("")){
+                             capital.setAccount(str[8]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第九个单元格账户不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[9].equals("")){
+                             capital.setAccountNature(str[9]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十个单元格账户性质数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[10].equals("")){
+                            try {
+                                capital.setTradeTime(sdf.parse(str[10]));  
+                            } catch (Exception e) {
+                                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+                                dataMap.put("Time", "上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
+                                this.logger.error(e.getMessage(), e);
+                            }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[11].equals("")){
+                             if(str[11].matches("^\\d+$")){//判断单元格数据是否是数字
+                                 capital.setStartBlack(Integer.parseInt(str[11]));  
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十二个单元格只能是数字");
+                                 insertFlag=false;
+                                 break; 
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[12].equals("")){
+                             if(str[12].matches("^\\d+$")){//判断单元格数据是否是数字
+                                 capital.setIncom(Integer.parseInt(str[12]));
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十三个单元格数据只能是数字");
+                                 insertFlag=false;
+                                 break;
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十三个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[13].equals("")){
+                             if(str[13].matches("^\\d+$")){//判断单元格数据是否是数字
+                                 capital.setPay(Integer.parseInt(str[13]));
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十四个单元格数据只能是数字");
+                                 insertFlag=false;
+                                 break;
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十四个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[14].equals("")){
+                             if(str[14].matches("^\\d+$")){//判断单元格数据是否是数字
+                                 capital.setEndBlack(Integer.parseInt(str[14]));
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十五个单元格数据只能是数字");
+                                 insertFlag=false;
+                                 break;
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[15].equals("")){
+                             if(str[15].length()<=200){
+                                 capital.setAbstrac(str[15]); 
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十六个单元格里面字数最多200字");
+                                 insertFlag=false;
+                                 break;   
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十六个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[16].equals("")){
+                             capital.setClassify(str[16]);
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十七个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
+                         if(!str[17].equals("")){
+                             if(str[17].length()<=200){
+                                capital.setRemarks(str[17]); 
+                             }else{
+                                 dataMap.put("result", "Excel表格第"+(i+2)+"行第十八个单元格里面最多200字");
+                                 insertFlag=false;
+                                 break;  
+                             }
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第十八个单元格数据不能为空");
+                             insertFlag=false;
+                             break;
+                         }
                          Calendar calendar = Calendar.getInstance();
                          calendar.setTime(calendar.getTime());
                          capital.setuId(uId);
@@ -469,13 +635,16 @@ public class CapitalController {
                          capital.setMonth(calendar.get(Calendar.MONTH)+1);
                          capital.setStatus(1);
                          capital.setEditor(0);
-                         a = capitalService.insertCapital(capital); //导入新增的数据
-                         if (a == 1) {
-                             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                         } else {
-                             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                         }
-                     }          
+                         listCapital.add(capital);
+                     }
+                     if(insertFlag) { //如果没有数据异常才导入数据
+                         a = capitalService.batchInsertCapital(listCapital); //导入新增的数据
+                      }
+                     if (a == 1) {
+                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                     } else {
+                         dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                     }
                  } catch (Exception e) {
                      dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                      this.logger.error(e.getMessage(), e);
