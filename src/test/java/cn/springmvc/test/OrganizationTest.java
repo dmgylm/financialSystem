@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import cn.financial.model.Organization;
 import cn.financial.service.impl.OrganizationServiceImpl;
@@ -19,7 +20,7 @@ import cn.financial.util.HttpClient3;
 import cn.financial.util.JsonToHtmlUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
+@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml",
