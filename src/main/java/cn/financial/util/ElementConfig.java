@@ -141,4 +141,24 @@ public class ElementConfig {
      * 角色id为空
      */
     public static final String USER_ROLEID_NULL = "USER_ROLEID_NULL";
+    /**
+     * 角色名称为空
+     */
+    public static final String USER_ROLENAME_NULL = "USER_ROLENAME_NULL";
+    /**
+     * 功能能权限id为空
+     */
+    public static final String USER_RESOURCEID_NULL = "USER_RESOURCEID_NULL";
+    /**
+     * 功能权限父节点为空
+     */
+    public static final String USER_RESOURCE_PARENTID_NULL = "USER_RESOURCE_PARENTID_NULL";
+    /**
+     * 功能权限名称为空
+     */
+    public static final String USER_RESOURCE_NAME_NULL = "USER_RESOURCE_NAME_NULL";
+    /**
+     * 功能权限为空
+     */
+    public static final String USER_RESOURCE_PERMSSION_NULL = "USER_RESOURCE_PERMSSION_NULL";
 }
