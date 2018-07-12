@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiModelProperty;
 
 public class UserOrganizationResult extends ResultUtils{
-    @ApiModelProperty(value = "重置密码")
+    @ApiModelProperty(value = "用户组织架构信息集合")
     private List<JSONObject> userOrganizationList;
 
     public List<JSONObject> getUserOrganizationList() {
