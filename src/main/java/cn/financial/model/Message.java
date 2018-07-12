@@ -1,5 +1,9 @@
 package cn.financial.model;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 消息实体类
  * 
@@ -23,10 +27,12 @@ public class Message {
     String sName;//消息来源(这里指向发送用户的name)
 
     Integer isTag; // 是否标注（0未标注；1标注）
-
-    String createTime; // 创建时间
-
-    String updateTime; // 修改时间
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    Date createTime; // 创建时间
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    Date updateTime; // 修改时间
     
     String uId;//用户接收信息
  
@@ -87,19 +93,19 @@ public class Message {
         this.isTag = isTag;
     }
     
-    public String getCreateTime() {
+    public Date getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
