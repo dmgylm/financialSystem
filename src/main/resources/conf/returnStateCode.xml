@@ -92,4 +92,40 @@
         <code>219</code>
         <description>请先新增角色功能权限信息</description>
     </Result>
+    <Result name="USER_SESSION_OVERDUE">
+        <code>220</code>
+        <description>session过期,请重新登录</description>
+    </Result>
+    <Result name="USER_ID_NULL">
+        <code>221</code>
+        <description>用户id不能为空</description>
+    </Result>
+    <Result name="USER_NAME_NULL">
+        <code>222</code>
+        <description>用户名不能为空</description>
+    </Result>
+    <Result name="USER_REALNAME_NULL">
+        <code>223</code>
+        <description>真实姓名不能为空</description>
+    </Result>
+    <Result name="USER_JOBNUMBER_NULL">
+        <code>224</code>
+        <description>工号不能为空</description>
+    </Result>
+    <Result name="USER_NEWPWD_NULL">
+        <code>225</code>
+        <description>新密码不能为空</description>
+    </Result>
+    <Result name="USER_OLDPWD_NULL">
+        <code>226</code>
+        <description>旧密码不能为空</description>
+    </Result>
+    <Result name="USER_ORGID_NULL">
+        <code>227</code>
+        <description>组织结构id不能为空</description>
+    </Result>
+    <Result name="USER_ROLEID_NULL">
+        <code>228</code>
+        <description>角色id不能为空</description>
+    </Result>
 </StateCode>
