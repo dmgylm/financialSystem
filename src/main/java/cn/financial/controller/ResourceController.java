@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Resource;
+import cn.financial.model.response.ResourceResult;
+import cn.financial.model.response.ResultUtils;
+import cn.financial.model.response.RsourceInfo;
 import cn.financial.service.ResourceService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -51,10 +54,10 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    @ApiOperation(value="查询全部功能权限信息",notes="查询全部功能权限信息")
+    @ApiOperation(value="查询全部功能权限信息",notes="查询全部功能权限信息", response = ResourceResult.class)
     @ResponseBody
-    public Map<String, Object> listResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResourceResult listResource(){
+        ResourceResult result = new ResourceResult();
     	try {
             List<Resource> resource = resourceService.listResource();
             List<TreeNode<Resource>> nodes = new ArrayList<>();
@@ -72,13 +75,13 @@ public class ResourceController {
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            dataMap.put("resourceList", jsonObject);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            result.setResourceList(jsonObject);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-    	return dataMap;
+    	return result;
     }
     /**
      * 根据id查询
@@ -89,25 +92,25 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:view")
     @RequestMapping(value = "/resourceById", method = RequestMethod.POST)
-    @ApiOperation(value="根据功能权限id查询功能权限信息",notes="根据功能权限id查询功能权限信息")
+    @ApiOperation(value="根据功能权限id查询功能权限信息",notes="根据功能权限id查询功能权限信息", response = RsourceInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> getResourceById(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public RsourceInfo getResourceById(String resourceId){
+        RsourceInfo result = new RsourceInfo();
         try {
-        	String resourceId = null;
-        	if(null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))) {
-        		  resourceId = request.getParameter("resourceId");
-        	}
+            if(resourceId == null || resourceId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
+                return result;
+            }
             Resource resource = resourceService.getResourceById(resourceId,"");
-            dataMap.put("resourceById", resource);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            result.setResourceById(resource);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             e.printStackTrace();
         }
-        return dataMap;
+        return result;
     }
     /**
      * 新增
@@ -116,32 +119,19 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ApiOperation(value="新增功能权限信息",notes="新增功能权限信息")
+    @ApiOperation(value="新增功能权限信息",notes="新增功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="功能权限名称",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="parentId",value="父节点",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="url",value="路径",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="permssion",value="权限",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        try { 
-            String name = null;//功能权限名称
-            String parentId = null;//父id
-            String url = null;//路径
-            String permssion = null;//权限
-            
-            if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
-            	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
-            }
-            if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
-                parentId = request.getParameter("parentId");//父id
-            }
-            if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
-            	url = request.getParameter("url");
-            }
-            if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
-            	permssion = request.getParameter("permssion");
+    public ResultUtils insertResource(String name, String parentId, String url, String permssion){
+        ResultUtils result = new ResultUtils();
+        try {
+            if(parentId == null || parentId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_PARENTID_NULL, result);
+                return result;
             }
             Resource parent = resourceService.getResourceById("",parentId);//根据code查询parentId
             Resource resource = new Resource();
@@ -159,17 +149,21 @@ public class ResourceController {
                 resource.setParentId("1");
             }
             int resourceList = resourceService.insertResource(resource);
-            if(resourceList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(resourceList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_NAME_NULL, result);
+            }else if(resourceList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_PERMSSION_NULL, result);
+            }else if(resourceList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
 
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 修改
@@ -178,42 +172,24 @@ public class ResourceController {
      */
     @RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value="修改功能权限信息",notes="修改功能权限信息")
+    @ApiOperation(value="修改功能权限信息",notes="修改功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="name",value="功能权限名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="name",value="功能权限名称",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="url",value="路径",dataType="string", paramType = "query")})
     @ResponseBody
-    public Map<String, Object> updateResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils updateResource(String name, String url, String resourceId){
+        ResultUtils result = new ResultUtils();
         try {
-        	String name = null;
-            //String permssion = null;
-            String url = null;
-            //String parentId = null;
-            String resourceId = null;
-            
-            if( null != request.getParameter("name") && !"".equals(request.getParameter("name")) ) {
-            	name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
-            }
-            /*if( null != request.getParameter("permssion") && !"".equals(request.getParameter("permssion")) ) {
-            	permssion = request.getParameter("permssion");
-            }*/
-            if( null != request.getParameter("url") && !"".equals(request.getParameter("url")) ) {
-            	url = request.getParameter("url");
-            }
-            /*if( null != request.getParameter("parentId") && !"".equals(request.getParameter("parentId")) ) {
-            	parentId = request.getParameter("parentId");
-            }*/
-            if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
-            	resourceId = request.getParameter("resourceId");
+            if(resourceId == null || resourceId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
+                return result;
             }
             Resource parent = resourceService.getResourceById(resourceId,"");//根据id查询parentId(父id是否存在)
             Resource resource = new Resource();
             resource.setId(resourceId);
             resource.setName(name);
             resource.setUrl(url);
-            //resource.setPermssion(permssion);
             if(parent != null && !"".equals(parent)){  
                 if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"0".equals(parent.getParentId())){
                     resource.setParentId(parent.getParentId());
@@ -225,16 +201,16 @@ public class ResourceController {
             }
             Integer resourceList = resourceService.updateResource(resource);
             if(resourceList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 删除
@@ -242,29 +218,27 @@ public class ResourceController {
      * @param response
      * @param resourceId
      */
-    /*@RequiresPermissions("jurisdiction:update")
+    @RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ApiOperation(value="删除功能权限信息",notes="删除功能权限信息")
+    @ApiOperation(value="删除功能权限信息",notes="删除功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({@ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> deleteResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils deleteResource(String resourceId){
+        ResultUtils result = new ResultUtils();
         try {
-            String resourceId = null;
-            if( null != request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId")) ) {
-            	resourceId = request.getParameter("resourceId");
-            }
             Integer flag = resourceService.deleteResource(resourceId);
-            if(flag>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(flag == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
+            }else if(flag>0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }  
-        return dataMap;
-    }*/
+        return result;
+    }
 }

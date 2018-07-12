@@ -1,9 +1,7 @@
 package cn.financial.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
+import cn.financial.model.response.ResultUtils;
+import cn.financial.model.response.RoleInfo;
+import cn.financial.model.response.RoleResourceInfo;
+import cn.financial.model.response.RoleResult;
 import cn.financial.service.RoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -57,19 +57,19 @@ public class RoleController {
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息")
+    @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息", response = RoleResult.class)
     @ResponseBody
-    public Map<String, Object> listRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public RoleResult listRole(HttpServletRequest request,HttpServletResponse response){
+        RoleResult result = new RoleResult();
     	try {
             List<Role> role = roleService.listRole("");//查询全部参数为空
-            dataMap.put("roleList", role);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            result.setRoleList(role);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-    	return dataMap;
+    	return result;
     }
     /**
      * 根据roleId查询
@@ -80,25 +80,25 @@ public class RoleController {
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleById", method = RequestMethod.POST)
-    @ApiOperation(value="根据角色id查询角色信息",notes="根据角色id查询角色信息")
+    @ApiOperation(value="根据角色id查询角色信息",notes="根据角色id查询角色信息", response = RoleInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> getRoleById(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public RoleInfo getRoleById(String roleId){
+        RoleInfo result = new RoleInfo();
         try {
-            String roleId = null;
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
             Role role = roleService.getRoleById(roleId);
-            dataMap.put("roleById", role);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(role == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+                return result;
+            }
+            result.setRoleById(role);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             e.printStackTrace();
         }
-        return dataMap;
+        return result;
     }
     /**
      * 新增角色
@@ -110,36 +110,36 @@ public class RoleController {
      */
     @RequiresPermissions("role:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ApiOperation(value="新增角色信息",notes="新增角色信息")
+    @ApiOperation(value="新增角色信息",notes="新增角色信息", response = ResultUtils.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils insertRole(String roleName){
+        ResultUtils result = new ResultUtils();
         try {
-            String roleName = null;
-            if(null!=request.getParameter("roleName") && !"".equals(request.getParameter("roleName"))){
-                roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称 
+            if(roleName == null || roleName.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLENAME_NULL, result);
+                return result;
             }
             List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
             if(roleNameList.size()>0){//roleName不能重复
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE));
-                return dataMap;
+                ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
+                return result;
             }
             Role role = new Role();
             role.setId(UuidUtil.getUUID());
             role.setRoleName(roleName);
             int roleList = roleService.insertRole(role);
             if(roleList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 修改角色
@@ -151,35 +151,30 @@ public class RoleController {
      */
     @RequiresPermissions("role:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value="修改角色信息",notes="修改角色信息")
+    @ApiOperation(value="修改角色信息",notes="修改角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true)})
+        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query")})
     @ResponseBody
-    public Map<String, Object> updateRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils updateRole(String roleName, String roleId){
+        ResultUtils result = new ResultUtils();
         try {
-            String roleName = null, roleId = null;
-            if(null!=request.getParameter("roleName") && !"".equals(request.getParameter("roleName"))){
-                roleName = new String(request.getParameter("roleName").getBytes("ISO-8859-1"), "UTF-8");//角色名称
-            }
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
             Role role = new Role();
             role.setId(roleId);
             role.setRoleName(roleName);
             Integer roleList = roleService.updateRole(role);
-            if(roleList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(roleList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(roleList>0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 删除角色
@@ -189,28 +184,26 @@ public class RoleController {
      */
     /*@RequiresPermissions("role:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ApiOperation(value="删除角色信息",notes="删除角色信息")
-    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true))
+    @ApiOperation(value="删除角色信息",notes="删除角色信息", response = ResultUtils.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> deleteRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils deleteRole(String roleId){
+        ResultUtils result = new ResultUtils();
         try {
-            String roleId = null;
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
             Integer flag = roleService.deleteRole(roleId);
-            if(flag>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(flag == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(flag>0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }  
-        return dataMap;
+        return result;
     }*/
     
     /**
@@ -220,17 +213,17 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:view","role:view"})
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)")
+    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> listRoleResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public RoleResourceInfo listRoleResource(String roleId){
+        RoleResourceInfo result = new RoleResourceInfo();
         try {
-            String roleId = null;
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
+            if(roleResource == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+                return result;
+            }
             List<TreeNode<RoleResource>> nodes = new ArrayList<>();
             JSONObject jsonObject = new JSONObject();
             if(!CollectionUtils.isEmpty(roleResource)){
@@ -246,14 +239,14 @@ public class RoleController {
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            dataMap.put("roleResourceList", jsonObject);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            result.setRoleResourceList(jsonObject);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 新增(角色功能权限关联表)必须勾选父节点,父节点相当于查看权限
@@ -265,47 +258,34 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:create","role:create"})
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
-    @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限")
+    @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertRoleResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils insertRoleResource(String roleId, String resourceId){
+        ResultUtils result = new ResultUtils();
         try {
-            String resourceId = null, roleId = null;
-            if(null!=request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))){
-                resourceId = request.getParameter("resourceId");//资源权限id ,json格式数据
-            }
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
-            JSONArray sArray = JSON.parseArray(resourceId);
-            int roleResourceList = 0;
-            RoleResource roleResource = null;
-            for (int i = 0; i < sArray.size(); i++) {
-                JSONObject object = (JSONObject) sArray.get(i);
-                String resourceIdStr = (String)object.get("resourceId");//获取key-resourceId键值
-                System.out.println("resouceId:==="+resourceIdStr);
-                if(resourceIdStr!=null && !"".equals(resourceIdStr)){
-                    roleResource = new RoleResource();
-                    roleResource.setId(UuidUtil.getUUID());
-                    roleResource.setsId(resourceIdStr);
-                    roleResource.setrId(roleId);
-                    roleResourceList = roleResourceService.insertRoleResource(roleResource);
-                }
-            }
-            if(roleResourceList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            RoleResource roleResource = new RoleResource();
+            roleResource.setId(UuidUtil.getUUID());
+            roleResource.setsId(resourceId);
+            roleResource.setrId(roleId);
+            int roleResourceList = roleResourceService.insertRoleResource(roleResource);
+            if(roleResourceList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(roleResourceList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
+            }else if(roleResourceList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 修改(角色功能权限关联表)先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息
@@ -318,51 +298,35 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:update","role:update"})
     @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
-    @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息")
+    @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> updateRoleResource(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils updateRoleResource(String resourceId, String roleId){
+        ResultUtils result = new ResultUtils();
         try {
-            String resourceId = null, roleId = null;
-            if(null!=request.getParameter("resourceId") && !"".equals(request.getParameter("resourceId"))){
-                resourceId = request.getParameter("resourceId");//资源权限id ,json格式数据
-            }
-            if(null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))){
-                roleId = request.getParameter("roleId");//角色id
-            }
-            int roleResourceDelete = roleResourceService.deleteRoleResource(roleId);//删除
-            if(roleResourceDelete > 0){
-                JSONArray sArray = JSON.parseArray(resourceId);
-                int roleResourceList = 0;
-                RoleResource roleResource = null;
-                for (int i = 0; i < sArray.size(); i++) {
-                    JSONObject object = (JSONObject) sArray.get(i);
-                    String resourceIdStr = (String)object.get("resourceId");//获取key-resourceId键值
-                    System.out.println("resouceId:==="+resourceIdStr);
-                    if(resourceIdStr!=null && !"".equals(resourceIdStr)){
-                        roleResource = new RoleResource();
-                        roleResource.setId(UuidUtil.getUUID());
-                        roleResource.setsId(resourceIdStr);
-                        roleResource.setrId(roleId);
-                        roleResourceList = roleResourceService.updateRoleResource(roleResource);//修改（新增数据）
-                    }
-                }
-                if(roleResourceList>0){
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
+            RoleResource roleResource = new RoleResource();
+            roleResource.setId(UuidUtil.getUUID());
+            roleResource.setsId(resourceId);
+            roleResource.setrId(roleId);
+            int roleResourceList = roleResourceService.updateRoleResource(roleResource);//修改（新增数据）
+            if(roleResourceList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(roleResourceList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
+            }else if(roleResourceList == -3){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE, result);
+            }else if(roleResourceList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 }
