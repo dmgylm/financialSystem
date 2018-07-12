@@ -14,7 +14,8 @@
 	</resultMap>    
 	<!--查询全部用户/多条件查询用户列表   从小到大-->
     <select id="listUser" parameterType="map" resultType="user">
-        SELECT id,name,realName,jobNumber,status,createTime,updateTime,expreTime FROM user WHERE 1 = 1 
+        SELECT id,name,realName,jobNumber,status,DATE_FORMAT(createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+        DATE_FORMAT(updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(expreTime,"%Y-%m-%d") as expreTime FROM user WHERE 1 = 1 
         <include refid="query_user_where"></include>
         ORDER BY createTime ASC
         <if test="pageSize!=null and pageSize!=''">
@@ -23,7 +24,8 @@
     </select>
     <!--查询全部用户/多条件查询用户列表 总条数-->
     <select id="listUserCount" parameterType="map" resultType="user">
-        SELECT id,name,realName,jobNumber,status,createTime,updateTime,expreTime FROM user WHERE 1 = 1 
+        SELECT id,name,realName,jobNumber,status,DATE_FORMAT(createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+        DATE_FORMAT(updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(expreTime,"%Y-%m-%d") as expreTime FROM user WHERE 1 = 1 
         <include refid="query_user_where"></include>
     </select>
     <!--新增用户-->
@@ -33,11 +35,13 @@
     </insert>
     <!--根据id查询用户-->  
     <select id="getUserById" parameterType="STRING" resultType="user">
-         SELECT id,name,realName,jobNumber,status,createTime,updateTime,expreTime FROM user WHERE id=#{id} and status = 1
+         SELECT id,name,realName,jobNumber,status,DATE_FORMAT(createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+         DATE_FORMAT(updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(expreTime,"%Y-%m-%d") as expreTime FROM user WHERE id=#{id} and status = 1
     </select>
     <!--根据name查询用户--> 
     <select id="getUserByName" parameterType="STRING" resultType="user">
-    	SELECT id,name,realName,pwd,jobNumber,status,salt,createTime,updateTime,expreTime FROM user WHERE name=#{name} and status = 1
+    	SELECT id,name,realName,pwd,jobNumber,status,salt,DATE_FORMAT(createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+        DATE_FORMAT(updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(expreTime,"%Y-%m-%d") as expreTime FROM user WHERE name=#{name} and status = 1
     </select>
     <!--根据name/jobNumber查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">

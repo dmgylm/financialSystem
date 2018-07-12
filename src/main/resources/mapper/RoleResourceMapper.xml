@@ -4,7 +4,7 @@
 	<!--查询全部/根据角色id查对应的功能权限-->
     <select id="listRoleResource" parameterType="STRING" resultType="cn.financial.model.RoleResource">
         SELECT m.id as id,r.id as rId,s.id as sId,r.roleName as roleName,s.name as name,s.code as code,
-		s.url as url,s.parentId as parentId,s.permssion as permssion,m.createTime as createTime
+		s.url as url,s.parentId as parentId,s.permssion as permssion,DATE_FORMAT(m.createTime,"%Y-%m-%d %h:%i:%s") as createTime
 		FROM role r inner join role_resource_mapping m on r.id=m.rId INNER JOIN resource s on s.id=m.sId 
 		WHERE 1 = 1 and r.status = 1 and s.status = 1
 		<if test="rId!=null and rId!=''">

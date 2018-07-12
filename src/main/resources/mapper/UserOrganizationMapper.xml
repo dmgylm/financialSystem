@@ -4,7 +4,7 @@
 	<!--查询全部/根据用户id查询对应功能权限-->
     <select id="listUserOrganization" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
         SELECT o.id as oId,u.id as uId,u.realName as realName,u.name as name,u.jobNumber as jobNumber,
-		o.code as code,o.parentId as parentId,o.orgName as orgName,o.his_permission as his_permission,m.createTime as createTime
+		o.code as code,o.parentId as parentId,o.orgName as orgName,o.his_permission as his_permission,DATE_FORMAT(m.createTime,"%Y-%m-%d %h:%i:%s") as createTime
 		FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId 
 		WHERE 1 = 1
 		<if test="uId!=null and uId!=''">
