@@ -16,9 +16,9 @@
 		<result property="oId" column="oId" javaType="string" jdbcType="VARCHAR"></result>
 		<result property="isTag" column="isTag" javaType="int"
 			jdbcType="INTEGER"></result>
-		<result property="createTime" column="createTime" javaType="string"
+		<result property="createTime" column="createTime" javaType="date"
 			jdbcType="TIMESTAMP"></result>
-		<result property="updateTime" column="updateTime" javaType="string"
+		<result property="updateTime" column="updateTime" javaType="date"
 			jdbcType="TIMESTAMP"></result>
 		<result property="uId" column="uId" javaType="string"
 			jdbcType="VARCHAR"></result>
