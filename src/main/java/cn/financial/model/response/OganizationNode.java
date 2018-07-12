@@ -12,13 +12,13 @@ import io.swagger.annotations.ApiModelProperty;
 public class OganizationNode extends ResultUtils {
 	
 	@ApiModelProperty(value = "查询组织结构信息")
-	private List<OrganizaList> data;
+	private List<Organization> data;
 
-	public List<OrganizaList> getData() {
+	public List<Organization> getData() {
 		return data;
 	}
 
-	public void setData(List<OrganizaList> data) {
+	public void setData(List<Organization> data) {
 		this.data = data;
 	}
 
