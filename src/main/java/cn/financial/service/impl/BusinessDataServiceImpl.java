@@ -126,5 +126,8 @@ public class BusinessDataServiceImpl implements BusinessDataService {
         resultMap.put("typeId", map.get("typeId"));
         return businessDataDao.businessDataExport(resultMap);
     }
-
+    @Override
+	public List<BusinessData> getBusinessAllBySomeOne(Map<Object, Object> map) {
+		return businessDataDao.getBusinessAllBySomeOne(map);
+	}
 }
