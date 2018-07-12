@@ -83,7 +83,18 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Integer updateMessageById(Map<Object, Object> map) {
-        return messageDao.updateMessageById(map);
+    	
+    	Map<Object, Object> um = new HashMap<>();
+    	
+    	if(map.get("status") != null) {
+    		um.put("status", map.get("status"));
+    	}
+    	if(map.get("isTag") != null) {
+    		um.put("isTag", map.get("isTag"));
+    	}
+    	um.put("id", map.get("id"));
+    	
+        return messageDao.updateMessageById(um);
     }
 
     /**
@@ -159,8 +170,16 @@ public class MessageServiceImpl implements MessageService {
 		
 		final Integer TWO = 2;
 		final Integer THREE = 3;
-		Integer pageSize = (Integer) pagingMap.get("pageSize");		//每页查询条数
-		Integer start = (Integer) pagingMap.get("start");			//查询页数
+		// 默认一页显示的数据
+		Integer pageSize = 10;
+        if (null != pagingMap.get("pageSize") && !"".equals(pagingMap.get("pageSize"))) {
+            pageSize = Integer.parseInt(pagingMap.get("pageSize").toString());
+        }
+        // 默认显示第一页
+        Integer start = 0;
+        if (null != pagingMap.get("page") && !"".equals(pagingMap.get("page"))) {
+            start = pageSize * (Integer.parseInt(pagingMap.get("page").toString()) - 1);
+        }
 		
 		List<UserRole> lur = userRoleDao.listUserRole(user.getName());
 		List<Message> lm = new ArrayList<>();
