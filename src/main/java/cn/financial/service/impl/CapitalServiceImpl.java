@@ -107,18 +107,18 @@ public class CapitalServiceImpl implements CapitalService{
         Integer pageSize=10;
         if(map.get("pageSize").toString()!=null && !map.get("pageSize").toString().equals("")){
             pageSize=Integer.parseInt(map.get("pageSize").toString());
-            map.put("pageSize",pageSize);
+            resultMap.put("pageSize",pageSize);
         }else{
-            map.put("pageSize",pageSize);
+            resultMap.put("pageSize",pageSize);
         }
         Integer start=0;
         if(map.get("page").toString()!=null && !map.get("page").toString().equals("")){
             start=pageSize * (Integer.parseInt(map.get("page").toString()) - 1);
-            map.put("start",start);
+            resultMap.put("start",start);
         }else{
-            map.put("start",start);
+            resultMap.put("start",start);
         }
-        resultMap.put("oId", map.get("oId").toString());
+        resultMap.put("oId", map.get("oId"));
         return capitalDao.listCapitalBy(resultMap);
     }
 
@@ -172,7 +172,7 @@ public class CapitalServiceImpl implements CapitalService{
         if(map.get("classify").toString()!=null&&!map.get("classify").equals("")){
             resultMap.put("classify", map.get("classify").toString());
         }
-        resultMap.put("oId", map.get("oId").toString());
+        resultMap.put("oId", map.get("oId"));
         return capitalDao.capitalExport(resultMap);
     }
 

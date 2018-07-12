@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +25,9 @@ import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.BusinessResult;
+import cn.financial.model.response.HtmlResult;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
@@ -40,7 +42,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
@@ -83,7 +84,7 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = Business.class)
+        @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = BusinessResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "String",paramType = "query"),
@@ -92,8 +93,9 @@ public class BusinessDataController {
                 @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
-        public Map<String, Object> listBusinessDataBy(HttpServletRequest request) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        public BusinessResult listBusinessDataBy(HttpServletRequest request) {
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            BusinessResult businessResult=new BusinessResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
@@ -151,41 +153,36 @@ public class BusinessDataController {
                     //循环合格数据的oid 去查询他的所有部门
                     Map<Object,Object> busMap=new HashMap<Object, Object>();
                     //List<Business> businessList=new ArrayList<>();//页面列表排列数据
-                    List<Map>lm=new ArrayList<>();
+                    List<Business> businessList=new ArrayList<>();
                     for (int i = 0; i < businessData.size(); i++) {
                         List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(businessData.get(i).getTypeId()); //根据oId查出公司以下的部门
                         Organization CompanyName= organizationService.getCompanyNameBySon(businessData.get(i).getoId());//查询所属的公司名
                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                             if(listTreeByIdForSon.get(j).getOrgType()==BusinessData.DEPNUM){ //找到公司以下的节点业务
-                                  	busMap=new HashMap<Object, Object>();
-                                  	busMap.put("year", businessData.get(i).getYear());
-	                              	busMap.put("month", businessData.get(i).getMonth());
-	                              	busMap.put("company", CompanyName.getOrgName());
-	                              	busMap.put("structures", listTreeByIdForSon.get(j).getOrgName());
-	                              	if(businessData.get(i).getUpdateTime()!=null){
-	                              	  busMap.put("updateTime", sdf.format(businessData.get(i).getUpdateTime()));
-	                              	}else{
-	                              	  busMap.put("updateTime","");
-	                              	}
-	                              	busMap.put("createTime", sdf.format(businessData.get(i).getCreateTime()));
-	                              	busMap.put("id", businessData.get(i).getId());
-	                              	busMap.put("userName", user.getName());
-	                              	busMap.put("status", businessData.get(i).getStatus());
-	                              	lm.add(busMap);
+                                  Business business=new Business();
+                                  business.setId(businessData.get(i).getId());//id
+                                  business.setYear(businessData.get(i).getYear()); //年份
+                                  business.setMonth(businessData.get(i).getMonth()); //月份
+                                  business.setUserName(user.getName()); //用户
+                                  business.setUpdateTime(businessData.get(i).getUpdateTime()); //操作时间
+                                  business.setStatus(businessData.get(i).getStatus());//状态
+                                  business.setCompany(CompanyName.getOrgName()); //公司
+                                  business.setStructures(listTreeByIdForSon.get(j).getOrgName()); //业务方式
+                                  businessList.add(business); 
                             }
                         }
-                    }   
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                    dataMap.put("data", lm);
-                    dataMap.put("total", total.size());
+                    } 
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,businessResult);
+                    businessResult.setData(businessList); //返回的资金流水数据
+                    businessResult.setTotal(total.size());//返回的总条数
                 }else{
                     throw new Exception("您没有权限操作损益表！");
                 }
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,businessResult);
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return businessResult;
         }
         
         /**
@@ -199,13 +196,14 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
-        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息")
+        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息",response =HtmlResult.class)
         @ApiImplicitParams({
             @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer",paramType = "query")})
         @ResponseBody
-        public Map<String, Object> selectBusinessDataById(HttpServletRequest request,String id, Integer htmlType) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        public HtmlResult selectBusinessDataById(HttpServletRequest request,String id, Integer htmlType) {
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            HtmlResult htmlResult=new HtmlResult();
             try {
                 if(id!=null&&!id.equals("") && htmlType!=null){
                     BusinessData  businessData=businessDataService.selectBusinessDataById(id);
@@ -217,16 +215,16 @@ public class BusinessDataController {
                     HtmlGenerate htmlGenerate=new HtmlGenerate();
                     String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
                     System.out.println(html);
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                    dataMap.put("data", html);   
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,htmlResult);
+                    htmlResult.setHtml(html);
                 }else{
-                    dataMap.put("result","id或者htmlType为空！");  
+                    htmlResult.setMess("id或者htmlType为空！");
                 }
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return htmlResult;
         }
         
         /**
@@ -322,7 +320,7 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
-        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response = BusinessData.class)
+        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),

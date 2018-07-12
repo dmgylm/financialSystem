@@ -10,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  *
  */
 public class Business {
-	
+    
+        private String id;   //id
+    
         private Integer year;   //年份
             	 
         private Integer month; //月份
@@ -83,6 +85,14 @@ public class Business {
         public Integer getStatus() {
             return status;
         }
-   
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
        
 }

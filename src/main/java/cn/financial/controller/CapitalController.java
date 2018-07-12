@@ -33,6 +33,9 @@ import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.model.response.CapitalByIdResult;
+import cn.financial.model.response.CapitalResult;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
@@ -91,7 +94,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
-        @ApiOperation(value="查询资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response = Capital.class)
+        @ApiOperation(value="查询资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response = CapitalResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer", paramType = "query"),
                 @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer", paramType = "query"),
@@ -106,8 +109,9 @@ public class CapitalController {
                 @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String", paramType = "query")})
         @ResponseBody
-        public Map<String, Object> listCapitalBy(HttpServletRequest request) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        public CapitalResult listCapitalBy(HttpServletRequest request) {
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            CapitalResult capitalResult=new CapitalResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
@@ -146,9 +150,9 @@ public class CapitalController {
                      }
                      list.get(i).setEditor(editor);
                 }
-                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                 dataMap.put("data", list);
-                 dataMap.put("total", total.size());
+                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                 capitalResult.setCapital(list);
+                 capitalResult.setTotal(total.size());
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！"); 
                 }
@@ -191,10 +195,10 @@ public class CapitalController {
                 /*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("data", subList);*/
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return capitalResult;
         }
         
         /**
@@ -205,31 +209,32 @@ public class CapitalController {
          *           
          * @return
          */
-        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息",response = Capital.class)
+        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息",response = CapitalByIdResult.class)
         @ApiImplicitParams({@ApiImplicitParam(name="id",value="资金的id",dataType="string", paramType = "query", required = true)})
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
-        public Map<String, Object> selectCapitalById(HttpServletRequest request,String id) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        public CapitalByIdResult selectCapitalById(HttpServletRequest request,String id) {
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            CapitalByIdResult capitalByIdResult=new CapitalByIdResult();
             try {
-                   Capital  Capital=capitalService.selectCapitalById(id);
+                   Capital  capital=capitalService.selectCapitalById(id);
                    Date  newTime=new Date();
-                   Date begTime=Capital.getCreateTime(); //得到开始时间
-                   Date endTime=Capital.getUpdateTime(); //得到更新时间
+                   Date begTime=capital.getCreateTime(); //得到开始时间
+                   Date endTime=capital.getUpdateTime(); //得到更新时间
                    Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
-                   Integer editor=Capital.getEditor();
+                   Integer editor=capital.getEditor();
                    if(num<=7||endTime==null){
                        editor=1;//可编辑数据
                    }
-                   Capital.setEditor(editor);
-                   dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                   dataMap.put("data", Capital);
+                   capital.setEditor(editor);
+                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
+                   capitalByIdResult.setCapital(capital);
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return capitalByIdResult;
         }
         
      
@@ -241,7 +246,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)")
+        @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response=ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "id", value = "资金流水表id", required = true, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
@@ -265,8 +270,9 @@ public class CapitalController {
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "remarks", value = "备注", required = false, dataType = "String",paramType = "query")})
         @ResponseBody
-        public Map<String, Object> updateCapital(HttpServletRequest request) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        public ResultUtils updateCapital(HttpServletRequest request) {
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            ResultUtils resultUtils=new ResultUtils();
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
@@ -297,15 +303,15 @@ public class CapitalController {
                 capital.setEditor(0);
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,resultUtils);
                 } else {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                   ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,resultUtils);
                 }
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+                  ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,resultUtils);
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return resultUtils;
         }
         
        /* *//**
@@ -344,7 +350,7 @@ public class CapitalController {
         @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,method = RequestMethod.POST)
-        @ApiOperation(value="资金流水上传", notes="资金流水表上传数据")
+        @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=ResultUtils.class)
         /*@ApiImplicitParams({@ApiImplicitParam(name ="uploadFile", value = "文件流对象,接收数组格式", required = true,dataType = "MultipartFile",paramType = "query")
            })*/
         @ResponseBody
@@ -370,7 +376,13 @@ public class CapitalController {
                          Map<Object, Object> map = new HashMap<>();
                          map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
                          List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
-                         capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
+                         if(listOrganization.size()>0){
+                             capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
+                         }else{
+                             dataMap.put("result", "Excel表格第"+(i+2)+"行第六个单元格公司名称不存在");
+                             insertFlag=false;
+                             break;  
+                         }
                          if(!str[0].equals("")){
                             boolean bResult = false;
                             if(fauCodeList.contains(str[0])==true)
@@ -589,7 +601,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
-        @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = Capital.class)
+        @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "BU", value = "所属事业部门（如财务部）", required = false, dataType = "String",paramType = "query"),
