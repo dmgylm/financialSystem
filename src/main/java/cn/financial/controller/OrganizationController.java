@@ -69,7 +69,7 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = true),
     })
     @PostMapping(value = "/save")
     public ResultUtils saveOrganization(String orgName,String orgType,
