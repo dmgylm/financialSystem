@@ -1,22 +1,21 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.UserOrganizationDAO;
-import cn.financial.model.Organization;
 import cn.financial.model.UserOrganization;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
-import cn.financial.util.TreeNode;
+import cn.financial.util.UuidUtil;
 
 
 @Service("UserOrganizationServiceImpl")
@@ -39,7 +38,28 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      */
     @Override
     public Integer insertUserOrganization(UserOrganization userOrganization) {
-        return userOrganizationDao.insertUserOrganization(userOrganization);
+        if(userOrganization.getuId() == null || userOrganization.getuId().equals("")){//用户id
+            return -1;
+        }
+        if(userOrganization.getoId() == null || userOrganization.getoId().equals("")){//组织结构id ,json格式数据
+            return -2;
+        }
+        JSONArray sArray = JSON.parseArray(userOrganization.getoId());
+        int userOrganizationList = 0;
+        UserOrganization userOrganizations = null;
+        for (int i = 0; i < sArray.size(); i++) {
+            JSONObject object = (JSONObject) sArray.get(i);
+            String orgIdStr = (String)object.get("orgId");//获取key-orgId键值
+            System.out.println("organizationId:==="+orgIdStr);
+            if(orgIdStr!=null && !"".equals(orgIdStr)){
+                userOrganizations = new UserOrganization();
+                userOrganizations.setId(UuidUtil.getUUID());
+                userOrganizations.setoId(orgIdStr);
+                userOrganizations.setuId(userOrganization.getuId());
+                userOrganizationList = userOrganizationDao.insertUserOrganization(userOrganizations);
+            }
+        }
+        return userOrganizationList;
     }
     /**
      * 删除
@@ -54,7 +74,33 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      */
     @Override
     public Integer updateUserOrganization(UserOrganization userOrganization) {
-        return userOrganizationDao.updateUserOrganization(userOrganization);
+        if(userOrganization.getuId() == null || userOrganization.getuId().equals("")){
+            return -1;
+        }
+        if(userOrganization.getoId() == null || userOrganization.getoId().equals("")){
+            return -2;
+        }
+        int userOrganizationList = 0;
+        int userOrgDelete = userOrganizationDao.deleteUserOrganization(userOrganization.getuId());//删除
+        if(userOrgDelete > 0){
+            JSONArray sArray = JSON.parseArray(userOrganization.getoId());
+            UserOrganization userOrganizations = null;
+            for (int i = 0; i < sArray.size(); i++) {
+                JSONObject object = (JSONObject) sArray.get(i);
+                String orgIdStr =(String)object.get("orgId");//获取key-orgId键值
+                System.out.println("organizationId:==="+orgIdStr);
+                if(orgIdStr!=null && !"".equals(orgIdStr)){
+                    userOrganizations = new UserOrganization();
+                    userOrganizations.setId(UuidUtil.getUUID());
+                    userOrganizations.setoId(orgIdStr);
+                    userOrganizations.setuId(userOrganization.getuId());
+                    userOrganizationList = userOrganizationDao.updateUserOrganization(userOrganizations);//修改（新增数据）
+                }
+            }
+        }else{
+            return -3;
+        }
+        return userOrganizationList;
     }
     
     /**
@@ -62,6 +108,9 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     public List<JSONObject> userOrganizationList(String uId){
+        if(uId == null || uId.equals("")){
+            return null;
+        }
         List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId);
         List<JSONObject> jsonUserOrg = new ArrayList<>();
         JSONObject jsonObject = null;
@@ -79,7 +128,7 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @param uId
      * @return
      */
-    public JSONObject userOrganizationLists(String uId){
+    /*public JSONObject userOrganizationLists(String uId){
         List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId);
         List<TreeNode<Organization>> nodes = new ArrayList<>();
         JSONObject jsonObject = null;
@@ -116,6 +165,6 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
             jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
         }
         return jsonObject;
-    }
+    }*/
 }
  
