@@ -33,7 +33,7 @@ public class HtmlAnalysis {
 	private static String CLASS_NAME_MAINTITLE = "maintitle";// 主标题className
 	private static String CLASS_NAME_SUBTITLE = "subtitle";// 子标题className
 	private static String CLASS_NAME_BUDGET = "budget";// 预算className
-	private static String CLASS_NAME_LABEL = "label";// 子标题className
+	private static String CLASS_NAME_LABEL = "label";// Label className
 	
 	private static String modelRowKey = "";
 	private static String prefixCelKey = "";
@@ -202,17 +202,22 @@ public class HtmlAnalysis {
 					Element input = inputs.get(0);
 					inputValue = input.attr("value");
 					inputClassSet = input.classNames();
-					if(input.hasClass(HtmlGenerate.CLASS_FORMULA)) {
+					if(input.hasClass(HtmlGenerate.CLASS_FORMULA)) {//公式
 						inputboxType = HtmlGenerate.BOX_TYPE_FORMULA;
-					}
-					if(input.hasClass(HtmlGenerate.CLASS_LABEL)) {
-						inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
-					}
-					if(input.hasClass(HtmlGenerate.CLASS_INPUT)) {
+					} else if(input.hasClass(HtmlGenerate.CLASS_INPUT)) {//输入框
 						inputboxType = HtmlGenerate.BOX_TYPE_INPUT;
-					}
-					if(input.hasClass(HtmlGenerate.CLASS_BUDGET)) {
+					} else if(input.hasClass(HtmlGenerate.CLASS_BUDGET)) {//预算
 						inputboxType = HtmlGenerate.BOX_TYPE_BUDGET;
+					} else if(input.hasClass(HtmlGenerate.CLASS_MODULE)) {//模块
+						inputboxType = HtmlGenerate.BOX_TYPE_MODULE;
+					} else if(input.hasClass(HtmlGenerate.CLASS_ITEM)) {//科目
+						inputboxType = HtmlGenerate.BOX_TYPE_ITEM;
+					} else if(input.hasClass(HtmlGenerate.CLASS_MAINTITLE)) {//主标题
+						inputboxType = HtmlGenerate.BOX_TYPE_MAINTITLE;
+					} else if(input.hasClass(HtmlGenerate.CLASS_SUBTITLE)) {//子标题
+						inputboxType = HtmlGenerate.BOX_TYPE_SUBTITLE;
+					} else if(input.hasClass(HtmlGenerate.CLASS_LABEL)) {//普通Label
+						inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
 					}
 				}
 				addRowAndColKey(inputValue, inputClassSet,rowNum, colNum);
@@ -271,6 +276,9 @@ public class HtmlAnalysis {
 		}
 		
 		String key = rowKey + Separate_X_Y + colKey;
+//		if(StringUtils.isValid(rowKey) && StringUtils.isValid(colKey)) {
+//			name = key;
+//		}
 		if(!StringUtils.isValid(name)) {
 			name = key;
 		}

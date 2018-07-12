@@ -96,7 +96,7 @@ public class JsonConvertProcess {
 			if (obj instanceof JSONArray) {
 				JSONArray arr = (JSONArray) obj;
 				JSONObject newArr = new JSONObject();
-				newArr = generateSimplifyJson(arr,newArr);
+				newArr = generateSimplifyJson(arr);
 				newObj.put(key, newArr);
 			} else if(obj instanceof JSONObject) {
 				JSONObject no = simplifyJson((JSONObject) obj);
@@ -113,12 +113,12 @@ public class JsonConvertProcess {
 	 * @param newObj
 	 * @return
 	 */
-	public static JSONObject generateSimplifyJson(JSONArray arr,JSONObject newObj) {
+	public static JSONObject generateSimplifyJson(JSONArray arr) {
 		JSONObject nJson = new JSONObject();
 		for(int i=0;i<arr.size();i++) {
 			Object obj = arr.get(i);
 			if (obj instanceof JSONArray) {
-				generateSimplifyJson((JSONArray) obj,newObj);
+				generateSimplifyJson((JSONArray) obj);
 			} else if(obj instanceof JSONObject){
 				JSONObject json = (JSONObject)obj;
 				if(json.containsKey("type")) {
