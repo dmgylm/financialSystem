@@ -104,7 +104,6 @@ public class StatisticJsonTest {
     	
     }
     
-    
     @Test
     public void StatisticJsonHTMLTest() throws Exception {
     	
@@ -126,6 +125,25 @@ public class StatisticJsonTest {
     	
     }
     
+    @Test
+    public void StatisticBudgetHTMLTest() throws Exception {
+    	
+		HttpClient3 httpClient = new HttpClient3();
+    	JSONArray orgId = new JSONArray();
+    	orgId.add("088053224bfe404ab97b45efba15d6c0");
+		
+		Map<String , String> params = new HashMap<String, String>();
+		params.put("reportType", "BUDGET");
+		params.put("businessType", "b1503ff8da124fa3bce0bf07f16f56f6");
+		params.put("startDate", "2015/5");
+		params.put("endDate", "2019/7");
+		params.put("orgId", orgId.toString());
+		
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticJson;JSESSIONID=7e1000a3-c770-4315-91f5-ba50a59f3874", params);
+		System.out.println(responseStr);
+    	
+    	
+    }
     
     @Test
     public void StatisticJsonSelectTest() throws Exception {
@@ -136,7 +154,7 @@ public class StatisticJsonTest {
 		params.put("infoKey", "guanlifeiyong_zhufanggongjijinbenyueshiji");
 		params.put("caCheUuid", "9ee9313edc334232b7a64a60f27ce5dd");
 		
-		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticInfo;JSESSIONID=24951a30-34a4-46c7-84fe-855db87a017b", params);
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticInfo;JSESSIONID=24951a30-34a4-46c7-84fe-855db87a017b", params);
 		System.out.println(responseStr);
     	
     	
