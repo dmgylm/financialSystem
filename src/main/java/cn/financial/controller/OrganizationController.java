@@ -28,7 +28,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.response.Oganization;
+import cn.financial.model.response.OganizationNode;
+import cn.financial.model.response.OrganizaHason;
+import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
@@ -94,10 +96,10 @@ public class OrganizationController {
             if (Integer.valueOf(1).equals(i)) {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
         return result;
@@ -112,7 +114,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据条件查询组织结构信息",notes = "根据条件查询组织结构信息",response=Oganization.class)
+    @ApiOperation(value = "根据条件查询组织结构信息",notes = "根据条件查询组织结构信息",response=OganizationNode.class)
     @PostMapping(value="/listBy")
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
@@ -123,10 +125,10 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
     })
-    public Oganization listOrganizationBy(String orgName,String createTime,String updateTime,
+    public OganizationNode listOrganizationBy(String orgName,String createTime,String updateTime,
     		String id,String code,String uId, String parentId,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
-        Oganization organiza=new Oganization();
+        OganizationNode organiza=new OganizationNode();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             Map<Object, Object> map = new HashMap<>();
@@ -153,14 +155,13 @@ public class OrganizationController {
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
             if (!CollectionUtils.isEmpty(list)) {
+            	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
-                //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                //dataMap.put("data", list);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,organiza);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,organiza);
             this.logger.error(e.getMessage(), e);
         }
         return organiza;
@@ -182,8 +183,9 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = false),
     	})
     @PostMapping(value = "/updateByid")
-    public Map<String, Object> updateOrganizationById(String id,String orgName,String orgType, HttpServletRequest request, HttpServletResponse response) {
+    public ResultUtils updateOrganizationById(String id,String orgName,String orgType, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        ResultUtils result=new ResultUtils();
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
@@ -199,15 +201,15 @@ public class OrganizationController {
             map.put("uId", user.getId());
             Integer i = organizationService.updateOrganizationById(map);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 
     /**
@@ -223,8 +225,9 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
     @PostMapping(value = "/disconTinuate")
-    public Map<Object, Object> deleteOrganizationByStatusCascade(String id,HttpServletRequest request) {
+    public ResultUtils deleteOrganizationByStatusCascade(String id,HttpServletRequest request) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        ResultUtils result=new ResultUtils();
         try {
             Integer i = 0;
             User user = (User) request.getAttribute("user");
@@ -236,21 +239,21 @@ public class OrganizationController {
                 if (!boolean1) {
                     i = organizationService.deleteOrganizationById(request.getParameter("id"), user);
                     if (Integer.valueOf(1).equals(i)) {
-                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                    	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                     } else {
-                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                    	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                     }
                 } else {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE));
+                	ElementXMLUtils.returnValue(ElementConfig.ORGANIZA_DELEFALSE,result);
                 }
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 
     /**
@@ -266,7 +269,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response=Oganization.class)
+    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点")
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
@@ -301,29 +304,30 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的所有父节点",notes = "根据id查询所有该节点的所有父节点",response=Oganization.class)
+    @ApiOperation(value = "根据id查询所有该节点的所有父节点",notes = "根据id查询所有该节点的所有父节点",response=OrganizaParnode.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
     @PostMapping(value = "/getParnode")
-    public Map<Object, Object> getParnode(String id,HttpServletRequest request, HttpServletResponse response) {
+    public OrganizaParnode getParnode(String id,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        OrganizaParnode node=new OrganizaParnode();
         try {
             List<Organization> list = null;
             if (null != id && !"".equals(id)) {
                 list = organizationService.listTreeByIdForParent(request.getParameter("id"));
+                node.setData(list);
             }
             if (!CollectionUtils.isEmpty(list)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", list);
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,node);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,node);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,node);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return node;
     }
 
     /**
@@ -343,8 +347,9 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
     	})
     @PostMapping(value = "/move")
-    public Map<Object, Object> moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
+    public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        ResultUtils result=new ResultUtils();
         String parentOrgId = null;
         try {
             if (null != id && !"".equals(id)) {
@@ -356,15 +361,15 @@ public class OrganizationController {
             User user = (User) request.getAttribute("user");
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 
     /**
@@ -375,14 +380,15 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view" },logical=Logical.OR)
-    @ApiOperation(value = "根据条件判断是否该节点存在子节点",notes = "根据条件判断是否该节点存在子节点",response=Oganization.class)
+    @ApiOperation(value = "根据条件判断是否该节点存在子节点",notes = "根据条件判断是否该节点存在子节点",response=OrganizaHason.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "id", required = true),
     	})
     @PostMapping(value = "/hasSon")
-    public Map<Object, Object> hasOrganizationSon(String id,String orgName,HttpServletRequest request, HttpServletResponse response) {
+    public OrganizaHason hasOrganizationSon(String id,String orgName,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        OrganizaHason hason=new OrganizaHason();
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
@@ -392,13 +398,13 @@ public class OrganizationController {
                 map.put("id", id);
             }
             Boolean flag = organizationService.hasOrganizationSon(map);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("data", flag);
+            hason.setData(flag);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,hason);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,hason);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return hason;
     }
 
 }
