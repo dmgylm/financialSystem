@@ -99,7 +99,9 @@ public class RoleResourceServiceImpl implements RoleResourceService{
         for (TreeNode<RoleResource> item : map.values()) {
             roleList.add(item);
         }
-        jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roleList)));
+        if(TreeNode.buildTree(roleList) != null){
+            jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roleList)));
+        }
         return jsonObject;
      }
 }
