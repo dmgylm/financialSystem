@@ -85,8 +85,8 @@ public class BusinessDataController {
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = Business.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "integer",paramType = "query"),
-                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "integer",paramType = "query"),
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
@@ -98,15 +98,9 @@ public class BusinessDataController {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                    map.put("year",request.getParameter("year")); //年份
-                }
-                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                    map.put("month",request.getParameter("month"));  //月份
-                }
-                if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
-                    map.put("sId",request.getParameter("sId"));  //判断是损益还是预算表  1损益  2 预算
-                }
+                 map.put("year",request.getParameter("year")); //年份
+                 map.put("month",request.getParameter("month"));  //月份
+                 map.put("sId",request.getParameter("sId"));  //判断是损益还是预算表  1损益  2 预算
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
@@ -150,20 +144,8 @@ public class BusinessDataController {
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
                     List<BusinessData> total = businessDataService.businessDataExport(map); //查询权限下的所有数据 未经分页
-                    Integer pageSize=10;
-                    if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                        pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                        map.put("pageSize",pageSize);
-                    }else{
-                        map.put("pageSize",pageSize);
-                    }
-                    Integer start=0;
-                    if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                        start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                        map.put("start",start);
-                    }else{
-                        map.put("start",start);
-                    }
+                    map.put("pageSize",request.getParameter("pageSize"));
+                    map.put("page",request.getParameter("page"));
                     List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门

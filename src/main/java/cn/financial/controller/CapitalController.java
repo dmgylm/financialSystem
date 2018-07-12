@@ -112,36 +112,16 @@ public class CapitalController {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
-                    map.put("plate",request.getParameter("plate")); //板块
-                }
-                if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
-                    map.put("BU",request.getParameter("BU"));//事业部
-                }
-                if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
-                    map.put("regionName",request.getParameter("regionName"));//大区名称
-                }
-                if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
-                    map.put("province",request.getParameter("province"));//省份
-                }
-                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
-                    map.put("company",request.getParameter("company"));//公司名称
-                }
-                if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
-                    map.put("accountBank",request.getParameter("accountBank"));//开户行
-                }
-                if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                    map.put("accountNature",request.getParameter("accountNature"));//账户性质
-                }
-                if(request.getParameter("tradeTimeBeg")!=null && !request.getParameter("tradeTimeBeg").equals("")){
-                    map.put("tradeTimeBeg",(request.getParameter("tradeTimeBeg")));//交易起始日期
-                }
-                if(request.getParameter("tradeTimeEnd")!=null && !request.getParameter("tradeTimeEnd").equals("")){
-                    map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
-                }
-                if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                    map.put("classify",request.getParameter("classify"));//项目分类
-                }
+                 map.put("plate",request.getParameter("plate")); //板块
+                 map.put("BU",request.getParameter("BU"));//事业部
+                 map.put("regionName",request.getParameter("regionName"));//大区名称
+                 map.put("province",request.getParameter("province"));//省份
+                 map.put("company",request.getParameter("company"));//公司名称
+                 map.put("accountBank",request.getParameter("accountBank"));//开户行
+                 map.put("accountNature",request.getParameter("accountNature"));//账户性质
+                 map.put("tradeTimeBeg",(request.getParameter("tradeTimeBeg")));//交易起始日期
+                 map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
+                 map.put("classify",request.getParameter("classify"));//项目分类
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
                 if(userOrganization.size()>0){
                  String[] oId=new String[userOrganization.size()];//获取权限的oId
@@ -152,20 +132,8 @@ public class CapitalController {
                  List<String> oIds = Arrays.asList(oId);
                  map.put("oId", oIds);//根据权限的typeId查询相对应的数据
                  List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
-                 Integer pageSize=10;
-                 if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                     pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                     map.put("pageSize",pageSize);
-                 }else{
-                     map.put("pageSize",pageSize);
-                 }
-                 Integer start=0;
-                 if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                     start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                     map.put("start",start);
-                 }else{
-                     map.put("start",start);
-                 }
+                 map.put("pageSize",request.getParameter("pageSize"));
+                 map.put("page",request.getParameter("page"));
                  List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
                  Date  newTime=new Date();
                  for (int i = 0; i < list.size(); i++) {
@@ -242,11 +210,10 @@ public class CapitalController {
         @RequiresPermissions("capital:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
-        public Map<String, Object> selectCapitalById(HttpServletRequest request) {
+        public Map<String, Object> selectCapitalById(HttpServletRequest request,String id) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
             try {
-                if(request.getParameter("id")!=null&&!request.getParameter("id").equals("")){
-                   Capital  Capital=capitalService.selectCapitalById(request.getParameter("id"));
+                   Capital  Capital=capitalService.selectCapitalById(id);
                    Date  newTime=new Date();
                    Date begTime=Capital.getCreateTime(); //得到开始时间
                    Date endTime=Capital.getUpdateTime(); //得到更新时间
@@ -258,7 +225,6 @@ public class CapitalController {
                    Capital.setEditor(editor);
                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                    dataMap.put("data", Capital);
-                }
             } catch (Exception e) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
                 this.logger.error(e.getMessage(), e);
@@ -305,72 +271,28 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 Capital capital =new Capital();
-                if(request.getParameter("id")!=null && !request.getParameter("id").equals("")){
-                    capital.setId(request.getParameter("id"));
-                }
-                if(request.getParameter("plate")!=null && !request.getParameter("plate").equals("")){
-                    capital.setPlate(request.getParameter("plate"));
-                }
-                if(request.getParameter("BU")!=null && !request.getParameter("BU").equals("")){
-                    capital.setBU(request.getParameter("BU"));
-                }
-                if(request.getParameter("regionName")!=null && !request.getParameter("regionName").equals("")){
-                    capital.setRegionName(request.getParameter("regionName"));
-                }
-                if(request.getParameter("province")!=null && !request.getParameter("province").equals("")){
-                    capital.setProvince(request.getParameter("province"));
-                }
-                if(request.getParameter("city")!=null && !request.getParameter("city").equals("")){
-                    capital.setCity(request.getParameter("city"));
-                }
-                if(request.getParameter("company")!=null && !request.getParameter("company").equals("")){
-                    capital.setCompany(request.getParameter("company"));
-                }
-                if(request.getParameter("accountName")!=null && !request.getParameter("accountName").equals("")){
-                    capital.setAccountName(request.getParameter("accountName"));
-                }
-                if(request.getParameter("accountBank")!=null && !request.getParameter("accountBank").equals("")){
-                    capital.setAccountBank(request.getParameter("accountBank"));
-                }
-                if(request.getParameter("account")!=null && !request.getParameter("account").equals("")){
-                    capital.setAccount(request.getParameter("account"));
-                }
-                if(request.getParameter("accountNature")!=null && !request.getParameter("accountNature").equals("")){
-                    capital.setAccountNature(request.getParameter("accountNature"));
-                }
-                if(request.getParameter("tradeTime")!=null && !request.getParameter("tradeTime").equals("")){
-                    capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
-                }
-                if(request.getParameter("startBlack")!=null && !request.getParameter("startBlack").equals("")){
-                    capital.setStartBlack(Integer.getInteger(request.getParameter("startBlack")));
-                }
-                if(request.getParameter("incom")!=null && !request.getParameter("incom").equals("")){
-                    capital.setIncom(Integer.getInteger(request.getParameter("incom")));
-                }
-                if(request.getParameter("pay")!=null && !request.getParameter("pay").equals("")){
-                    capital.setPay(Integer.getInteger(request.getParameter("pay")));
-                }
-                if(request.getParameter("endBlack")!=null && !request.getParameter("endBlack").equals("")){
-                    capital.setEndBlack(Integer.getInteger(request.getParameter("endBlack")));
-                }
-                if(request.getParameter("abstrac")!=null && !request.getParameter("abstrac").equals("")){
-                    capital.setAbstrac(request.getParameter("abstrac"));
-                }
-                if(request.getParameter("classify")!=null && !request.getParameter("classify").equals("")){
-                    capital.setClassify(request.getParameter("classify"));
-                }
-                if(request.getParameter("remarks")!=null && !request.getParameter("remarks").equals("")){
-                    capital.setRemarks(request.getParameter("remarks"));
-                }
-                if(uId!=null && !uId.equals("")){
-                    capital.setuId(uId);
-                }
-                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                    capital.setYear(Integer.getInteger(request.getParameter("year")));
-                }
-                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                   capital.setMonth(Integer.getInteger(request.getParameter("month")));
-                }
+                capital.setId(request.getParameter("id"));
+                capital.setPlate(request.getParameter("plate"));
+                capital.setBU(request.getParameter("BU"));
+                capital.setRegionName(request.getParameter("regionName"));
+                capital.setProvince(request.getParameter("province"));
+                capital.setCity(request.getParameter("city"));
+                capital.setCompany(request.getParameter("company"));
+                capital.setAccountName(request.getParameter("accountName"));
+                capital.setAccountBank(request.getParameter("accountBank"));
+                capital.setAccount(request.getParameter("account"));
+                capital.setAccountNature(request.getParameter("accountNature"));
+                capital.setTradeTime(sdf.parse(request.getParameter("tradeTime")));
+                capital.setStartBlack(Integer.getInteger(request.getParameter("startBlack")));
+                capital.setIncom(Integer.getInteger(request.getParameter("incom")));
+                capital.setPay(Integer.getInteger(request.getParameter("pay")));
+                capital.setEndBlack(Integer.getInteger(request.getParameter("endBlack")));
+                capital.setAbstrac(request.getParameter("abstrac"));
+                capital.setClassify(request.getParameter("classify"));
+                capital.setRemarks(request.getParameter("remarks"));
+                capital.setuId(uId);
+                capital.setYear(Integer.getInteger(request.getParameter("year")));
+                capital.setMonth(Integer.getInteger(request.getParameter("month")));
                 capital.setStatus(1);
                 capital.setEditor(0);
                 Integer i = capitalService.updateCapital(capital);
@@ -534,9 +456,9 @@ public class CapitalController {
                             try {
                                 capital.setTradeTime(sdf.parse(str[10]));  
                             } catch (Exception e) {
-                                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
                                 dataMap.put("Time", "上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
-                                this.logger.error(e.getMessage(), e);
+                                insertFlag=false;
+                                break;
                             }
                          }else{
                              dataMap.put("result", "Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
