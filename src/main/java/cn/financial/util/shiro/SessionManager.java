@@ -17,7 +17,7 @@ public class SessionManager extends DefaultWebSessionManager{
 	
 	private static final Logger log = LoggerFactory.getLogger(SessionManager.class);
 	
-	private String authorization = "JSESSIONID";  
+	private String authorization = "jsessionid";  
 
 	@Override
 	protected Serializable getSessionId(ServletRequest request,
