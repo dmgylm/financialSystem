@@ -27,37 +27,41 @@ import cn.financial.exception.FormulaAnalysisException;
 public class HtmlAnalysis {
 	
 	private Document doc;
-	private static String NONE_DISPLAY_CLASS="display_none";
-	private static String firstRowKey = "";
-	private static String firstCelKey = "";
+	private static String CLASS_NONE_DISPLAY_NAME = "display_none";
+	private static String CLASS_NAME_MODULE = "module";// 模块ClassName
+	private static String CLASS_NAME_ITEM = "item";// 科目className
+	private static String CLASS_NAME_MAINTITLE = "maintitle";// 主标题className
+	private static String CLASS_NAME_SUBTITLE = "subtitle";// 子标题className
+	private static String CLASS_NAME_BUDGET = "budget";// 预算className
+	private static String CLASS_NAME_LABEL = "label";// 子标题className
+	
+	private static String modelRowKey = "";
+	private static String prefixCelKey = "";
 	private static String Separate_Modular = "_";//模块和科目间的字符间隔
 	private static String Separate_X_Y = "";//科目和横向标题间(本月实际)的字符间隔
-	/**
-	 * 当以下值为null时则不计入标题中
-	 */
 	
 	private Map<String,String> rowKeyMap = new HashMap<String, String>();
-	
 	private Map<String,String> colKeyMap = new HashMap<String, String>();
-	private Integer firstRowNum;//横向标题前缀
-	private Integer secondRowNum ;//横向标题后缀
-	private Integer firstColNum ;//纵向标题前缀
-	private Integer secondColNum;//纵向标题后缀
+	
+	private Integer prefixRowNum;//横向标题前缀
+	private Integer suffixRowNum ;//横向标题后缀
+	private Integer modelColNum ;//纵向标题前缀
+	private Integer itemColNum;//纵向标题后缀
 	private String REPLACE_REGX = "[：\\%/]";
 	
 	/**
 	 * 构造方法
 	 * @param file Html文件
-	 * @param firstRowNum 横向标题前缀
-	 * @param secondRowNum 横向标题后缀
-	 * @param modelColNum 纵向标题前缀
-	 * @param itemColNum 纵向标题后缀
+	 * @param prefixRowNum 横向标题前缀
+	 * @param suffixCelNum 横向标题后缀
+	 * @param modelColNum 模块列号
+	 * @param itemColNum 科目称号
 	 */
-	public HtmlAnalysis(File file,Integer firstRowNum,Integer secondRowNum,Integer modelColNum,Integer itemColNum) {
-		this.firstRowNum = firstRowNum;
-		this.secondColNum = itemColNum;
-		this.firstColNum = modelColNum;
-		this.secondRowNum = secondRowNum;
+	public HtmlAnalysis(File file,Integer modelColNum,Integer itemColNum,Integer prefixRowNum,Integer suffixRowNum) {
+		this.prefixRowNum = prefixRowNum;
+		this.suffixRowNum = suffixRowNum;
+		this.modelColNum = modelColNum;
+		this.itemColNum = itemColNum;
 		try {
 			this.doc = Jsoup.parse(file,"UTF-8");
 		} catch (IOException e) {
@@ -67,25 +71,53 @@ public class HtmlAnalysis {
 
 	/**
 	 * 构造方法
-	 * @param html Html代码字符串
+	 * @param file Html文件
+	 * @param prefixCelNum 横向标题前缀
+	 * @param suffixCelNum 横向标题后缀
+	 * @param modelColNum 模块列号
+	 * @param itemColNum 科目称号
 	 */
-	public HtmlAnalysis(String html,Integer firstRowNum,Integer secondRowNum,Integer modelColNum,Integer itemColNum) {
+	public HtmlAnalysis(File file,Integer modelColNum,Integer itemColNum,Integer suffixCelNum) {
+		this(file, modelColNum, itemColNum, null, suffixCelNum);
+	}
+	
+	
+	
+	/**
+	 * 构造方法
+	 * @param html Html代码字符串
+	 * @param suffixCelNum 横向标题后缀
+	 * @param modelColNum 模块列号
+	 * @param itemColNum 科目称号
+	 */
+	public HtmlAnalysis(String html,Integer modelColNum,Integer itemColNum,Integer suffixCelNum){
+		this(html, modelColNum, itemColNum, null,suffixCelNum);
+	}
+
+	/**
+	 * 构造方法
+	 * @param html Html代码字符串
+	 * @param prefixCelNum 横向标题前缀
+	 * @param suffixCelNum 横向标题后缀
+	 * @param modelColNum 模块列号
+	 * @param itemColNum 科目称号
+	 */
+	public HtmlAnalysis(String html,Integer modelColNum,Integer itemColNum,Integer prefixCelNum,Integer suffixCelNum) {
 		this.doc = Jsoup.parse(html);
-		this.firstRowNum = firstRowNum;
-		this.secondColNum = itemColNum;
-		this.firstColNum = modelColNum;
-		this.secondRowNum = secondRowNum;
+		this.prefixRowNum = prefixCelNum;
+		this.suffixRowNum = suffixCelNum;
+		this.modelColNum = modelColNum;
+		this.itemColNum = itemColNum;
 	}
 
 	public static void main(String[] args) {
 		String filename = "C:/Users/Admin/Desktop/xxxxxfffff.html";
 //		String filename = "C:/Users/Admin/Desktop/test.html";
 		File file = new File(filename);
-		Integer firstRowNum = null;//横向标题前缀
-		Integer secondRowNum = 3;//横向标题后缀
-		Integer firstColNum = 1;//纵向标题前缀
-		Integer secondColNum = 2;//纵向标题后缀
-		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(file, firstRowNum, secondRowNum, firstColNum, secondColNum);
+		Integer suffixCelNum = 3;//横向标题后缀
+		Integer modelColNum = 1;//纵向标题前缀
+		Integer itemColNum = 2;//纵向标题后缀
+		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(file, modelColNum, itemColNum, suffixCelNum);
 		String html = null;
 		try {
 			html = htmlAnalysis.analysis();
@@ -158,16 +190,18 @@ public class HtmlAnalysis {
 			for(int colNum=0;colNum<tds.size();colNum++){
 				Element td = tds.get(colNum);
 				
-				boolean tdDisplay = td.hasClass(NONE_DISPLAY_CLASS);
+				boolean tdDisplay = td.hasClass(CLASS_NONE_DISPLAY_NAME);
 				String rowspan = td.attr("rowspan");
 				String colspan = td.attr("colspan");
 		
 				Elements inputs = td.select("input");
 				String inputValue = null;
 				Integer inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
+				Set<String> inputClassSet = null;//该控件所有类名
 				if(inputs!=null && inputs.size()>0) {
 					Element input = inputs.get(0);
 					inputValue = input.attr("value");
+					inputClassSet = input.classNames();
 					if(input.hasClass(HtmlGenerate.CLASS_FORMULA)) {
 						inputboxType = HtmlGenerate.BOX_TYPE_FORMULA;
 					}
@@ -181,7 +215,7 @@ public class HtmlAnalysis {
 						inputboxType = HtmlGenerate.BOX_TYPE_BUDGET;
 					}
 				}
-				addRowAndColKey(inputValue, rowNum, colNum);
+				addRowAndColKey(inputValue, inputClassSet,rowNum, colNum);
 				
 				JSONObject tdJson = setJsonData(inputboxType,inputValue,rowNum,colNum,rowspan,colspan,!tdDisplay);
 				if(tdJson!=null) {
@@ -274,23 +308,23 @@ public class HtmlAnalysis {
 	 * @param rowNum
 	 * @param colNum
 	 */
-	private void addRowAndColKey(String cellValue, int rowNum,int colNum) {
+	private void addRowAndColKey(String cellValue,Set<String> classSet, int rowNum,int colNum) {
 		if(cellValue==null) {
 			cellValue = "";
 		}
 		cellValue = cellValue.trim();
-		if(firstColNum!=null && colNum==firstColNum && StringUtils.isValid(cellValue)) {
-			firstRowKey = cellValue;
+		if(classSet.contains(CLASS_NAME_MODULE) && StringUtils.isValid(cellValue)) {
+			modelRowKey = cellValue;
 		}
-		if(secondColNum!=null && colNum==secondColNum) {
-			String key = firstRowKey + Separate_Modular + cellValue;
+		if(classSet.contains(CLASS_NAME_ITEM)) {
+			String key = modelRowKey + Separate_Modular + cellValue;
 			rowKeyMap.put(rowNum+"", key);
 		}
-		if(firstRowNum!=null && rowNum==firstRowNum) {
-			firstCelKey = cellValue;
+		if(classSet.contains(CLASS_NAME_MAINTITLE)) {
+			prefixCelKey = cellValue;
 		}
-		if(secondRowNum!=null && rowNum==secondRowNum) {
-			String key = firstCelKey + cellValue;
+		if(classSet.contains(CLASS_NAME_SUBTITLE)) {
+			String key = prefixCelKey + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
 	}

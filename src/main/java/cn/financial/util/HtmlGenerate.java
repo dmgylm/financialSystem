@@ -41,15 +41,23 @@ public class HtmlGenerate {
 	 */
 	public static int HTML_TYPE_PREVIEW = 3;
 	
-	public static int BOX_TYPE_LABEL = 1;//输入框类型(label)
+	public static int BOX_TYPE_LABEL = 11;//输入框类型(label)
+	public static int BOX_TYPE_MODULE = 12;//输入框类型(模块)
+	public static int BOX_TYPE_ITEM = 13;//输入框类型(科目)
+	public static int BOX_TYPE_MAINTITLE = 14;//输入框类型(主标题)
+	public static int BOX_TYPE_SUBTITLE = 15;//输入框类型(子标题)
 	public static int BOX_TYPE_INPUT = 2;//输入框类型(录入框)
 	public static int BOX_TYPE_FORMULA = 3;//输入框类型(公式)
 	public static int BOX_TYPE_BUDGET = 4;//输入框类型(预算)
 	
-	public static String CLASS_LABEL="title";//Label所带Class
-	public static String CLASS_INPUT="input";//Input所带Class
-	public static String CLASS_FORMULA="formula";//公式所带Class
-	public static String CLASS_BUDGET="budget";//公式所带Class
+	public static String CLASS_LABEL = "title";// Label所带Class
+	public static String CLASS_MODULE = "module";// 模块所带Class
+	public static String CLASS_ITEM = "item";// 科目所带Class
+	public static String CLASS_MAINTITLE = "maintitle";// 主标题所带Class
+	public static String CLASS_SUBTITLE = "subtitle";// 子标题所带Class
+	public static String CLASS_INPUT = "input";// Input所带Class
+	public static String CLASS_FORMULA = "formula";// 公式所带Class
+	public static String CLASS_BUDGET = "budget";// 公式所带Class
 
 	private static Map<Integer, Map<Integer, JSONObject>> rowMap = new HashMap<Integer, Map<Integer,JSONObject>>();
 
@@ -216,6 +224,8 @@ public class HtmlGenerate {
 			td.text(value);
 		} else if (inputType == BOX_TYPE_BUDGET) {// 预算
 			td.text(value);
+		} else {//显示类控件,包括模块/科目/主标题/子标题等
+			td.text(name);
 		}
 	}
 
@@ -240,6 +250,8 @@ public class HtmlGenerate {
 			td.text(value);
 		} else if(inputType==BOX_TYPE_BUDGET) {//预算
 			td.text(value);
+		} else {//显示类控件,包括模块/科目/主标题/子标题等
+			td.text(name);
 		}
 	}
 
@@ -253,11 +265,7 @@ public class HtmlGenerate {
 	private void generateTemplateContent(Element td, int inputType,
 			String name, String formula) {
 		Element input = td.appendElement("input");
-		if(inputType==BOX_TYPE_LABEL) {//Label
-			input.attr("name",name);
-			input.attr("value",name);
-			input.addClass(CLASS_LABEL);
-		} else if(inputType==BOX_TYPE_INPUT) {//input
+		if(inputType==BOX_TYPE_INPUT) {//input
 //			input.attr("value",col.getString("name"));
 			input.addClass(CLASS_INPUT);
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
@@ -267,6 +275,22 @@ public class HtmlGenerate {
 			input.addClass(CLASS_FORMULA);
 		} else if(inputType==BOX_TYPE_BUDGET){
 			input.addClass(CLASS_BUDGET);
+		} else {//显示类单元格
+			input.attr("name",name);
+			input.attr("value",name);
+			input.addClass(CLASS_LABEL);
+			
+			if(inputType == BOX_TYPE_LABEL) {
+				input.addClass(CLASS_LABEL);
+			} else if(inputType == BOX_TYPE_MODULE) {
+				input.addClass(CLASS_MODULE);
+			} else if(inputType == BOX_TYPE_ITEM) {
+				input.addClass(CLASS_ITEM);
+			} else if(inputType == BOX_TYPE_MAINTITLE) {
+				input.addClass(CLASS_MAINTITLE);
+			} else if(inputType == BOX_TYPE_SUBTITLE) {
+				input.addClass(CLASS_SUBTITLE);
+			}
 		}
 	}
 
