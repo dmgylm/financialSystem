@@ -62,8 +62,8 @@ public class StatisticJsonController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式)", required = true) 
     	})
 	@ApiResponse(code = 200, message = "成功")
