@@ -21,6 +21,8 @@ public interface CapitalService {
      */
     Integer insertCapital(Capital capital);
     
+    Integer batchInsertCapital(List<Capital> listCapital);
+    
     /**
      * 删除资金数据 （status=0）
      * @param statement

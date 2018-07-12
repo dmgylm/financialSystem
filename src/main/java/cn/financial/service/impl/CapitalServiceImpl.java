@@ -27,6 +27,16 @@ public class CapitalServiceImpl implements CapitalService{
         // TODO Auto-generated method stub
         return capitalDao.insertCapital(capital);
     }
+    
+    @Override
+    public Integer batchInsertCapital(List<Capital> listCapital) {
+        // TODO Auto-generated method stub
+        Integer a=0;
+        for (int i = 0; i < listCapital.size(); i++) {
+             a=capitalDao.insertCapital(listCapital.get(i));
+        }
+        return a;
+    }
 
     /**
      * 修改资金表数据
@@ -88,6 +98,6 @@ public class CapitalServiceImpl implements CapitalService{
         // TODO Auto-generated method stub
         return capitalDao.capitalExport(map);
     }
-    
+
 }
  
