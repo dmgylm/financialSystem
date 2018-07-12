@@ -22,13 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.Oganization;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -62,16 +63,17 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:create"},logical=Logical.OR)
-    @ApiOperation(value = "新增组织结构",notes = "新增组织结构")
+    @ApiOperation(value = "新增组织结构",notes = "新增组织结构",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = false),
     })
     @PostMapping(value = "/save")
-    public Map<String, Object> saveOrganization(String orgName,String orgType,
+    public ResultUtils saveOrganization(String orgName,String orgType,
     		String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        ResultUtils result=new ResultUtils();
         Integer i = 0;
         try {
             Organization organization = new Organization();
@@ -90,7 +92,7 @@ public class OrganizationController {
                 i = organizationService.saveOrganization(organization,parentOrgId);
             }
             if (Integer.valueOf(1).equals(i)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
@@ -98,7 +100,7 @@ public class OrganizationController {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 
     /**
@@ -110,7 +112,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据条件查询组织结构信息",notes = "根据条件查询组织结构信息")
+    @ApiOperation(value = "根据条件查询组织结构信息",notes = "根据条件查询组织结构信息",response=Oganization.class)
     @PostMapping(value="/listBy")
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
@@ -121,9 +123,10 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
     })
-    public Map<String, Object> listOrganizationBy(String orgName,String createTime,String updateTime,
+    public Oganization listOrganizationBy(String orgName,String createTime,String updateTime,
     		String id,String code,String uId, String parentId,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        Oganization organiza=new Oganization();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             Map<Object, Object> map = new HashMap<>();
@@ -150,8 +153,9 @@ public class OrganizationController {
             }
             List<Organization> list = organizationService.listOrganizationBy(map);
             if (!CollectionUtils.isEmpty(list)) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", list);
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
+                //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                //dataMap.put("data", list);
             } else {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
@@ -159,7 +163,7 @@ public class OrganizationController {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return organiza;
     }
 
     /**
@@ -171,7 +175,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:update"},logical=Logical.OR)
-    @ApiOperation(value = "根据id修改组织结构信息",notes = "根据id修改组织结构信息")
+    @ApiOperation(value = "根据id修改组织结构信息",notes = "根据id修改组织结构信息",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
@@ -214,7 +218,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:stop"},logical=Logical.OR)
-    @ApiOperation(value = "根据组织结构ID修改状态为停用",notes = "根据组织结构ID修改状态为停用")
+    @ApiOperation(value = "根据组织结构ID修改状态为停用",notes = "根据组织结构ID修改状态为停用",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
@@ -262,7 +266,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点")
+    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response=Oganization.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
@@ -297,7 +301,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的所有父节点",notes = "根据id查询所有该节点的所有父节点")
+    @ApiOperation(value = "根据id查询所有该节点的所有父节点",notes = "根据id查询所有该节点的所有父节点",response=Oganization.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
@@ -333,7 +337,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={ "organization:update", "organization:create" },logical=Logical.OR)
-    @ApiOperation(value = "移动组织机构",notes = "移动组织机构")
+    @ApiOperation(value = "移动组织机构",notes = "移动组织机构",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
@@ -371,7 +375,7 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view" },logical=Logical.OR)
-    @ApiOperation(value = "根据条件判断是否该节点存在子节点",notes = "根据条件判断是否该节点存在子节点")
+    @ApiOperation(value = "根据条件判断是否该节点存在子节点",notes = "根据条件判断是否该节点存在子节点",response=Oganization.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "id", required = true),
