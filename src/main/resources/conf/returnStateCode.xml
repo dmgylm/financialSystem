@@ -128,4 +128,24 @@
         <code>228</code>
         <description>角色id不能为空</description>
     </Result>
+    <Result name="USER_ROLENAME_NULL">
+        <code>229</code>
+        <description>角色名称不能为空</description>
+    </Result>
+    <Result name="USER_RESOURCEID_NULL">
+        <code>230</code>
+        <description>功能权限id不能为空</description>
+    </Result>
+    <Result name="USER_RESOURCE_PARENTID_NULL">
+        <code>231</code>
+        <description>功能权限父节点不能为空</description>
+    </Result>
+    <Result name="USER_RESOURCE_NAME_NULL">
+        <code>232</code>
+        <description>功能权限名称不能为空</description>
+    </Result>
+    <Result name="USER_RESOURCE_PERMSSION_NULL">
+        <code>233</code>
+        <description>功能权限不能为空</description>
+    </Result>
 </StateCode>
