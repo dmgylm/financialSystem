@@ -14,16 +14,12 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 	
 		private Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
 
-	    @SuppressWarnings("unchecked")
 		@Override
 	    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 	        StringBuffer url = request.getRequestURL();
 	        logger.info("前端请求URL: " + url);
-			Enumeration<String> paramNames = request.getParameterNames();
-	    	Enumeration<String> headerNames = request.getHeaderNames();
-	    	
-	    	StringBuffer params = joinRequestParams(request,paramNames);
-	    	StringBuffer headerParams = joinRequestParams(request,headerNames);
+	    	StringBuffer params = joinRequestParams(request);
+	    	StringBuffer headerParams = joinHeaderParams(request);
 	    	String streamString = getInputStream(request);
 	    	
 	    	logger.info("前端GET/POST请求参数: " + params.toString());
@@ -34,8 +30,9 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 			return true;
 	    }
 	    
-	    private StringBuffer joinRequestParams(HttpServletRequest request,
-				Enumeration<String> names) {
+	    @SuppressWarnings("unchecked")
+		private StringBuffer joinRequestParams(HttpServletRequest request) {
+	    	Enumeration<String> names = request.getParameterNames();
 	    	StringBuffer params = new StringBuffer();
 	    	while(names.hasMoreElements()){
 	    		String name = names.nextElement();
@@ -44,6 +41,17 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 	    	}
 	    	return params;
 		}
+
+	    private StringBuffer joinHeaderParams(HttpServletRequest request) {
+	    	Enumeration<String> names = request.getHeaderNames();
+	    	StringBuffer params = new StringBuffer();
+	    	while(names.hasMoreElements()){
+	    		String name = names.nextElement();
+	    		String value = request.getHeader(name);
+	    		params.append(name).append("=").append(value).append("&");
+	    	}
+	    	return params;
+	    }
 
 		private String getInputStream(HttpServletRequest request) {
 			try {
