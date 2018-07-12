@@ -1,31 +1,18 @@
 package cn.springmvc.test;
 
 
-import org.bson.Document;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.Cache.ValueWrapper;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.cache.RedisCacheElement;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 
 import cn.financial.service.RedisCacheService;
 import cn.financial.service.RedisTestService;
-import cn.financial.service.impl.MongoDBServiceImpl;
 //import cn.financial.util.RedisUtils;
-import cn.financial.util.EhcacheUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
@@ -36,8 +23,7 @@ public class RedisTest {
 	
 //	@Autowired
 //	public RedisUtils red;
-	@Autowired
-	public MongoDBServiceImpl mongoDBService;
+	
 	@Autowired
 	public RedisTestService rts;
 	
