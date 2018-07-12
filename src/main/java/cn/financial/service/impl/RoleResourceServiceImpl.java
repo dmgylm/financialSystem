@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.RoleResourceDAO;
@@ -19,6 +20,7 @@ import cn.financial.model.UserRole;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.TreeNode;
+import cn.financial.util.UuidUtil;
 
 /**
  * 角色资源关联表
@@ -37,6 +39,9 @@ public class RoleResourceServiceImpl implements RoleResourceService{
      */
     @Override
     public List<RoleResource> listRoleResource(String rId) {
+        if(rId == null || rId.equals("")){
+            return null;
+        }
         return roleResourceDao.listRoleResource(rId);
     }
     /**
@@ -46,7 +51,28 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer insertRoleResource(RoleResource roleResource) {
-        return roleResourceDao.insertRoleResource(roleResource);
+        if(roleResource.getrId() == null || roleResource.getrId().equals("")){
+            return -1;
+        }
+        if(roleResource.getsId() == null || roleResource.getsId().equals("")){
+            return -2;
+        }
+        JSONArray sArray = JSON.parseArray(roleResource.getsId());
+        int roleResourceList = 0;
+        RoleResource roleResources = null;
+        for (int i = 0; i < sArray.size(); i++) {
+            JSONObject object = (JSONObject) sArray.get(i);
+            String resourceIdStr = (String)object.get("resourceId");//获取key-resourceId键值
+            System.out.println("resouceId:==="+resourceIdStr);
+            if(resourceIdStr!=null && !"".equals(resourceIdStr)){
+                roleResources = new RoleResource();
+                roleResources.setId(UuidUtil.getUUID());
+                roleResources.setsId(resourceIdStr);
+                roleResources.setrId(roleResource.getrId());
+                roleResourceList = roleResourceDao.insertRoleResource(roleResources);
+            }
+        }
+        return roleResourceList;
     }
     /**
      * 删除
@@ -62,7 +88,33 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer updateRoleResource(RoleResource roleResource) {
-        return roleResourceDao.updateRoleResource(roleResource);
+        if(roleResource.getrId() == null || roleResource.getrId().equals("")){
+            return -1;
+        }
+        if(roleResource.getsId() == null || roleResource.getsId().equals("")){
+            return -2;
+        }
+        int roleResourceList = 0;
+        int roleResourceDelete = roleResourceDao.deleteRoleResource(roleResource.getrId());//删除
+        if(roleResourceDelete > 0){
+            JSONArray sArray = JSON.parseArray(roleResource.getsId());
+            RoleResource roleResources = null;
+            for (int i = 0; i < sArray.size(); i++) {
+                JSONObject object = (JSONObject) sArray.get(i);
+                String resourceIdStr = (String)object.get("resourceId");//获取key-resourceId键值
+                System.out.println("resouceId:==="+resourceIdStr);
+                if(resourceIdStr!=null && !"".equals(resourceIdStr)){
+                    roleResources = new RoleResource();
+                    roleResources.setId(UuidUtil.getUUID());
+                    roleResources.setsId(resourceIdStr);
+                    roleResources.setrId(roleResource.getrId());
+                    roleResourceList = roleResourceDao.updateRoleResource(roleResources);//修改（新增数据）
+                }
+            }
+        }else{
+            return -3;
+        }
+        return roleResourceList;
     } 
     
     /**

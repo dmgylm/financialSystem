@@ -26,6 +26,9 @@ public class RoleServiceImpl implements RoleService{
      */
     @Override
     public Role getRoleById(String roleId) {
+        if(roleId == null || roleId.equals("")){
+            return null;
+        }
         return roleDao.getRoleById(roleId);
     }
     /**
@@ -40,6 +43,9 @@ public class RoleServiceImpl implements RoleService{
      */
     @Override
     public Integer updateRole(Role role) {
+        if(role.getId() == null || role.getId().equals("")){
+            return -1;
+        }
         return roleDao.updateRole(role);
     }
     /**
@@ -47,6 +53,9 @@ public class RoleServiceImpl implements RoleService{
      */
     @Override
     public Integer deleteRole(String roleId) {
+        if(roleId == null || roleId.equals("")){
+            return -1;
+        }
         return roleDao.deleteRole(roleId);
     }
     
