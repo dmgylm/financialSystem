@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.OrganizationMove;
+import cn.financial.model.response.ListOrgMove;
 import cn.financial.service.OrganizationMoveService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -42,27 +43,26 @@ public class OrganizationMoveController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/listBy", method = RequestMethod.POST)
-	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息",response = OrganizationMove.class)
+	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息",response = ListOrgMove.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query", required = true)})
-	public Map<String, Object> listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
+	public ListOrgMove listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
 		
 		Map<String, Object> dataMap = new HashMap<String, Object>();
+		ListOrgMove result = new ListOrgMove();
 		
 		try {
 			Map<Object, Object> map = new HashMap<>();
-            if (null != request.getParameter("orgkey") && !"".equals(request.getParameter("orgkey"))) {
-                map.put("orgkey", new String(request.getParameter("orgkey").getBytes("ISO-8859-1"), "UTF-8"));
-            }
+            map.put("orgkey", new String(request.getParameter("orgkey").getBytes("ISO-8859-1"), "UTF-8"));
 			List<OrganizationMove> list = service.listOrganizationMoveBy(map);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("data", list);
+			result.setData(list);
+			ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
 		} catch (Exception e) {
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             this.logger.error(e.getMessage(), e);
 		}
 		
-		return dataMap;
+		return result;
 	}
 
 }
