@@ -78,17 +78,16 @@ public class DataModuleTest {
 	 */
 	@Test
 	public void test(){
-		HttpClient3 http = new HttpClient3();
-		
-		Map<String,String> params = new HashMap<String, String>();
-		params.put("dataModuleId", "16421fc812b14385aa62c01c834b4079");
-		//params.put("token", "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE0MzU0NTY2OTB9.dBOCTsvN0fo44hg_pZv8y-MfTzYv23Lo7XGVcezs4gA");
 		try {
+			HttpClient3 http = new HttpClient3();
+			
+			Map<String,String> params = new HashMap<String, String>();
+			params.put("dataModuleId", "16421fc812b14385aa62c01c834b4079");
+			//params.put("token", "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjE0MzU0NTY2OTB9.dBOCTsvN0fo44hg_pZv8y-MfTzYv23Lo7XGVcezs4gA");
 			System.out.println(JSONObject.fromObject(params));
 			String res = http.doPost("http://localhost:8080/financialSys/dataModule/getDataModule",params);
 			System.out.println(res);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

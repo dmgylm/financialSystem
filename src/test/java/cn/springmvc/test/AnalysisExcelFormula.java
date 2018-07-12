@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.util.FormulaUtil;
 import cn.financial.util.HanyuToPingyinUtils;
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.StringUtils;
 
 /**
@@ -47,19 +48,23 @@ public class AnalysisExcelFormula {
 	private static String firstRowKey = "";//行标题前缀
 	private static String firstCelKey = "";//列标题前缀
 	
-	private static int BOX_TYPE_LABEL = 1;//输入框类型(label)
-	private static int BOX_TYPE_INPUT = 2;//输入框类型(录入框)
-	private static int BOX_TYPE_FORMULA = 3;//输入框类型(公式)
-	private static int BOX_TYPE_BUDGET = 4;//输入框类型(预算)
-	
-	private static int BUDGET_CELL = 0;//预算列
+	private Integer budgetCell = 4;//预算列
+	private Integer prefiRowNum;//横向标题前缀
+	private Integer suffixrowNum ;//横向标题后缀
+	private Integer modelColNum ;//纵向标题前缀
+	private Integer itemColNum;//纵向标题后缀
 	
 	/**
 	 * 构造方法,读取指定路径的文件到HSSFWorkbook中
 	 * @param filepath
 	 */
-	public AnalysisExcelFormula(String filepath) {
+	public AnalysisExcelFormula(String filepath,Integer modelColNum,Integer itemColNum,Integer prefixRowNum,Integer suffixRowNum,Integer BUDGET_CELL) {
 		this.file = new File(filepath);
+		this.prefiRowNum = prefixRowNum;
+		this.suffixrowNum = suffixRowNum;
+		this.modelColNum = modelColNum;
+		this.itemColNum = itemColNum;
+		this.budgetCell = BUDGET_CELL;
 		try {
 			this.wb = new HSSFWorkbook(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
@@ -71,7 +76,12 @@ public class AnalysisExcelFormula {
 
 	public static void main(String[] args) {
 		String filepath = "D:/Project/fmss/管理报表模板-文字公式版/xxxxxx.xls";
-		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath);
+		 Integer prefixCelNum = null;//横向标题前缀
+		 Integer suffixCelNum = 3;//横向标题后缀
+		 Integer modelColNum = 1;//纵向标题前缀
+		 Integer itemColNum = 2;//纵向标题后缀
+		 Integer BUDGET_CELL = 4;
+		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixCelNum, suffixCelNum, BUDGET_CELL);
 		String json = aef.analysisExcel();
 		System.out.println(json);
 		
@@ -128,19 +138,22 @@ public class AnalysisExcelFormula {
 //					} else if(cellType==HSSFCell.CELL_TYPE_BLANK) {//空白单元格
 //						continue;
 					}
-					int type = BOX_TYPE_LABEL;
+					int type = HtmlGenerate.BOX_TYPE_LABEL;
 					if(cellValue!=null && !cellValue.trim().equals("")) {
-						type = BOX_TYPE_LABEL;
+						type = HtmlGenerate.BOX_TYPE_LABEL;
 					} else if(cellValue == null && cellFormula==null) {
-						type = BOX_TYPE_INPUT;
+						type = HtmlGenerate.BOX_TYPE_INPUT;
 					} else if(cellFormula!=null) {
-						type = BOX_TYPE_FORMULA;
+						type = HtmlGenerate.BOX_TYPE_FORMULA;
 					}
-					if((type==BOX_TYPE_FORMULA || type==BOX_TYPE_INPUT) && j==BUDGET_CELL && BUDGET_CELL != 0) {
-						type = BOX_TYPE_BUDGET;
+					if((type==HtmlGenerate.BOX_TYPE_FORMULA || type==HtmlGenerate.BOX_TYPE_INPUT) && j==budgetCell && budgetCell != 0) {
+						type = HtmlGenerate.BOX_TYPE_BUDGET;
 					}
 					
-					addRowAndColKey(cellValue,j,i);
+					Integer tmpType = addRowAndColKey(cellValue,j,i);
+					if(tmpType != null) {
+						type = tmpType;
+					}
 					
 					if(cellValue!=null) {
 						cellValue = cellValue.trim();
@@ -153,7 +166,7 @@ public class AnalysisExcelFormula {
 					json.put("rowspan", merged.getRowspan());
 					json.put("colspan", merged.getColspan());
 					json.put("name", cellValue);
-					json.put("formula", cellFormula);
+					json.put("formulaCN", cellFormula);
 					
 					json.put("type", type);
 					dataMap.put(j+"_"+i, json);
@@ -185,8 +198,8 @@ public class AnalysisExcelFormula {
 			if(json.containsKey("key")) {
 				tmpkey = json.getString("key");
 			}
-			if(json.containsKey("formula")) {
-				formula = json.getString("formula");
+			if(json.containsKey("formulaCN")) {
+				formula = json.getString("formulaCN");
 			}
 			boolean display = false;
 			if(StringUtils.isValid(name) || StringUtils.isValid(tmpkey)  || StringUtils.isValid(formula) ) {
@@ -195,6 +208,9 @@ public class AnalysisExcelFormula {
 			}
 			
 			json.put("display", display);
+			if(key!=null && key.equals("销售税金_本月实际")) {
+				System.out.println(111);
+			}
 			replaceFormula(json);
 			assembleFinalJson(json);
 		}
@@ -248,13 +264,13 @@ public class AnalysisExcelFormula {
 	 * @param json
 	 */
 	private void replaceFormula(JSONObject json) {
-		if(!json.containsKey("formula")) {
-			json.put("formula", "");
+		if(!json.containsKey("formulaCN")) {
+			json.put("formulaCN", "");
 			return;
 		}
-		String formula = json.getString("formula");
+		String formula = json.getString("formulaCN");
 		if(!StringUtils.isValid(formula)) {
-			json.put("formula", "");
+			json.put("formulaCN", "");
 			return;
 		}
 		if (formula.indexOf("$") > -1) {//将Excel公式中的$D$5替换成D5
@@ -282,7 +298,7 @@ public class AnalysisExcelFormula {
 			}
 		}
 //		formula = formula.replace(reKey, "_");
-		json.put("formula", formula);
+		json.put("formulaCN", formula);
 	}
 	
 	/**
@@ -291,25 +307,30 @@ public class AnalysisExcelFormula {
 	 * @param j
 	 * @param i
 	 */
-	private void addRowAndColKey(String cellValue, int j, int i) {
+	private Integer addRowAndColKey(String cellValue, int j, int i) {
+		Integer type = null;
 		if(cellValue==null) {
 			cellValue = "";
 		}
 		cellValue = cellValue.trim();
-		if(j==1 && StringUtils.isValid(cellValue)) {
+		if(j==modelColNum && StringUtils.isValid(cellValue)) {
+			type = HtmlGenerate.BOX_TYPE_MODULE;
 			firstRowKey = cellValue;
 		}
-		if(j==2) {
+		if(j==itemColNum) {
+			type = HtmlGenerate.BOX_TYPE_ITEM;
 			String key = firstRowKey+Separate_Modular+cellValue;
 			rowKeyMap.put(i+"", key);
 		}
 //		if(i==2) {
 //			firstCelKey = cellValue;
 //		}
-		if(i==3) {
+		if(i==suffixrowNum) {
+			type = HtmlGenerate.BOX_TYPE_SUBTITLE;
 			String key = firstCelKey + cellValue;
 			colKeyMap.put(j+"", key);
 		}
+		return type;
 	}
 
 	/**
