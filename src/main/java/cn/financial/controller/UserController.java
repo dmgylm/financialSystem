@@ -3,9 +3,7 @@ package cn.financial.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -18,13 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
+import cn.financial.model.response.ResultUtils;
+import cn.financial.model.response.UserInfo;
+import cn.financial.model.response.UserOrganizationResult;
+import cn.financial.model.response.UserResetPwd;
+import cn.financial.model.response.UserResult;
+import cn.financial.model.response.UserRoleResult;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
@@ -36,6 +38,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 
 /**
  * 用户(用户角色关联表)(用户组织结构关联表)
@@ -57,12 +60,6 @@ public class UserController {
     @Autowired
     @Qualifier("apiRedisTemplate")
     private RedisTemplate redis;
-    
-    /*密码校验规则：
-     * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
-     * 至少6个字符（最多15个字符）、大写与小写字母、至少一个数字，支持特殊符号，但不支持空格
-     * */
-    private static final String REGEX = "(?!(^[A-Za-z]*$))(?!(^[0-9]*$))(?=(^.*[\\d].*$))(?=(^.*[a-z].*$))(?=(^.*[A-Z].*$))(?!(^.*[\\s].*$))^[0-9A-Za-z\\x21-\\x7e]{6,15}$";
 
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -74,7 +71,7 @@ public class UserController {
     //@RequiresRoles("超级管理员")
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表")
+    @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表",response = UserResult.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
@@ -85,60 +82,32 @@ public class UserController {
         @ApiImplicitParam(name="updateTime",value="更新时间",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="pageSize",value="条数",dataType="integer", paramType = "query", required = true),
         @ApiImplicitParam(name="page",value="页码",dataType="integer", paramType = "query", required = true)})
+    @ApiResponse(code = 200, message = "成功")
     @ResponseBody
-    public Map<String, Object> listUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public UserResult listUser(HttpServletRequest request, String name, String realName, String jobNumber,String userId,
+            String createTime, String updateTime, Integer status, Integer pageSize, Integer page){
+        UserResult result = new UserResult();
     	try {
     	    Map<Object, Object> map = new HashMap<>();
-            if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
-                map.put("name",  new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8"));//用户名
-            }
-            if(null!=request.getParameter("realName") && !"".equals(request.getParameter("realName"))){
-                map.put("realName", new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8"));//真实姓名
-            }
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                map.put("id", request.getParameter("userId"));//用户id
-            }
-            /*if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
-                map.put("pwd", request.getParameter("pwd"));//密码
-            }*/
-            if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
-                map.put("jobNumber", request.getParameter("jobNumber"));//工号
-            }
-            if(null!=request.getParameter("status") && !"".equals(request.getParameter("status"))){
-                map.put("status", request.getParameter("status"));//状态
-            }
-            if (null!=request.getParameter("createTime") && !"".equals(request.getParameter("createTime"))) {
-                map.put("createTime", request.getParameter("createTime"));//创建时间
-            }
-            if (null!=request.getParameter("updateTime") && !"".equals(request.getParameter("updateTime"))) {
-                map.put("updateTime", request.getParameter("updateTime"));//修改时间
-            }
-            Integer pageSize=10;
-            if(request.getParameter("pageSize")!=null && !request.getParameter("pageSize").equals("")){
-                pageSize=Integer.parseInt(request.getParameter("pageSize"));
-                map.put("pageSize",pageSize);//条数
-            }else{
-                map.put("pageSize",pageSize);
-            }
-            Integer start=0;
-            if(request.getParameter("page")!=null && !request.getParameter("page").equals("")){
-                start=pageSize * (Integer.parseInt(request.getParameter("page")) - 1);
-                map.put("start",start);//页码
-            }else{
-                map.put("start",start);
-            }
+    	    map.put("name", name);//用户名
+    	    map.put("realName", realName);//真实姓名
+    	    map.put("id", userId);//用户id
+    	    map.put("jobNumber", jobNumber);//工号
+    	    map.put("status", request.getParameter("status"));//状态
+    	    map.put("createTime", createTime);//创建时间
+    	    map.put("updateTime", request.getParameter("updateTime"));//修改时间
+    	    map.put("pageSize",pageSize);//条数
+    	    map.put("start", page);//页码
             List<User> user = userService.listUser(map);//查询全部map为空
             List<User> userList = userService.listUserCount(map);//查询总条数
-            dataMap.put("userList", user);
-            dataMap.put("userListTotal", userList.size());
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            
+            result.setUserList(user);
+            result.setUserListTotal(userList.size());
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
-    	return dataMap;
+    	return result;
     }
     /**
      * 根据id查询
@@ -149,25 +118,24 @@ public class UserController {
      */
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
-    @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息")
+    @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息",response = UserInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> getUserById(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public UserInfo getUserById(HttpServletRequest request, String userId){
+        UserInfo result = new UserInfo();
         try {
-            String userId = null;
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
             User user = userService.getUserById(userId);
-            dataMap.put("userById", user);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            
+            if(user == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL,result);
+                return result;
+            }
+            result.setUserById(user);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             e.printStackTrace();
         }
-        return dataMap;
+        return result;
     }
     /**
      * 新增用户
@@ -181,34 +149,32 @@ public class UserController {
      */
     @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ApiOperation(value="新增用户信息",notes="新增用户信息")
+    @ApiOperation(value="新增用户信息",notes="新增用户信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils insertUser(HttpServletRequest request,String name, String realName, String jobNumber){
+        ResultUtils result = new ResultUtils();
         try {
-            String name = null, realName = null, jobNumber = null;
-            if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
-                name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");//用户名
-            }
-            if(null!=request.getParameter("realName") && !"".equals(request.getParameter("realName"))){
-                realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");//真实姓名
-            }
-            if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
-                jobNumber = request.getParameter("jobNumber");//工号
-            }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
-            if(flag>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE));
-                return dataMap;
+            if(flag == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
+                return result;
             }
-            if(jobNumberFlag>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE));
-                return dataMap;
+            if(flag == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_JOBNUMBER_NULL, result);
+                return result;
+            }
+            if(flag > 0){
+                ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, result);
+                return result;
+            }
+            if(jobNumberFlag > 0){
+                ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE, result);
+                return result;
             }
             User user = new User();
             user.setId(UuidUtil.getUUID());
@@ -218,17 +184,19 @@ public class UserController {
             user.setPwd(User.INITIALCIPHER);//用户新增默认密码为Welcome1
             user.setJobNumber(jobNumber);
             int userList = userService.insertUser(user);
-            if(userList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(userList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
+            }else if(userList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     
     /**
@@ -243,56 +211,39 @@ public class UserController {
      */
     @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value="修改用户信息",notes="超级管理员修改用户信息")
+    @ApiOperation(value="修改用户信息",notes="超级管理员修改用户信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query")})
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query")})
     @ResponseBody
-    public Map<String, Object> updateUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = null, name = null, realName = null, pwd = null, jobNumber = null,expreTime = null;
+    public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
+        ResultUtils result = new ResultUtils();
         try {
-            if(null!=request.getParameter("name") && !"".equals(request.getParameter("name"))){
-                name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");//用户名
-            }
-            if(null!=request.getParameter("realName") && !"".equals(request.getParameter("realName"))){
-                realName = new String(request.getParameter("realName").getBytes("ISO-8859-1"), "UTF-8");//真实姓名
-            }
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
-            if(null!=request.getParameter("pwd") && !"".equals(request.getParameter("pwd"))){
-                pwd = request.getParameter("pwd");//密码
-                if(!pwd.matches(REGEX)){//密码规则校验
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
-                    return dataMap;
-                } 
-                expreTime = UuidUtil.expreTime();
-            }
-            if(null!=request.getParameter("jobNumber") && !"".equals(request.getParameter("jobNumber"))){
-                jobNumber = request.getParameter("jobNumber");//工号
-            }
             User user = new User();
             user.setId(userId);
-            user.setSalt(UuidUtil.getUUID());
             user.setName(name);
             user.setRealName(realName);
             user.setPwd(pwd);
             user.setJobNumber(jobNumber);
-            user.setExpreTime(expreTime);//密码到期时间
             Integer userList = userService.updateUser(user);
-            if(userList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(userList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
+            }else if(userList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 管理员删除用户(停用)
@@ -302,28 +253,26 @@ public class UserController {
      */
     @RequiresPermissions("permission:stop")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ApiOperation(value="删除用户",notes="管理员删除用户(停用)")
+    @ApiOperation(value="用户信息删除",notes="管理员删除用户(停用)", response = ResultUtils.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> deleteUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils deleteUser(String userId){
+        ResultUtils result = new ResultUtils();
         try {
-            String userId = null;
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
             Integer flag = userService.deleteUser(userId);//逻辑删除根据status状态判断0表示离职1表示在职
-            if(flag>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(flag == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(flag > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }  
-        return dataMap;
+        return result;
     }
     
     /**
@@ -333,59 +282,57 @@ public class UserController {
      */
     @RequiresPermissions("user:update")
     @RequestMapping(value = "/passWord", method = RequestMethod.POST)
-    @ApiOperation(value="修改密码",notes="修改当前登录用户密码")
+    @ApiOperation(value="修改密码",notes="修改当前登录用户密码", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="oldPwd",value="旧密码",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="newPwd",value="新密码",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> getUserPwd(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        String oldPwd = null, newPwd = null;
+    public ResultUtils getUserPwd(HttpServletRequest request, String oldPwd, String newPwd){
+        ResultUtils result = new ResultUtils();
         
         User newuser = (User) request.getAttribute("user");//获取当前登录用户密码,salt
         
         try{
-            if(null!=request.getParameter("oldPwd") && !"".equals(request.getParameter("oldPwd"))){
+            if(oldPwd!=null && !oldPwd.equals("")){
                 User userPwd = new User();
-                userPwd.setPwd(request.getParameter("oldPwd"));
+                userPwd.setPwd(oldPwd);
                 userPwd.setSalt(newuser.getSalt());
                 passwordHelper.encryptPassword(userPwd);
                 oldPwd = userPwd.getPwd();//旧密码加密(页面传入)
+            }else{
+                ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_NULL, result);
             }
-            if(null!=request.getParameter("newPwd") && !"".equals(request.getParameter("newPwd"))){
-                newPwd = request.getParameter("newPwd");//新密码
+            if(newPwd == null || newPwd.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_NEWPWD_NULL, result);
             }
             
-            if(newPwd.matches(REGEX)){//密码规则校验
+            if(newPwd.matches(User.REGEX)){//密码规则校验
                 if(oldPwd.equals(newuser.getPwd())) {//判断旧密码与原密码是否相等
                     if(oldPwd.equals(newPwd)){
-                        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD));
+                        ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD, result);
                     }else{
-                        String expreTime = UuidUtil.expreTime();
                         User user = new User();
                         user.setId(newuser.getId());
                         user.setPwd(newPwd);
-                        user.setSalt(UuidUtil.getUUID());
-                        user.setExpreTime(expreTime);//密码到期时间
                         Integer userList = userService.updateUser(user);
                         if(userList>0){
-                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
                         }else{
-                            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                            ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
                         }
                     }
                 }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR));
+                    ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_ERROR, result);
                 }
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 管理员重置密码(解锁用户)
@@ -396,17 +343,17 @@ public class UserController {
      */
     @RequiresPermissions("permission:reset")
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
-    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)")
+    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)", response = UserResetPwd.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> resetUser(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        String userId = null;
+    public UserResetPwd resetUser(String userId){
+        UserResetPwd result = new UserResetPwd();
         try {
-            if(null!=request.getParameter("userId") && !"".equals(request.getParameter("userId"))){
-                userId = request.getParameter("userId");//用户id
-            }
             User users = userService.getUserById(userId);
+            if(users == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+                return result;
+            }
             if(users.getName()!=null && !users.getName().equals("")){
                 Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+users.getName()+"_status");//获取是否锁定
                 if(locking != null){
@@ -415,26 +362,27 @@ public class UserController {
                 }
             }
             String resetPwd = UuidUtil.getRandomPassword(6);//生成随机重置密码
-            String expreTime = UuidUtil.expreTime();
             User user = new User();
             user.setId(userId);
-            user.setSalt(UuidUtil.getUUID());
             user.setPwd(resetPwd);
-            user.setExpreTime(expreTime);//密码到期时间
             Integer userList = userService.updateUser(user);
-            if(userList>0){
+            if(userList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
+            }else if(userList > 0){
                 System.out.println("重置密码："+resetPwd);
-                dataMap.put("resetPwd", resetPwd);
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                result.setResetPwd(resetPwd);
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
         
-        return dataMap;
+        return result;
     }
     /**
      * 根据用户id查询组织结构关联信息(用户组织结构关联表)
@@ -443,25 +391,25 @@ public class UserController {
      */
     @RequiresPermissions({"organization:view","permission:view"})
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)")
+    @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> listUserOrganization(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public UserOrganizationResult listUserOrganization(String uId){
+        UserOrganizationResult result = new UserOrganizationResult();
         try {
-            String uId = null;
-            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
-                uId = request.getParameter("uId");//用户id
-            }
             List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(uId);
-            dataMap.put("userOrganizationList", jsonUserOrg);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(jsonUserOrg == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+                return result;
+            }
+            result.setUserOrganizationList(jsonUserOrg);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 新增(用户组织结构关联表)
@@ -470,47 +418,33 @@ public class UserController {
      */
     @RequiresPermissions({"organization:create","permission:create"})
     @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
-    @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)")
+    @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertUserOrganization(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils insertUserOrganization(String uId, String orgId){
+        ResultUtils result = new ResultUtils();
         try {
-            String orgId = null, uId = null;
-            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
-                uId = request.getParameter("uId");//用户id
-            }
-            if (null!=request.getParameter("orgId") && !"".equals(request.getParameter("orgId"))) {
-                orgId = request.getParameter("orgId");//组织结构id ,json格式数据
-            }
-            JSONArray sArray = JSON.parseArray(orgId);
-            int userOrganizationList = 0;
-            UserOrganization userOrganization = null;
-            for (int i = 0; i < sArray.size(); i++) {
-                JSONObject object = (JSONObject) sArray.get(i);
-                String orgIdStr =(String)object.get("orgId");//获取key-orgId键值
-                System.out.println("organizationId:==="+orgIdStr);
-                if(orgIdStr!=null && !"".equals(orgIdStr)){
-                    userOrganization = new UserOrganization();
-                    userOrganization.setId(UuidUtil.getUUID());
-                    userOrganization.setoId(orgIdStr);
-                    userOrganization.setuId(uId);
-                    userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
-                }
-            }
-            if(userOrganizationList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            UserOrganization userOrganization = new UserOrganization();
+            userOrganization.setuId(uId);
+            userOrganization.setoId(orgId);
+            int userOrganizationList = userOrganizationService.insertUserOrganization(userOrganization);
+            if(userOrganizationList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userOrganizationList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ORGID_NULL, result);
+            }else if(userOrganizationList>0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             } 
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 修改（先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息）（根据用户id修改用户组织架构关联信息）
@@ -520,83 +454,68 @@ public class UserController {
      */
     @RequiresPermissions({"organization:update","permission:update"})
     @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
-    @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息")
+    @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> updateUserOrganization(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils updateUserOrganization(String uId, String orgId){
+        ResultUtils result = new ResultUtils();
         try {
-            String orgId = null, uId = null;
-            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
-                uId = request.getParameter("uId");//用户id
-            }
-            if (null!=request.getParameter("orgId") && !"".equals(request.getParameter("orgId"))) {
-                orgId = request.getParameter("orgId");//组织结构id ,json格式数据
-            }
-            int userOrgDelete = userOrganizationService.deleteUserOrganization(uId);//删除
-            if(userOrgDelete > 0){
-                JSONArray sArray = JSON.parseArray(orgId);
-                int userOrganizationList = 0;
-                UserOrganization userOrganization = null;
-                for (int i = 0; i < sArray.size(); i++) {
-                    JSONObject object = (JSONObject) sArray.get(i);
-                    String orgIdStr =(String)object.get("orgId");//获取key-orgId键值
-                    System.out.println("organizationId:==="+orgIdStr);
-                    if(orgIdStr!=null && !"".equals(orgIdStr)){
-                        userOrganization = new UserOrganization();
-                        userOrganization.setId(UuidUtil.getUUID());
-                        userOrganization.setoId(orgIdStr);
-                        userOrganization.setuId(uId);
-                        userOrganizationList = userOrganizationService.updateUserOrganization(userOrganization);//修改（新增数据）
-                    }
-                }
-                if(userOrganizationList>0){
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
+            UserOrganization userOrganization = null;
+            userOrganization = new UserOrganization();
+            userOrganization.setId(UuidUtil.getUUID());
+            userOrganization.setoId(orgId);
+            userOrganization.setuId(uId);
+            int userOrganizationList = userOrganizationService.updateUserOrganization(userOrganization);//修改（新增数据）
+            if(userOrganizationList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userOrganizationList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ORGID_NULL, result);
+            }else if(userOrganizationList == -3){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION, result);
+            }else if(userOrganizationList>0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     
     /**
-     * 查询所有(用户角色关联表)
+     * 根据用户名查询用户角色关联信息(用户角色关联表)
      * @param request
      * @param response
      */
     @RequiresPermissions({"permission:view","role:view"})
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
-    @ApiOperation(value="查询用户角色关联信息",notes="查询所有(用户角色关联表)")
+    @ApiOperation(value="根据用户名查询用户角色关联信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> listUserRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public UserRoleResult listUserRole(String name){
+        UserRoleResult result = new UserRoleResult();
         try {
-            String name = null;//用户名
-            if (null!=request.getParameter("name") && !"".equals(request.getParameter("name"))) {
-                name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "UTF-8");
-            }
             List<UserRole> userRole = userRoleService.listUserRole(name);
-            dataMap.put("userRoleList", userRole);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(userRole == null){
+                ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
+                return result;
+            }
+            result.setUserRoleList(userRole);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
-     * 新增(用户角色关联表)
+     * 新增用户角色关联信息
      * @param request
      * @param response
      * @param uid
@@ -604,47 +523,34 @@ public class UserController {
      */
     @RequiresPermissions({"permission:create","role:create"})
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
-    @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)")
+    @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id,传入json格式", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> insertUserRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils insertUserRole(String roleId, String uId){
+        ResultUtils result = new ResultUtils();
         try {
-            String roleId = null, uId = null;//roleId前台传入的数据是JSON格式
-            if (null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))) {
-                roleId = request.getParameter("roleId");//角色id
-            }
-            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
-                uId = request.getParameter("uId");//用户id
-            }
-            JSONArray sArray = JSON.parseArray(roleId);
-            int userRoleList = 0;
-            UserRole userRole = null; 
-            for (int i = 0; i < sArray.size(); i++) {
-                JSONObject object = (JSONObject) sArray.get(i);
-                String roleStr =(String)object.get("roleId");//获取key-roleId键值
-                System.out.println("roleId:==="+roleStr);
-                if(roleStr!=null && !"".equals(roleStr)){
-                    userRole = new UserRole();
-                    userRole.setId(UuidUtil.getUUID());
-                    userRole.setrId(roleStr);
-                    userRole.setuId(uId);
-                    userRoleList = userRoleService.insertUserRole(userRole);
-                }
-            }  
-            if(userRoleList>0){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            UserRole userRole =  new UserRole();
+            userRole.setId(UuidUtil.getUUID());
+            userRole.setrId(roleId);
+            userRole.setuId(uId);
+            int userRoleList = userRoleService.insertUserRole(userRole);
+            if(userRoleList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(userRoleList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userRoleList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
     /**
      * 修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息（根据用户id修改用户角色关联信息）
@@ -656,51 +562,35 @@ public class UserController {
      */
     @RequiresPermissions({"permission:update","role:update"})
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
-    @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息")
+    @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value = "角色id,传入json格式", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public Map<String, Object> updateUserRole(HttpServletRequest request,HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils updateUserRole(String roleId, String uId){
+        ResultUtils result = new ResultUtils();
         try {
-            String roleId = null, uId = null;//roleId前台传入的数据是JSON格式
-            if (null!=request.getParameter("roleId") && !"".equals(request.getParameter("roleId"))) {
-                roleId = request.getParameter("roleId");//角色id
-            }
-            if(null!=request.getParameter("uId") && !"".equals(request.getParameter("uId"))){
-                uId = request.getParameter("uId");//用户id
-            }
-            int userRoleDelete = userRoleService.deleteUserRole(uId);//删除
-            if(userRoleDelete > 0){
-                JSONArray sArray = JSON.parseArray(roleId);
-                int userRoleList = 0;
-                UserRole userRole = null; 
-                for (int i = 0; i < sArray.size(); i++) {
-                    JSONObject object = (JSONObject) sArray.get(i);
-                    String roleStr =(String)object.get("roleId");//获取key-roleId键值
-                    System.out.println("roleId:==="+roleStr);
-                    if(roleStr!=null && !"".equals(roleStr)){
-                        userRole = new UserRole();
-                        userRole.setId(UuidUtil.getUUID());
-                        userRole.setrId(roleStr);
-                        userRole.setuId(uId);
-                        userRoleList = userRoleService.updateUserRole(userRole);//修改（新增数据）
-                    }
-                }  
-                if(userRoleList>0){
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                }else{
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                }
+            UserRole userRole = new UserRole();
+            userRole.setId(UuidUtil.getUUID());
+            userRole.setrId(roleId);
+            userRole.setuId(uId);
+            int userRoleList = userRoleService.updateUserRole(userRole);//修改（新增数据）
+            if(userRoleList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+            }else if(userRoleList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userRoleList == -3){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLE, result);
+            }else if(userRoleList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLE));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return result;
     }
 }

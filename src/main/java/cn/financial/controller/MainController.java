@@ -2,7 +2,6 @@ package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
+import cn.financial.model.response.LoginResult;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
@@ -80,7 +81,7 @@ public class MainController {
         return "redirect:/test"; 
     }
     
-    @RequestMapping(value="/docTest", produces = "application/json;charset=utf-8")
+    @RequestMapping(value="/docTest", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public String getTest(HttpServletRequest request, HttpServletResponse response) {
         return "redirect:/doc.html";
     }
@@ -101,76 +102,75 @@ public class MainController {
      * @param respons
      * @return
      */
+    public static String key;
     @RequestMapping(value="/login", method = RequestMethod.POST)
-    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息")
+    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息", response = LoginResult.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="username",value="用户名",dataType="string", paramType = "query",  required = true),
         @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",  required = true)})
     @ResponseBody
-    public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response){
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public LoginResult login(String username, String password){
+        LoginResult result = new LoginResult();
         try {
-            String userName = new String(request.getParameter("username").getBytes("ISO-8859-1"), "UTF-8");
-            String passWord = request.getParameter("password");
-            if(userName == null || userName.equals("")){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
-                return dataMap;
+            if(username == null || username.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR, result);
+                return result;
             }
-            if(passWord == null || passWord.equals("")){
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));
-                return dataMap;
+            if(password == null || password.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR, result);
+                return result;
             }
             Subject subject = SecurityUtils.getSubject();
-            UsernamePasswordToken token = new UsernamePasswordToken(userName,passWord);   
+            UsernamePasswordToken token = new UsernamePasswordToken(username,password);   
             subject.login(token);
-            if(passWord.equals(User.INITIALCIPHER)){//判断密码是否为Welcome1
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
-                return dataMap;
+            if(password.equals(User.INITIALCIPHER)){//判断密码是否为Welcome1
+                ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, result);
+                return result;
             }
-            User user = userService.getUserByName(userName);
+            User user = userService.getUserByName(username);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c = Calendar.getInstance();
-            String expreTime = sf.format(c.getTime());
-            Date date = sf.parse(user.getExpreTime());
-            if(sf.format(date).equals(expreTime)){//判断密码是否到期
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
-                return dataMap;
+            String expreTime = sf.format(c.getTime())+" 00:00:00";
+            if(expreTime.equals(user.getExpreTime())){//判断密码是否到期
+                ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR, result);
+                return result;
             }
             System.out.println("~~~session:"+subject.getSession().getId());
-            List<JSONObject> jsonObject = roleResourceService.roleResourceList(userName);
+            List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
-            dataMap.put("roleResource", jsonObject);
-            dataMap.put("userOrganization", jsonOrg);
-            dataMap.put("sessionId", subject.getSession().getId());
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            result.setRoleResource(jsonObject);
+            result.setUserOrganization(jsonOrg);
+            result.setSessionId(subject.getSession().getId()+"");
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
+            ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, result);
         }catch (IncorrectCredentialsException e) { 
             System.out.println( "密码或账户错误，请重新输入");
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
+            ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, result);
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
+            ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, result);
         } catch (Exception e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
+            ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, result);
         }
-        return dataMap; 
+        return result; 
     }
     /**
      * 登出
      * @return
      */
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)  
-    @ApiOperation(value="登出",notes="登出")
+    @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.POST})  
+    @ApiOperation(value="登出",notes="登出", response = ResultUtils.class)
     @ResponseBody  
-    public Map<String, Object> logout() {  
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public ResultUtils logout() {  
+        ResultUtils result = new ResultUtils();
         Subject currentUser = SecurityUtils.getSubject();
-        dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-        currentUser.logout();  
-        return dataMap;  
+        currentUser.logout(); 
+        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+        return result;  
     } 
+
 }
