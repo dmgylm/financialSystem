@@ -58,8 +58,8 @@ public class DataModuleController {
 		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query",required=false)})
     @ResponseBody
 	public DataModulesResult listDataModule(String moduleName){
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
+//		Map<String, Object> dataMap = new HashMap<String, Object>();
+//		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
 		DataModulesResult result=new DataModulesResult();
 		try {
 			//JSONObject json=JSONObject.fromObject(jsonData);
@@ -77,7 +77,8 @@ public class DataModuleController {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
 			logger.error("模板列表查询错误",e);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+//			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
 		}
 		
 		return result;
@@ -95,7 +96,7 @@ public class DataModuleController {
 		  @ApiImplicitParam(name="dataModuleId",required=true,value="模板id",dataType="string", paramType = "query")})
     @ResponseBody
 	public DataResult getDataModule(String dataModuleId){
-		Map<String, Object> dataMap = new HashMap<String, Object>();
+//		Map<String, Object> dataMap = new HashMap<String, Object>();
 		DataResult dataResult=new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
@@ -106,7 +107,7 @@ public class DataModuleController {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
 			logger.error("根据ID查询模板错误",e);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,dataResult);
 		}
 		return dataResult;
 	}
@@ -125,7 +126,7 @@ public class DataModuleController {
 		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query")})
 	@ResponseBody
 	public DataResult getNewestDataModule(String reportType,String businessType){
-		Map<String, Object> dataMap = new HashMap<String, Object>();
+//		Map<String, Object> dataMap = new HashMap<String, Object>();
 		DataResult dataResult=new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
@@ -135,7 +136,7 @@ public class DataModuleController {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
 			logger.error("根据报表类型及业务板块查询最新版本模板错误",e);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,dataResult);
 		}
 		return dataResult;
 	}
@@ -165,7 +166,7 @@ public class DataModuleController {
 	@ResponseBody
 	public ResultUtils editDataModule(String reportType,String businessType,String html, 
 			Integer firstRowNum,Integer secondRowNum,Integer firstColNum, Integer secondColNum) {
-		Map<String, Object> dataMap = new HashMap<String, Object>();
+//		Map<String, Object> dataMap = new HashMap<String, Object>();
 		ResultUtils result=new ResultUtils();
 		try {
 			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
@@ -173,7 +174,7 @@ public class DataModuleController {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
 			logger.error("模板修改失败",e);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
 		}
 		return result;
 	}
