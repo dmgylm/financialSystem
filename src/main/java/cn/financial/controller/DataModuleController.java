@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.financial.model.DataModule;
+import cn.financial.model.OutResult;
+import cn.financial.model.response.DataModulesResult;
+import cn.financial.model.response.DataResult;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.DataModuleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -29,6 +33,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import net.sf.json.JSONObject;
 
 @Api(tags = "数据模板配置")
@@ -48,13 +53,15 @@ public class DataModuleController {
 	 */
 	@RequiresPermissions(value={"data:view","data:search"},logical=Logical.OR)
 	@PostMapping("/dataModuleList")
-	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response = DataModule.class)
+	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response=DataModulesResult.class)
+	@ApiResponses(value = {@ApiResponse(code = 405, message = "Invalid input", response = DataModule.class) })
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query")})
     @ResponseBody
-	public Map<String,Object> listDataModule(String moduleName){
+	public DataModulesResult listDataModule(String moduleName){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
-		
+		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
+		DataModulesResult result=new DataModulesResult();
 		try {
 			//JSONObject json=JSONObject.fromObject(jsonData);
 			Map<Object, Object> map = new HashMap<>();
@@ -64,14 +71,17 @@ public class DataModuleController {
 				map.put("moduleName",moduleName);
             }
 			List<DataModule> list=dataModuleService.listDataModule(map);
-			dataMap.put("data", list);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			/*dataMap.put("data", list);
+			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));*/
+			
+			result.setData(list);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
 			logger.error("",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
 		
-		return dataMap;
+		return result;
 	}
 	
 	/**
@@ -81,22 +91,25 @@ public class DataModuleController {
 	 */
 	@RequiresPermissions("data:search")
 	@PostMapping("getDataModule")
-	@ApiOperation(value = "根据ID查询模板",notes = "根据ID查询模板",response = DataModule.class)
+	@ApiOperation(value = "根据ID查询模板",notes = "根据ID查询模板",response = DataResult.class)
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="dataModuleId",value="模板id",dataType="string", paramType = "query")})
     @ResponseBody
-	public Map<String,Object> getDataModule(String dataModuleId){
+	public DataResult getDataModule(String dataModuleId){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
+		DataResult dataResult=new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
 			bean.setModuleData("");  //清空返回值的json数据
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-			dataMap.put("data", bean);
+			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			dataMap.put("data", bean);*/
+			dataResult.setData(bean);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
 			logger.error("查询错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
-		return dataMap;
+		return dataResult;
 	}
 	
 	/**
@@ -107,22 +120,25 @@ public class DataModuleController {
 	 */
 	@RequiresPermissions("data:search")
 	@PostMapping("getNewestDataModule")
-	@ApiOperation(value = "根据报表类型及业务板块查询最新版本模板",notes = "根据报表类型及业务板块查询最新版本模板",response = DataModule.class)
+	@ApiOperation(value = "根据报表类型及业务板块查询最新版本模板",notes = "根据报表类型及业务板块查询最新版本模板",response = DataResult.class)
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="businessType",value="businessType",dataType="string", paramType = "query")})
+		  @ApiImplicitParam(name="businessType",value="业务板块",dataType="string", paramType = "query")})
 	@ResponseBody
-	public Map<String,Object> getNewestDataModule(String reportType,String businessType){
+	public DataResult getNewestDataModule(String reportType,String businessType){
 		Map<String, Object> dataMap = new HashMap<String, Object>();
+		DataResult dataResult=new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-			dataMap.put("data", bean);
+			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			dataMap.put("data", bean);*/
+			dataResult.setData(bean);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
 			logger.error("查询错误",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
-		return dataMap;
+		return dataResult;
 	}
 	
 	/**
@@ -138,7 +154,7 @@ public class DataModuleController {
 	 */
 	@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
 	@PostMapping("editDataModule")
-	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = DataModule.class)
+	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = ResultUtils.class)
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="reportType",value="报表类型",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="businessType",value="业务板块",dataType="string", paramType = "query"),
@@ -148,16 +164,18 @@ public class DataModuleController {
 		  @ApiImplicitParam(name="firstColNum",value="纵向标题前缀",dataType="Integer", paramType = "query"),
 		  @ApiImplicitParam(name="secondColNum",value="纵向标题后缀",dataType="Integer", paramType = "query")})
 	@ResponseBody
-	public Map<String, Object> editDataModule(String reportType,String businessType,String html, 
+	public ResultUtils editDataModule(String reportType,String businessType,String html, 
 			Integer firstRowNum,Integer secondRowNum,Integer firstColNum, Integer secondColNum) {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
+		ResultUtils result=new ResultUtils();
 		try {
 			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));*/
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
 			logger.error("模板修改失败",e);
 			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
 		}
-		return dataMap;
+		return result;
 	}
 }
