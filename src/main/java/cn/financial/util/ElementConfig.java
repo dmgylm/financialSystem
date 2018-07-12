@@ -105,4 +105,40 @@ public class ElementConfig {
      * 角色功能权限关联信息不存在
      */
     public static final String USER_RESOURCE = "USER_RESOURCE";
+    /**
+     * session过期
+     */
+    public static final String USER_SESSION_OVERDUE = "USER_SESSION_OVERDUE";
+    /**
+     * 用户id为空
+     */
+    public static final String USER_ID_NULL = "USER_ID_NULL";
+    /**
+     * 用户名为空
+     */
+    public static final String USER_NAME_NULL = "USER_NAME_NULL";
+    /**
+     * 真实姓名为空
+     */
+    public static final String USER_REALNAME_NULL = "USER_REALNAME_NULL";
+    /**
+     * 工号为空
+     */
+    public static final String USER_JOBNUMBER_NULL = "USER_JOBNUMBER_NULL";
+    /**
+     * 新密码为空
+     */
+    public static final String USER_NEWPWD_NULL = "USER_NEWPWD_NULL";
+    /**
+     * 旧密码为空
+     */
+    public static final String USER_OLDPWD_NULL = "USER_OLDPWD_NULL";
+    /**
+     * 组织结构id为空
+     */
+    public static final String USER_ORGID_NULL = "USER_ORGID_NULL";
+    /**
+     * 角色id为空
+     */
+    public static final String USER_ROLEID_NULL = "USER_ROLEID_NULL";
 }
