@@ -44,31 +44,16 @@ public class QuartzBudget implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		long start = System.currentTimeMillis();
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
-		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext()
-				.getBean("OrganizationServiceImpl");
-		businessDataService = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext()
-				.getBean("BusinessDataServiceImpl");
-		dataModuleServiceImpl = (DataModuleServiceImpl) AccountQuartzListener.getSpringContext()
-				.getBean("DataModuleServiceImpl");
-		businessDataInfoService = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext()
-				.getBean("BusinessDataInfoServiceImpl");
+		organizationService = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
+		businessDataService = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
+		dataModuleServiceImpl = (DataModuleServiceImpl) AccountQuartzListener.getSpringContext().getBean("DataModuleServiceImpl");
+		businessDataInfoService = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
 		System.out.println("启动业务表定时添加任务");
 		int sum=0;
 		int zsum=0;
-		String reportType = ""; // reportType，数据模板报表类型。DataModule.REPORT_TYPE_BUDG预算，DataModule.REPORT_TYPE_PROFIT_LOSS损益
-		String msgType = ""; // 消息报表类型损益还是预算
-		int bunType = 0; // 业务表类型。 1损益2预算
-		int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);// 获取当前系统时间几号
-		day=1;
-		if (day == 1) {// 预算
-			reportType = DataModule.REPORT_TYPE_BUDGET;
-			msgType = "预算";
-			bunType = 2;
-		} else if (day == 11) {
-			reportType = DataModule.REPORT_TYPE_PROFIT_LOSS;
-			msgType = "损益";
-			bunType = 1;
-		}
+		String reportType = DataModule.REPORT_TYPE_BUDGET; // reportType，数据模板报表类型。DataModule.REPORT_TYPE_BUDG预算，DataModule.REPORT_TYPE_PROFIT_LOSS损益
+		String msgType = "预算"; // 消息报表类型损益还是预算
+		int bunType = 2; // 业务表类型。 1损益2预算
 		List<Organization> orgDep = organizationService.getDep();// 获取所有部门
 		List<Organization> orgCompany = organizationService.getCompany();// 获取所有公司
 		int year = Calendar.getInstance().get(Calendar.YEAR);
