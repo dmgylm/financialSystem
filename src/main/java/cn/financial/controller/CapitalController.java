@@ -326,8 +326,9 @@ public class CapitalController {
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean insertFlag = true;//上传数据是否有错
             boolean isImport = true;//是否可上传
+            if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
-            if(name.equals(".xls")){
+            if(name.equals(".xls")||name.equals(".xlsx")){
             Integer size=(int) uploadFile.getSize();
             if(uploadFile.getSize()>0 && size<4990){  //判断文件大小是否是5M以下的
               try {
@@ -581,7 +582,11 @@ public class CapitalController {
           ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
           result.setMess("您上传的不是Excel文档！");
       }
-            return result;
+      }else{
+           ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+           result.setMess("您上传的不是Excel文档！");
+       }
+          return result;
       }
         
         
