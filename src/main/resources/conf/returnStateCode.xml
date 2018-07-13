@@ -148,4 +148,33 @@
         <code>233</code>
         <description>功能权限不能为空</description>
     </Result>
+    
+    <Result name="STATIC_REPORTTYPE_NULL">
+        <code>280</code>
+        <description>报表类型不能为空</description>
+    </Result>
+    <Result name="STATIC_BUSINESSTYPE_NULL">
+        <code>281</code>
+        <description>业务板块不能为空</description>
+    </Result>
+    <Result name="STATIC_STARTDATE_NULL">
+        <code>282</code>
+        <description>开始时间不能为空</description>
+    </Result>
+    <Result name="STATIC_ENDDATE_NULL">
+        <code>283</code>
+        <description>结束时间不能为空</description>
+    </Result>
+    <Result name="STATIC_ORGID_NULL">
+        <code>284</code>
+        <description>选中组织架构id集合不能为空</description>
+    </Result>
+    <Result name="STATIC_CACHEUUID_NULL">
+        <code>285</code>
+        <description>缓存id不能为空</description>
+    </Result>
+    <Result name="STATIC_INFOKEY_NULL">
+        <code>286</code>
+        <description>查询详情key不能为空</description>
+    </Result>
 </StateCode>

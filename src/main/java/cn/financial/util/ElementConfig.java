@@ -161,4 +161,33 @@ public class ElementConfig {
      * 功能权限为空
      */
     public static final String USER_RESOURCE_PERMSSION_NULL = "USER_RESOURCE_PERMSSION_NULL";
+    
+    /**
+     * 报表类型为空
+     */
+    public static final String STATIC_REPORTTYPE_NULL = "STATIC_REPORTTYPE_NULL";
+    /**
+     * 业务板块为空
+     */
+    public static final String STATIC_BUSINESSTYPE_NULL = "STATIC_BUSINESSTYPE_NULL";
+    /**
+     * 开始时间为空
+     */
+    public static final String STATIC_STARTDATE_NULL = "STATIC_STARTDATE_NULL";
+    /**
+     * 结束时间为空
+     */
+    public static final String STATIC_ENDDATE_NULL = "STATIC_ENDDATE_NULL";
+    /**
+     * 选中组织架构id集合为空
+     */
+    public static final String STATIC_ORGID_NULL = "STATIC_ORGID_NULL";
+    /**
+     * 缓存id为空
+     */
+    public static final String STATIC_CACHEUUID_NULL = "STATIC_CACHEUUID_NULL";
+    /**
+     * 查询详情key为空
+     */
+    public static final String STATIC_INFOKEY_NULL = "STATIC_INFOKEY_NULL";
 }
