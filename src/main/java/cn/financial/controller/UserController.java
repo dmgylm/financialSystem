@@ -39,6 +39,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 用户(用户角色关联表)(用户组织结构关联表)
@@ -82,9 +83,10 @@ public class UserController {
         @ApiImplicitParam(name="updateTime",value="更新时间",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="pageSize",value="条数",dataType="integer", paramType = "query", required = true),
         @ApiImplicitParam(name="page",value="页码",dataType="integer", paramType = "query", required = true)})
-    @ApiResponse(code = 200, message = "成功")
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
-    public UserResult listUser(HttpServletRequest request, String name, String realName, String jobNumber,String userId,
+    public UserResult listUser(String name, String realName, String jobNumber,String userId,
             String createTime, String updateTime, Integer status, Integer pageSize, Integer page){
         UserResult result = new UserResult();
     	try {
@@ -93,9 +95,9 @@ public class UserController {
     	    map.put("realName", realName);//真实姓名
     	    map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
-    	    map.put("status", request.getParameter("status"));//状态
+    	    map.put("status", status);//状态
     	    map.put("createTime", createTime);//创建时间
-    	    map.put("updateTime", request.getParameter("updateTime"));//修改时间
+    	    map.put("updateTime", updateTime);//修改时间
     	    map.put("pageSize",pageSize);//条数
     	    map.put("start", page);//页码
             List<User> user = userService.listUser(map);//查询全部map为空
@@ -120,8 +122,10 @@ public class UserController {
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
     @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息",response = UserInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
-    public UserInfo getUserById(HttpServletRequest request, String userId){
+    public UserInfo getUserById(String userId){
         UserInfo result = new UserInfo();
         try {
             User user = userService.getUserById(userId);
@@ -154,8 +158,12 @@ public class UserController {
         @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 222, message = "用户名为空"),
+        @ApiResponse(code = 224, message = "工号为空"),@ApiResponse(code = 209, message = "用户名已存在"),
+        @ApiResponse(code = 212, message = "工号已存在"),@ApiResponse(code = 223, message = "真实姓名为空")})
     @ResponseBody
-    public ResultUtils insertUser(HttpServletRequest request,String name, String realName, String jobNumber){
+    public ResultUtils insertUser(String name, String realName, String jobNumber){
         ResultUtils result = new ResultUtils();
         try {
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
@@ -218,6 +226,9 @@ public class UserController {
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query")})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空"),
+        @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
     @ResponseBody
     public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
         ResultUtils result = new ResultUtils();
@@ -255,6 +266,8 @@ public class UserController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation(value="用户信息删除",notes="管理员删除用户(停用)", response = ResultUtils.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
     public ResultUtils deleteUser(String userId){
         ResultUtils result = new ResultUtils();
@@ -286,6 +299,10 @@ public class UserController {
     @ApiImplicitParams({
         @ApiImplicitParam(name="oldPwd",value="旧密码",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="newPwd",value="新密码",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 226, message = "旧密码为空"),
+        @ApiResponse(code = 225, message = "新密码为空"),@ApiResponse(code = 206, message = "新旧密码一致"),
+        @ApiResponse(code = 207, message = "密码输入错误，请重新输入"),@ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
     @ResponseBody
     public ResultUtils getUserPwd(HttpServletRequest request, String oldPwd, String newPwd){
         ResultUtils result = new ResultUtils();
@@ -301,9 +318,11 @@ public class UserController {
                 oldPwd = userPwd.getPwd();//旧密码加密(页面传入)
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.USER_OLDPWD_NULL, result);
+                return result;
             }
             if(newPwd == null || newPwd.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_NEWPWD_NULL, result);
+                return result;
             }
             
             if(newPwd.matches(User.REGEX)){//密码规则校验
@@ -345,6 +364,9 @@ public class UserController {
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)", response = UserResetPwd.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空"),
+        @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
     @ResponseBody
     public UserResetPwd resetUser(String userId){
         UserResetPwd result = new UserResetPwd();
@@ -366,9 +388,7 @@ public class UserController {
             user.setId(userId);
             user.setPwd(resetPwd);
             Integer userList = userService.updateUser(user);
-            if(userList == -1){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
-            }else if(userList == -2){
+            if(userList == -2){
                 ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
             }else if(userList > 0){
                 System.out.println("重置密码："+resetPwd);
@@ -393,6 +413,8 @@ public class UserController {
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
     @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误"),
+        @ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
     public UserOrganizationResult listUserOrganization(String uId){
         UserOrganizationResult result = new UserOrganizationResult();
