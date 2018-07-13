@@ -15,6 +15,11 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value="Capital对象",description="Capital对象")
 public class Capital {
     
+         public static final Integer DEPNUM = 3;  //orgType常量
+         public static final Integer ORGNUM = 2;  //orgType常量
+         
+         public static final String NAME = "汇总";  //name常量
+    
          @ApiModelProperty(value="资金流水id",name="id")
          private String id;   //资金表id
          

@@ -93,16 +93,16 @@ public class BusinessDataController {
                 @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
-        public BusinessResult listBusinessDataBy(HttpServletRequest request) {
+        public BusinessResult listBusinessDataBy(HttpServletRequest request, String year,String month,Integer sId,Integer page,Integer pageSize) {
             //Map<String, Object> dataMap = new HashMap<String, Object>();
             BusinessResult businessResult=new BusinessResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                 map.put("year",request.getParameter("year")); //年份
-                 map.put("month",request.getParameter("month"));  //月份
-                 map.put("sId",request.getParameter("sId"));  //判断是损益还是预算表  1损益  2 预算
+                 map.put("year",year); //年份
+                 map.put("month",month);  //月份
+                 map.put("sId",sId);  //判断是损益还是预算表  1损益  2 预算
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
@@ -146,8 +146,16 @@ public class BusinessDataController {
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
                     List<BusinessData> total = businessDataService.businessDataExport(map); //查询权限下的所有数据 未经分页
-                    map.put("pageSize",request.getParameter("pageSize"));
-                    map.put("page",request.getParameter("page"));
+                    if(pageSize!=0){
+                        map.put("pageSize",pageSize);
+                    }else{
+                        map.put("pageSize",10);
+                    }
+                    if(page>0){
+                        map.put("start",pageSize * (page- 1));   
+                    }else{
+                        map.put("start",0);
+                    }
                     List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门

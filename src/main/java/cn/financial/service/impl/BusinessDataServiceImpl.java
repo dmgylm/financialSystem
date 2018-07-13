@@ -59,37 +59,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 */
 	@Override
 	public List<BusinessData> listBusinessDataBy(Map<Object, Object> map) {
-	    Map<Object, Object> resultMap=new HashMap<>();
-        String year=map.get("year").toString();
-        String month=map.get("month").toString();
-        String sId=map.get("sId").toString();
-        Integer pageMap=Integer.parseInt(map.get("page").toString());
-        Integer pageSizeMap=Integer.parseInt(map.get("pageSize").toString());
-        Integer pageSize=10;
-        if(map.get("pageSize").toString()!=null&&!map.get("pageSize").toString().equals("")){
-            pageSize=pageSizeMap;
-            resultMap.put("pageSize",pageSize);
-        }else{
-            resultMap.put("pageSize",pageSize);
-        }
-        Integer start=0;
-        if(map.get("page").toString()!=null && !map.get("page").toString().equals("")){
-            start=pageSizeMap * (pageMap - 1);
-            resultMap.put("start",start);
-        }else{
-            resultMap.put("start",start);
-        }
-        if(year!=null && !year.equals("")){
-           resultMap.put("year", year);
-        }
-        if(month!=null && !month.equals("")){
-            resultMap.put("month", month);
-         }
-        if(sId!=null && !sId.equals("")){
-            resultMap.put("sId", sId);
-         }
-        resultMap.put("typeId", map.get("typeId"));
-		return businessDataDao.listBusinessDataBy(resultMap);
+		return businessDataDao.listBusinessDataBy(map);
 	}
 
 	/**
@@ -110,21 +80,8 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 
     @Override
     public List<BusinessData> businessDataExport(Map<Object, Object> map) {
-        Map<Object, Object> resultMap=new HashMap<>();
-        String year=map.get("year").toString();
-        String month=map.get("month").toString();
-        String sId=map.get("sId").toString();
-        if(year!=null && !year.equals("")){
-           resultMap.put("year", year);
-        }
-        if(month!=null && !month.equals("")){
-            resultMap.put("month", month);
-         }
-        if(sId!=null && !sId.equals("")){
-            resultMap.put("sId", sId);
-         }
-        resultMap.put("typeId", map.get("typeId"));
-        return businessDataDao.businessDataExport(resultMap);
+       
+        return businessDataDao.businessDataExport(map);
     }
     @Override
 	public List<BusinessData> getBusinessAllBySomeOne(Map<Object, Object> map) {
