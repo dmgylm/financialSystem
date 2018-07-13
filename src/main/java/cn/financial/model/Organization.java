@@ -35,7 +35,7 @@ public class Organization implements Serializable {
     private Integer orgType;// 1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)
 	@ApiModelProperty(value="orgPlateId",name="板块id",example="")
     private String orgPlateId;// 板块id
-
+	
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
     public String getId() {
