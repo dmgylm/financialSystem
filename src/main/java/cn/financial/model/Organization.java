@@ -1,5 +1,7 @@
 package cn.financial.model;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -9,29 +11,29 @@ import java.io.Serializable;
  *
  */
 public class Organization implements Serializable {
-
+	@ApiModelProperty(value="组织架构id",name="id",example="")
     private String id; // 组织架构表id
-
+	@ApiModelProperty(value="组织机构节点的序号",name="code",example="")
     private String code; // 该组织机构节点的序号，两位的，比如（01；0101，0102）
-
+	@ApiModelProperty(value="父节点",name="parentId",example="")
     private String parentId; // 父节点（这里指向code）
-
+	@ApiModelProperty(value="组织架构名",name="orgName",example="")
     private String orgName; // 组织架构名
-
+	@ApiModelProperty(value="创建时间",name="createTime",example="")
     private String createTime; // 创建时间
-
+	@ApiModelProperty(value="更新时间",name="updateTime",example="")
     private String updateTime; // 更新时间
-
+	@ApiModelProperty(value="提交人",name="uId",example="")
     private String uId; // 提交人id
-
+	@ApiModelProperty(value="状态（是否已删除，1表示还存在，0表示已删除",name="status",example="")
     private Integer status; // 状态（是否已删除，1表示还存在，0表示已删除）
-
+	@ApiModelProperty(value="保存历史权限记录",name="his_permission",example="")
     private String his_permission; // 保存历史权限记录
-
+	@ApiModelProperty(value="和模版对应的一个唯一值",name="orgkey",example="")
     private String orgkey;// 和模版对应的一个唯一值
-
+	@ApiModelProperty(value="1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)",name="orgType",example="")
     private Integer orgType;// 1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)
-
+	@ApiModelProperty(value="orgPlateId",name="板块id",example="")
     private String orgPlateId;// 板块id
 
     // private List<User> users; // 提交人id（一对多，组织结构为一）
