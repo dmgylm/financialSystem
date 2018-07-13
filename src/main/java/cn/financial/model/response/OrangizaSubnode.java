@@ -1,20 +1,22 @@
 package cn.financial.model.response;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 
 import io.swagger.annotations.ApiModelProperty;
 
 public class OrangizaSubnode extends ResultUtils{
-	 @ApiModelProperty(value = "查看配置组织结构信息")
-	 private JSONObject data;
+	 @ApiModelProperty(value = "查询所有该节点的子节点")
+	 private List<OrganizaResult> data;
 
-	 public JSONObject getData() {
-		return data;
+	public List<OrganizaResult> getData() {
+	        return data;
 	 }
 
-	 public void setData(JSONObject data) {
-		this.data = data;
-	 }
+	public void setData(List<OrganizaResult> data) {
+	        this.data = data;
+	  }
 
 	
 	 
