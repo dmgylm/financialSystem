@@ -45,7 +45,7 @@ public class OrganizationMoveController {
 	@RequestMapping(value = "/listBy", method = RequestMethod.POST)
 	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息",response = ListOrgMove.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query", required = true)})
+        @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query")})
 	public ListOrgMove listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
 		
 		Map<String, Object> dataMap = new HashMap<String, Object>();
