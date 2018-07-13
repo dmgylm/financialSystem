@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -44,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/resource")
 public class ResourceController {
     @Autowired
-    ResourceService resourceService;
+    private ResourceService resourceService;
     
     protected Logger logger = LoggerFactory.getLogger(ResourceController.class);
     /**
@@ -56,8 +53,9 @@ public class ResourceController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ApiOperation(value="查询全部功能权限信息",notes="查询全部功能权限信息", response = ResourceResult.class)
     @ResponseBody
-    public ResourceResult listResource(){
-        ResourceResult result = new ResourceResult();
+    public Map<String, Object> listResource(){
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
     	try {
             List<Resource> resource = resourceService.listResource();
             List<TreeNode<Resource>> nodes = new ArrayList<>();
@@ -75,13 +73,14 @@ public class ResourceController {
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            result.setResourceList(jsonObject);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            dataMap.put("resourceList", jsonObject);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-    	return result;
+    	return dataMapList;
     }
     /**
      * 根据id查询
@@ -103,7 +102,7 @@ public class ResourceController {
                 return result;
             }
             Resource resource = resourceService.getResourceById(resourceId,"");
-            result.setResourceById(resource);
+            result.setData(resource);
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {

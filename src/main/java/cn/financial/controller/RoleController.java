@@ -1,10 +1,9 @@
 package cn.financial.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -59,17 +58,19 @@ public class RoleController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息", response = RoleResult.class)
     @ResponseBody
-    public RoleResult listRole(HttpServletRequest request,HttpServletResponse response){
-        RoleResult result = new RoleResult();
+    public Map<String, Object> listRole(){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
             List<Role> role = roleService.listRole("");//查询全部参数为空
-            result.setRoleList(role);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            dataMap.put("roleList", role);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-    	return result;
+    	return dataMapList;
     }
     /**
      * 根据roleId查询
@@ -83,22 +84,23 @@ public class RoleController {
     @ApiOperation(value="根据角色id查询角色信息",notes="根据角色id查询角色信息", response = RoleInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public RoleInfo getRoleById(String roleId){
-        RoleInfo result = new RoleInfo();
+    public Map<String, Object> getRoleById(String roleId){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             Role role = roleService.getRoleById(roleId);
             if(role == null){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL));
+                return dataMapList;
             }
-            result.setRoleById(role);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-            
+            dataMap.put("roleList", role);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             e.printStackTrace();
         }
-        return result;
+        return dataMapList;
     }
     /**
      * 新增角色
@@ -261,7 +263,8 @@ public class RoleController {
     @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}](斜线不要加，这里代表转译符)",
+            paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertRoleResource(String roleId, String resourceId){
         ResultUtils result = new ResultUtils();
@@ -301,7 +304,8 @@ public class RoleController {
     @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式", paramType = "query", required = true)})
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}](斜线不要加，这里代表转译符)", 
+            paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateRoleResource(String resourceId, String roleId){
         ResultUtils result = new ResultUtils();

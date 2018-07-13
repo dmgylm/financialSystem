@@ -23,8 +23,11 @@ import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.UserInfo;
+import cn.financial.model.response.UserInfoResult;
+import cn.financial.model.response.UserListReslult;
 import cn.financial.model.response.UserOrganizationResult;
 import cn.financial.model.response.UserResetPwd;
+import cn.financial.model.response.UserResetPwdInfo;
 import cn.financial.model.response.UserResult;
 import cn.financial.model.response.UserRoleResult;
 import cn.financial.service.UserOrganizationService;
@@ -72,23 +75,24 @@ public class UserController {
     //@RequiresRoles("超级管理员")
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表",response = UserResult.class)
+    @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表",response = UserListReslult.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="status",value="状态",dataType="Integer", paramType = "query"),
+        @ApiImplicitParam(name="status",value="状态",dataType="int", paramType = "query"),
         @ApiImplicitParam(name="createTime",value="创建时间",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="updateTime",value="更新时间",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="pageSize",value="条数",dataType="integer", paramType = "query", required = true),
-        @ApiImplicitParam(name="page",value="页码",dataType="integer", paramType = "query", required = true)})
+        @ApiImplicitParam(name="pageSize",value="条数",dataType="int", paramType = "query", required = true),
+        @ApiImplicitParam(name="page",value="页码",dataType="int", paramType = "query", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
-    public UserResult listUser(String name, String realName, String jobNumber,String userId,
+    public UserListReslult listUser(String name, String realName, String jobNumber,String userId,
             String createTime, String updateTime, Integer status, Integer pageSize, Integer page){
-        UserResult result = new UserResult();
+        UserListReslult result = new UserListReslult();
+        UserResult resultInfo = new UserResult();
     	try {
     	    Map<Object, Object> map = new HashMap<>();
     	    map.put("name", name);//用户名
@@ -102,8 +106,9 @@ public class UserController {
     	    map.put("start", page);//页码
             List<User> user = userService.listUser(map);//查询全部map为空
             List<User> userList = userService.listUserCount(map);//查询总条数
-            result.setUserList(user);
-            result.setUserListTotal(userList.size());
+            resultInfo.setUserList(user);
+            resultInfo.setUserListTotal(userList.size());
+            result.setData(resultInfo);
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -120,20 +125,22 @@ public class UserController {
      */
     @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
-    @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息",response = UserInfo.class)
+    @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息",response = UserInfoResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
-    public UserInfo getUserById(String userId){
-        UserInfo result = new UserInfo();
+    public UserInfoResult getUserById(String userId){
+        UserInfoResult result = new UserInfoResult();
+        UserInfo resultInfo = new UserInfo();
         try {
             User user = userService.getUserById(userId);
             if(user == null){
                 ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL,result);
                 return result;
             }
-            result.setUserById(user);
+            resultInfo.setUserById(user);
+            result.setData(resultInfo);
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
@@ -362,14 +369,15 @@ public class UserController {
      */
     @RequiresPermissions("permission:reset")
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
-    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)", response = UserResetPwd.class)
+    @ApiOperation(value="管理员重置密码",notes="管理员重置密码(解锁用户)", response = UserResetPwdInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空"),
         @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
     @ResponseBody
-    public UserResetPwd resetUser(String userId){
-        UserResetPwd result = new UserResetPwd();
+    public UserResetPwdInfo resetUser(String userId){
+        UserResetPwdInfo result = new UserResetPwdInfo();
+        UserResetPwd resultInfo = new UserResetPwd();
         try {
             User users = userService.getUserById(userId);
             if(users == null){
@@ -392,7 +400,8 @@ public class UserController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
             }else if(userList > 0){
                 System.out.println("重置密码："+resetPwd);
-                result.setResetPwd(resetPwd);
+                resultInfo.setResetPwd(resetPwd);
+                result.setData(resultInfo);
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
@@ -416,22 +425,23 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误"),
         @ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
-    public UserOrganizationResult listUserOrganization(String uId){
-        UserOrganizationResult result = new UserOrganizationResult();
+    public Map<String, Object> listUserOrganization(String uId){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(uId);
             if(jsonUserOrg == null){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL));
+                return dataMapList;
             }
-            result.setUserOrganizationList(jsonUserOrg);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-            
+            dataMap.put("userOrganizationList", jsonUserOrg);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return result;
+        return dataMapList;
     }
     /**
      * 新增(用户组织结构关联表)
@@ -443,7 +453,7 @@ public class UserController {
     @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertUserOrganization(String uId, String orgId){
         ResultUtils result = new ResultUtils();
@@ -479,7 +489,7 @@ public class UserController {
     @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式", paramType = "query", required = true)})
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateUserOrganization(String uId, String orgId){
         ResultUtils result = new ResultUtils();
@@ -519,22 +529,23 @@ public class UserController {
     @ApiOperation(value="根据用户名查询用户角色关联信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public UserRoleResult listUserRole(String name){
-        UserRoleResult result = new UserRoleResult();
+    public Map<String, Object> listUserRole(String name){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             List<UserRole> userRole = userRoleService.listUserRole(name);
             if(userRole == null){
-                ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL));
+                return dataMapList;
             }
-            result.setUserRoleList(userRole);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-            
+            dataMap.put("userRoleList", userRole);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return result;
+        return dataMapList;
     }
     /**
      * 新增用户角色关联信息
@@ -547,7 +558,7 @@ public class UserController {
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="roleId",value="角色id,传入json格式", paramType = "query", required = true),
+        @ApiImplicitParam(name="roleId",value="角色id,传入json格式,例如：[{\"orleId\":\"0603027a3a0948729c47a9f279ca3b34\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertUserRole(String roleId, String uId){
@@ -586,7 +597,7 @@ public class UserController {
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="roleId",value = "角色id,传入json格式", paramType = "query", required = true),
+        @ApiImplicitParam(name="roleId",value = "角色id,传入json格式,例如：[{\"orleId\":\"0603027a3a0948729c47a9f279ca3b34\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateUserRole(String roleId, String uId){

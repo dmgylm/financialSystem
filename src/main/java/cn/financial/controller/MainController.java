@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
-import cn.financial.model.response.LoginResult;
+import cn.financial.model.response.LoginInfo;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
@@ -83,7 +83,7 @@ public class MainController {
     
     @RequestMapping(value="/docTest", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public String getTest(HttpServletRequest request, HttpServletResponse response) {
-        return "redirect:/doc.html";
+        return "redirect:/swagger-ui.html";
     }
     
     /**
@@ -102,61 +102,62 @@ public class MainController {
      * @param respons
      * @return
      */
-    public static String key;
     @RequestMapping(value="/login", method = RequestMethod.POST)
-    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息", response = LoginResult.class)
+    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息", response = LoginInfo.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="username",value="用户名",dataType="string", paramType = "query",  required = true),
         @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",  required = true)})
     @ResponseBody
-    public LoginResult login(String username, String password){
-        LoginResult result = new LoginResult();
+    public Map<String, Object> login(String username, String password){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             if(username == null || username.equals("")){
-                ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
+                return dataMapList;
             }
             if(password == null || password.equals("")){
-                ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));
+                return dataMapList;
             }
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(username,password);   
             subject.login(token);
             if(password.equals(User.INITIALCIPHER)){//判断密码是否为Welcome1
-                ElementXMLUtils.returnValue(ElementConfig.RESET_PWD, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+                return dataMapList;
             }
             User user = userService.getUserByName(username);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c = Calendar.getInstance();
             String expreTime = sf.format(c.getTime())+" 00:00:00";
             if(expreTime.equals(user.getExpreTime())){//判断密码是否到期
-                ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
+                return dataMapList;
             }
             System.out.println("~~~session:"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
-            result.setRoleResource(jsonObject);
-            result.setUserOrganization(jsonOrg);
-            result.setSessionId(subject.getSession().getId()+"");
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            dataMap.put("roleResource", jsonObject);
+            dataMap.put("userOrganization", jsonOrg);
+            dataMap.put("sessionId", subject.getSession().getId());
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
-            ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
         }catch (IncorrectCredentialsException e) { 
             System.out.println( "密码或账户错误，请重新输入");
-            ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
-            ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
         } catch (Exception e) {  
             System.out.println( "其他错误：" + e.getMessage());
             // 其他错误，比如锁定，如果想单独处理请单独catch处理  
-            ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_FAILURE));
         }
-        return result; 
+        return dataMapList; 
     }
     /**
      * 登出
@@ -172,5 +173,4 @@ public class MainController {
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
-
 }
