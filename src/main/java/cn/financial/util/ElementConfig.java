@@ -190,4 +190,8 @@ public class ElementConfig {
      * 查询详情key为空
      */
     public static final String STATIC_INFOKEY_NULL = "STATIC_INFOKEY_NULL";
+    /**
+     * 消息id为空
+     */
+    public static final String MESSAGE_ID_NULL = "MESSAGE_ID_NULL";
 }
