@@ -18,6 +18,8 @@
 	<!-- 配置swagger资源文件 -->
 	<mvc:resources location="classpath:/META-INF/resources/" mapping="doc.html"/>
 	<mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+
+	<mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
        
        
        
