@@ -7,7 +7,7 @@
        <resultMap id="capital" type="cn.financial.model.Capital">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="plate" property="plate" jdbcType="VARCHAR" />
-           <result column="BU" property="BU" jdbcType="VARCHAR" />
+           <result column="bu" property="bu" jdbcType="VARCHAR" />
            <result column="regionName" property="regionName" jdbcType="VARCHAR" />
            <result column="province" property="province" jdbcType="VARCHAR" />
            <result column="city" property="city" jdbcType="VARCHAR" />
@@ -35,9 +35,9 @@
  
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
-            insert into capital(id,oId,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            insert into capital(id,oId,plate,bu,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status,editor)
-            values (#{id},#{oId},#{plate},#{BU},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
+            values (#{id},#{oId},#{plate},#{bu},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
             #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status},#{editor})
        </insert>
       
@@ -82,7 +82,7 @@
        
        <!--导出根据多个id查询 -->
        <!-- <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
-           SELECT id,plate,BU,regionName,province,city,company,accountName,accountBank,account,accountNature,
+           SELECT id,plate,bu,regionName,province,city,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,updateTime,uId,year,month,remarks,status
            FROM capital 
            WHERE status=1 and id in 
@@ -98,7 +98,7 @@
         <trim prefix="set" suffixOverrides=",">
             <if test="oId!=null and oId!=''">oId = #{oId},</if>
             <if test="plate!=null and plate!=''">plate = #{plate},</if>
-            <if test="BU!=null and BU!=''">BU = #{BU},</if>
+            <if test="bu!=null and bu!=''">bu = #{bu},</if>
             <if test="regionName!=null and regionName!=''">regionName = #{regionName},</if>
             <if test="province!=null and province!=''">province = #{province},</if>
             <if test="city!=null and city!=''">city = #{city},</if>
@@ -135,56 +135,57 @@
      <sql id="query_capital_where">
      
         <if test=" plate!=null and plate!=''">
-             and plate LIKE CONCAT('%',#{plate},'%')
-             <!--  = like '%#{plate}%' -->
+             <!-- and c.plate LIKE CONCAT('%',#{plate},'%') -->
+             and c.plate =#{plate}
         </if>
-        <if test=" BU!=null and BU!=''">
-             and BU LIKE CONCAT('%',#{BU},'%')
+        <if test=" bu!=null and bu!=''">
+             and c.bu =#{bu}
         </if>
         <if test=" regionName!=null and regionName!=''">
-             and regionName LIKE CONCAT('%',#{regionName},'%') 
+             and c.regionName=#{regionName}
         </if>
         <if test=" province!=null and province!=''">
-             and province LIKE CONCAT('%',#{province},'%')
+             and c.province =#{province}
         </if>
         <if test=" city!=null and city!=''">
-             and city  LIKE CONCAT('%',#{city},'%') 
+             and c.city=#{city}
         </if>
          <if test=" company!=null and company!=''">
-             and  company  LIKE CONCAT('%',#{company},'%') 
+             and  c.company =#{company} 
         </if> 
         <if test="accountName!=null and accountName!=''">
-             and accountName LIKE CONCAT('%',#{accountName},'%')
+             and  c.accountName =#{accountName}
         </if>
         <if test="accountBank!=null and accountBank!=''">
-             and accountBank LIKE CONCAT('%',#{accountBank},'%')
+             and c.accountBank =#{accountBank}
          </if>
          <if test="account!=null and account!=''">
-             and account LIKE CONCAT('%',#{account},'%')
+             and c.account =#{account}
          </if> 
          <if test="accountNature!=null and accountNature!=''">
-             and accountNature LIKE CONCAT('%',#{accountNature},'%')
+             and c.accountNature =#{accountNature}
          </if>
          <if test="tradeTime!=null and tradeTime!=''">
-             and  tradeTime = tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd}
+              and  c.tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd} 
+            <!--  and c.tradeTime>=#{tradeTimeBeg} and c.tradeTime<=#{tradeTimeEnd} -->
           </if>
           <if test="startBlack!=null and startBlack!=''">
-             and startBlack LIKE CONCAT('%',#{startBlack},'%') 
+             and c.startBlack =#{startBlack} 
           </if>
           <if test="incom!=null and incom!=''">
-             and incom LIKE CONCAT('%',#{incom},'%')
+             and c.incom=#{incom}
           </if>
           <if test="pay!=null and pay!=''">
-             and pay LIKE CONCAT('%',#{pay},'%')
+             and c.pay =#{pay}
           </if>
           <if test="endBlack!=null and endBlack!=''">
-             and endBlack LIKE CONCAT('%',#{endBlack},'%')
+             and c.endBlack=#{endBlack}
           </if>
           <if test="abstrac!=null and abstrac!=''">
-             and abstrac LIKE CONCAT('%',#{abstrac},'%')
+             and c.abstrac #{abstrac}
           </if> 
           <if test="classify!=null and classify!=''">
-              and classify LIKE CONCAT('%',#{classify},'%')
+              and c.classify =#{classify}
           </if>
          
          <!-- <if test="remarks!=null and remarks!=''">

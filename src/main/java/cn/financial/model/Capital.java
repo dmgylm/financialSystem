@@ -30,7 +30,7 @@ public class Capital {
          private String plate; //板块
          
          @ApiModelProperty(value="事业部",name="bu")
-         private String BU; //事业部
+         private String bu; //事业部
          
          @ApiModelProperty(value="大区名称",name="regionName")
          private String regionName; //大区名称
@@ -108,13 +108,13 @@ public class Capital {
              super();
          }
          
-         public  Capital(String id,String oId,String plate,String BU,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
+         public  Capital(String id,String oId,String plate,String bu,String regionName,String province,String city,String company,String accountBank,String accountName,String account,String accountNature,
                  Date tradeTime,Integer startBlack,Integer incom,Integer pay,Integer endBlack,String abstrac,String classify,
                  Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status,Integer editor){
              this.id=id;
              this.oId=oId;
              this.plate=plate;
-             this.BU=BU;
+             this.bu=bu;
              this.regionName=regionName;
              this.province=province;
              this.city=city;
@@ -204,13 +204,14 @@ public class Capital {
             this.plate = plate;
         }
 
-        public String getBU() {
-            return BU;
+        public String getBu() {
+            return bu;
         }
 
-        public void setBU(String bU) {
-            BU = bU;
+        public void setBu(String bu) {
+            this.bu = bu;
         }
+
 
         public String getRegionName() {
             return regionName;

@@ -8,17 +8,17 @@ import io.swagger.annotations.ApiModelProperty;
 public class BusinessResult extends ResultUtils{
 
 	@ApiModelProperty(value = "损益录入中心数据")
-	private List<Business> data;  //返回的数据
+	private List<Business> business;  //返回的数据
 	
 	@ApiModelProperty(value = "损益录入中心返回的总条数")
 	private Integer total; //返回的总条数
-
-    public List<Business> getData() {
-        return data;
+    
+    public List<Business> getBusiness() {
+        return business;
     }
 
-    public void setData(List<Business> data) {
-        this.data = data;
+    public void setBusiness(List<Business> business) {
+        this.business = business;
     }
 
     public Integer getTotal() {

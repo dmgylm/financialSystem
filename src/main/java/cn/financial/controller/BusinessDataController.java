@@ -25,6 +25,7 @@ import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.BusinessDataExportResult;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
 import cn.financial.model.response.ResultUtils;
@@ -86,8 +87,8 @@ public class BusinessDataController {
         @RequestMapping(value="/listBy", method = RequestMethod.POST)
         @ApiOperation(value="查询损益/预算数据", notes="根据条件查数据 (不传数据就是查询所有的)",response = BusinessResult.class)
         @ApiImplicitParams({
-                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = true, dataType = "String",paramType = "query"),
-                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = true, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
@@ -102,7 +103,11 @@ public class BusinessDataController {
                 String uId = user.getId();
                  map.put("year",year); //年份
                  map.put("month",month);  //月份
-                 map.put("sId",sId);  //判断是损益还是预算表  1损益  2 预算
+                 if(sId==null||sId<1||sId>2){
+                     map.put("sId",2); //判断是损益还是预算表  1损益  2 预算
+                 }else{
+                     map.put("sId",sId);  //判断是损益还是预算表  1损益  2 预算
+                 }
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
@@ -146,15 +151,15 @@ public class BusinessDataController {
                     List<String> typeIds = Arrays.asList(typeId);
                     map.put("typeId", typeIds);//根据权限的typeId查询相对应的数据
                     List<BusinessData> total = businessDataService.businessDataExport(map); //查询权限下的所有数据 未经分页
-                    if(pageSize!=0){
-                        map.put("pageSize",pageSize);
-                    }else{
+                    if(pageSize==null||pageSize==0){
                         map.put("pageSize",10);
-                    }
-                    if(page>0){
-                        map.put("start",pageSize * (page- 1));   
                     }else{
-                        map.put("start",0);
+                        map.put("pageSize",pageSize);
+                    }
+                    if(page==null){
+                        map.put("start",0);      
+                    }else{
+                        map.put("start",pageSize * (page- 1));   
                     }
                     List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
@@ -181,7 +186,7 @@ public class BusinessDataController {
                         }
                     } 
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,businessResult);
-                    businessResult.setData(businessList); //返回的资金流水数据
+                    businessResult.setBusiness(businessList); //返回的资金流水数据
                     businessResult.setTotal(total.size());//返回的总条数
                 }else{
                     throw new Exception("您没有权限操作损益表！");
@@ -328,29 +333,24 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
-        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=ResultUtils.class)
+        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=BusinessDataExportResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
-        public void export(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        public void export(HttpServletRequest request,HttpServletResponse response,String year,String month,Integer sId) throws Exception{
             OutputStream os = null;
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            BusinessDataExportResult result=new BusinessDataExportResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                if(request.getParameter("year")!=null && !request.getParameter("year").equals("")){
-                    map.put("year",request.getParameter("year")); //年份
-                }
-                if(request.getParameter("month")!=null && !request.getParameter("month").equals("")){
-                    map.put("month",request.getParameter("month"));  //月份
-                }
-                if(request.getParameter("sId")!=null && !request.getParameter("sId").equals("")){
-                    map.put("sId",request.getParameter("sId"));  //月份
-                }
+                map.put("year",year); //年份
+                map.put("month",month);  //月份
+                map.put("sId",sId);  //判断是损益还是预算表  1损益  2 预算
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
                 List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
@@ -457,14 +457,14 @@ public class BusinessDataController {
                     response.setContentType("application/octet-stream");
                     os = response.getOutputStream();
                     ExcelUtil.export(strList, os);
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                    dataMap.put("result","导出成功！");
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                    result.setMess("导出成功！");
                 }else{
-                    throw new Exception("您没有权限操作损益表！导出失败");
+                    result.setMess("您没有权限操作损益数据");
                 }
             } catch (IOException e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                dataMap.put("result","导出失败！");
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                result.setMess("导出失败");
                 e.printStackTrace();
             } finally {
                 if(os != null)
