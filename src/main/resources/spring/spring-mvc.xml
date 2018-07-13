@@ -131,7 +131,7 @@
         <!-- 100M -->  
         <!-- <property name="maxUploadSize" value="104857600"></property>   -->   
         <!-- 5M  -->
-        <property name="maxUploadSize"><value>5242880</value></property>
+        <!-- <property name="maxUploadSize"><value>104857600</value></property> -->
         <property name="defaultEncoding" value="utf-8"></property>     
     </bean>  
     
