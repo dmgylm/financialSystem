@@ -19,7 +19,22 @@
     <select id="listDataModule" parameterType="map" resultType="dataModule">
         SELECT id,moduleKey,moduleName,moduleData,reportType,businessType,versionNumber,founder,statue,startTime,createTime,updateTime FROM dataModule WHERE 1 = 1 
         <include refid="query_dataModule_where"></include>
-        ORDER BY createTime DESC
+        ORDER BY createTime DESC 
+    </select>
+    
+    <!--查询全部模板/多条件查询模板列表（简单列表）-->
+    <select id="queryDataModule" resultType="dataModule">
+        SELECT id,moduleName,versionNumber,statue,createTime FROM dataModule WHERE 1 = 1 
+        <if test="module.moduleName!=null and module.moduleName!=''">
+            and moduleName = #{module.moduleName,jdbcType=VARCHAR} 
+        </if>
+        ORDER BY createTime DESC LIMIT #{startPage},#{pageSize}
+    </select>
+    <!--查询全部模板/多条件查询模板列表（简单列表）-->
+    <select id="queryDataModules" parameterType="map" resultType="dataModule">
+        SELECT id,moduleName,versionNumber,statue,createTime FROM dataModule WHERE 1 = 1 
+        <include refid="query_dataModule_where"></include>
+        ORDER BY createTime DESC 
     </select>
     
     <!--根据条件查看单个模板-->
