@@ -4,15 +4,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,12 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.OganizationNode;
+import cn.financial.model.response.OrangizaSubnode;
 import cn.financial.model.response.OrganizaHason;
 import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.ResultUtils;
@@ -269,30 +265,35 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点")
+    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response=OrangizaSubnode.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
     @PostMapping(value = "/getSubnode")
-    public Map<Object, Object> getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
+    public OrangizaSubnode getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
+        OrangizaSubnode orgin=new OrangizaSubnode();
         try {
             JSONObject jsonTree = new JSONObject();
             if (null !=id && !"".equals(id)) {
                 id =id;
             }
             jsonTree = organizationService.TreeByIdForSon(id);
+            orgin.setData(jsonTree);
             if (jsonTree != null) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", jsonTree);
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,orgin);
+                //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+               // dataMap.put("data", jsonTree);
             } else {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,orgin);
+               //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,orgin);
+           // dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return orgin;
     }
 
     /**
