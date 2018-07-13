@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.model.RoleResource;
 import cn.financial.model.UserRole;
+import cn.financial.model.response.ChildrenObject;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.TreeNode;
@@ -156,5 +157,51 @@ public class RoleResourceServiceImpl implements RoleResourceService{
         }
         return jsonObject;
      }
+    
+    public static void queryRoleResourceList(List<JSONObject> json,List<ChildrenObject> ChildrenObject){
+        if(json==null || json.equals("")){
+            return;
+        }
+        for (JSONObject item : json) {
+            if(item.containsKey("children") && CollectionUtils.isNotEmpty(item.getJSONArray("children"))){
+                JSONObject itemChildren=(JSONObject)JSONObject.toJSON(item);
+                ChildrenObject children = new ChildrenObject();
+                children.setId(itemChildren.getString("id"));
+                children.setName(itemChildren.getString("name"));
+                children.setPid(itemChildren.getString("pid"));
+                children.setParentId(itemChildren.getString("parentId"));
+                children.setLeaf(itemChildren.getString("leaf"));
+                children.setOrgkeyName(itemChildren.getString("orgkeyName"));
+                children.setOrgType(itemChildren.getString("orgType"));
+                children.setOrgPlateId(itemChildren.getString("orgPlateId"));
+                ChildrenObject.add(children);
+                queryRoleResourceList(json,ChildrenObject);
+            }
+            
+        }
+         
+    }
+    
+    public static void queryRoleResource(JSONObject json,List<ChildrenObject> ChildrenObject){
+        if(json==null || json.equals("")){
+            return;
+        }
+        if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
+            for (Object item : json.getJSONArray("children")) {
+                JSONObject itemChildren=(JSONObject)JSONObject.toJSON(item);
+                ChildrenObject children = new ChildrenObject();
+                children.setId(itemChildren.getString("id"));
+                children.setName(itemChildren.getString("name"));
+                children.setPid(itemChildren.getString("pid"));
+                children.setParentId(itemChildren.getString("parentId"));
+                children.setLeaf(itemChildren.getString("leaf"));
+                children.setOrgkeyName(itemChildren.getString("orgkeyName"));
+                children.setOrgType(itemChildren.getString("orgType"));
+                children.setOrgPlateId(itemChildren.getString("orgPlateId"));
+                ChildrenObject.add(children);
+                queryRoleResource(json,ChildrenObject);
+            }
+        }
+    }
 }
  
