@@ -117,16 +117,16 @@ public class CapitalController {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                 map.put("plate",plate); //板块
-                 map.put("bu",bu);//事业部
-                 map.put("regionName",regionName);//大区名称
-                 map.put("province",province);//省份
-                 map.put("company",company);//公司名称
-                 map.put("accountBank",accountBank);//开户行
-                 map.put("accountNature",accountNature);//账户性质
+                 map.put("plate",new String(plate.getBytes("ISO-8859-1"),"UTF-8")); //板块
+                 map.put("bu",new String(bu.getBytes("ISO-8859-1"),"UTF-8"));//事业部
+                 map.put("regionName",new String(regionName.getBytes("ISO-8859-1"),"UTF-8"));//大区名称
+                 map.put("province",new String(province.getBytes("ISO-8859-1"),"UTF-8"));//省份
+                 map.put("company",new String(company.getBytes("ISO-8859-1"),"UTF-8"));//公司名称
+                 map.put("accountBank",new String(accountBank.getBytes("ISO-8859-1"),"UTF-8"));//开户行
+                 map.put("accountNature",new String(accountNature.getBytes("ISO-8859-1"),"UTF-8"));//账户性质
                  map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                  map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                 map.put("classify",classify);//项目分类
+                 map.put("classify",new String(classify.getBytes("ISO-8859-1"),"UTF-8"));//项目分类
                  //判断 权限的数据 
                  List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                  List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
@@ -262,8 +262,8 @@ public class CapitalController {
             try {
                 Capital capital =new Capital();
                 capital.setId(id);
-                capital.setClassify(classify); //修改项目分类
-                capital.setRemarks(remarks);  //备注
+                capital.setClassify(new String(classify.getBytes("ISO-8859-1"),"UTF-8")); //修改项目分类
+                capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"),"UTF-8"));  //备注
                 Integer i = capitalService.updateCapital(capital);
                 if (i == 1) {
                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
@@ -618,16 +618,16 @@ public class CapitalController {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                map.put("plate",plate); //板块
-                map.put("bu",bu);//事业部
-                map.put("regionName",regionName);//大区名称
-                map.put("province",province);//省份
-                map.put("company",company);//公司名称
-                map.put("accountBank",accountBank);//开户行
-                map.put("accountNature",accountNature);//账户性质
+                map.put("plate",new String(plate.getBytes("ISO-8859-1"),"UTF-8")); //板块
+                map.put("bu",new String(bu.getBytes("ISO-8859-1"),"UTF-8"));//事业部
+                map.put("regionName",new String(regionName.getBytes("ISO-8859-1"),"UTF-8"));//大区名称
+                map.put("province",new String(province.getBytes("ISO-8859-1"),"UTF-8"));//省份
+                map.put("company",new String(company.getBytes("ISO-8859-1"),"UTF-8"));//公司名称
+                map.put("accountBank",new String(accountBank.getBytes("ISO-8859-1"),"UTF-8"));//开户行
+                map.put("accountNature",new String(accountNature.getBytes("ISO-8859-1"),"UTF-8"));//账户性质
                 map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                 map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                map.put("classify",classify);//项目分类
+                map.put("classify",new String(classify.getBytes("ISO-8859-1"),"UTF-8"));//项目分类
                 //判断 权限的数据 
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
