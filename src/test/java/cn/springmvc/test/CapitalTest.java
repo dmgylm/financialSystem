@@ -38,7 +38,7 @@ public class CapitalTest {
         capital.setId(UuidUtil.getUUID());
         capital.setoId("2a38648b34134859a018d080ae720573");
         capital.setPlate("1235");
-        capital.setBU("1234");
+        capital.setBu("1234");
         capital.setRegionName("1111");
         capital.setProvince("1111");
         capital.setCity("11");
@@ -120,7 +120,7 @@ public class CapitalTest {
         Capital capital=new Capital();
         capital.setId("b5d06e8791de436480d819835e32ab46");
         capital.setPlate("1235");
-        capital.setBU("1234");
+        capital.setBu("1234");
         capital.setRegionName("1111");
         capital.setProvince("1111");
         capital.setCity("11");
