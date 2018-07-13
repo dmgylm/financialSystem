@@ -78,10 +78,9 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void editDataModule(String reportType,
-			String businessType, String html, Integer firstRowNum,
-			Integer secondRowNum, Integer firstColNum, Integer secondColNum)
+			String businessType, String html)
 			throws FormulaAnalysisException {
-		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(html, firstRowNum, secondRowNum, firstColNum, secondColNum);
+		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(html);
 		String json = htmlAnalysis.analysis();
 		DataModule dataModule = getDataModule(reportType,businessType);
 		Integer versionNumber = 1;

@@ -158,18 +158,14 @@ public class DataModuleController {
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="reportType",required=true,value="报表类型",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="firstRowNum",required=true,value="横向标题前缀(模块)",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="secondRowNum",required=true,value="横向标题后缀(科目)",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="firstColNum",required=true,value="纵向标题前缀",dataType="Integer", paramType = "query"),
-		  @ApiImplicitParam(name="secondColNum",required=true,value="纵向标题后缀",dataType="Integer", paramType = "query")})
+		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query")
+		  })
 	@ResponseBody
-	public ResultUtils editDataModule(String reportType,String businessType,String html, 
-			Integer firstRowNum,Integer secondRowNum,Integer firstColNum, Integer secondColNum) {
+	public ResultUtils editDataModule(String reportType,String businessType,String html) {
 //		Map<String, Object> dataMap = new HashMap<String, Object>();
 		ResultUtils result=new ResultUtils();
 		try {
-			dataModuleService.editDataModule(reportType,businessType,html,firstRowNum,secondRowNum,firstColNum,secondColNum);
+			dataModuleService.editDataModule(reportType,businessType,html);
 			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));*/
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {

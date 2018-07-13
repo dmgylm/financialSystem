@@ -54,7 +54,6 @@ public interface DataModuleService {
 	 * @param secondColNum
 	 * @throws FormulaAnalysisException
 	 */
-	void editDataModule(String reportType, String businessType, String html, Integer firstRowNum,
-			Integer secondRowNum, Integer firstColNum, Integer secondColNum) throws FormulaAnalysisException;
+	void editDataModule(String reportType, String businessType, String html) throws FormulaAnalysisException;
 
 }

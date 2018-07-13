@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,12 +27,6 @@ public class HtmlAnalysis {
 	
 	private Document doc;
 	private static String CLASS_NONE_DISPLAY_NAME = "display_none";
-	private static String CLASS_NAME_MODULE = "module";// 模块ClassName
-	private static String CLASS_NAME_ITEM = "item";// 科目className
-	private static String CLASS_NAME_MAINTITLE = "maintitle";// 主标题className
-	private static String CLASS_NAME_SUBTITLE = "subtitle";// 子标题className
-	private static String CLASS_NAME_BUDGET = "budget";// 预算className
-	private static String CLASS_NAME_LABEL = "label";// Label className
 	
 	private static String modelRowKey = "";
 	private static String prefixCelKey = "";
@@ -43,10 +36,6 @@ public class HtmlAnalysis {
 	private Map<String,String> rowKeyMap = new HashMap<String, String>();
 	private Map<String,String> colKeyMap = new HashMap<String, String>();
 	
-	private Integer prefixRowNum;//横向标题前缀
-	private Integer suffixRowNum ;//横向标题后缀
-	private Integer modelColNum ;//纵向标题前缀
-	private Integer itemColNum;//纵向标题后缀
 	private String REPLACE_REGX = "[：\\%/]";
 	
 	/**
@@ -57,11 +46,7 @@ public class HtmlAnalysis {
 	 * @param modelColNum 模块列号
 	 * @param itemColNum 科目称号
 	 */
-	public HtmlAnalysis(File file,Integer modelColNum,Integer itemColNum,Integer prefixRowNum,Integer suffixRowNum) {
-		this.prefixRowNum = prefixRowNum;
-		this.suffixRowNum = suffixRowNum;
-		this.modelColNum = modelColNum;
-		this.itemColNum = itemColNum;
+	public HtmlAnalysis(File file) {
 		try {
 			this.doc = Jsoup.parse(file,"UTF-8");
 		} catch (IOException e) {
@@ -71,53 +56,21 @@ public class HtmlAnalysis {
 
 	/**
 	 * 构造方法
-	 * @param file Html文件
-	 * @param prefixCelNum 横向标题前缀
-	 * @param suffixCelNum 横向标题后缀
-	 * @param modelColNum 模块列号
-	 * @param itemColNum 科目称号
-	 */
-	public HtmlAnalysis(File file,Integer modelColNum,Integer itemColNum,Integer suffixCelNum) {
-		this(file, modelColNum, itemColNum, null, suffixCelNum);
-	}
-	
-	
-	
-	/**
-	 * 构造方法
-	 * @param html Html代码字符串
-	 * @param suffixCelNum 横向标题后缀
-	 * @param modelColNum 模块列号
-	 * @param itemColNum 科目称号
-	 */
-	public HtmlAnalysis(String html,Integer modelColNum,Integer itemColNum,Integer suffixCelNum){
-		this(html, modelColNum, itemColNum, null,suffixCelNum);
-	}
-
-	/**
-	 * 构造方法
 	 * @param html Html代码字符串
 	 * @param prefixCelNum 横向标题前缀
 	 * @param suffixCelNum 横向标题后缀
 	 * @param modelColNum 模块列号
 	 * @param itemColNum 科目称号
 	 */
-	public HtmlAnalysis(String html,Integer modelColNum,Integer itemColNum,Integer prefixCelNum,Integer suffixCelNum) {
+	public HtmlAnalysis(String html) {
 		this.doc = Jsoup.parse(html);
-		this.prefixRowNum = prefixCelNum;
-		this.suffixRowNum = suffixCelNum;
-		this.modelColNum = modelColNum;
-		this.itemColNum = itemColNum;
 	}
 
 	public static void main(String[] args) {
 		String filename = "C:/Users/Admin/Desktop/xxxxxfffff.html";
 //		String filename = "C:/Users/Admin/Desktop/test.html";
 		File file = new File(filename);
-		Integer suffixCelNum = 3;//横向标题后缀
-		Integer modelColNum = 1;//纵向标题前缀
-		Integer itemColNum = 2;//纵向标题后缀
-		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(file, modelColNum, itemColNum, suffixCelNum);
+		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(file);
 		String html = null;
 		try {
 			html = htmlAnalysis.analysis();
@@ -321,17 +274,17 @@ public class HtmlAnalysis {
 			cellValue = "";
 		}
 		cellValue = cellValue.trim();
-		if(classSet.contains(CLASS_NAME_MODULE) && StringUtils.isValid(cellValue)) {
+		if(classSet.contains(HtmlGenerate.CLASS_MODULE) && StringUtils.isValid(cellValue)) {
 			modelRowKey = cellValue;
 		}
-		if(classSet.contains(CLASS_NAME_ITEM)) {
+		if(classSet.contains(HtmlGenerate.CLASS_ITEM)) {
 			String key = modelRowKey + Separate_Modular + cellValue;
 			rowKeyMap.put(rowNum+"", key);
 		}
-		if(classSet.contains(CLASS_NAME_MAINTITLE)) {
+		if(classSet.contains(HtmlGenerate.CLASS_MAINTITLE)) {
 			prefixCelKey = cellValue;
 		}
-		if(classSet.contains(CLASS_NAME_SUBTITLE)) {
+		if(classSet.contains(HtmlGenerate.CLASS_SUBTITLE)) {
 			String key = prefixCelKey + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
