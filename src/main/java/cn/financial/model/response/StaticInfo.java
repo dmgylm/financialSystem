@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class StaticInfo extends ResultUtils {
 
-	@ApiModelProperty(value = "返回所选key对应具体公司数据")
+	@ApiModelProperty(value = "返回所选key对应具体公司数据 如{'xxx分公司':'112.0'}")
 	private Map<String, String> data;
 
 	public Map<String, String> getData() {
