@@ -119,7 +119,7 @@ public class StatisticJsonTest {
 		params.put("endDate", "2018/5");
 		params.put("orgId", orgId.toString());
 		
-		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticJson;JSESSIONID=8a6b43f7-1a68-437f-a8a3-f8d548bba9e6", params);
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSys/statistic/staticJson;JSESSIONID=3d6c459a-02df-42cc-9a19-1f57805131e0&", params);
 		System.out.println(responseStr);
     	
     	
@@ -139,7 +139,7 @@ public class StatisticJsonTest {
 		params.put("endDate", "2019/7");
 		params.put("orgId", orgId.toString());
 		
-		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticJson;JSESSIONID=7e1000a3-c770-4315-91f5-ba50a59f3874", params);
+		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticJson;JSESSIONID=3d6c459a-02df-42cc-9a19-1f57805131e0", params);
 		System.out.println(responseStr);
     	
     	

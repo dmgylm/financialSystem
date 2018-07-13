@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,8 +67,9 @@ public class StatisticJsonController {
     	})
 	@ApiResponse(code = 200, message = "成功")
     @PostMapping(value = "/staticJson")
-    public Map<String, Object> staticJson(String reportType,String businessType,String startDate,String endDate,String orgId) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public StaticJson staticJson(String reportType,String businessType,String startDate,String endDate,String orgId) {
+//        Map<String, Object> dataMap = new HashMap<String, Object>();
+    	StaticJson sj = new StaticJson();
         try {
         	String caCheUuid = UuidUtil.getUUID();
      		//获取所选机构
@@ -86,14 +86,18 @@ public class StatisticJsonController {
     		statisticService.staticInfoMap(companyList,businessDataList,caCheUuid);
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(ja.toString(),HtmlGenerate.HTML_TYPE_PREVIEW);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("caCheId", caCheUuid);
-            dataMap.put("data", html);
+			sj.setCaCheId(caCheUuid);
+			sj.setData(html);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
+//            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+//            dataMap.put("caCheId", caCheUuid);
+//            dataMap.put("data", html);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,sj);
+//            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return sj;
     }
 	
     /**
@@ -112,17 +116,21 @@ public class StatisticJsonController {
     	})
 	@ApiResponse(code = 200, message = "成功")
     @PostMapping(value = "/staticInfo")
-    public Map<String, Object> staticInfo(String caCheUuid,String infoKey) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    public StaticInfo staticInfo(String caCheUuid,String infoKey) {
+//        Map<String, Object> dataMap = new HashMap<String, Object>();
+    	StaticInfo si = new StaticInfo();
         try {
             Map<String, Map<String, String>> ja = statisticService.staticInfoMap(null,null,caCheUuid);
             Map<String, String> companyInfo = ja.get(infoKey);
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-            dataMap.put("data", companyInfo);
+            si.setData(companyInfo);
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,si);
+//            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+//            dataMap.put("data", companyInfo);
         } catch (Exception e) {
-            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,si);
+//            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return dataMap;
+        return si;
     }
 }
