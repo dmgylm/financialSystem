@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -143,10 +142,10 @@ public class MainController {
             System.out.println("~~~session:"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
             List<ChildrenObject> ChildrenObject = new ArrayList<>();
-            this.queryRoleResourceList(jsonObject, ChildrenObject);
+            roleResourceService.queryRoleResourceList(jsonObject, ChildrenObject);
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
             List<ChildrenObject> ChildrenObjectOrg = new ArrayList<>();
-            this.queryRoleResourceList(jsonOrg, ChildrenObjectOrg);
+            roleResourceService.queryRoleResourceList(jsonOrg, ChildrenObjectOrg);
             loginResult.setRoleResource(ChildrenObject);
             loginResult.setUserOrganization(ChildrenObjectOrg);
             loginResult.setSessionId(subject.getSession().getId()+"");
@@ -183,29 +182,4 @@ public class MainController {
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
-    
-    public static void queryRoleResourceList(List<JSONObject> json,List<ChildrenObject> ChildrenObject){
-        if(json==null || json.equals("")){
-            return;
-        }
-        for (JSONObject item : json) {
-            if(item.containsKey("children") && CollectionUtils.isNotEmpty(item.getJSONArray("children"))){
-                JSONObject itemChildren=(JSONObject)JSONObject.toJSON(item);
-                ChildrenObject children = new ChildrenObject();
-                children.setId(itemChildren.getString("id"));
-                children.setName(itemChildren.getString("name"));
-                children.setPid(itemChildren.getString("pid"));
-                children.setParentId(itemChildren.getString("parentId"));
-                children.setLeaf(itemChildren.getString("leaf"));
-                children.setOrgkeyName(itemChildren.getString("orgkeyName"));
-                children.setOrgType(itemChildren.getString("orgType"));
-                children.setOrgPlateId(itemChildren.getString("orgPlateId"));
-                ChildrenObject.add(children);
-                queryRoleResourceList(json,ChildrenObject);
-            }
-            
-        }
-         
-    }
-
 }
