@@ -71,6 +71,28 @@ public class StatisticJsonController {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
     	StaticJson sj = new StaticJson();
         try {
+        	
+        	if(reportType == null || reportType.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_REPORTTYPE_NULL, sj);
+                return sj;
+            }
+        	if(businessType == null || businessType.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_BUSINESSTYPE_NULL, sj);
+                return sj;
+            }
+        	if(startDate == null || startDate.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_STARTDATE_NULL, sj);
+                return sj;
+            }
+        	if(endDate == null || endDate.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_ENDDATE_NULL, sj);
+                return sj;
+            }
+        	if(orgId == null || orgId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_ORGID_NULL, sj);
+                return sj;
+            }
+        	
         	String caCheUuid = UuidUtil.getUUID();
      		//获取所选机构
      		List<Organization> codeSonList = statisticService.companyList(JSONArray.parseArray(orgId));
@@ -120,6 +142,16 @@ public class StatisticJsonController {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
     	StaticInfo si = new StaticInfo();
         try {
+        	if(caCheUuid == null || caCheUuid.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_CACHEUUID_NULL, si);
+                return si;
+            }
+        	if(infoKey == null || infoKey.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_INFOKEY_NULL, si);
+                return si;
+            }
+        	
+        	
             Map<String, Map<String, String>> ja = statisticService.staticInfoMap(null,null,caCheUuid);
             Map<String, String> companyInfo = ja.get(infoKey);
             si.setData(companyInfo);
