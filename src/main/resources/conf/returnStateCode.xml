@@ -149,6 +149,11 @@
         <description>功能权限不能为空</description>
     </Result>
     
+    <Result name="MESSAGE_ID_NULL">
+        <code>251</code>
+        <description>消息id不能为空</description>
+    </Result>
+    
     <Result name="STATIC_REPORTTYPE_NULL">
         <code>280</code>
         <description>报表类型不能为空</description>
