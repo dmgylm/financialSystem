@@ -393,7 +393,7 @@ public class OrganizationController {
         try {
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
-                map.put("orgName",orgName.trim().toString());//new String(request.getParameter("orgName").getBytes("ISO-8859-1"), "UTF-8"));
+                map.put("orgName",orgName.trim().toString());
             }
             if (null != id && !"".equals(id)) {
                 map.put("id", id);
