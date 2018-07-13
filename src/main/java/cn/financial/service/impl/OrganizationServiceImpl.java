@@ -164,7 +164,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     @Cacheable(value = "organizationValue", key = "'orga_key_treeById_'+#id")
-    public JSONObject TreeByIdForSon(String id) {
+    public  JSONObject TreeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
