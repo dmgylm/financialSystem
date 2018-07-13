@@ -119,9 +119,6 @@
         <if test="sId!=null and sId!=''">
             and sId = #{sId}
         </if>
-        <if test="typeId!=null and typeId!=''">
-            and typeId = #{typeId}
-        </if>
     </sql>
     
      <!--data sql-->
