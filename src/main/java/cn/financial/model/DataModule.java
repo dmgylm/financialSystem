@@ -59,7 +59,7 @@ public class DataModule {
     @ApiModelProperty(value="创建人",name="founder",example="")
 	private String founder; //创建人
 	
-    @ApiModelProperty(value="模板状态",name="statue",example="")
+    @ApiModelProperty(value="模板状态（0：无效；1：有效）",name="statue",example="")
 	private Integer statue;
 	
     @ApiModelProperty(value="起效日期",name="startTime",example="")

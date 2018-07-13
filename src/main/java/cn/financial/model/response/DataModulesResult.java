@@ -1,22 +1,24 @@
 package cn.financial.model.response;
 
-import java.util.List;
 
-import cn.financial.model.DataModule;
 import io.swagger.annotations.ApiModelProperty;
 
 public class DataModulesResult extends ResultUtils{
 
 	@ApiModelProperty(value = "配置模板列表数据")
-	private List<DataModule> data;
+	private DataModuleResult data;
 
-	public List<DataModule> getData() {
+	public DataModuleResult getData() {
 		return data;
 	}
 
-	public void setData(List<DataModule> data) {
+	public void setData(DataModuleResult data) {
 		this.data = data;
 	}
+	
+
+	
+	
 	
 	
 }

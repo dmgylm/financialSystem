@@ -5,6 +5,9 @@ import java.util.Map;
 
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
+import cn.financial.model.response.DataModuleResult;
+import cn.financial.model.response.DataModulesResult;
+import cn.financial.model.response.ModuleList;
 
 public interface DataModuleService {
 
@@ -13,7 +16,15 @@ public interface DataModuleService {
      * @return
      */
     List<DataModule> listDataModule(Map<Object, Object> map);
+    
+    /**
+     * 查询所有用户/多条件查询用户列表(简单列表)
+     * @return
+     */
+    List<ModuleList> queryModuleList(DataModule module,
+    		Integer startPage,Integer pageSize);
 	
+    DataModuleResult queryModuleLists(Map<Object, Object> map,Integer page,Integer pageSize);
     /**
      * 新增数据模块
      * @param dataModule

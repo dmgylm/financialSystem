@@ -19,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
 import cn.financial.model.DataModule;
 import cn.financial.model.OutResult;
+import cn.financial.model.response.DataModuleResult;
 import cn.financial.model.response.DataModulesResult;
 import cn.financial.model.response.DataResult;
+import cn.financial.model.response.ModuleList;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.DataModuleService;
 import cn.financial.util.ElementConfig;
@@ -55,25 +60,37 @@ public class DataModuleController {
 	@PostMapping("/dataModuleList")
 	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response=DataModulesResult.class)
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query",required=false)})
+		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query",required=false),
+		  @ApiImplicitParam(name="pageNo",value="当前页码",dataType="Integer", paramType = "query",required=false),
+		  @ApiImplicitParam(name="pageSize",value="每页数据长度",dataType="Integer", paramType = "query",required=false)})
     @ResponseBody
-	public DataModulesResult listDataModule(String moduleName){
+	public DataModulesResult listDataModule(String moduleName,Integer pageNo,Integer pageSize){
 //		Map<String, Object> dataMap = new HashMap<String, Object>();
 //		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
 		DataModulesResult result=new DataModulesResult();
 		try {
 			//JSONObject json=JSONObject.fromObject(jsonData);
+			/*pageNo = pageNo == null?1:pageNo;
+		    pageSize = pageSize == null?10:pageSize;*/
+		   
 			Map<Object, Object> map = new HashMap<>();
-			//String moduleName = json.getString("moduleName");
+			
+			
 			if(null!= moduleName && !"".equals(moduleName)){
                // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
 				map.put("moduleName",moduleName);
             }
-			List<DataModule> list=dataModuleService.listDataModule(map);
-			/*dataMap.put("data", list);
-			dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));*/
 			
-			result.setData(list);
+//			pageNo = pageNo == null?0:(pageNo - 1) * pageSize;
+//		    pageSize = pageSize == null?10:pageSize;
+//			List<ModuleList> list=dataModuleService.queryModuleList(bean, pageNo, pageSize);
+//			result.setData(list);
+			
+			
+			
+			
+			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(map,pageNo,pageSize);
+			result.setData(dataModuleResult);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
 			logger.error("模板列表查询错误",e);
