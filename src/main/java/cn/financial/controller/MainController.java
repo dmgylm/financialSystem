@@ -1,7 +1,6 @@
 package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
-import cn.financial.model.response.ChildrenObject;
-import cn.financial.model.response.LoginInfo;
 import cn.financial.model.response.LoginResult;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.UserOrganizationService;
@@ -86,7 +83,7 @@ public class MainController {
     
     @RequestMapping(value="/docTest", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public String getTest(HttpServletRequest request, HttpServletResponse response) {
-        return "redirect:/swagger-ui.html";
+        return "redirect:/doc.html";
     }
     
     /**
@@ -105,16 +102,15 @@ public class MainController {
      * @param respons
      * @return
      */
+    public static String key;
     @RequestMapping(value="/login", method = RequestMethod.POST)
-    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息", response = LoginInfo.class)
+    @ApiOperation(value="登录认证",notes="返回用户关联功能权限信息", response = LoginResult.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="username",value="用户名",dataType="string", paramType = "query",  required = true),
         @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",  required = true)})
     @ResponseBody
-    public LoginInfo login(String username, String password){
-        LoginInfo result = new LoginInfo();
-        LoginResult loginResult = new LoginResult();
-        List<LoginResult> loginResultList = new ArrayList<>();
+    public LoginResult login(String username, String password){
+        LoginResult result = new LoginResult();
         try {
             if(username == null || username.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR, result);
@@ -141,16 +137,10 @@ public class MainController {
             }
             System.out.println("~~~session:"+subject.getSession().getId());
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
-            List<ChildrenObject> ChildrenObject = new ArrayList<>();
-            roleResourceService.queryRoleResourceList(jsonObject, ChildrenObject);
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
-            List<ChildrenObject> ChildrenObjectOrg = new ArrayList<>();
-            roleResourceService.queryRoleResourceList(jsonOrg, ChildrenObjectOrg);
-            loginResult.setRoleResource(ChildrenObject);
-            loginResult.setUserOrganization(ChildrenObjectOrg);
-            loginResult.setSessionId(subject.getSession().getId()+"");
-            loginResultList.add(loginResult);
-            result.setData(loginResultList);
+            result.setRoleResource(jsonObject);
+            result.setUserOrganization(jsonOrg);
+            result.setSessionId(subject.getSession().getId()+"");
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
@@ -182,4 +172,5 @@ public class MainController {
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
+
 }
