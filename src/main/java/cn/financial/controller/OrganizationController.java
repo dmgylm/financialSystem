@@ -4,16 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -29,10 +26,12 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.ChildrenObject;
 import cn.financial.model.response.OganizationNode;
 import cn.financial.model.response.OrangizaSubnode;
 import cn.financial.model.response.OrganizaHason;
 import cn.financial.model.response.OrganizaParnode;
+import cn.financial.model.response.OrganizaResult;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.ElementConfig;
@@ -70,7 +69,7 @@ public class OrganizationController {
     @ApiOperation(value = "新增组织结构",notes = "新增组织结构",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "Integer", name = "orgType", value = "类别（1:汇总，2:公司，3:部门,4:板块）", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "int", name = "orgType", value = "类别（1:汇总，2:公司，3:部门,4:板块）", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = true),
     })
     @PostMapping(value = "/save")
@@ -134,8 +133,9 @@ public class OrganizationController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             Map<Object, Object> map = new HashMap<>();
-            // orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
+            
             if (null !=orgName && !"".equals(orgName)) {
+            	orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
                 map.put("orgName", orgName.trim().toString());//组织架构名
             }
             if (null !=createTime && !"".equals(createTime)) {
@@ -183,7 +183,7 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
-    	@ApiImplicitParam(paramType="query", dataType = "Integer", name = "orgType", value = "类别（1：汇总:2：公司:3：部门,4:板块）", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "int", name = "orgType", value = "类别（1：汇总:2：公司:3：部门,4:板块）", required = false),
     	})
     @PostMapping(value = "/updateByid")
     public ResultUtils updateOrganizationById(String id,String orgName,Integer orgType, HttpServletRequest request, HttpServletResponse response) {
@@ -273,36 +273,40 @@ public class OrganizationController {
      */
     @ResponseBody
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
-    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response=OrangizaSubnode.class)
+    @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response = OrangizaSubnode.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	})
     @PostMapping(value = "/getSubnode")
-    public OrangizaSubnode getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
+    public  Map<Object, Object> getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> dataMap = new HashMap<Object, Object>();
         OrangizaSubnode orgin=new OrangizaSubnode();
+        OrganizaResult loginResult = new OrganizaResult();
+        List<OrganizaResult> loginResultList = new ArrayList<>();
         try {
             JSONObject jsonTree = new JSONObject();
             if (null !=id && !"".equals(id)) {
                 id =id;
             }
-            jsonTree = organizationService.TreeByIdForSon(id);
-            orgin.setData(jsonTree);
+            jsonTree= organizationService.TreeByIdForSon(id);
+            List<ChildrenObject> ChildrenObject = new ArrayList<>();
+            //OrganizaList.organiza(jsonTree, ChildrenObject);
+            loginResult.setChildren(ChildrenObject);
+            loginResultList.add(loginResult);
+            orgin.setData(loginResultList);
             if (jsonTree != null) {
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,orgin);
-                //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-               // dataMap.put("data", jsonTree);
+                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+                dataMap.put("data", jsonTree);
             } else {
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,orgin);
-               //dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+               dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }
         } catch (Exception e) {
-        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,orgin);
-           // dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return orgin;
+        return dataMap;
     }
+  
 
     /**
      * 根据id查询所有该节点的所有父节点
