@@ -55,7 +55,7 @@ public class BudgetHtmlTest {
 	
 	@Test
 	public void analysisBudgetHtml(){
-		HtmlAnalysis4Excel ha = new HtmlAnalysis4Excel(new File("C:/Users/Admin/Desktop/Html budget.html"), 1, 2, 2);
+		HtmlAnalysis4Excel ha = new HtmlAnalysis4Excel(new File("C:/Users/Admin/Desktop/Html budget.html"), 1, 2, 1);
 		try {
 			String json = ha.analysis();
 //			System.out.println(json);
@@ -79,7 +79,8 @@ public class BudgetHtmlTest {
 	
 	@Test
 	public void analysisHtml(){
-		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/PROFIT_LOSS.html"), 1, 2, 2);
+		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/PROFIT_LOSS.html"));
+//		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/PROFIT_LOSS.html"), 1, 2, 2);
 		try {
 			String json = ha.analysis();
 //			System.out.println(json);

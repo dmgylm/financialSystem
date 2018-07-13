@@ -26,7 +26,7 @@ public class JsonTest {
     
     @Test
     public  void  simplifyJson(){
-    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    	String path = "C:/Users/Admin/Desktop/ffff.txt";
     	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
     	JSONObject jsons=JsonConvertProcess.simplifyJson(newObj);
     	System.out.println(jsons);

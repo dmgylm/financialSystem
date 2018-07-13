@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import jxl.Workbook;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -138,16 +140,22 @@ public class AnalysisExcelFormula {
 //					} else if(cellType==HSSFCell.CELL_TYPE_BLANK) {//空白单元格
 //						continue;
 					}
-					int type = HtmlGenerate.BOX_TYPE_LABEL;
-					if(cellValue!=null && !cellValue.trim().equals("")) {
+					Integer type = null;
+					if(cellValue!=null && !cellValue.trim().equals("") && (i<=suffixrowNum || j<=modelColNum || j<=itemColNum)) {
 						type = HtmlGenerate.BOX_TYPE_LABEL;
 					} else if(cellValue == null && cellFormula==null) {
 						type = HtmlGenerate.BOX_TYPE_INPUT;
 					} else if(cellFormula!=null) {
 						type = HtmlGenerate.BOX_TYPE_FORMULA;
+					} else if(i>suffixrowNum && j>itemColNum && type == null) {
+						type = HtmlGenerate.BOX_TYPE_INPUT;
 					}
-					if((type==HtmlGenerate.BOX_TYPE_FORMULA || type==HtmlGenerate.BOX_TYPE_INPUT) && j==budgetCell && budgetCell != 0) {
+					if(/*(type==HtmlGenerate.BOX_TYPE_FORMULA || type==HtmlGenerate.BOX_TYPE_INPUT) &&*/ j==budgetCell && budgetCell != 0) {
 						type = HtmlGenerate.BOX_TYPE_BUDGET;
+					}
+					
+					if(type==null) {
+						type = HtmlGenerate.BOX_TYPE_LABEL;
 					}
 					
 					Integer tmpType = addRowAndColKey(cellValue,j,i);
