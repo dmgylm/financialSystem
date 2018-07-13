@@ -10,7 +10,7 @@ public class ListMessage extends ResultUtils {
 	@ApiModelProperty(value = "返回查询的消息集合")
 	private List<Message> data;
 	@ApiModelProperty(value = "返回总的消息条数")
-	private Integer allSize;
+	private Integer total;
 	
 	public List<Message> getData() {
 		return data;
@@ -18,11 +18,11 @@ public class ListMessage extends ResultUtils {
 	public void setData(List<Message> data) {
 		this.data = data;
 	}
-	public Integer getAllSize() {
-		return allSize;
+	public Integer getTotal() {
+		return total;
 	}
-	public void setAllSize(Integer allSize) {
-		this.allSize = allSize;
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 
 }
