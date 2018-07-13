@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.TextMessage;
 
@@ -23,9 +22,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Message;
 import cn.financial.model.User;
-import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.ListMessage;
 import cn.financial.model.response.MessageInfo;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.UnreadInfo;
 import cn.financial.service.MessageService;
 import cn.financial.util.ElementConfig;
@@ -35,6 +34,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 消息相关操作
@@ -78,8 +79,8 @@ public class MessageController {
     @RequiresPermissions("message:view")
     @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息",response = ListMessage.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="Integer", paramType = "query"),
-        @ApiImplicitParam(name="page",value="显示第几页",dataType="Integer", paramType = "query")})
+        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="int", paramType = "query"),
+        @ApiImplicitParam(name="page",value="显示第几页",dataType="int", paramType = "query")})
     public ListMessage listMessage(HttpServletRequest request, HttpServletResponse response) {
         ListMessage result = new ListMessage();
         
@@ -94,10 +95,10 @@ public class MessageController {
     		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
             List<Message> list = messageService.quartMessageByPower(user,map);
-            Integer allSize = list.size();//用户总的消息条数
+            Integer total = list.size();//用户总的消息条数
             
             if (lm.size() >= 0) {
-            	result.setAllSize(allSize);
+            	result.setTotal(total);
             	result.setData(lm);
                 ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
@@ -313,13 +314,18 @@ public class MessageController {
     @RequestMapping(value = "/getById", method = RequestMethod.POST)
     @ApiOperation(value="根据id查询消息",notes="根据id查询消息",response = MessageInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 251, message = "消息id为空")})
     @ResponseBody
-    public MessageInfo getMessageById(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
+    public MessageInfo getMessageById(HttpServletRequest request,String id) {
         MessageInfo result = new MessageInfo();
         
         try {
             Message message = messageService.getMessageById(id);
+            if(message == null){
+                ElementXMLUtils.returnValue(ElementConfig.MESSAGE_ID_NULL,result);
+                return result;
+            }
             result.setData(message);
             ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
         } catch (Exception e) {
@@ -342,12 +348,13 @@ public class MessageController {
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ApiOperation(value="修改消息",notes="根据id修改消息",response = ResultUtils.class)
     @ApiImplicitParams({
-    	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="Integer", paramType = "query"),
-         @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="Integer", paramType = "query"),
+    	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="int", paramType = "query"),
+         @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="int", paramType = "query"),
          @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 251, message = "消息id为空")})
     @ResponseBody
-    public ResultUtils updateMessageById(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(value = "id", required = true) String id) {
+    public ResultUtils updateMessageById(HttpServletRequest request, HttpServletResponse response, String id) {
         ResultUtils result = new ResultUtils();
         
         try {
@@ -357,6 +364,11 @@ public class MessageController {
             map.put("isTag", request.getParameter("isTag"));
             map.put("id", id);
         	Integer i = messageService.updateMessageById(map);
+        	
+        	if(i == null) {
+        		ElementXMLUtils.returnValue(ElementConfig.MESSAGE_ID_NULL,result);
+                return result;
+        	}
             if (Integer.valueOf(1).equals(i)) {
             	ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
@@ -382,13 +394,18 @@ public class MessageController {
     @ApiOperation(value="删除消息",notes="根据id删除消息",response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 251, message = "消息id为空")})
     @ResponseBody
-    public ResultUtils deleteMessageById(HttpServletRequest request,
-            @RequestParam(value = "id", required = true) String id) {
+    public ResultUtils deleteMessageById(HttpServletRequest request, String id) {
         ResultUtils result = new ResultUtils();
         
         try {
             Integer i = messageService.deleteMessageById(id);
+            if(i == null) {
+        		ElementXMLUtils.returnValue(ElementConfig.MESSAGE_ID_NULL,result);
+                return result;
+        	}
             if (Integer.valueOf(1).equals(i)) {
             	ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
@@ -455,7 +472,6 @@ public class MessageController {
     		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
             List<Message> list = messageService.quartMessageByPower(user,map);
-        	
             int unreadMessage = 0;
             for(int i=0;i<list.size();i++) {
                 if(list.get(i).getStatus() == 0) {
