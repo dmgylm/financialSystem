@@ -4,12 +4,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,7 +24,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.OganizationNode;
@@ -64,11 +70,11 @@ public class OrganizationController {
     @ApiOperation(value = "新增组织结构",notes = "新增组织结构",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "Integer", name = "orgType", value = "类别（1:汇总，2:公司，3:部门,4:板块）", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentOrgId", value = "父节点", required = true),
     })
     @PostMapping(value = "/save")
-    public ResultUtils saveOrganization(String orgName,String orgType,
+    public ResultUtils saveOrganization(String orgName,Integer orgType,
     		String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result=new ResultUtils();
@@ -128,6 +134,7 @@ public class OrganizationController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             Map<Object, Object> map = new HashMap<>();
+            // orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
             if (null !=orgName && !"".equals(orgName)) {
                 map.put("orgName", orgName.trim().toString());//组织架构名
             }
@@ -176,13 +183,14 @@ public class OrganizationController {
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgName", value = "组织架构名", required = false),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgType", value = "类别（汇总，公司，部门）", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "Integer", name = "orgType", value = "类别（1：汇总:2：公司:3：部门,4:板块）", required = false),
     	})
     @PostMapping(value = "/updateByid")
-    public ResultUtils updateOrganizationById(String id,String orgName,String orgType, HttpServletRequest request, HttpServletResponse response) {
+    public ResultUtils updateOrganizationById(String id,String orgName,Integer orgType, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result=new ResultUtils();
         try {
+        	//orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
             Map<Object, Object> map = new HashMap<>();
             if (null !=orgName && !"".equals(orgName)) {
                 map.put("orgName",orgName.trim().toString());//组织架构名
@@ -392,6 +400,7 @@ public class OrganizationController {
         OrganizaHason hason=new OrganizaHason();
         try {
             Map<Object, Object> map = new HashMap<>();
+            //orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
             if (null !=orgName && !"".equals(orgName)) {
                 map.put("orgName",orgName.trim().toString());
             }
