@@ -329,8 +329,8 @@ public class CapitalController {
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
             if(name.equals(".xls")||name.equals(".xlsx")){
-            Integer size=(int) uploadFile.getSize();
-            if(uploadFile.getSize()>0 && size<4990){  //判断文件大小是否是5M以下的
+            Long size=uploadFile.getSize();
+            if(uploadFile.getSize()>0 && size<5242880){  //判断文件大小是否是5M以下的
               try {
                   int row=1;
                   Integer a=0;
