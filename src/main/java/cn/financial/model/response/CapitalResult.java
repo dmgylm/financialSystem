@@ -9,16 +9,28 @@ import io.swagger.annotations.ApiModelProperty;
 public class CapitalResult extends ResultUtils{
 
 	@ApiModelProperty(value = "资金流水的返回数据")
-	private List<Capital> capital;  //返回的数据
+	private List<Capital> capitalList;  //返回的数据
 
+	@ApiModelProperty(value = "资金流水的返回数据")
+    private Capital capital;  //返回的数据
+	
 	@ApiModelProperty(value = "资金流水的总条数")
 	private Integer total; //返回的消息
 
-    public List<Capital> getCapital() {
+
+    public List<Capital> getCapitalList() {
+        return capitalList;
+    }
+
+    public void setCapitalList(List<Capital> capitalList) {
+        this.capitalList = capitalList;
+    }
+
+    public Capital getCapital() {
         return capital;
     }
 
-    public void setCapital(List<Capital> capital) {
+    public void setCapital(Capital capital) {
         this.capital = capital;
     }
 

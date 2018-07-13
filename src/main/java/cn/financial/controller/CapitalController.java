@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
@@ -49,8 +52,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * 资金表Controller
@@ -109,22 +110,23 @@ public class CapitalController {
                 @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String", paramType = "query")})
         @ResponseBody
-        public CapitalResult listCapitalBy(HttpServletRequest request) {
+        public CapitalResult listCapitalBy(HttpServletRequest request,String plate,String BU,String regionName,String province,String company,
+                String accountBank,String accountNature,String tradeTimeBeg,String tradeTimeEnd,String classify,Integer page,Integer pageSize) {
             //Map<String, Object> dataMap = new HashMap<String, Object>();
             CapitalResult capitalResult=new CapitalResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                 map.put("plate",request.getParameter("plate")); //板块
-                 map.put("BU",request.getParameter("BU"));//事业部
-                 map.put("regionName",request.getParameter("regionName"));//大区名称
-                 map.put("province",request.getParameter("province"));//省份
-                 map.put("company",request.getParameter("company"));//公司名称
-                 map.put("accountBank",request.getParameter("accountBank"));//开户行
-                 map.put("accountNature",request.getParameter("accountNature"));//账户性质
-                 map.put("tradeTimeBeg",(request.getParameter("tradeTimeBeg")));//交易起始日期
-                 map.put("tradeTimeEnd",request.getParameter("tradeTimeEnd"));//交易结束日期
+                 map.put("plate",plate); //板块
+                 map.put("BU",BU);//事业部
+                 map.put("regionName",regionName);//大区名称
+                 map.put("province",province);//省份
+                 map.put("company",company);//公司名称
+                 map.put("accountBank",accountBank);//开户行
+                 map.put("accountNature",accountNature);//账户性质
+                 map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
+                 map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
                  map.put("classify",request.getParameter("classify"));//项目分类
                 List<UserOrganization> userOrganization= userOrganizationService.listUserOrganization(uId); //判断 权限的数据
                 if(userOrganization.size()>0){
@@ -136,8 +138,16 @@ public class CapitalController {
                  List<String> oIds = Arrays.asList(oId);
                  map.put("oId", oIds);//根据权限的typeId查询相对应的数据
                  List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
-                 map.put("pageSize",request.getParameter("pageSize"));
-                 map.put("page",request.getParameter("page"));
+                 if(pageSize!=0){
+                     map.put("pageSize",pageSize);
+                 }else{
+                     map.put("pageSize",10);
+                 }
+                 if(page>0){
+                     map.put("start",pageSize * (page- 1));   
+                 }else{
+                     map.put("start",0);
+                 }
                  List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
                  Date  newTime=new Date();
                  for (int i = 0; i < list.size(); i++) {
@@ -151,7 +161,7 @@ public class CapitalController {
                      list.get(i).setEditor(editor);
                 }
                  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                 capitalResult.setCapital(list);
+                 capitalResult.setCapitalList(list);
                  capitalResult.setTotal(total.size());
                 }else{
                     throw new Exception("您没有权限查看资金流水数据！"); 
