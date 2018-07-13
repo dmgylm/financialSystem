@@ -76,14 +76,16 @@ public class DataModuleServiceImpl implements DataModuleService{
 	public DataModuleResult queryModuleLists(Map<Object, Object> map,Integer page,Integer pageSize) {
 		DataModuleResult result=new DataModuleResult();
 		List<ModuleList> moduleLists=new ArrayList<ModuleList>();
+		page = page == null?1:page;
+	    pageSize = pageSize == null?10:pageSize;
 		PageHelper.startPage(page, pageSize);
 		List<DataModule> dataModules=dataModuleDao.queryDataModules(map);
 		//用PageInfo对结果进行包装
 	    PageInfo<DataModule> pageInfo = new PageInfo<DataModule>(dataModules);
-	    System.out.println(pageInfo.getList());
+	    /*System.out.println(pageInfo.getList());
 	    System.out.println(pageInfo.getTotal());
 	    System.out.println(pageInfo.getEndRow());
-	    System.out.println(pageInfo.getSize());
+	    System.out.println(pageInfo.getSize());*/
 		
 		for(DataModule dataModule:dataModules){
 			ModuleList moduleList=new ModuleList();

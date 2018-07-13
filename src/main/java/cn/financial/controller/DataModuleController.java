@@ -61,10 +61,10 @@ public class DataModuleController {
 	@ApiOperation(value = "查询模板列表",notes = "查询模板列表",response=DataModulesResult.class)
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="moduleName",value="模板名称",dataType="string", paramType = "query",required=false),
-		  @ApiImplicitParam(name="pageNo",value="当前页码",dataType="Integer", paramType = "query",required=false),
-		  @ApiImplicitParam(name="pageSize",value="每页数据长度",dataType="Integer", paramType = "query",required=false)})
+		  @ApiImplicitParam(name="page",value="当前页码",dataType="int", paramType = "query",required=false),
+		  @ApiImplicitParam(name="pageSize",value="每页数据长度",dataType="int", paramType = "query",required=false)})
     @ResponseBody
-	public DataModulesResult listDataModule(String moduleName,Integer pageNo,Integer pageSize){
+	public DataModulesResult listDataModule(String moduleName,Integer page,Integer pageSize){
 //		Map<String, Object> dataMap = new HashMap<String, Object>();
 //		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
 		DataModulesResult result=new DataModulesResult();
@@ -86,10 +86,7 @@ public class DataModuleController {
 //			List<ModuleList> list=dataModuleService.queryModuleList(bean, pageNo, pageSize);
 //			result.setData(list);
 			
-			
-			
-			
-			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(map,pageNo,pageSize);
+			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(map,page,pageSize);
 			result.setData(dataModuleResult);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
