@@ -557,7 +557,6 @@ public class CapitalController {
                              result.setMess("上传成功");
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                          } else {
-                             result.setMess("上传失败");
                              ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                          }  
                      }else{
