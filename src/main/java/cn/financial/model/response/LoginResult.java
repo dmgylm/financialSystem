@@ -2,27 +2,26 @@ package cn.financial.model.response;
 
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.ApiModelProperty;
 
-public class LoginResult extends ResultUtils{
+public class LoginResult{
     @ApiModelProperty(value = "用户功能权限信息")
-    private List<JSONObject> roleResource;
+    private List<ChildrenObject> roleResource;
     @ApiModelProperty(value = "用户组织架构信息")
-    private List<JSONObject> userOrganization;
+    private List<ChildrenObject> userOrganization;
     @ApiModelProperty(value = "用户sessionId")
     private String sessionId;
-    public List<JSONObject> getRoleResource() {
+    
+    public List<ChildrenObject> getRoleResource() {
         return roleResource;
     }
-    public void setRoleResource(List<JSONObject> roleResource) {
+    public void setRoleResource(List<ChildrenObject> roleResource) {
         this.roleResource = roleResource;
     }
-    public List<JSONObject> getUserOrganization() {
+    public List<ChildrenObject> getUserOrganization() {
         return userOrganization;
     }
-    public void setUserOrganization(List<JSONObject> userOrganization) {
+    public void setUserOrganization(List<ChildrenObject> userOrganization) {
         this.userOrganization = userOrganization;
     }
     public String getSessionId() {
