@@ -328,7 +328,8 @@ public class CapitalController {
             boolean isImport = true;//是否可上传
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
             if(name.equals(".xls")){
-            if(uploadFile.getSize()>0 && uploadFile.getSize()<5242880){  //判断文件大小是否是5M以下的
+            Integer size=(int) uploadFile.getSize();
+            if(uploadFile.getSize()>0 && size<4990){  //判断文件大小是否是5M以下的
               try {
                   int row=1;
                   Integer a=0;

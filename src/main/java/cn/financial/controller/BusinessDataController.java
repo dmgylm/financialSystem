@@ -332,7 +332,7 @@ public class BusinessDataController {
          * @throws Exception 
          */
         @RequiresPermissions("businessData:download")
-        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @RequestMapping(value="/export",method = RequestMethod.GET)
         @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=BusinessDataExportResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
