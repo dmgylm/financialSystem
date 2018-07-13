@@ -75,6 +75,9 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Message getMessageById(String id) {
+    	if(id == null || id.equals("")){
+            return null;  
+        }
         return messageDao.getMessageById(id);
     }
 
@@ -92,7 +95,11 @@ public class MessageServiceImpl implements MessageService {
     	if(map.get("isTag") != null) {
     		um.put("isTag", map.get("isTag"));
     	}
-    	um.put("id", map.get("id"));
+    	if(map.get("id") == null || map.get("id").equals("")) {
+    		return null;
+    	}else {
+    		um.put("id", map.get("id"));
+    	}
     	
         return messageDao.updateMessageById(um);
     }
@@ -102,6 +109,9 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public Integer deleteMessageById(String id) {
+    	if(id == null || id.equals("")){
+            return null;  
+        }
         return messageDao.deleteMessageById(id);
     }
 
