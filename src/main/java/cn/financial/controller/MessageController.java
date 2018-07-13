@@ -78,8 +78,8 @@ public class MessageController {
     @RequiresPermissions("message:view")
     @ApiOperation(value="查询消息",notes="根据用户权限查询相应的消息",response = ListMessage.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="integer", paramType = "query"),
-        @ApiImplicitParam(name="page",value="显示第几页",dataType="integer", paramType = "query")})
+        @ApiImplicitParam(name="pageSize",value="一页显示的数据",dataType="Integer", paramType = "query"),
+        @ApiImplicitParam(name="page",value="显示第几页",dataType="Integer", paramType = "query")})
     public ListMessage listMessage(HttpServletRequest request, HttpServletResponse response) {
         ListMessage result = new ListMessage();
         
@@ -97,8 +97,8 @@ public class MessageController {
             Integer allSize = list.size();//用户总的消息条数
             
             if (lm.size() >= 0) {
-            	result.setData(lm);
             	result.setAllSize(allSize);
+            	result.setData(lm);
                 ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
             	ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
@@ -342,8 +342,8 @@ public class MessageController {
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ApiOperation(value="修改消息",notes="根据id修改消息",response = ResultUtils.class)
     @ApiImplicitParams({
-    	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="integer", paramType = "query"),
-         @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="integer", paramType = "query"),
+    	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读,2:重要消息)",dataType="Integer", paramType = "query"),
+         @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="Integer", paramType = "query"),
          @ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateMessageById(HttpServletRequest request, HttpServletResponse response,
