@@ -189,7 +189,7 @@ public class CapitalController {
                      list.get(i).setEditor(editor);
                 }
                  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                 capitalResult.setCapitalList(list);
+                 capitalResult.setData(list);
                  capitalResult.setTotal(total.size());
                 }else{
                     capitalResult.setMess("您没有权限操作资金流水数据！");
@@ -218,18 +218,22 @@ public class CapitalController {
             //Map<String, Object> dataMap = new HashMap<String, Object>();
             CapitalByIdResult capitalByIdResult=new CapitalByIdResult();
             try {
-                   Capital  capital=capitalService.selectCapitalById(id);
-                   Date  newTime=new Date();
-                   Date begTime=capital.getCreateTime(); //得到开始时间
-                   Date endTime=capital.getUpdateTime(); //得到更新时间
-                   Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
-                   Integer editor=capital.getEditor();
-                   if(num<=7||endTime==null){
-                       editor=1;//可编辑数据
+                     if(id!=null&&!id.equals("")){
+                       Capital  capital=capitalService.selectCapitalById(id);
+                       Date  newTime=new Date();
+                       Date begTime=capital.getCreateTime(); //得到开始时间
+                       Date endTime=capital.getUpdateTime(); //得到更新时间
+                       Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+                       Integer editor=capital.getEditor();
+                       if(num<=7||endTime==null){
+                           editor=1;//可编辑数据
+                       }
+                       capital.setEditor(editor);
+                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
+                       capitalByIdResult.setData(capital);                  
+                   }else{
+                       capitalByIdResult.setMess("id不能为空！");
                    }
-                   capital.setEditor(editor);
-                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
-                   capitalByIdResult.setCapital(capital);
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
                 this.logger.error(e.getMessage(), e);
@@ -313,7 +317,7 @@ public class CapitalController {
         @RequestMapping(value="/excelImport",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,method = RequestMethod.POST)
         @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=CapitalImportResult.class)
         @ResponseBody
-        public void excelImport(@RequestPart(value="uploadFile") @ApiParam(name="uploadFile",value="文件流对象,接收数组格式",required=true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
+        public CapitalImportResult excelImport(@RequestPart(value="uploadFile") @ApiParam(name="uploadFile",value="文件流对象,接收数组格式",required=true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             //Map<String, Object> dataMap = new HashMap<String, Object>();
             CapitalImportResult result=new CapitalImportResult();
             User user = (User) request.getAttribute("user");
@@ -322,6 +326,8 @@ public class CapitalController {
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean insertFlag = true;//上传数据是否有错
             boolean isImport = true;//是否可上传
+            String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
+            if(name.equals(".xls")){
             if(uploadFile.getSize()>0 && uploadFile.getSize()<5242880){  //判断文件大小是否是5M以下的
               try {
                   int row=1;
@@ -557,16 +563,24 @@ public class CapitalController {
                      }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+                     result.setMess("系统错误");
                      this.logger.error(e.getMessage(), e);
                  }
                  
             } catch (Exception e) {
                  ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+                 result.setMess("系统错误");
                 this.logger.error(e.getMessage(), e);
             }
         }else{
             ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M,result);
+            result.setMess("文件大于5M不能上传！请传5M以下的数据");
         } 
+      }else{
+          ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+          result.setMess("您上传的不是Excel文档！");
+      }
+            return result;
       }
         
         
@@ -576,7 +590,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @RequestMapping(value="/export",method = RequestMethod.GET)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = CapitalExportResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),

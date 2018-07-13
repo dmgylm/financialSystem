@@ -229,7 +229,7 @@ public class BusinessDataController {
                     String html= htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
                     System.out.println(html);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,htmlResult);
-                    htmlResult.setHtml(html);
+                    htmlResult.setData(html);
                 }else{
                     htmlResult.setMess("id或者htmlType为空！");
                 }

@@ -165,9 +165,13 @@
          <if test="accountNature!=null and accountNature!=''">
              and c.accountNature =#{accountNature}
          </if>
-         <if test="tradeTime!=null and tradeTime!=''">
-              and  c.tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd} 
+         <if test="tradeTimeBeg!=null and tradeTimeBeg!=''">
+             and c.tradeTime >= #{tradeTimeBeg}
+              <!-- and  c.tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd}  -->
             <!--  and c.tradeTime>=#{tradeTimeBeg} and c.tradeTime<=#{tradeTimeEnd} -->
+          </if>
+          <if test="tradeTimeEnd!=null and tradeTimeEnd!=''">
+             and c.tradeTime &lt;= #{tradeTimeEnd}
           </if>
           <if test="startBlack!=null and startBlack!=''">
              and c.startBlack =#{startBlack} 
