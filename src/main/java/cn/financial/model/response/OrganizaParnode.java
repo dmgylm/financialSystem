@@ -7,7 +7,7 @@ import java.util.List;
 import cn.financial.model.Organization;
 
 public class OrganizaParnode extends ResultUtils{
-	@ApiModelProperty(value = "根据id查询所有该节点的所有父节点")
+	@ApiModelProperty(value = "查看配置组织结构信息")
 	private List<Organization> data;
 
 	public List<Organization> getData() {
