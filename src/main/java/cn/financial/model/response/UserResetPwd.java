@@ -2,7 +2,7 @@ package cn.financial.model.response;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class UserResetPwd extends ResultUtils{
+public class UserResetPwd{
     @ApiModelProperty(value = "重置密码")
     private String resetPwd;
 

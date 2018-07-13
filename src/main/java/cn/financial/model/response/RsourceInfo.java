@@ -6,14 +6,15 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class RsourceInfo extends ResultUtils{
     @ApiModelProperty(value = "功能权限信息对象")
-    private Resource resourceById;
+    private Resource data;
 
-    public Resource getResourceById() {
-        return resourceById;
+    public Resource getData() {
+        return data;
     }
 
-    public void setResourceById(Resource resourceById) {
-        this.resourceById = resourceById;
+    public void setData(Resource data) {
+        this.data = data;
     }
+    
     
 }

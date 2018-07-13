@@ -5,7 +5,7 @@ import java.util.List;
 import cn.financial.model.User;
 import io.swagger.annotations.ApiModelProperty;
 
-public class UserResult extends ResultUtils{
+public class UserResult {
     @ApiModelProperty(value = "用户信息")
     private List<User> userList;
     @ApiModelProperty(value = "总条数")

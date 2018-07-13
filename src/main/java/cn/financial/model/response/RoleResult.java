@@ -1,20 +1,18 @@
 package cn.financial.model.response;
 
-import java.util.List;
-
-import cn.financial.model.Role;
 import io.swagger.annotations.ApiModelProperty;
 
 public class RoleResult extends ResultUtils{
     @ApiModelProperty(value = "角色信息集合")
-    private List<Role> roleList;
+    private RoleInfoResult data;
 
-    public List<Role> getRoleList() {
-        return roleList;
+    public RoleInfoResult getData() {
+        return data;
     }
 
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
+    public void setData(RoleInfoResult data) {
+        this.data = data;
     }
+    
     
 }

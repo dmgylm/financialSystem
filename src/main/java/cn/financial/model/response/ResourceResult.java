@@ -1,19 +1,18 @@
 package cn.financial.model.response;
 
-import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.ApiModelProperty;
 
 public class ResourceResult extends ResultUtils{
     @ApiModelProperty(value = "功能权限信息")
-    private JSONObject resourceList;
+    private ResourceInfo data;
 
-    public JSONObject getResourceList() {
-        return resourceList;
+    public ResourceInfo getData() {
+        return data;
     }
 
-    public void setResourceList(JSONObject resourceList) {
-        this.resourceList = resourceList;
+    public void setData(ResourceInfo data) {
+        this.data = data;
     }
+    
     
 }

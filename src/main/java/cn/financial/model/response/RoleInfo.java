@@ -5,14 +5,15 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class RoleInfo extends ResultUtils{
     @ApiModelProperty(value = "角色信息对象")
-    private Role roleById;
+    private Role data;
 
-    public Role getRoleById() {
-        return roleById;
+    public Role getData() {
+        return data;
     }
 
-    public void setRoleById(Role roleById) {
-        this.roleById = roleById;
+    public void setData(Role data) {
+        this.data = data;
     }
+    
     
 }
