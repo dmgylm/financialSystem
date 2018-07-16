@@ -38,6 +38,7 @@ import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
+import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -238,23 +239,30 @@ public class BusinessDataController {
             return htmlResult;
         }
         
-        /**
+      /*  *//**
          * 新增损益数据
          * @param request
          * @param response
          * @return
-         */
-       /* @RequiresPermissions("businessData:create")
-        @RequestMapping(value="/insert", method = RequestMethod.POST)
-        public Map<String, Object> insertBusinessData(HttpServletRequest request,BusinessData businessData){
+         *//*
+       @RequiresPermissions("businessData:view")
+        @RequestMapping(value="/insert", method = RequestMethod.GET)
+        public Map<String, Object> insertBusinessData(HttpServletRequest request){
             Map<String, Object> dataMap = new HashMap<String, Object>();
            try {
+               BusinessData businessData=new BusinessData();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                businessData.setId(UuidUtil.getUUID());
+                businessData.setId(UuidUtil.getUUID()); //id自动生成
+                businessData.setoId("b3cb5b87b5b54bec811b484810e9646a");
+                businessData.setTypeId("06aecd35fbf9451aab2b761ff9952123");
                 businessData.setuId(uId);
+                businessData.setYear(2018);
+                businessData.setMonth(7);
                 businessData.setStatus(2);
                 businessData.setDelStatus(1);
+                businessData.setsId(1);
+                businessData.setDataModuleId("d4418bffb86742039358a3895d4f55c6");
                 Integer i = businessDataService.insertBusinessData(businessData);
                 if (i == 1) {
                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
