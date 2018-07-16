@@ -365,7 +365,7 @@ public class CapitalController {
                              capital.setId(UuidUtil.getUUID());
                              /*Map<Object, Object> map = new HashMap<>();
                              map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去*/          
-                             List<Organization>  listOrganization= organizationService.listOrganizationBy(str[5], "", "", "", "", uId, "",Integer.parseInt("")); //查询对应的公司里面的组织架构数据
+                             List<Organization>  listOrganization= organizationService.listOrganizationBy(str[5], "", "", "", "", uId, "",null); //查询对应的公司里面的组织架构数据
                              if(listOrganization.size()>0){
                                  capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
                              }else{
