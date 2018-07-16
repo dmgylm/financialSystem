@@ -53,6 +53,13 @@ public class MainController {
     @Autowired
     private UserOrganizationService userOrganizationService;
     
+    /**
+     * swagger插件默认接口
+     * @param request
+     * @param response
+     * @param session
+     * @return
+     */
     @RequestMapping(value="/test", method = RequestMethod.GET)
     public String test(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         Map<String, Object> dataMap = new HashMap<String, Object>();

@@ -80,7 +80,8 @@ public class DataModuleController {
                // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
 				map.put("moduleName",moduleName);
             }
-			
+			//配置模板列表 默认查询有效
+			map.put("statue",DataModule.STATUS_CONSUMED);
 //			pageNo = pageNo == null?0:(pageNo - 1) * pageSize;
 //		    pageSize = pageSize == null?10:pageSize;
 //			List<ModuleList> list=dataModuleService.queryModuleList(bean, pageNo, pageSize);

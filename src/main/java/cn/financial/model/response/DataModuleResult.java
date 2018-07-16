@@ -7,19 +7,18 @@ import io.swagger.annotations.ApiModelProperty;
 public class DataModuleResult {
 
 	@ApiModelProperty(value = "配置模板列表数据")
-	private List<ModuleList> ModuleLists;
+	private List<ModuleList> moduleLists;
 	
 	@ApiModelProperty(value = "模板列表数据总数")
 	private long total;
 
 	
-
 	public List<ModuleList> getModuleLists() {
-		return ModuleLists;
+		return moduleLists;
 	}
 
 	public void setModuleLists(List<ModuleList> moduleLists) {
-		ModuleLists = moduleLists;
+		this.moduleLists = moduleLists;
 	}
 
 	public long getTotal() {
