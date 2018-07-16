@@ -4,8 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 import java.util.List;
 import java.util.Map;
@@ -60,10 +58,10 @@ public class StatisticJsonController {
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
 	@ApiOperation(value = "根据组织统计数据",notes = "根据组织统计数据",response = StaticJson.class)
     @ApiImplicitParams({ 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔)", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型(如:BUDGET代表预算,PROFIT_LOSS代表损益,英文)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块(如:b1503ff8da124fa3bce0bf07f16f56f6 具体数据从组织架构orgkey取得,接口是listBy)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔,string类型)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔,string类型)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式)", required = true) 
     	})
 //	@ApiResponses({@ApiResponse(code = 200, message = "成功"),
@@ -141,8 +139,8 @@ public class StatisticJsonController {
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
 	@ApiOperation(value = "根据key查询详情",notes = "根据key查询详情",response = StaticInfo.class)
     @ApiImplicitParams({ 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "caCheUuid", value = "缓存id", required = true), 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "infoKey", value = "查询详情key", required = true) 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "caCheUuid", value = "缓存id(如:9ee9313edc334232b7a64a60f27ce5dd 对应缓存id,从staticJson接口获取caCheUuid值)", required = true), 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "infoKey", value = "查询详情key(如:guanlifeiyong_zhufanggongjijinbenyueshiji 对应需要查看具体字段的公司详情,从staticJson接口的html里取key)", required = true) 
     	})
 //	@ApiResponses({@ApiResponse(code = 200, message = "成功"),
 //		@ApiResponse(code = 400, message = "失败"),
