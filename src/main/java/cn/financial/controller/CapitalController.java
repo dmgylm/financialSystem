@@ -363,9 +363,9 @@ public class CapitalController {
                              String[] str=list.get(i);   //在excel得到第i条数据
                              Capital capital=new Capital();
                              capital.setId(UuidUtil.getUUID());
-                             Map<Object, Object> map = new HashMap<>();
-                             map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去
-                             List<Organization>  listOrganization= organizationService.listOrganizationBy(map); //查询对应的公司里面的组织架构数据
+                             /*Map<Object, Object> map = new HashMap<>();
+                             map.put("orgName",str[5]);  //拿到excel里面的company 公司名称去下面这个组织架构里面去*/          
+                             List<Organization>  listOrganization= organizationService.listOrganizationBy(str[5], "", "", "", "", uId, "",Integer.parseInt("")); //查询对应的公司里面的组织架构数据
                              if(listOrganization.size()>0){
                                  capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
                              }else{
@@ -394,28 +394,28 @@ public class CapitalController {
                              if(!str[1].equals("")){
                                  capital.setBu(str[1]);
                              }else{
-                                 result.setResultDesc("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[2].equals("")){
                                  capital.setRegionName(str[2]);
                              }else{
-                                 result.setResultDesc("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[3].equals("")){
                                  capital.setProvince(str[3]);
                              }else{
-                                 result.setResultDesc("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[4].equals("")){
                                  capital.setCity(str[4]);
                              }else{
-                                 result.setResultDesc("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -515,7 +515,7 @@ public class CapitalController {
                                      break;
                                  }
                              }else{
-                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
