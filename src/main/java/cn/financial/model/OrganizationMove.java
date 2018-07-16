@@ -1,5 +1,9 @@
 package cn.financial.model;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  *组织架构移动信息记录实体类 
  * @author C.s
@@ -7,10 +11,17 @@ package cn.financial.model;
 public class OrganizationMove {
 	
 	private String id;			//组织架构移动记录表id
+	
 	private String his_Id;		//组织架构移动前的id
+	
 	private String new_Id;		//组织架构移动后的新id
-	private String createTime;	//创建时间
-	private String updateTime;	//修改时间
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+	private Date createTime;	//创建时间
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+	private Date updateTime;	//修改时间
+	
 	private String modifier;	//修改人
 	
 	public String getId() {
@@ -37,19 +48,19 @@ public class OrganizationMove {
 		this.new_Id = new_Id;
 	}
 	
-	public String getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 	
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 	
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return updateTime;
 	}
 	
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 	
