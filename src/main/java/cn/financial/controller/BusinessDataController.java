@@ -132,7 +132,7 @@ public class BusinessDataController {
                     String[] typeId=new String[listOrganization.size()+listTree.size()];//获取权限的typeId
                     //List<BusinessData> businessData=new ArrayList<>();  //所有符合权限的数据
                     for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
-                        JSONObject pidJosn=userOrganization.get(i);
+                        JSONObject pidJosn=listOrganization.get(i);
                         String pid =pidJosn.getString("pid"); //找到权限数据里面的组织id
                         typeId[i]=pid;
                         //找权限的pid和损益表的typeId进行筛选
