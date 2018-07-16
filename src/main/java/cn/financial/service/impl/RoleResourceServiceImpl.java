@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.dao.RoleResourceDAO;
 import cn.financial.model.RoleResource;
 import cn.financial.model.UserRole;
-import cn.financial.model.response.ChildrenObject;
 import cn.financial.service.RoleResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.util.TreeNode;

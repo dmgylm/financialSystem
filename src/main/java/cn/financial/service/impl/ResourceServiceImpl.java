@@ -39,11 +39,8 @@ public class ResourceServiceImpl implements ResourceService{
      */
     @Override
     public Integer insertResource(Resource resource) {
-        if(resource.getName() == null || resource.getName().equals("")){
-            return -1;
-        }
         if(resource.getPermssion() == null || resource.getPermssion().equals("")){
-            return -2;
+            return -1;
         }
         return resourceDao.insertResource(resource);
     }
