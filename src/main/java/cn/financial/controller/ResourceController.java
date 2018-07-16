@@ -50,7 +50,7 @@ public class ResourceController {
      * @param response
      */
     @RequiresPermissions("jurisdiction:view")
-    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/resourceList", method = RequestMethod.POST)
     @ApiOperation(value="查询全部功能权限信息",notes="查询全部功能权限信息", response = ResourceResult.class)
     @ResponseBody
     public Map<String, Object> listResource(){

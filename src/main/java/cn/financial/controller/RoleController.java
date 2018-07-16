@@ -55,7 +55,7 @@ public class RoleController {
      * @param response
      */
     @RequiresPermissions("role:view")
-    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/roleList", method = RequestMethod.POST)
     @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息", response = RoleResult.class)
     @ResponseBody
     public Map<String, Object> listRole(){
