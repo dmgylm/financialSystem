@@ -4,24 +4,34 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  *组织架构移动信息记录实体类 
  * @author C.s
  */
+@ApiModel(value="OrganizationMove对象",description="组织架构移动信息记录对象")
 public class OrganizationMove {
 	
+	@ApiModelProperty(value="组织架构移动记录表id",name="id",example="")
 	private String id;			//组织架构移动记录表id
 	
+	@ApiModelProperty(value="组织架构移动前的id",name="his_Id",example="")
 	private String his_Id;		//组织架构移动前的id
 	
+	@ApiModelProperty(value="组织架构移动后的新id",name="new_Id",example="")
 	private String new_Id;		//组织架构移动后的新id
 	
+	@ApiModelProperty(value="创建时间",name="createTime",example="")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date createTime;	//创建时间
 	
+	@ApiModelProperty(value="修改时间",name="updateTime",example="")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date updateTime;	//修改时间
 	
+	@ApiModelProperty(value="修改人",name="modifier",example="")
 	private String modifier;	//修改人
 	
 	public String getId() {
