@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.ChildrenObject;
@@ -75,7 +72,6 @@ public class OrganizationController {
     @PostMapping(value = "/save")
     public ResultUtils saveOrganization(String orgName,Integer orgType,
     		String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result=new ResultUtils();
         Integer i = 0;
         try {
@@ -129,13 +125,8 @@ public class OrganizationController {
     })
     public OganizationNode listOrganizationBy(String orgName,String createTime,String updateTime,
     		String id,String code,String uId, String parentId,Integer orgType,HttpServletRequest request, HttpServletResponse response) {
-      
         OganizationNode organiza=new OganizationNode();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
-            if (null !=orgName && !"".equals(orgName)) {
-            	orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
-            }
             List<Organization> list = organizationService.
             	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType);
             if (!CollectionUtils.isEmpty(list)) {
@@ -168,23 +159,10 @@ public class OrganizationController {
     	})
     @PostMapping(value = "/updateByid")
     public ResultUtils updateOrganizationById(String id,String orgName,Integer orgType, HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result=new ResultUtils();
         try {
-        	//orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
-            Map<Object, Object> map = new HashMap<>();
-            if (null !=orgName && !"".equals(orgName)) {
-                map.put("orgName",orgName.trim().toString());//组织架构名
-            }
-            if (null !=id && !"".equals(id)) {
-                map.put("id", id);// 组织id
-            }
-            if (null !=orgType && !"".equals(orgType)) {
-                map.put("orgType", orgType);// 类别（汇总，公司，部门）
-            }
             User user = (User) request.getAttribute("user");
-            map.put("uId", user.getId());
-            Integer i = organizationService.updateOrganizationById(map);
+            Integer i = organizationService.updateOrganizationById(orgName,id,orgType,user.getId());
             if (Integer.valueOf(1).equals(i)) {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
@@ -211,7 +189,6 @@ public class OrganizationController {
     	})
     @PostMapping(value = "/disconTinuate")
     public ResultUtils deleteOrganizationByStatusCascade(String id,HttpServletRequest request) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
         ResultUtils result=new ResultUtils();
         try {
             Integer i = 0;
@@ -256,7 +233,7 @@ public class OrganizationController {
     @RequiresPermissions(value={"organization:view"},logical=Logical.OR)
     @ApiOperation(value = "根据id查询所有该节点的子节点",notes = "根据id查询所有该节点的子节点",response = OrangizaSubnode.class)
     @ApiImplicitParams({ 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = false),
     	})
     @PostMapping(value = "/getSubnode")
     public  Map<Object, Object> getSubnode(String id,HttpServletRequest request, HttpServletResponse response) {
@@ -304,7 +281,6 @@ public class OrganizationController {
     	})
     @PostMapping(value = "/getParnode")
     public OrganizaParnode getParnode(String id,HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
         OrganizaParnode node=new OrganizaParnode();
         try {
             List<Organization> list = null;
@@ -342,7 +318,6 @@ public class OrganizationController {
     	})
     @PostMapping(value = "/move")
     public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
         ResultUtils result=new ResultUtils();
         String parentOrgId = null;
         try {
@@ -381,12 +356,12 @@ public class OrganizationController {
     	})
     @PostMapping(value = "/hasSon")
     public OrganizaHason hasOrganizationSon(String id,String orgName,HttpServletRequest request, HttpServletResponse response) {
-        Map<Object, Object> dataMap = new HashMap<Object, Object>();
         OrganizaHason hason=new OrganizaHason();
         try {
             Map<Object, Object> map = new HashMap<>();
-            //orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
+           
             if (null !=orgName && !"".equals(orgName)) {
+            	orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
                 map.put("orgName",orgName.trim().toString());
             }
             if (null != id && !"".equals(id)) {
