@@ -58,12 +58,6 @@ public class UserServiceImpl implements  UserService{
      */
     @Override
     public Integer countUserName(String name, String jobNumber) {
-        if(name == null || name.equals("")){
-            return -1;
-        }
-        if(jobNumber == null || jobNumber.equals("")){
-            return -2;
-        }
         return userDao.countUserName(name, jobNumber);
     }
     /**
@@ -91,7 +85,7 @@ public class UserServiceImpl implements  UserService{
         if(user.getRealName() == null || user.getRealName().equals("")){
             return -1;
         }else{
-          //加密密码
+            //加密密码
             passwordHelper.encryptPassword(user);
             return userDao.insertUser(user); 
         }
