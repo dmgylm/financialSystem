@@ -125,38 +125,19 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "code", value = "该组织机构节点的序号", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "uId", value = "提交人id", required = false),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "int", name = "orgType", value = "1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)", required = false),
     })
     public OganizationNode listOrganizationBy(String orgName,String createTime,String updateTime,
-    		String id,String code,String uId, String parentId,HttpServletRequest request, HttpServletResponse response) {
+    		String id,String code,String uId, String parentId,int orgType,HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         OganizationNode organiza=new OganizationNode();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
-            Map<Object, Object> map = new HashMap<>();
-            
             if (null !=orgName && !"".equals(orgName)) {
             	orgName=new String(orgName.getBytes("iso8859-1"),"utf-8");
-                map.put("orgName", orgName.trim().toString());//组织架构名
             }
-            if (null !=createTime && !"".equals(createTime)) {
-                map.put("createTime", createTime);//创建时间
-            }
-            if (null != updateTime && !"".equals(updateTime)) {
-                map.put("updateTime", updateTime);//更新时间
-            }
-            if (null !=id && !"".equals(id)) {
-                map.put("id", id); // 组织结构id
-            }
-            if (null !=code && !"".equals(code)) {
-                map.put("code", code);// 该组织机构节点的序号
-            }
-            if (null != uId && !"".equals(uId)) {
-                map.put("uId",uId);// 提交人id
-            }
-            if (null != parentId && !"".equals(parentId)) {
-                map.put("parentId", parentId);// 父id
-            }
-            List<Organization> list = organizationService.listOrganizationBy(map);
+            List<Organization> list = organizationService.
+            	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType);
             if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
