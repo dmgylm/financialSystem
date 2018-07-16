@@ -17,9 +17,6 @@ public class CapitalResult extends ResultUtils{
 	@ApiModelProperty(value = "资金流水的总条数")
 	private Integer total; //返回的总条数
 
-	@ApiModelProperty(value = "返回的提示消息")
-    private String mess; //返回的消息
-	
     public List<Capital> getData() {
         return data;
     }
@@ -42,14 +39,6 @@ public class CapitalResult extends ResultUtils{
 
     public void setTotal(Integer total) {
         this.total = total;
-    }
-
-    public String getMess() {
-        return mess;
-    }
-
-    public void setMess(String mess) {
-        this.mess = mess;
     }
 	
 }

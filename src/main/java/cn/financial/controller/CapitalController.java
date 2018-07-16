@@ -33,10 +33,7 @@ import cn.financial.model.Capital;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.CapitalByIdResult;
-import cn.financial.model.response.CapitalExportResult;
-import cn.financial.model.response.CapitalImportResult;
 import cn.financial.model.response.CapitalResult;
-import cn.financial.model.response.CapitalUpdateResult;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
@@ -116,17 +113,27 @@ public class CapitalController {
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
-                String uId = user.getId();
-                 map.put("plate",plate); //板块
-                 map.put("bu",bu);//事业部
-                 map.put("regionName",regionName);//大区名称
-                 map.put("province",province);//省份
-                 map.put("company",company);//公司名称
-                 map.put("accountBank",accountBank);//开户行
-                 map.put("accountNature",accountNature);//账户性质
+                 String uId = user.getId();
+                 if(plate==null){ plate="";}
+                 if(bu==null){ bu="";}
+                 if(regionName==null){ regionName="";}
+                 if(province==null){ province="";}
+                 if(company==null){ company="";}
+                 if(accountBank==null){ accountBank="";}
+                 if(accountNature==null){ accountNature="";}
+                 if(tradeTimeBeg==null){ tradeTimeBeg="";}
+                 if(tradeTimeEnd==null){ tradeTimeEnd="";}
+                 if(classify==null){ classify="";}
+                 map.put("plate",new String(plate.getBytes("ISO-8859-1"),"UTF-8")); //板块
+                 map.put("bu",new String(bu.getBytes("ISO-8859-1"),"UTF-8"));//事业部
+                 map.put("regionName",new String(regionName.getBytes("ISO-8859-1"),"UTF-8"));//大区名称
+                 map.put("province",new String(province.getBytes("ISO-8859-1"),"UTF-8"));//省份
+                 map.put("company",new String(company.getBytes("ISO-8859-1"),"UTF-8"));//公司名称
+                 map.put("accountBank",new String(accountBank.getBytes("ISO-8859-1"),"UTF-8"));//开户行
+                 map.put("accountNature",new String(accountNature.getBytes("ISO-8859-1"),"UTF-8"));//账户性质
                  map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                  map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                 map.put("classify",classify);//项目分类
+                 map.put("classify",new String(classify.getBytes("ISO-8859-1"),"UTF-8"));//项目分类
                  //判断 权限的数据 
                  List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                  List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
@@ -192,7 +199,7 @@ public class CapitalController {
                  capitalResult.setData(list);
                  capitalResult.setTotal(total.size());
                 }else{
-                    capitalResult.setMess("您没有权限操作资金流水数据！");
+                    capitalResult.setResultCode("您没有权限操作资金流水数据！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
@@ -232,7 +239,7 @@ public class CapitalController {
                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
                        capitalByIdResult.setData(capital);                  
                    }else{
-                       capitalByIdResult.setMess("id不能为空！");
+                       capitalByIdResult.setResultCode("id不能为空！");
                    }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
@@ -250,7 +257,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response=CapitalUpdateResult.class)
+        @ApiOperation(value="修改资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的)",response=ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "id", value = "资金流水表id", required = true, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String",paramType = "query"),
@@ -258,19 +265,23 @@ public class CapitalController {
         @ResponseBody
         public ResultUtils updateCapital(HttpServletRequest request,String id,String classify,String remarks) {
             //Map<String, Object> dataMap = new HashMap<String, Object>();
-            CapitalUpdateResult result=new CapitalUpdateResult();
+            ResultUtils result=new ResultUtils();
             try {
                 Capital capital =new Capital();
-                capital.setId(id);
-                capital.setClassify(new String(classify.getBytes("ISO-8859-1"),"UTF-8")); //修改项目分类
-                capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"),"UTF-8"));  //备注
-                Integer i = capitalService.updateCapital(capital);
-                if (i == 1) {
-                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                   result.setMess("修改成功");
-                } else {
-                   ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                   result.setMess("修改失败");
+                if(id!=null&&!id.equals("")){
+                    capital.setId(id);
+                    if(classify==null){classify="";}
+                    if(remarks==null){remarks="";}
+                    capital.setClassify(new String(classify.getBytes("ISO-8859-1"),"UTF-8")); //修改项目分类
+                    capital.setRemarks(new String(remarks.getBytes("ISO-8859-1"),"UTF-8"));  //备注
+                    Integer i = capitalService.updateCapital(capital);
+                    if (i == 1) {
+                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                    } else {
+                       ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                    }               
+                }else{
+                    result.setResultCode("修改失败！id不能为空！");
                 }
             } catch (Exception e) {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -315,11 +326,11 @@ public class CapitalController {
         @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,method = RequestMethod.POST)
-        @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=CapitalImportResult.class)
+        @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=ResultUtils.class)
         @ResponseBody
-        public CapitalImportResult excelImport(@RequestPart(value="uploadFile") @ApiParam(name="uploadFile",value="文件流对象,接收数组格式",required=true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
+        public ResultUtils excelImport(@RequestPart(value="uploadFile") @ApiParam(name="uploadFile",value="文件流对象,接收数组格式",required=true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
             //Map<String, Object> dataMap = new HashMap<String, Object>();
-            CapitalImportResult result=new CapitalImportResult();
+            ResultUtils result=new ResultUtils();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             //判断 权限的数据 公司及其公司以下的级别才可以上传数据
@@ -358,7 +369,7 @@ public class CapitalController {
                              if(listOrganization.size()>0){
                                  capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第六个单元格公司名称不存在");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第六个单元格公司名称不存在");
                                  insertFlag=false;
                                  break;  
                              }
@@ -371,75 +382,75 @@ public class CapitalController {
                                 if(bResult==true){
                                    capital.setPlate(str[0]);
                                 }else{
-                                   result.setMess("Excel表格第"+(i+2)+"行第一个单元格模板不存在，请核对后再上传");
+                                   result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格模板不存在，请核对后再上传");
                                    insertFlag=false;
                                    break; 
                                 }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第一个单元格模板不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格模板不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[1].equals("")){
                                  capital.setBu(str[1]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[2].equals("")){
                                  capital.setRegionName(str[2]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[3].equals("")){
                                  capital.setProvince(str[3]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[4].equals("")){
                                  capital.setCity(str[4]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[5].equals("")){
                                  capital.setCompany(str[5]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第六个单元格公司名称不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第六个单元格公司名称不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[6].equals("")){
                                  capital.setAccountName(str[6]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第七个单元格账户名不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第七个单元格账户名不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[7].equals("")){
                                  capital.setAccountBank(str[7]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第八个单元格开户行不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第八个单元格开户行不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[8].equals("")){
                                  capital.setAccount(str[8]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第九个单元格账户不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第九个单元格账户不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[9].equals("")){
                                  capital.setAccountNature(str[9]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十个单元格账户性质数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十个单元格账户性质数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -447,12 +458,12 @@ public class CapitalController {
                                 try {
                                     capital.setTradeTime(sdf.parse(str[10]));  
                                 } catch (Exception e) {
-                                    result.setMess("上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
+                                    result.setResultCode("上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
                                     insertFlag=false;
                                     break;
                                 }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -460,12 +471,12 @@ public class CapitalController {
                                  if(str[11].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setStartBlack(Integer.parseInt(str[11]));  
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十二个单元格只能是数字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十二个单元格只能是数字");
                                      insertFlag=false;
                                      break; 
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -473,12 +484,12 @@ public class CapitalController {
                                  if(str[12].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setIncom(Integer.parseInt(str[12]));
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十三个单元格数据只能是数字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十三个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十三个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十三个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -486,12 +497,12 @@ public class CapitalController {
                                  if(str[13].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setPay(Integer.parseInt(str[13]));
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十四个单元格数据只能是数字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十四个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十四个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十四个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -499,12 +510,12 @@ public class CapitalController {
                                  if(str[14].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setEndBlack(Integer.parseInt(str[14]));
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十五个单元格数据只能是数字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十五个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -512,19 +523,19 @@ public class CapitalController {
                                  if(str[15].length()<=200){
                                      capital.setAbstrac(str[15]); 
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十六个单元格里面字数最多200字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十六个单元格里面字数最多200字");
                                      insertFlag=false;
                                      break;   
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十六个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十六个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[16].equals("")){
                                  capital.setClassify(str[16]);
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十七个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十七个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -532,12 +543,12 @@ public class CapitalController {
                                  if(str[17].length()<=200){
                                     capital.setRemarks(str[17]); 
                                  }else{
-                                     result.setMess("Excel表格第"+(i+2)+"行第十八个单元格里面最多200字");
+                                     result.setResultCode("Excel表格第"+(i+2)+"行第十八个单元格里面最多200字");
                                      insertFlag=false;
                                      break;  
                                  }
                              }else{
-                                 result.setMess("Excel表格第"+(i+2)+"行第十八个单元格数据不能为空");
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第十八个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -554,36 +565,31 @@ public class CapitalController {
                              a = capitalService.batchInsertCapital(listCapital); //导入新增的数据
                           }
                          if (a == 1) {
-                             result.setMess("上传成功");
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                          } else {
                              ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                          }  
                      }else{
-                         result.setMess("您没有权限上传资金数据");
+                         result.setResultCode("您没有权限上传资金数据");
                      }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-                     result.setMess("系统错误");
                      this.logger.error(e.getMessage(), e);
                  }
                  
             } catch (Exception e) {
                  ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-                 result.setMess("系统错误");
                 this.logger.error(e.getMessage(), e);
             }
         }else{
             ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M,result);
-            result.setMess("文件大于5M不能上传！请传5M以下的数据");
+            result.setResultCode("文件大于5M不能上传！请传5M以下的数据");
         } 
       }else{
-          ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-          result.setMess("您上传的不是Excel文档！");
+          result.setResultCode("您上传的不是Excel文档！");
       }
       }else{
-           ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-           result.setMess("您上传的不是Excel文档！");
+           result.setResultCode("您上传的不是Excel文档！");
        }
           return result;
       }
@@ -596,7 +602,7 @@ public class CapitalController {
          */
         @RequiresPermissions("capital:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
-        @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = CapitalExportResult.class)
+        @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "bu", value = "所属事业部门（如财务部）", required = false, dataType = "String",paramType = "query"),
@@ -613,21 +619,31 @@ public class CapitalController {
                 String accountBank,String accountNature,String tradeTimeBeg,String tradeTimeEnd,String classify) throws Exception{
             OutputStream os = null;
             //Map<String, Object> dataMap = new HashMap<String, Object>();
-            CapitalExportResult result=new CapitalExportResult();
+            ResultUtils result=new ResultUtils();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                map.put("plate",plate); //板块
-                map.put("bu",bu);//事业部
-                map.put("regionName",regionName);//大区名称
-                map.put("province",province);//省份
-                map.put("company",company);//公司名称
-                map.put("accountBank",accountBank);//开户行
-                map.put("accountNature",accountNature);//账户性质
+                if(plate==null){ plate="";};
+                if(bu==null){ bu="";};
+                if(regionName==null){ regionName="";};
+                if(province==null){ province="";};
+                if(company==null){ company="";};
+                if(accountBank==null){ accountBank="";};
+                if(accountNature==null){ accountNature="";};
+                if(tradeTimeBeg==null){ tradeTimeBeg="";};
+                if(tradeTimeEnd==null){ tradeTimeEnd="";};
+                if(classify==null){ classify="";};
+                map.put("plate",new String(plate.getBytes("ISO-8859-1"),"UTF-8")); //板块
+                map.put("bu",new String(bu.getBytes("ISO-8859-1"),"UTF-8"));//事业部
+                map.put("regionName",new String(regionName.getBytes("ISO-8859-1"),"UTF-8"));//大区名称
+                map.put("province",new String(province.getBytes("ISO-8859-1"),"UTF-8"));//省份
+                map.put("company",new String(company.getBytes("ISO-8859-1"),"UTF-8"));//公司名称
+                map.put("accountBank",new String(accountBank.getBytes("ISO-8859-1"),"UTF-8"));//开户行
+                map.put("accountNature",new String(accountNature.getBytes("ISO-8859-1"),"UTF-8"));//账户性质
                 map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                 map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                map.put("classify",classify);//项目分类
+                map.put("classify",new String(classify.getBytes("ISO-8859-1"),"UTF-8"));//项目分类
                 //判断 权限的数据 
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
@@ -736,13 +752,11 @@ public class CapitalController {
                     os = response.getOutputStream();
                     ExcelUtil.export(strList, os);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                    result.setMess("导出成功");
                 }else{
-                    result.setMess("您没有权限导出资金数据"); 
+                    result.setResultCode("您没有权限导出资金数据"); 
                 }
             } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                result.setMess("导出失败");
                 e.printStackTrace();
             } finally {
                 if(os != null)

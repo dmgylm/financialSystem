@@ -25,7 +25,6 @@ import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.response.BusinessDataExportResult;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
 import cn.financial.model.response.ResultUtils;
@@ -164,7 +163,6 @@ public class BusinessDataController {
                     List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); //查询权限下分页数据
                     //根据oId查询部门信息
                     //循环合格数据的oid 去查询他的所有部门
-                    Map<Object,Object> busMap=new HashMap<Object, Object>();
                     //List<Business> businessList=new ArrayList<>();//页面列表排列数据
                     List<Business> businessList=new ArrayList<>();
                     for (int i = 0; i < businessData.size(); i++) {
@@ -189,7 +187,7 @@ public class BusinessDataController {
                     businessResult.setData(businessList); //返回的资金流水数据
                     businessResult.setTotal(total.size());//返回的总条数
                 }else{
-                    throw new Exception("您没有权限操作损益表！");
+                    businessResult.setResultCode("您没有权限操作损益表！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,businessResult);
@@ -231,7 +229,7 @@ public class BusinessDataController {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,htmlResult);
                     htmlResult.setData(html);
                 }else{
-                    htmlResult.setMess("id或者htmlType为空！");
+                    htmlResult.setResultCode("id或者htmlType为空！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
@@ -333,7 +331,7 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:download")
         @RequestMapping(value="/export",method = RequestMethod.POST)
-        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=BusinessDataExportResult.class)
+        @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=ResultUtils.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
@@ -343,7 +341,7 @@ public class BusinessDataController {
         public void export(HttpServletRequest request,HttpServletResponse response,String year,String month,Integer sId) throws Exception{
             OutputStream os = null;
             //Map<String, Object> dataMap = new HashMap<String, Object>();
-            BusinessDataExportResult result=new BusinessDataExportResult();
+            ResultUtils result=new ResultUtils();
             try {
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
@@ -458,13 +456,11 @@ public class BusinessDataController {
                     os = response.getOutputStream();
                     ExcelUtil.export(strList, os);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                    result.setMess("导出成功！");
                 }else{
-                    result.setMess("您没有权限操作损益数据");
+                    result.setResultCode("您没有权限操作损益数据");
                 }
             } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                result.setMess("导出失败");
                 e.printStackTrace();
             } finally {
                 if(os != null)
