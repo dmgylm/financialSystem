@@ -187,7 +187,7 @@ public class BusinessDataController {
                     businessResult.setData(businessList); //返回的资金流水数据
                     businessResult.setTotal(total.size());//返回的总条数
                 }else{
-                    businessResult.setResultCode("您没有权限操作损益表！");
+                    businessResult.setResultDesc("您没有权限操作损益表！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,businessResult);
@@ -229,7 +229,7 @@ public class BusinessDataController {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,htmlResult);
                     htmlResult.setData(html);
                 }else{
-                    htmlResult.setResultCode("id或者htmlType为空！");
+                    htmlResult.setResultDesc("id或者htmlType为空！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
@@ -457,7 +457,7 @@ public class BusinessDataController {
                     ExcelUtil.export(strList, os);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                 }else{
-                    result.setResultCode("您没有权限操作损益数据");
+                    result.setResultDesc("您没有权限操作损益数据");
                 }
             } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);

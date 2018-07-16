@@ -199,7 +199,7 @@ public class CapitalController {
                  capitalResult.setData(list);
                  capitalResult.setTotal(total.size());
                 }else{
-                    capitalResult.setResultCode("您没有权限操作资金流水数据！");
+                    capitalResult.setResultDesc("您没有权限操作资金流水数据！");
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
@@ -239,7 +239,7 @@ public class CapitalController {
                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
                        capitalByIdResult.setData(capital);                  
                    }else{
-                       capitalByIdResult.setResultCode("id不能为空！");
+                       capitalByIdResult.setResultDesc("id不能为空！");
                    }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
@@ -281,7 +281,7 @@ public class CapitalController {
                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                     }               
                 }else{
-                    result.setResultCode("修改失败！id不能为空！");
+                    result.setResultDesc("修改失败！id不能为空！");
                 }
             } catch (Exception e) {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -369,7 +369,7 @@ public class CapitalController {
                              if(listOrganization.size()>0){
                                  capital.setoId(listOrganization.get(0).getId()); //获取公司名称对应的组织id
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第六个单元格公司名称不存在");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第六个单元格公司名称不存在");
                                  insertFlag=false;
                                  break;  
                              }
@@ -382,75 +382,75 @@ public class CapitalController {
                                 if(bResult==true){
                                    capital.setPlate(str[0]);
                                 }else{
-                                   result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格模板不存在，请核对后再上传");
+                                   result.setResultDesc("Excel表格第"+(i+2)+"行第一个单元格模板不存在，请核对后再上传");
                                    insertFlag=false;
                                    break; 
                                 }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格模板不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第一个单元格模板不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[1].equals("")){
                                  capital.setBu(str[1]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第二个单元格事业部不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[2].equals("")){
                                  capital.setRegionName(str[2]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第三个单元格大区名称不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[3].equals("")){
                                  capital.setProvince(str[3]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第四个单元格省份不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[4].equals("")){
                                  capital.setCity(str[4]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第五个单元格城市不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[5].equals("")){
                                  capital.setCompany(str[5]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第六个单元格公司名称不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第六个单元格公司名称不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[6].equals("")){
                                  capital.setAccountName(str[6]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第七个单元格账户名不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第七个单元格账户名不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[7].equals("")){
                                  capital.setAccountBank(str[7]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第八个单元格开户行不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第八个单元格开户行不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[8].equals("")){
                                  capital.setAccount(str[8]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第九个单元格账户不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第九个单元格账户不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[9].equals("")){
                                  capital.setAccountNature(str[9]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十个单元格账户性质数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十个单元格账户性质数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -458,12 +458,12 @@ public class CapitalController {
                                 try {
                                     capital.setTradeTime(sdf.parse(str[10]));  
                                 } catch (Exception e) {
-                                    result.setResultCode("上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
+                                    result.setResultDesc("上传的交易日期格式不对，正确的格式：2018-01-01 00:00:00");
                                     insertFlag=false;
                                     break;
                                 }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十一个单元格的交易日期数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -471,12 +471,12 @@ public class CapitalController {
                                  if(str[11].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setStartBlack(Integer.parseInt(str[11]));  
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十二个单元格只能是数字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十二个单元格只能是数字");
                                      insertFlag=false;
                                      break; 
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -484,12 +484,12 @@ public class CapitalController {
                                  if(str[12].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setIncom(Integer.parseInt(str[12]));
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十三个单元格数据只能是数字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十三个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十三个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十三个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -497,12 +497,12 @@ public class CapitalController {
                                  if(str[13].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setPay(Integer.parseInt(str[13]));
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十四个单元格数据只能是数字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十四个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十四个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十四个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -510,12 +510,12 @@ public class CapitalController {
                                  if(str[14].matches("^\\d+$")){//判断单元格数据是否是数字
                                      capital.setEndBlack(Integer.parseInt(str[14]));
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十五个单元格数据只能是数字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十五个单元格数据只能是数字");
                                      insertFlag=false;
                                      break;
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十五个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -523,19 +523,19 @@ public class CapitalController {
                                  if(str[15].length()<=200){
                                      capital.setAbstrac(str[15]); 
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十六个单元格里面字数最多200字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十六个单元格里面字数最多200字");
                                      insertFlag=false;
                                      break;   
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十六个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十六个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[16].equals("")){
                                  capital.setClassify(str[16]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十七个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十七个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -543,12 +543,12 @@ public class CapitalController {
                                  if(str[17].length()<=200){
                                     capital.setRemarks(str[17]); 
                                  }else{
-                                     result.setResultCode("Excel表格第"+(i+2)+"行第十八个单元格里面最多200字");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第十八个单元格里面最多200字");
                                      insertFlag=false;
                                      break;  
                                  }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第十八个单元格数据不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第十八个单元格数据不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -570,7 +570,7 @@ public class CapitalController {
                              ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                          }  
                      }else{
-                         result.setResultCode("您没有权限上传资金数据");
+                         result.setResultDesc("您没有权限上传资金数据");
                      }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -583,13 +583,13 @@ public class CapitalController {
             }
         }else{
             ElementXMLUtils.returnValue(ElementConfig.CAPITAL_FILE_EXCEED_5M,result);
-            result.setResultCode("文件大于5M不能上传！请传5M以下的数据");
+            result.setResultDesc("文件大于5M不能上传！请传5M以下的数据");
         } 
       }else{
-          result.setResultCode("您上传的不是Excel文档！");
+          result.setResultDesc("您上传的不是Excel文档！");
       }
       }else{
-           result.setResultCode("您上传的不是Excel文档！");
+           result.setResultDesc("您上传的不是Excel文档！");
        }
           return result;
       }
@@ -753,7 +753,7 @@ public class CapitalController {
                     ExcelUtil.export(strList, os);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                 }else{
-                    result.setResultCode("您没有权限导出资金数据"); 
+                    result.setResultDesc("您没有权限导出资金数据"); 
                 }
             } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
