@@ -31,6 +31,10 @@ public class OrganizationMoveServiceImpl implements OrganizationMoveService{
 	 * 查询
 	 */
 	public List<OrganizationMove> listOrganizationMoveBy(Map<Object, Object> map) {
+		
+		if(map.get("orgkey") == null || map.get("orgkey").equals("")) {
+			return null;
+		}
         return omDao.listOrganizationMoveBy(map);
     }
 
