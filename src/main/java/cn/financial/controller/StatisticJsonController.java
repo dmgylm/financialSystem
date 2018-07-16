@@ -62,7 +62,7 @@ public class StatisticJsonController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块(如:b1503ff8da124fa3bce0bf07f16f56f6 具体数据从组织架构orgkey取得,接口是listBy)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔,string类型)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔,string类型)", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式)", required = true) 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式,比如['0303e625211c47ee86efb8007053186b'] 所取数据从前台选择的组织架构id传来)", required = true) 
     	})
 //	@ApiResponses({@ApiResponse(code = 200, message = "成功"),
 //		@ApiResponse(code = 400, message = "失败"),
@@ -160,7 +160,6 @@ public class StatisticJsonController {
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_INFOKEY_NULL, si);
                 return si;
             }
-        	
         	
             Map<String, Map<String, String>> ja = statisticService.staticInfoMap(null,null,caCheUuid);
             Map<String, String> companyInfo = ja.get(infoKey);
