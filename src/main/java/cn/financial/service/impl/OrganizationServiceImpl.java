@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,14 +91,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
     public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
-    	map.put("orgName", orgName);
-    	map.put("createTime",createTime);
-    	map.put("updateTime",updateTime);
-    	map.put("id", id);
-    	map.put("code", code);
-    	map.put("uId", uId);
-    	map.put("parentId", parentId);
-    	map.put("orgType", orgType);
+    	try {
+			map.put("orgName", new String(orgName.getBytes("iso8859-1"),"utf-8"));
+			map.put("createTime",createTime);
+	    	map.put("updateTime",updateTime);
+	    	map.put("id", id);
+	    	map.put("code", code);
+	    	map.put("uId", uId);
+	    	map.put("parentId", parentId);
+	    	map.put("orgType", orgType);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    
     	return organizationDAO.listOrganizationBy(map);
     }
 
@@ -105,7 +112,12 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
     @CacheEvict(value = "organizationValue", allEntries = true)
-    public Integer updateOrganizationById(Map<Object, Object> map) {
+    public Integer updateOrganizationById(String orgName,String id,Integer orgType,String uId) {
+    	Map<Object, Object> map=new HashMap<Object, Object>();
+    	map.put("orgName", orgName);
+    	map.put("id", id);
+    	map.put("orgType", orgType);
+    	map.put("uId", uId);
         return organizationDAO.updateOrganizationById(map);
     }
 
