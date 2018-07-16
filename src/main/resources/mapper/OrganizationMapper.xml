@@ -219,7 +219,7 @@
 			and createTime &gt;=  #{createTime,jdbcType=TIMESTAMP}
 		</if>
 		<if test="updateTime!=null and updateTime!=''">
-			and updateTime &lt;= #{updateTime,jdbcType=TIMESTAMP}
+			and updateTime &lt;=  #{updateTime,jdbcType=TIMESTAMP}
 		</if>
 		<if test="uId!=null and uId!=''">
 			and uId = #{uId,jdbcType=VARCHAR}
