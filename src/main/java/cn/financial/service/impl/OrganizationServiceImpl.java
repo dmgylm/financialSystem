@@ -92,14 +92,30 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
     	try {
-			map.put("orgName", new String(orgName.getBytes("iso8859-1"),"utf-8"));
-			map.put("createTime",createTime);
-	    	map.put("updateTime",updateTime);
-	    	map.put("id", id);
-	    	map.put("code", code);
-	    	map.put("uId", uId);
-	    	map.put("parentId", parentId);
-	    	map.put("orgType", orgType);
+    		 if (null !=orgName && !"".equals(orgName)) {
+    				map.put("orgName", new String(orgName.getBytes("iso8859-1"),"utf-8"));
+             }
+     		 if (null !=createTime && !"".equals(createTime)) {
+     			map.put("createTime",createTime);
+             }
+     		 if (null !=updateTime && !"".equals(updateTime)) {
+     			map.put("updateTime",updateTime);
+             }
+     		 if (null !=id && !"".equals(id)) {
+     			map.put("id", id);
+             }
+     		 if (null !=code && !"".equals(code)) {
+     			map.put("code", code);
+             }
+     		 if (null !=uId && !"".equals(uId)) {
+     			map.put("uId", uId);
+             }
+     		 if (null !=parentId && !"".equals(parentId)) {
+     			map.put("parentId", parentId);
+             }
+     		 if (null !=orgType && !"".equals(orgType)) {
+     			map.put("orgType", orgType);
+             }
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,10 +130,18 @@ public class OrganizationServiceImpl implements OrganizationService {
     @CacheEvict(value = "organizationValue", allEntries = true)
     public Integer updateOrganizationById(String orgName,String id,Integer orgType,String uId) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
-    	map.put("orgName", orgName);
-    	map.put("id", id);
-    	map.put("orgType", orgType);
-    	map.put("uId", uId);
+    	 if (null !=orgName && !"".equals(orgName)) {
+    		 map.put("orgName", orgName);
+         }
+     	 if (null !=id && !"".equals(id)) {
+     		 map.put("id", id);
+         }
+     	 if (null !=orgType && !"".equals(orgType)) {
+         	map.put("orgType", orgType);
+         }
+     	 if (null !=uId && !"".equals(uId)) {
+     		map.put("uId", uId);
+         }
         return organizationDAO.updateOrganizationById(map);
     }
 
