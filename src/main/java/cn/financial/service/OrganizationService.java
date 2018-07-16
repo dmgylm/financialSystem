@@ -39,7 +39,7 @@ public interface OrganizationService {
      * @param map
      * @return
      */
-    Integer updateOrganizationById(Map<Object, Object> map);
+    Integer updateOrganizationById(String orgName,String id,Integer orgType,String uId);
 
     /**
      * 接口（根据ID删除组织结构信息(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)）
