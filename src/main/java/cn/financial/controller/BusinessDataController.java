@@ -186,7 +186,7 @@ public class BusinessDataController {
                         }
                     } 
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,businessResult);
-                    businessResult.setBusiness(businessList); //返回的资金流水数据
+                    businessResult.setData(businessList); //返回的资金流水数据
                     businessResult.setTotal(total.size());//返回的总条数
                 }else{
                     throw new Exception("您没有权限操作损益表！");

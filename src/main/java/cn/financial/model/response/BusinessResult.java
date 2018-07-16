@@ -13,12 +13,13 @@ public class BusinessResult extends ResultUtils{
 	@ApiModelProperty(value = "损益录入中心返回的总条数")
 	private Integer total; //返回的总条数
     
-    public List<Business> getBusiness() {
+
+    public List<Business> getData() {
         return data;
     }
 
-    public void setBusiness(List<Business> business) {
-        this.data = business;
+    public void setData(List<Business> data) {
+        this.data = data;
     }
 
     public Integer getTotal() {
