@@ -128,8 +128,8 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "int", name = "orgType", value = "1：汇总，2：公司，3：部门 ，4：板块(默认是汇总)", required = false),
     })
     public OganizationNode listOrganizationBy(String orgName,String createTime,String updateTime,
-    		String id,String code,String uId, String parentId,int orgType,HttpServletRequest request, HttpServletResponse response) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+    		String id,String code,String uId, String parentId,Integer orgType,HttpServletRequest request, HttpServletResponse response) {
+      
         OganizationNode organiza=new OganizationNode();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
