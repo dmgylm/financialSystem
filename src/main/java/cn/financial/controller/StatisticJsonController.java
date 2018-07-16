@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,14 @@ public class StatisticJsonController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "orgId", value = "选中组织架构id集合(jsonarray形式)", required = true) 
     	})
-	@ApiResponse(code = 200, message = "成功")
+//	@ApiResponses({@ApiResponse(code = 200, message = "成功"),
+//		@ApiResponse(code = 400, message = "失败"),
+//	    @ApiResponse(code = 500, message = "系统错误"),
+//	    @ApiResponse(code = 280, message = "报表类型不能为空"),
+//	    @ApiResponse(code = 281, message = "业务板块不能为空"),
+//	    @ApiResponse(code = 282, message = "开始时间不能为空"),
+//	    @ApiResponse(code = 283, message = "结束时间不能为空"),
+//	    @ApiResponse(code = 284, message = "选中组织架构id集合不能为空")})
     @PostMapping(value = "/staticJson")
     public StaticJson staticJson(String reportType,String businessType,String startDate,String endDate,String orgId) {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -136,7 +144,11 @@ public class StatisticJsonController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "caCheUuid", value = "缓存id", required = true), 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "infoKey", value = "查询详情key", required = true) 
     	})
-	@ApiResponse(code = 200, message = "成功")
+//	@ApiResponses({@ApiResponse(code = 200, message = "成功"),
+//		@ApiResponse(code = 400, message = "失败"),
+//	    @ApiResponse(code = 500, message = "系统错误"),
+//	    @ApiResponse(code = 285, message = "缓存id不能为空"),
+//	    @ApiResponse(code = 286, message = "查询详情key不能为空")})
     @PostMapping(value = "/staticInfo")
     public StaticInfo staticInfo(String caCheUuid,String infoKey) {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
