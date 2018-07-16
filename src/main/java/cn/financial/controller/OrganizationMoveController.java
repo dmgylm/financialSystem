@@ -24,6 +24,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Controller
 @Api(tags = "组织架构移动记录接口")
@@ -45,7 +47,9 @@ public class OrganizationMoveController {
 	@RequestMapping(value = "/listBy", method = RequestMethod.POST)
 	@ApiOperation(value="查询组织架构移动记录",notes="根据orgkey查询相应的信息",response = ListOrgMove.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query")})
+        @ApiImplicitParam(name="orgkey",value="和模版的对接的唯一值",dataType="string", paramType = "query", required = true)})
+	@ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+	    @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 252, message = "组织架构orgkey为空")})
 	public ListOrgMove listOrganizationMoveBy(HttpServletRequest request,HttpServletResponse response){
 		
 		Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -53,8 +57,12 @@ public class OrganizationMoveController {
 		
 		try {
 			Map<Object, Object> map = new HashMap<>();
-            map.put("orgkey", new String(request.getParameter("orgkey").getBytes("ISO-8859-1"), "UTF-8"));
+            map.put("orgkey", request.getParameter("orgkey"));
 			List<OrganizationMove> list = service.listOrganizationMoveBy(map);
+			if(list == null){
+                ElementXMLUtils.returnValue(ElementConfig.ORGMOVE_ORGKEY_NULL,result);
+                return result;
+            }
 			result.setData(list);
 			ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
 		} catch (Exception e) {
