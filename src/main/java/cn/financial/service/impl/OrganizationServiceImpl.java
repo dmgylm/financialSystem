@@ -88,8 +88,17 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据条件查询组织结构信息
      */
     // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
-    public List<Organization> listOrganizationBy(Map<Object, Object> map) {
-        return organizationDAO.listOrganizationBy(map);
+    public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
+    	Map<Object, Object> map=new HashMap<Object, Object>();
+    	map.put("orgName", orgName);
+    	map.put("createTime",createTime);
+    	map.put("updateTime",updateTime);
+    	map.put("id", id);
+    	map.put("code", code);
+    	map.put("uId", uId);
+    	map.put("parentId", parentId);
+    	map.put("orgType", orgType);
+    	return organizationDAO.listOrganizationBy(map);
     }
 
     /**
@@ -591,6 +600,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		}
 		return null;
 	}
+
 
 	
 }
