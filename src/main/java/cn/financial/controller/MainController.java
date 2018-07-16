@@ -115,6 +115,8 @@ public class MainController {
             if(username == null || username.equals("")){
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USERNAME_NULL_ERROR));
                 return dataMapList;
+            }else{
+                username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
             }
             if(password == null || password.equals("")){
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_NULL_ERROR));

@@ -121,6 +121,8 @@ public class RoleController {
             if(roleName == null || roleName.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLENAME_NULL, result);
                 return result;
+            }else{
+                roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
             }
             List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
             if(roleNameList.size()>0){//roleName不能重复
@@ -161,6 +163,9 @@ public class RoleController {
     public ResultUtils updateRole(String roleName, String roleId){
         ResultUtils result = new ResultUtils();
         try {
+            if(roleName != null && !roleName.equals("")){
+                roleName = new String(roleName.getBytes("ISO-8859-1"), "UTF-8");
+            }
             Role role = new Role();
             role.setId(roleId);
             role.setRoleName(roleName);

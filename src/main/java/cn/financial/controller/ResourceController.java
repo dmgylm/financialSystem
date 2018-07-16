@@ -132,6 +132,12 @@ public class ResourceController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_PARENTID_NULL, result);
                 return result;
             }
+            if(name == null || name.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_NAME_NULL, result);
+                return result;
+            }else{
+                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+            }
             Resource parent = resourceService.getResourceById("",parentId);//根据code查询parentId
             Resource resource = new Resource();
             resource.setId(UuidUtil.getUUID());
@@ -149,8 +155,6 @@ public class ResourceController {
             }
             int resourceList = resourceService.insertResource(resource);
             if(resourceList == -1){
-                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_NAME_NULL, result);
-            }else if(resourceList == -2){
                 ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE_PERMSSION_NULL, result);
             }else if(resourceList > 0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
@@ -183,6 +187,9 @@ public class ResourceController {
             if(resourceId == null || resourceId.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
                 return result;
+            }
+            if(name != null && !name.equals("")){
+                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
             }
             Resource parent = resourceService.getResourceById(resourceId,"");//根据id查询parentId(父id是否存在)
             Resource resource = new Resource();
