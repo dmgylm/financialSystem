@@ -103,7 +103,7 @@ public class BusinessDataController {
                  map.put("year",year); //年份
                  map.put("month",month);  //月份
                  if(sId==null||sId<1||sId>2){
-                     map.put("sId",2); //判断是损益还是预算表  1损益  2 预算
+                     map.put("sId",""); //判断是损益还是预算表  1损益  2 预算
                  }else{
                      map.put("sId",sId);  //判断是损益还是预算表  1损益  2 预算
                  }
