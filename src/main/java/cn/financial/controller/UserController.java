@@ -74,7 +74,7 @@ public class UserController {
      */
     //@RequiresRoles("超级管理员")
     @RequiresPermissions("permission:view")
-    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
     @ApiOperation(value="查询用户信息",notes="查询所有用户/多条件查询用户列表",response = UserListReslult.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
@@ -95,8 +95,12 @@ public class UserController {
         UserResult resultInfo = new UserResult();
     	try {
     	    Map<Object, Object> map = new HashMap<>();
-    	    map.put("name", name);//用户名
-    	    map.put("realName", realName);//真实姓名
+    	    if(name != null && !name.equals("")){
+    	        map.put("name", new String(name.getBytes("ISO-8859-1"), "UTF-8"));//用户名
+    	    }
+    	    if(realName != null && !realName.equals("")){
+                map.put("realName", new String(realName.getBytes("ISO-8859-1"), "UTF-8"));//真实姓名
+            }
     	    map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
@@ -107,7 +111,7 @@ public class UserController {
             List<User> user = userService.listUser(map);//查询全部map为空
             List<User> userList = userService.listUserCount(map);//查询总条数
             resultInfo.setUserList(user);
-            resultInfo.setUserListTotal(userList.size());
+            resultInfo.setTotal(userList.size());
             result.setData(resultInfo);
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
         } catch (Exception e) {
@@ -173,16 +177,24 @@ public class UserController {
     public ResultUtils insertUser(String name, String realName, String jobNumber){
         ResultUtils result = new ResultUtils();
         try {
-            Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
-            Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
-            if(flag == -1){
+            if(name == null || name.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
                 return result;
+            }else{
+                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
             }
-            if(flag == -2){
+            if(jobNumber == null || jobNumber.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_JOBNUMBER_NULL, result);
                 return result;
             }
+            if(realName == null || realName.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
+                return result;
+            }else{
+                realName = new String(realName.getBytes("ISO-8859-1"), "UTF-8");
+            }
+            Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
+            Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
             if(flag > 0){
                 ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, result);
                 return result;
@@ -199,9 +211,7 @@ public class UserController {
             user.setPwd(User.INITIALCIPHER);//用户新增默认密码为Welcome1
             user.setJobNumber(jobNumber);
             int userList = userService.insertUser(user);
-            if(userList == -1){
-                ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
-            }else if(userList > 0){
+            if(userList > 0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
@@ -240,6 +250,9 @@ public class UserController {
     public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
         ResultUtils result = new ResultUtils();
         try {
+            if(name != null && !name.equals("")){
+                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+            }
             User user = new User();
             user.setId(userId);
             user.setName(name);
