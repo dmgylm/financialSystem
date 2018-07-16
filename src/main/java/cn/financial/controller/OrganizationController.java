@@ -129,12 +129,12 @@ public class OrganizationController {
         try {
             List<Organization> list = organizationService.
             	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType);
-            if (!CollectionUtils.isEmpty(list)) {
+           // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
-            } else {
+           /* } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,organiza);
-            }
+            }*/
         } catch (Exception e) {
         	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,organiza);
             this.logger.error(e.getMessage(), e);
@@ -252,12 +252,12 @@ public class OrganizationController {
             loginResult.setChildren(ChildrenObject);
             loginResultList.add(loginResult);
             orgin.setData(loginResultList);
-            if (jsonTree != null) {
+          //  if (jsonTree != null) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
                 dataMap.put("data", jsonTree);
-            } else {
+          /*  } else {
                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            }
+            }*/
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
@@ -288,11 +288,11 @@ public class OrganizationController {
                 list = organizationService.listTreeByIdForParent(request.getParameter("id"));
                 node.setData(list);
             }
-            if (!CollectionUtils.isEmpty(list)) {
+           // if (!CollectionUtils.isEmpty(list)) {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,node);
-            } else {
+          /*  } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,node);
-            }
+            }*/
         } catch (Exception e) {
         	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,node);
             this.logger.error(e.getMessage(), e);
