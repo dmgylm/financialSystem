@@ -207,7 +207,7 @@ public class BusinessDataController {
          */
         @RequiresPermissions("businessData:view")
         @RequestMapping(value="/listById", method = RequestMethod.POST)
-        @ApiOperation(value="根据id查询资金数据", notes="根据url的id来获取资金流水的信息",response =HtmlResult.class)
+        @ApiOperation(value="根据id查询损益/预算数据", notes="根据url的id来获取损益/预算数据",response =HtmlResult.class)
         @ApiImplicitParams({
             @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer",paramType = "query")})
