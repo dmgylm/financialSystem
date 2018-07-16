@@ -154,6 +154,11 @@
         <description>消息id不能为空</description>
     </Result>
     
+    <Result name="ORGMOVE_ORGKEY_NULL">
+        <code>252</code>
+        <description>组织架构orgkey为空</description>
+    </Result>
+    
     <Result name="STATIC_REPORTTYPE_NULL">
         <code>280</code>
         <description>报表类型不能为空</description>
