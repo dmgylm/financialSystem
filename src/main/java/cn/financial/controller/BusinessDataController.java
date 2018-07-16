@@ -91,7 +91,7 @@ public class BusinessDataController {
                 @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "month", value = "月份", required = false, dataType = "String",paramType = "query"),
-                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = true, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required = false, dataType = "String",paramType = "query"),
                 })
         @ResponseBody
         public BusinessResult listBusinessDataBy(HttpServletRequest request, String year,String month,Integer sId,Integer page,Integer pageSize) {
@@ -332,7 +332,7 @@ public class BusinessDataController {
          * @throws Exception 
          */
         @RequiresPermissions("businessData:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出损益/预算数据", notes="根据条件导出所有的数据",response=BusinessDataExportResult.class)
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "year", value = "年份", required = false, dataType = "String",paramType = "query"),
