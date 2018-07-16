@@ -62,9 +62,9 @@ public class DataModule {
     @ApiModelProperty(value="模板状态（0：无效；1：有效）",name="statue",example="")
 	private Integer statue;
 	
-    @ApiModelProperty(value="起效日期",name="startTime",example="")
+    /*@ApiModelProperty(value="起效日期",name="startTime",example="")
 	private String startTime; //起效日期
-	
+*/	
     @ApiModelProperty(value="创建时间",name="createTime",example="")
 	private String createTime; // 创建时间
 
@@ -160,13 +160,13 @@ public class DataModule {
 		this.statue = statue;
 	}
 
-	public String getStartTime() {
+	/*public String getStartTime() {
 		return startTime;
 	}
 
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
-	}
+	}*/
 
 	public String getModuleData() {
 		return moduleData;
