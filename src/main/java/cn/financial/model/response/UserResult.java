@@ -9,17 +9,18 @@ public class UserResult {
     @ApiModelProperty(value = "用户信息")
     private List<User> userList;
     @ApiModelProperty(value = "总条数")
-    private Integer userListTotal;
+    private Integer total;
     public List<User> getUserList() {
         return userList;
     }
     public void setUserList(List<User> userList) {
         this.userList = userList;
     }
-    public Integer getUserListTotal() {
-        return userListTotal;
+    public Integer getTotal() {
+        return total;
     }
-    public void setUserListTotal(Integer userListTotal) {
-        this.userListTotal = userListTotal;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
+    
 }
