@@ -194,4 +194,8 @@ public class ElementConfig {
      * 消息id为空
      */
     public static final String MESSAGE_ID_NULL = "MESSAGE_ID_NULL";
+    /**
+     * 组织架构orgkey为空
+     */
+    public static final String ORGMOVE_ORGKEY_NULL = "ORGMOVE_ORGKEY_NULL"; 
 }
