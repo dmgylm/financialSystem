@@ -34,9 +34,9 @@ public class JsonTest {
 
     @Test
     public  void  mergeJson(){
-    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    	String path = "C:/Users/Admin/Desktop/测试模板.txt";
     	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
-    	String shortPath = "C:/Users/Admin/Desktop/车管家预算简化.txt";
+    	String shortPath = "C:/Users/Admin/Desktop/测试简化.txt";
     	JSONObject shortObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(shortPath));
     	JSONObject jsons=JsonConvertProcess.mergeJson(newObj,shortObj);
     	System.out.println(jsons);

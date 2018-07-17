@@ -55,7 +55,7 @@ public class BudgetHtmlTest {
 	
 	@Test
 	public void analysisBudgetHtml(){
-		HtmlAnalysis4Excel ha = new HtmlAnalysis4Excel(new File("C:/Users/Admin/Desktop/Html budget.html"), 1, 2, 1);
+		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/Html budget.html"));
 		try {
 			String json = ha.analysis();
 //			System.out.println(json);
@@ -83,12 +83,12 @@ public class BudgetHtmlTest {
 //		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/PROFIT_LOSS.html"), 1, 2, 2);
 		try {
 			String json = ha.analysis();
-//			System.out.println(json);
+			System.out.println(json);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			
-			JsonConvertProcess jcp = new JsonConvertProcess();
-			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(jsonObj);//生成预算模板数据
-			System.out.println(budgetJson);
+//			JsonConvertProcess jcp = new JsonConvertProcess();
+//			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(jsonObj);//生成预算模板数据
+//			System.out.println(budgetJson);
 //			
 //			JSONObject simplifyJson = JsonConvertProcess.simplifyJson(budgetJson);
 //			System.out.println(simplifyJson);

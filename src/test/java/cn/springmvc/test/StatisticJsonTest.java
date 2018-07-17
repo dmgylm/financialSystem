@@ -120,7 +120,7 @@ public class StatisticJsonTest {
 		params.put("orgId", orgId.toString());
 		
 		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticJson;JSESSIONID=06773a40-5e62-4ecf-85b9-aa768020e72d&", params);
-		System.out.println(responseStr);
+		System.out.println("responseStr:"+responseStr);
     	
     	
     }
