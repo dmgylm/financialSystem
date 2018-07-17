@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 
-import cn.financial.util.ElementConfig;
-import cn.financial.util.ElementXMLUtils;
 /**
  * 自定义过滤器实现login跳转指定路径
  * @author gs
@@ -37,8 +35,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 //        Map<String, Object> map = new HashMap<String, Object>();
 //        map.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_SESSION_OVERDUE));
         // 写数据
-//        System.out.println(map.toString()); //这个地方没有乱码的话，说明你的控制台（IDE） - xml文件的编码是一致的，如果浏览器出现乱码
-        // 有两种可能，第一response响应的编码不对，第二是浏览器编码和响应的编码不一致 稍等
+//        System.out.println(map.toString());
 //        out.write(map.toString());
 //        // 刷新流
 //        out.flush();
