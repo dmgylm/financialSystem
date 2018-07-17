@@ -47,7 +47,7 @@ public class DataModule {
     @ApiModelProperty(value="模板版本号",name="versionNumber",example="")
 	private String versionNumber;
 	
-    @ApiModelProperty(value="报表类型",name="reportType",example="")
+    @ApiModelProperty(value="报表类型(PROFIT_LOSS:损益 ；TAX：税金 ；ASSESSMENT：考核 ；  BUDGET：预算 ； SUMMARY_PROFIT_LOSS：损益简易汇总)",name="reportType",example="")
 	private String reportType;//报表类型
 
     @ApiModelProperty(value="业务板块",name="businessType",example="")
