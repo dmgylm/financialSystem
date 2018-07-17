@@ -24,6 +24,7 @@ public interface MessageDAO {
     /**
      * 根据消息状态展示消息列表
      * 
+     * @param map
      * @return
      */
     List<Message> listMessage(Map<Object, Object> map);
