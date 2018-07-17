@@ -9,14 +9,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import cn.financial.model.Resource;
 import cn.financial.model.RoleResource;
 import cn.financial.service.ResourceService;
+import cn.financial.util.HttpClient3;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import net.sf.json.JSONObject;
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml","classpath:spring/spring-redis.xml"})
@@ -28,11 +31,20 @@ import net.sf.json.JSONObject;
 public class ResourceTest {
     @Autowired
     private ResourceService service;
+    
+    HttpClient3 http = new HttpClient3();
+    
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     //新增
     @Test
     public void insertTest() {
-        Resource parent = service.getResourceById("","1");//根据code查询对应功能权限parentId(父id是否存在)
+        try {
+            String url = http.doPost("http://192.168.113.135:8080/financialSys/resource/insert?meta.session.id=a92875db-1d3a-42cb-adb7-0952e74dcf37", "code=1&name=333&url=5&permssion=555");
+            System.out.println(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*Resource parent = service.getResourceById("","1");//根据code查询对应功能权限parentId(父id是否存在)
         Resource resource = new Resource();
         resource.setId(UuidUtil.getUUID());
         resource.setName("6666666666");
@@ -51,16 +63,22 @@ public class ResourceTest {
             System.out.println(service.insertResource(resource));
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }*/
     }
     //修改
     @Test
     public void updateTest() {
-        Resource parent = service.getResourceById("f14cdee2deb24271a912918a7f74ce19","");//根据code查询对应功能权限parentId
+        try {
+            String url = http.doPost("http://192.168.113.135:8080/financialSys/resource/upate?meta.session.id=a92875db-1d3a-42cb-adb7-0952e74dcf37", "resourceId=3e983a1c8eee481eafec82cc394cbc69&name=333&url=555");
+            System.out.println(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*Resource parent = service.getResourceById("3e983a1c8eee481eafec82cc394cbc69","");//根据id查询对应功能权限parentId
         Resource resource = new Resource();
-        resource.setId("f14cdee2deb24271a912918a7f74ce19");
-        resource.setName("4444444");
-        resource.setUrl("/ttttt");
+        resource.setId("3e983a1c8eee481eafec82cc394cbc69");
+        resource.setName("权限设置");
+        //resource.setUrl("/ttttt");
         if(parent != null && !"".equals(parent)){
             if(parent.getParentId() != null && !"".equals(parent.getParentId()) && !"1".equals(parent.getParentId())){
                 resource.setParentId(parent.getParentId());
@@ -70,22 +88,34 @@ public class ResourceTest {
         }else{//没数据返回代表父id不存在直接把1赋值给parentId
             resource.setParentId("1"); 
         }
-        resource.setPermssion("3333333333");
+        //resource.setPermssion("3333333333");
         try {
             System.out.println(service.updateResource(resource));
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }*/
     }
     //删除
     @Test
     public void deleteTest() {   
-        System.out.println(service.deleteResource("18b0eb4a32fc487aa3d4d43647fae4b4"));
+        try {
+            String url = http.doPost("http://192.168.113.135:8080/financialSys/resource/upate?meta.session.id=a92875db-1d3a-42cb-adb7-0952e74dcf37", "resourceId=3e983a1c8eee481eafec82cc394cbc69");
+            System.out.println(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //System.out.println(service.deleteResource("18b0eb4a32fc487aa3d4d43647fae4b4"));
     }
     //查询全部
     @Test
     public void ListRoleTest() {
-        List<Resource> resource = service.listResource();
+        try {
+            String url = http.doPost("http://192.168.113.135:8080/financialSys/resource/index?meta.session.id=a92875db-1d3a-42cb-adb7-0952e74dcf37", "");
+            System.out.println(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*List<Resource> resource = service.listResource();
         List<TreeNode<RoleResource>> nodes = new ArrayList<>();
         JSONObject jsonObject = null;
         if(resource.size()>0){
@@ -100,7 +130,7 @@ public class ResourceTest {
             }
             jsonObject = JSONObject.fromObject(TreeNode.buildTree(nodes));
         }
-        System.out.println("resource:"+jsonObject);
+        System.out.println("resource:"+jsonObject);*/
         /*for(Resource list:resource){
             System.out.println("id: "+list.getId() +" name: "+list.getName() +" code: "+list.getCode()+
                     " url: "+list.getUrl()+" parentId: "+list.getParentId()+" permssion: "+list.getPermssion()+
