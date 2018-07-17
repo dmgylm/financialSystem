@@ -2,6 +2,7 @@ package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -139,8 +139,10 @@ public class MainController {
             User user = userService.getUserByName(username);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c = Calendar.getInstance();
-            String expreTime = sf.format(c.getTime())+" 00:00:00";
-            if(expreTime.equals(user.getExpreTime())){//判断密码是否到期
+            String expreTimeC = sf.format(c.getTime());
+            Date expreTimeNow = sf.parse(expreTimeC);
+            Date expreTime = sf.parse(user.getExpreTime());
+            if(expreTime.before(expreTimeNow)){//判断密码是否到期
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMapList;
             }
