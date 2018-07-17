@@ -138,11 +138,8 @@ public class MainController {
             }
             User user = userService.getUserByName(username);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar c = Calendar.getInstance();
-            String expreTimeC = sf.format(c.getTime());
-            Date expreTimeNow = sf.parse(expreTimeC);
-            Date expreTime = sf.parse(user.getExpreTime());
-            if(expreTime.before(expreTimeNow)){//判断密码是否到期
+            //等于，则返回值 0；之前，则返回小于 0 的值；之后，则返回大于 0 的值。
+            if(sf.format(new Date()).compareTo(user.getExpreTime())<=0){
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMapList;
             }
