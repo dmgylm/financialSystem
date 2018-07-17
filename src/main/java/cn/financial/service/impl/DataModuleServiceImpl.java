@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -26,6 +27,7 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
 import cn.financial.util.HtmlGenerate;
+import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.UuidUtil;
 
 @Service("DataModuleServiceImpl")
@@ -181,9 +183,16 @@ public class DataModuleServiceImpl implements DataModuleService{
 		bean.setVersionNumber(String.valueOf(versionNumber));
 		bean.setReportType(reportType);
 		bean.setBusinessType(businessType);
-		bean.setModuleData(json);
 		bean.setStatue(DataModule.STATUS_CONSUMED);
 		bean.setModuleName(getDataModuleName(reportType,businessType));
+		
+		if(reportType.equals(reportType)) {
+			JsonConvertProcess jcp = new JsonConvertProcess();
+			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);//生成预算模板数据
+			bean.setModuleData(budgetJson.toJSONString());
+		} else {
+			bean.setModuleData(json);
+		}
 		dataModuleDao.insertDataModule(bean);
 		//清除数据模板缓存
 		redisCacheService.removeAll("dataModule");

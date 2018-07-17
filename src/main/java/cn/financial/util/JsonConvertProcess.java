@@ -14,7 +14,6 @@ public class JsonConvertProcess {
 	
 	//预算表中的Label单元格字段
 	private JSONArray bugdetLabelArr = new JSONArray();
-	private static Object Object;
 		
 	/**
 	 * 将数据Json和模板Json进行合并
@@ -151,7 +150,18 @@ public class JsonConvertProcess {
 	}
 	
 	/**
-	 * 生成每月预算Json数据
+	 * 生成每月预算JSON模板数据
+	 * @param jsonObj
+	 * @return
+	 */
+	public JSONObject generateMonthlyBudgetJson(String json) {
+		JSONObject jsonObj = JSONObject.parseObject(json);
+		return generateMonthlyBudgetJson(jsonObj);
+		
+	}
+	
+	/**
+	 * 生成每月预算JSON模板数据
 	 * @param jsonObj
 	 * @return
 	 */
