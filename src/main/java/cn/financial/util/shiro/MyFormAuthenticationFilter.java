@@ -45,6 +45,6 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 //        // 关闭流
 //         out.close();
         // 如果是未登录的Ajax请求，则拦截
-        return true;
+        return false;
     }
 }
