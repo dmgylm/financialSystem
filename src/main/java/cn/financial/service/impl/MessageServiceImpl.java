@@ -258,13 +258,28 @@ public class MessageServiceImpl implements MessageService {
 				}
 			}
 		}
-		if(oIdList.size()>0) {
-			filter.put("oId", oIdList);
+		if(pagingMap.get("status")!=null && !"".equals(pagingMap.get("status"))) {
+			if(oIdList.size()>0) {
+				filter.put("oId", oIdList);
+			}
+			filter.put("uId", user.getId());
+			filter.put("pageSize", pageSize);
+			filter.put("start", start);
+			if(pagingMap.get("status").equals("2")) {
+				filter.put("isTag", 1);
+			}else {
+				filter.put("status", pagingMap.get("status"));
+			}
+			lm = messageDao.listMessage(filter);
+		}else {
+			if(oIdList.size()>0) {
+				filter.put("oId", oIdList);
+			}
+			filter.put("uId", user.getId());
+			filter.put("pageSize", pageSize);
+			filter.put("start", start);
+			lm = messageDao.listMessageBy(filter);
 		}
-		filter.put("uId", user.getId());
-		filter.put("pageSize", pageSize);
-		filter.put("start", start);
-		lm = messageDao.listMessageBy(filter);
 		return lm;
 //		Map<Object, Object> map = new HashMap<>();
 //		map.put("uId", user.getId());
