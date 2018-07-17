@@ -24,7 +24,7 @@ public class Message {
 	@ApiModelProperty(value="消息状态(0未读;1已读)",name="status",example="")
 	Integer status; // 消息状态(0未读；1已读)
 
-	@ApiModelProperty(value="消息主题(1系统提醒)",name="theme",example="")
+	@ApiModelProperty(value="消息主题(1系统提醒,2系统消息)",name="theme",example="")
 	Integer theme; // 消息主题(1系统提醒)
 
 	@ApiModelProperty(value="消息内容",name="content",example="")
