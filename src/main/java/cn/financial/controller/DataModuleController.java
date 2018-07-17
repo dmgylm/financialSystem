@@ -138,7 +138,7 @@ public class DataModuleController {
 	@ApiOperation(value = "根据报表类型及业务板块查询最新版本模板",notes = "根据报表类型及业务板块查询最新版本模板",response = DataResult.class)
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="reportType",required=true,value="报表类型",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query")})
+		  @ApiImplicitParam(name="businessType",required=true,value="业务板块（即 组织架构的orgkey）",dataType="string", paramType = "query")})
 	@ResponseBody
 	public DataResult getNewestDataModule(String reportType,String businessType){
 //		Map<String, Object> dataMap = new HashMap<String, Object>();
