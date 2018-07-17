@@ -124,7 +124,7 @@ public class DataModuleTest {
 		DataModule bean = new DataModule();
 		bean.setId(UuidUtil.getUUID());
 		bean.setVersionNumber("1");
-		bean.setReportType(DataModule.REPORT_TYPE_BUDGET);
+		bean.setReportType(DataModule.REPORT_TYPE_PROFIT_LOSS);
 		//bean.setBusinessType("3acea0c85d584448b37b0ca05cc34b6f");  //保险
 		//bean.setBusinessType("b1503ff8da124fa3bce0bf07f16f56f6");//车管家
 		//bean.setBusinessType("19d5dd69d5b543ffb83b199f231eb2d3");//技术服务
@@ -133,9 +133,10 @@ public class DataModuleTest {
 		//bean.setBusinessType("f9176b82a56c46e8a0fe6c3379f39de9");//爱车贷
 		//bean.setBusinessType("92c6ea3666c148349e9f6842fe2e7bf4");//维修
 		bean.setBusinessType("b9d14004e8b342b190fab1eeb2c3dd2c");//集团总部
+		
 		bean.setModuleData("");
 		bean.setStatue(DataModule.STATUS_CONSUMED);
-		bean.setModuleName(getDataModuleName(DataModule.REPORT_TYPE_BUDGET,bean.getBusinessType()));
+		bean.setModuleName(getDataModuleName(bean.getReportType(),bean.getBusinessType()));
 		dataModuleService.insertDataModule(bean);
 		
 	}
@@ -190,13 +191,15 @@ public class DataModuleTest {
 		}
 	}
 	
-	/*public void getDataById(){
-		Map<Object, Object> map=new HashMap<Object, Object>();
-		map.put("dataModuleId", "");
-		List<DataModule> dataModules=dataModuleService.listDataModule(map);
-		for(DataModule dataModule:dataModules){
+	@Test
+	public void getDataById(){
+		/*Map<Object, Object> map=new HashMap<Object, Object>();
+		map.put("dataModuleId", "");*/
+		DataModule dataModules=dataModuleService.getDataModule("3a9f5f27581c41158de915ef3cc653bc");
+		/*for(DataModule dataModule:dataModules){
 			System.out.println(dataModule);
 		}
-		System.out.println(dataModules.size());
-	}*/
+		System.out.println(dataModules.size());*/
+		System.out.println(dataModules.getModuleName());
+	}
 }
