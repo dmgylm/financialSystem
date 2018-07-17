@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiResponses;
 @Controller
 @Api(value="用户controller",tags={"用户操作接口"})
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController{
     @Autowired
     private UserService userService;
     @Autowired
@@ -81,11 +81,11 @@ public class UserController {
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="status",value="状态",dataType="int", paramType = "query"),
-        @ApiImplicitParam(name="createTime",value="创建时间",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="updateTime",value="更新时间",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="pageSize",value="条数",dataType="int", paramType = "query", required = true),
-        @ApiImplicitParam(name="page",value="页码",dataType="int", paramType = "query", required = true)})
+        @ApiImplicitParam(name="status",value="状态0表示离职1表示在职",dataType="int", paramType = "query"),
+        @ApiImplicitParam(name="createTime",value="创建时间（如2018-07-10 13:21:10）",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="updateTime",value="更新时间(如2018-07-10)",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="pageSize",value="条数（如每页显示10条数据）",dataType="int", paramType = "query", required = true),
+        @ApiImplicitParam(name="page",value="页码（第一页开始）page=1",dataType="int", paramType = "query", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
