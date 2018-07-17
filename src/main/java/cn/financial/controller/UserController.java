@@ -95,12 +95,8 @@ public class UserController{
         UserResult resultInfo = new UserResult();
     	try {
     	    Map<Object, Object> map = new HashMap<>();
-    	    if(name != null && !name.equals("")){
-    	        map.put("name", new String(name.getBytes("ISO-8859-1"), "UTF-8"));//用户名
-    	    }
-    	    if(realName != null && !realName.equals("")){
-                map.put("realName", new String(realName.getBytes("ISO-8859-1"), "UTF-8"));//真实姓名
-            }
+	        map.put("name", name);//用户名
+            map.put("realName", realName);//真实姓名
     	    map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
@@ -180,8 +176,6 @@ public class UserController{
             if(name == null || name.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
                 return result;
-            }else{
-                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
             }
             if(jobNumber == null || jobNumber.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_JOBNUMBER_NULL, result);
@@ -190,8 +184,6 @@ public class UserController{
             if(realName == null || realName.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
                 return result;
-            }else{
-                realName = new String(realName.getBytes("ISO-8859-1"), "UTF-8");
             }
             Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
             Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
@@ -250,9 +242,6 @@ public class UserController{
     public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
         ResultUtils result = new ResultUtils();
         try {
-            if(name != null && !name.equals("")){
-                name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
-            }
             User user = new User();
             user.setId(userId);
             user.setName(name);
