@@ -83,7 +83,7 @@ public class UserOrganizationTest {
             String orgId = orgList.get(i).getoId();
             //当前id信息
             map.put("id", orgId);
-            List<Organization> userOrgId = organizationService.listOrganizationBy(map); 
+            List<Organization> userOrgId = organizationService.listOrganizationBy(null, null, null, orgId, null, null, null, null);
             listre.addAll(userOrgId);
             //根据当前id查询该节点的所有父节点
             List<Organization> orgIdList = organizationService.listTreeByIdForParent(orgId);
