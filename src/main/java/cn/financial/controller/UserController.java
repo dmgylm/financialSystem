@@ -466,7 +466,7 @@ public class UserController {
     @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true)})
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}]", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertUserOrganization(String uId, String orgId){
         ResultUtils result = new ResultUtils();
@@ -502,7 +502,7 @@ public class UserController {
     @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true)})
+        @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}]", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateUserOrganization(String uId, String orgId){
         ResultUtils result = new ResultUtils();
@@ -571,7 +571,7 @@ public class UserController {
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="roleId",value="角色id,传入json格式,例如：[{\"orleId\":\"0603027a3a0948729c47a9f279ca3b34\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true),
+        @ApiImplicitParam(name="roleId",value="角色id,传入json格式,例如：[{\"roleId\":\"0603027a3a0948729c47a9f279ca3b34\"}]", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertUserRole(String roleId, String uId){
@@ -610,7 +610,7 @@ public class UserController {
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
-        @ApiImplicitParam(name="roleId",value = "角色id,传入json格式,例如：[{\"orleId\":\"0603027a3a0948729c47a9f279ca3b34\"}](斜线不要加，这里代表转译符)", paramType = "query", required = true),
+        @ApiImplicitParam(name="roleId",value = "角色id,传入json格式,例如：[{\"roleId\":\"0603027a3a0948729c47a9f279ca3b34\"}]", paramType = "query", required = true),
         @ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils updateUserRole(String roleId, String uId){
