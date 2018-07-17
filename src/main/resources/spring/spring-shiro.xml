@@ -101,7 +101,10 @@
         <property name="path" value="/"/>
     </bean>
     <!-- 基于Form表单的身份验证过滤器 -->
+	<!-- 
     <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+	 -->    
+    <bean id="formAuthenticationFilter" class="cn.financial.util.shiro.MyFormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/> 
@@ -129,7 +132,7 @@
         <property name="successUrl" value="/index"/>
         <property name="filters">
             <util:map>
-                <entry key="authc" value-ref="MyFormAuthenticationFilter"/>
+                <entry key="authc" value-ref="formAuthenticationFilter"/>
                 <entry key="sysUser" value-ref="sysUserFilter"/>
                 <!-- <entry key="logout" value-ref="logoutFilter" /> -->
             </util:map>
@@ -153,8 +156,7 @@
                 /test=anon
                 /doc**=anon
                 /swagger-ui.html=anon
-                /** = user,sysUser
-                /** = authc
+                /** = authc,user,sysUser
                 <!-- /** =anon -->
             </value>
         </property>
