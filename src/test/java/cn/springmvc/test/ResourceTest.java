@@ -96,7 +96,7 @@ public class ResourceTest {
         }*/
     }
     //删除
-    @Test
+    /*@Test
     public void deleteTest() {   
         try {
             String url = http.doPost("http://192.168.113.135:8080/financialSys/resource/upate?meta.session.id=a92875db-1d3a-42cb-adb7-0952e74dcf37", "resourceId=3e983a1c8eee481eafec82cc394cbc69");
@@ -105,7 +105,7 @@ public class ResourceTest {
             e.printStackTrace();
         }
         //System.out.println(service.deleteResource("18b0eb4a32fc487aa3d4d43647fae4b4"));
-    }
+    }*/
     //查询全部
     @Test
     public void ListRoleTest() {
