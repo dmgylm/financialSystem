@@ -65,7 +65,7 @@
 	        </foreach>
         </if>
         order by createTime desc
-        LIMIT #{start},#{pageSize}
+        limit #{start},#{pageSize}
 	</select>
 	
 	<!-- 根据条件查询消息 -->
@@ -127,23 +127,17 @@
 	</delete>
 	<!-- 根据消息状态展示消息列表  -->
 	<select id="listMessage" parameterType="map" resultMap="messageResultMap">
-				select * from message where oid in
-		(SELECT id FROM organization where code  IN(select org.parentId from user_organization_mapping uo,user_role_mapping  ur ,role,organization org,user u where uo.uId=ur.uId
-		and ur.rId=role.id 
-		and uo.oId=org.id	
-		and u.id=ur.uId
-		and ur.uid=#{uid}
-	  	and role.roleName='制单员'
-	  	and role.status=1
-		and u.`status`=1
-	  	
-	 ) )or uid=#{uid}
-		<!-- select * from message where oid in
-		(select oid from user_organization_mapping where uid=#{uId}) or uid=#{uId} -->
-		
+		select * from message
+        where (uId = #{uId,jdbcType=VARCHAR}
+        <if test="oId!=null and oId!=''">
+        	or	oId in 
+	        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
+	        	#{item}
+	        </foreach>
+        </if>)
 		<include refid="query_message_where"></include>
-		order by
-		createTime desc
+		order by createTime desc
+		limit #{start},#{pageSize}
 	</select>
 	
 
@@ -161,12 +155,6 @@
 		<if test="content!=null and content!=''">
 			and content = #{content,jdbcType=VARCHAR}
 		</if>
-		<if test="oId!=null and oId!=''">
-			and oId = #{oId,jdbcType=VARCHAR}
-		</if>
-		<if test="uId!=null and uId!=''">
-            or uId = #{uId,jdbcType=VARCHAR}
-        </if>
 		<if test="sName!=null and sName!=''">
 			and sName = #{sName,jdbcType=VARCHAR}
 		</if>
