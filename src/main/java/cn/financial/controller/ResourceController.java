@@ -224,7 +224,7 @@ public class ResourceController {
      * @param response
      * @param resourceId
      */
-    @RequiresPermissions("jurisdiction:update")
+    /*@RequiresPermissions("jurisdiction:update")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation(value="删除功能权限信息",notes="删除功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({@ApiImplicitParam(name="resourceId",value="功能权限id",dataType="string", paramType = "query", required = true)})
@@ -246,5 +246,5 @@ public class ResourceController {
             this.logger.error(e.getMessage(), e);
         }  
         return result;
-    }
+    }*/
 }
