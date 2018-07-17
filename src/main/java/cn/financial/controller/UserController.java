@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiResponses;
 @Controller
 @Api(value="用户controller",tags={"用户操作接口"})
 @RequestMapping("/user")
-public class UserController extends BaseController{
+public class UserController{
     @Autowired
     private UserService userService;
     @Autowired
