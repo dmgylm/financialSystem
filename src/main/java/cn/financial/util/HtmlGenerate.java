@@ -78,6 +78,8 @@ public class HtmlGenerate {
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(sb.toString(),htmlType);
 			System.out.println(html);
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

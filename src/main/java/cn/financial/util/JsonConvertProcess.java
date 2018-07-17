@@ -29,7 +29,9 @@ public class JsonConvertProcess {
 			JSONObject shortData = dataJson.getJSONObject(key);
 			if (templateObj instanceof JSONArray) {
 				JSONArray longLst = (JSONArray) templateObj;
-				mergeDetail(longLst,shortData);
+				if(longLst!=null && shortData!=null) {
+					mergeDetail(longLst,shortData);
+				}
 			} else if (templateObj instanceof JSONObject) {
 				JSONObject longData = (JSONObject) templateObj;
 				mergeJson(longData, shortData);
@@ -48,6 +50,9 @@ public class JsonConvertProcess {
 			JSONObject longJson = templateArr.getJSONObject(i);
 			if(longJson.containsKey("key")) {
 				String longKey =  longJson.getString("key");
+				if(!StringUtils.isValid(longKey)) {
+					continue;
+				}
 				if(dataJson.containsKey(longKey)) {
 					Object shortValue = dataJson.get(longKey);
 					longJson.put("value", shortValue);

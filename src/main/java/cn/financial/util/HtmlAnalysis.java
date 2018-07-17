@@ -222,9 +222,14 @@ public class HtmlAnalysis {
 			formulaCN = inputValue;
 			formula = HanyuToPingyinUtils.hanyuToPinyin(inputValue);
 		} else if(inputboxType==HtmlGenerate.BOX_TYPE_LABEL) {
-//			if(!StringUtils.isValid(inputValue)) {
-//				return null;
-//			}
+			name = inputValue;
+		} else if(inputboxType==HtmlGenerate.BOX_TYPE_MODULE) {
+			name = inputValue;
+		} else if(inputboxType==HtmlGenerate.BOX_TYPE_ITEM) {
+			name = inputValue;
+		} else if(inputboxType==HtmlGenerate.BOX_TYPE_MAINTITLE) {
+			name = inputValue;
+		} else if(inputboxType==HtmlGenerate.BOX_TYPE_SUBTITLE) {
 			name = inputValue;
 		}
 		
@@ -232,9 +237,9 @@ public class HtmlAnalysis {
 //		if(StringUtils.isValid(rowKey) && StringUtils.isValid(colKey)) {
 //			name = key;
 //		}
-		if(!StringUtils.isValid(name)) {
-			name = key;
-		}
+//		if(!StringUtils.isValid(name)) {
+//			name = key;
+//		}
 		key = removeSpecialChar(key);
 		json.put("key", HanyuToPingyinUtils.hanyuToPinyin(key));
 		
