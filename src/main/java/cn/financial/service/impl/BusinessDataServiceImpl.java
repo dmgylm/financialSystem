@@ -1,6 +1,5 @@
 package cn.financial.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +33,8 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	/**
 	 * 修改损益数据
 	 */
-	public Integer updateBusinessData(BusinessData statement) {
-		return businessDataDao.updateBusinessData(statement);
+	public Integer updateBusinessData(BusinessData businessData) {
+		return businessDataDao.updateBusinessData(businessData);
 	}
 
 	/**

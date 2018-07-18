@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -12,13 +13,19 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
@@ -33,6 +40,8 @@ import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
@@ -43,6 +52,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 /**
@@ -58,6 +69,12 @@ public class BusinessDataController {
     
         @Autowired
         private  BusinessDataService businessDataService;
+        
+        @Autowired
+        private  BusinessDataInfoServiceImpl businessDataInfoServiceImpl;
+        
+        @Autowired
+        private DataModuleService dataModuleService;
         
         @Autowired
         private  UserOrganizationService userOrganizationService;  //角色的权限
@@ -218,7 +235,7 @@ public class BusinessDataController {
             HtmlResult htmlResult=new HtmlResult();
             try {
                 if(id!=null&&!id.equals("") && htmlType!=null){
-                    BusinessData  businessData=businessDataService.selectBusinessDataById(id);
+                    BusinessData  businessData=businessDataService.selectBusinessDataById(id); 
                     DataModule dm=dmService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo=businessDataInfoService.selectBusinessDataById(id);
                     JSONObject joTemp=JSONObject.parseObject(dm.getModuleData());
@@ -277,34 +294,163 @@ public class BusinessDataController {
             return dataMap;
         }*/
        /* 
-        *//**
+        /**
          * 修改损益数据
          * @param request
          * @return
-         *//*
+         */
         @RequiresPermissions("businessData:update")
         @RequestMapping(value="/update", method = RequestMethod.POST)
-        public Map<String, Object> updateBusinessData(HttpServletRequest request,BusinessData businessData) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+        @ApiOperation(value="修改损益/预算的数据", notes="根据条件修改损益/预算数据",response =ResultUtils.class)
+        @ApiImplicitParams({
+            @ApiImplicitParam(name = "html", value = "传的json格式", required = true, dataType = "file",paramType = "query"),
+            @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name="status",value="传过来的状态（1保存 , 2提交   ）", required = true, dataType = "String",paramType = "query")
+            })
+        @ResponseBody
+        public ResultUtils updateBusinessData(HttpServletRequest request,String html,Integer status,String id) {
+          //需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交  3退回 ） 0 待提交   1待修改  2已提交  3新增 4 退回修改
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            ResultUtils result=new ResultUtils();
+           // File file = new File("C:/Users/ellen/Downloads/测试html.txt");
             try {
-                User user = (User) request.getAttribute("user");
-                String uId = user.getId();
-                businessData.setuId(uId);
-                businessData.setDelStatus(1);
-                Integer i = businessDataService.updateBusinessData(businessData);
-                if (i == 1) {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                } else {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
+                if(status==1 ||status==2){ 
+                    if(status==1){//如果状态是保存  数据库状态修改为 待提交 0 否者 改为已提交 2
+                       status=0;
+                    }else {
+                        status=2;//否者 改为已提交 2
+                    }
+                    Document doc = Jsoup.parse(html);//得到html
+                    //Document doc = Jsoup.parse(file, "UTF-8", "http://example.com/");
+                    Elements inputHtml = doc.select("input");// 获取HTML所有input属性
+                    /* System.out.println(inputHtml); */
+                    BusinessData businessDataById=businessDataService.selectBusinessDataById(id); //查询出表的数据 得到模板id
+                    DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
+                    JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
+                    Map<String,Object>mo=new HashMap<String, Object>();
+                    for (int i = 0; i < inputHtml.size(); i++) {//解析HTML获取所有input  name和value值
+                        mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val());
+                    }
+                    JSONObject newBudgetHtml=businessDataInfoServiceImpl.dgkey(dataMjo, mo);
+                    BusinessData businessData =new BusinessData();
+                    businessData.setId(id);
+                    businessData.setStatus(status);
+                    //map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+                    Integer i = businessDataService.updateBusinessData(businessData); //修改损益表/预算的状态
+                    if (i == 1) {
+                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                       result.setResultDesc("损益/预算数据 修改成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("损益/预算数据 修改失败");
+                    }
+                    //修改从表的info
+                    BusinessDataInfo selectBusinessDataById=businessDataInfoService.selectBusinessDataById(id); //查询出从表的数据
+                    BusinessDataInfo businessDataInfo=new BusinessDataInfo();
+                    businessDataInfo.setId(selectBusinessDataById.getId());
+                    businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+                    Integer infoId=businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
+                    if (infoId == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        result.setResultDesc("损益/预算从表数据修改成功");
+                     } else {
+                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                         result.setResultDesc("损益/预算从表数据修改失败");
+                     }
+                }else{
+                    result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）");
                 }
             } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+                ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
                
                 this.logger.error(e.getMessage(), e);
             }
-            return dataMap;
+            return result;
         }
-        */
+        
+        
+        /**
+         * 修改退回的信息
+         * @param request
+         * @return
+         */
+        @RequiresPermissions("businessData:update")
+        @RequestMapping(value="/updateStatus", method = RequestMethod.POST)
+        @ApiOperation(value="修改退回的损益/预算的数据", notes="根据天剑修改退回损益/预算数据",response =ResultUtils.class)
+        @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value="表id", required = true, dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "status", value = "状态 只能为3", required = true, dataType = "integer",paramType = "query")})
+        @ResponseBody
+        public ResultUtils updateStatus(HttpServletRequest request,String id,Integer status) {
+          //需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交  3退回 ） 0 待提交   1待修改  2已提交  3新增 4 退回修改
+            //Map<String, Object> dataMap = new HashMap<String, Object>();
+            ResultUtils result=new ResultUtils();
+            try {
+                if(status==3){
+               //如果是退回状态的话  1,2个表里面都增加一条一模一样的数据  2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改 版本号状态加1
+                    BusinessData  selectBusinessDataById=businessDataService.selectBusinessDataById(id);//查询对应id的数据
+                    BusinessData businessData=new BusinessData();
+                    businessData.setId(UuidUtil.getUUID()); //id自动生成
+                    businessData.setoId(selectBusinessDataById.getoId());
+                    businessData.setTypeId(selectBusinessDataById.getTypeId());
+                    businessData.setuId(selectBusinessDataById.getuId());
+                    businessData.setYear(selectBusinessDataById.getYear());
+                    businessData.setMonth(selectBusinessDataById.getMonth());
+                    businessData.setStatus(1);
+                    businessData.setDelStatus(selectBusinessDataById.getDelStatus());
+                    businessData.setsId(selectBusinessDataById.getsId());
+                    businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
+                    businessData.setVersion(selectBusinessDataById.getVersion()+1);
+                    Integer insertBusinessData= businessDataService.insertBusinessData(businessData); //新增一条一模一样的新数据
+                    if (insertBusinessData == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        result.setResultDesc("损益主表新增成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("损益主表新增失败");
+                    }
+                    Integer  deleteBusinessData=businessDataService.deleteBusinessData(id);//旧数据的删除状态为0
+                    if (deleteBusinessData == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        result.setResultDesc("损益主表删除成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("损益主表删除失败");
+                    }
+                    BusinessDataInfo selectBusiness= businessDataInfoService.selectBusinessDataById(id);
+                    BusinessDataInfo businessDataInfo=new BusinessDataInfo();
+                    businessDataInfo.setId(UuidUtil.getUUID()); //id自动生成
+                    businessDataInfo.setBusinessDataId(selectBusiness.getBusinessDataId());
+                    businessDataInfo.setInfo(selectBusiness.getInfo());
+                    businessDataInfo.setuId(selectBusiness.getuId());
+                    Integer insertBusinessDataInfo=businessDataInfoService.insertBusinessDataInfo(businessDataInfo);
+                    if (insertBusinessDataInfo == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        result.setResultDesc("损益从表新增成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("损益从表新增失败");
+                    }
+                    Integer deleteBusinessDataInfo=businessDataInfoService.deleteBusinessDataInfo(selectBusiness.getId());
+                    if (deleteBusinessDataInfo == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        result.setResultDesc("损益从表删除成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("损益从表删除失败");
+                    }
+                }else{
+                    result.setResultDesc("该状态不是退回状态");
+                }
+            } catch (Exception e) {
+              ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+              this.logger.error(e.getMessage(), e);
+            }
+            return result;
+        }
+        
+        
+        
         /**
          * 删除损益数据 （修改Status为0）
          * @param request

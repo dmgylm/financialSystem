@@ -24,8 +24,8 @@
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,createTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId)
-            values (#{id},#{oId},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId})
+            insert into businessData(id,oId,createTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version)
+            values (#{id},#{oId},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version})
        </insert>
       
     
@@ -83,14 +83,13 @@
        </select>
        
       <!-- 根据条件修改损益数据 -->
-      <update id="updateBusinessData" parameterType="businessData">
-        update businessData b,businessDataInfo o
+      <update id="updateBusinessData" parameterType="BusinessData">
+        update businessData
         <trim prefix="set" suffixOverrides=",">
-            <if test="info!=null and info!=''">o.info = #{info},</if>
-              b.updateTime = now(),
-              o.updateTime = now(),
+              updateTime = now(),
+            <if test="status!=null and status!=''">status = #{status},</if>
         </trim>
-         where b.id = #{id} and b.sId=#{sId} and o.businessDataId=b.id
+         where id = #{id}
       </update>
       
       <!-- 删除用户  status=0 -->

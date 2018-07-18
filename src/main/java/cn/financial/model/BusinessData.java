@@ -43,13 +43,15 @@ public class BusinessData {
         private Integer delStatus; //删除状态（0已删除 1未删除）
         
         private Integer sId; //1表示损益表   2表示预算表
+        
+        private Integer version; //版本号，每当有退回时候 版本号自动加1
     
         public BusinessData() {
             super();
         }
         
         public  BusinessData(String id,String oId,String info,Date createTime,Date updateTime,
-                String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId){
+                String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId,Integer version){
             this.id=id;
             this.oId=oId;
             this.info=info;
@@ -62,6 +64,7 @@ public class BusinessData {
             this.status=status;
             this.delStatus=delStatus;
             this.sId=sId;
+            this.version=version;
         }
          
     	public String getId() {
@@ -169,6 +172,14 @@ public class BusinessData {
 		public void setUpdateTime(Date updateTime) {
 			this.updateTime = updateTime;
 		}
+
+        public Integer getVersion() {
+            return version;
+        }
+
+        public void setVersion(Integer version) {
+            this.version = version;
+        }
         
 
 }

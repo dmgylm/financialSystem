@@ -100,7 +100,8 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService{
 							if(Integer.parseInt(longJson.get("type").toString())==HtmlGenerate.BOX_TYPE_FORMULA) {//判断当前类型是不是公式
 								 value=FormulaUtil.calculationByFormula(mo,longJson.get("reallyFormula").toString());
 							}else {
-								value= (Double) mo.get(longJson.get("key"));
+								value=Double.valueOf(mo.get(longJson.get("key")).toString());
+								
 							}
 							obj.put("value", value);
 						}

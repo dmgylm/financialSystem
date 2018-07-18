@@ -38,7 +38,7 @@
        
        <!-- 根据条件修改损益数据 -->
       <update id="updateBusinessDataInfo" parameterType="BusinessDataInfo">
-        update businessData
+        update businessDataInfo
         <trim prefix="set" suffixOverrides=",">
             <if test=" businessDataId!=null and businessDataId!=''">businessDataId = #{businessDataId},</if>
             <if test="info!=null and info!=''">info = #{info},</if>

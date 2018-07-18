@@ -95,15 +95,15 @@ public class CapitalController {
         @ApiImplicitParams({
                 @ApiImplicitParam(name = "page", value = "查询数据的开始页码（第一页开始）page=1", required = false, dataType = "integer", paramType = "query"),
                 @ApiImplicitParam(name = "pageSize", value = "每页显示数据的条数（如每页显示10条数据）", required = false, dataType = "integer", paramType = "query"),
-                @ApiImplicitParam(name = "plate", value = "所属的板块", required = false, dataType = "String", paramType = "query"),
-                @ApiImplicitParam(name = "bu", value = "所属事业部门（如财务部）", required = false, dataType = "String", paramType = "query"),
-                @ApiImplicitParam(name = "regionName", value = "所属大区的名称", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "plate", value = "所属的板块(爱车贷,保险,维修,车管家,技术服务,专车,融资租赁,集团总部)", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "bu", value = "所属部门(事业部，本部，渠道汇总,电销,收单汇总,通道,总部,总裁办  法务证券部 人力资源部  行政部  财务中心  电子商务中心)", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "regionName", value = "所属大区（集团总部 保险事业部本部  大客户部  ）", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "province", value = "所属省份名称", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String", paramType = "query"),
-                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
-                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 ）", required = false, dataType = "String", paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 ）", required = false, dataType = "String", paramType = "query"),
                 @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String", paramType = "query")})
         @ResponseBody
         public CapitalResult listCapitalBy(HttpServletRequest request,String plate,String bu,String regionName,String province,String company,
@@ -599,8 +599,8 @@ public class CapitalController {
                 @ApiImplicitParam(name = "company", value = "所属公司名称", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "accountNature", value = "账户性质", required = false, dataType = "String",paramType = "query"),
-                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String",paramType = "query"),
-                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 00:00:00）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeBeg", value = "开始交易日期（格式：2018-01-02）", required = false, dataType = "String",paramType = "query"),
+                @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02）", required = false, dataType = "String",paramType = "query"),
                 @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String",paramType = "query")})
         @ResponseBody
         public void export(HttpServletRequest request,HttpServletResponse response,String plate,String bu,String regionName,String province,String company,

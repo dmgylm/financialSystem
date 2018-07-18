@@ -120,8 +120,8 @@ public class businessDataTest {
 		statement.setMonth(3);
 		statement.setStatus(1);
 		statement.setsId(1);
-		Integer i = businessDataService.updateBusinessData(statement);
-		System.out.println("结果" + i);
+		/*Integer i = businessDataService.updateBusinessData(statement);
+		System.out.println("结果" + i);*/
 	}
 
 	/**
