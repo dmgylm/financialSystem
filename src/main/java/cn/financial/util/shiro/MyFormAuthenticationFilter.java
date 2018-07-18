@@ -28,7 +28,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         // 设置响应编码
         httpResponse.setCharacterEncoding("UTF-8");
-        httpResponse.sendError(401,"SESSION过期,请重新登录!");
+        httpResponse.sendError(401,"请先登录!");
         // 获取响应流
 //        PrintWriter out = response.getWriter();
         // 组装要返回的数据
