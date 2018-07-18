@@ -142,6 +142,7 @@ public class UserServiceImpl implements  UserService{
                     for (JSONObject item : jsonObject) {
                         this.addOrgTypes(item, permissions);
                     }
+                    System.out.println("权限-----------"+permissions);
                 }
             }
         } catch (Exception e) {
@@ -155,12 +156,14 @@ public class UserServiceImpl implements  UserService{
         if(json==null || json.equals("")){
             return;
         }
+        if(json.containsKey("orgType") && StringUtils.isNotEmpty(json.getString("orgType"))){
+            permissions.add(json.getString("orgType"));
+        }
         if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
             for (Object item : json.getJSONArray("children")) {
-                JSONObject  itemChildren=(JSONObject)JSONObject.toJSON(item);
+                JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
                 if(itemChildren.containsKey("orgType") && StringUtils.isNotEmpty(itemChildren.getString("orgType"))){
                     permissions.add(itemChildren.getString("orgType"));
-                    System.out.println("权限-----------"+itemChildren.getString("orgType"));
                 }
                 addOrgTypes(itemChildren,permissions);
             }
