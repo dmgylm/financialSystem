@@ -31,20 +31,15 @@ public class DataModule {
 	public final static String REPORT_TYPE_BUDGET = "BUDGET";
 
 	/**
-	 * 预算汇总
+	 * 预算简易汇总
 	 */
-	public final static String REPORT_TYPE_BUDGET_SUMMARY = "BUDGET_SUMMARY";
-	
-	/**
-	 * 损益汇总
-	 */
-	public final static String REPORT_TYPE_PROFIT_LOSS_SUMMARY = "LOSS_SUMMARY";
+	public final static String REPORT_TYPE_BUDGET_SUMMARY = "SUMMARY_BUDGET";
 	
 
 	/**
 	 * 损益简易汇总
 	 */
-	public final static String REPORT_TYPE_SUMMARY_PROFIT_LOSS = "SUMMARY_PROFIT_LOSS";
+	public final static String REPORT_TYPE_PROFIT_LOSS_SUMMARY = "SUMMARY_PROFIT_LOSS";
 
     @ApiModelProperty(value="模板id",name="id",example="")
 	private String id;
