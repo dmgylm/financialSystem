@@ -117,116 +117,121 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                  String uId = user.getId();
                  if(keyword!=null&&!keyword.equals("")){
+                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                    //获取输入的关键词查询其级别    如果orgType级别在权限数据级别以上  那么是查看不到数据的
                      List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                      JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
                      //查询关键字的数据  获取orgType和权限数据的orgType进行对比
                      List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null); 
-                     //不包含汇总  并且 orgType小于等于关键字查出的orgType
-                     String n=userOrganizationJson.get("name").toString();
-                     Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
-                     Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
-                     if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
-                         List<Capital> list =new ArrayList<>();
-                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                         capitalResult.setData(list);
-                         capitalResult.setTotal(0);
-                     }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
-                         //获取搜索关键字的公司名称
-                         //查询该节点下的所有子节点集合 获取公司的级别
-                        List<Organization> organization=new ArrayList<>();
-                         for (int i = 0; i < keywordOrganization.size();i++) {
-                             List<Organization> listTreeById=organizationService.listTreeByIdForSon(keywordOrganization.get(i).getId());
-                             JSONArray listTreeJson=(JSONArray) JSONArray.toJSON(listTreeById);
-                             for (int j = 0; j < listTreeJson.size(); j++) {
-                                 JSONObject json=listTreeJson.getJSONObject(j);
-                                 if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
-                                     organization.add(listTreeById.get(j)); //提取公司的数据
-                                 }
+                     if(keywordOrganization.size()>0){
+                       //不包含汇总  并且 orgType小于等于关键字查出的orgType
+                         String n=userOrganizationJson.get("name").toString();
+                         Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
+                         Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
+                         if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
+                             List<Capital> list =new ArrayList<>();
+                             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                             capitalResult.setData(list);
+                             capitalResult.setTotal(0);
+                         }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
+                             //获取搜索关键字的公司名称
+                             //查询该节点下的所有子节点集合 获取公司的级别
+                            List<Organization> organization=new ArrayList<>();
+                             for (int i = 0; i < keywordOrganization.size();i++) {
+                                 List<Organization> listTreeById=organizationService.listTreeByIdForSon(keywordOrganization.get(i).getId());
+                                 JSONArray listTreeJson=(JSONArray) JSONArray.toJSON(listTreeById);
+                                 for (int j = 0; j < listTreeJson.size(); j++) {
+                                     JSONObject json=listTreeJson.getJSONObject(j);
+                                     if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
+                                         organization.add(listTreeById.get(j)); //提取公司的数据
+                                     }
+                                }
                             }
-                        }
-                        String[] companyName=new String[organization.size()];//获取公司名字
-                        for (int i = 0; i < organization.size(); i++) {
-                            companyName[i]=organization.get(i).getOrgName();//存公司名称
-                        }
-                         List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
-                         List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
-                         for (int i = 0; i < userOrganization.size(); i++) {
-                             JSONObject obu = (JSONObject) userOrganization.get(i);
-                             Integer num=Integer.parseInt(obu.get("orgType").toString());
-                             String name=obu.getString("name").toString();
-                             if(num<Capital.ORGNUM &&!name.contains(Capital.NAME)) {//大于公司级别并且不包含汇总 就查询以下的公司数据
-                                 //查询该节点下的所有子节点集合 获取公司的级别
-                                 List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                                 JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                                 for (int j = 0; j < jsonArr.size(); j++) {
-                                   JSONObject json=jsonArr.getJSONObject(j);
-                                   if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
-                                       listTree.add(jsonArr.getJSONObject(j)); 
-                                   }
-                                 }
-                             }else{ //公司级别的 及其部门级别
-                                Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
-                                JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
-                                listOrganization.add(json);
-                             }
+                            String[] companyName=new String[organization.size()];//获取公司名字
+                            for (int i = 0; i < organization.size(); i++) {
+                                companyName[i]=organization.get(i).getOrgName();//存公司名称
                             }
-                        if(listOrganization.size()>0||listTree.size()>0){
-                         String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
-                         for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
-                             JSONObject pidJosn=listOrganization.get(i);
-                             String id =pidJosn.getString("id"); //找到权限数据里面的组织id
-                             oId[i]=id;
-                         }
-                         for (int i = 0; i < listTree.size(); i++) {
-                             String id=listTree.get(i).getString("id");
-                             int m=listOrganization.size();
-                             oId[m+i]=id;
-                         }
-                         map.put("accountBank",accountBank);//开户行
-                         map.put("accountNature",accountNature);//账户性质
-                         map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
-                         map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                         map.put("classify",classify);//项目分类
-                         List<String> oIds = Arrays.asList(oId);
-                         List<String> companyNames = Arrays.asList(companyName);
-                         map.put("oId", oIds);//根据权限的typeId查询相对应的数据
-                         map.put("company",companyNames);//关键字获取的公司名称查询
-                         List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
-                         if(pageSize==null ||pageSize==0){
-                             map.put("pageSize",10);
-                         }else{
-                             map.put("pageSize",pageSize);
-                         }
-                         if(page==null){
-                             map.put("start",0);
-                         }else{
-                             map.put("start",pageSize * (page- 1));
-                         }
-                         List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
-                         Date  newTime=new Date();
-                         for (int i = 0; i < list.size(); i++) {
-                             Date begTime=list.get(i).getCreateTime(); //得到开始时间
-                             Date endTime=list.get(i).getUpdateTime(); //得到更新时间
-                             Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
-                             Integer editor=list.get(i).getEditor();
-                             if(num<=7 && endTime==null){
-                                 editor=1;//可编辑数据
+                             List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
+                             List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
+                             for (int i = 0; i < userOrganization.size(); i++) {
+                                 JSONObject obu = (JSONObject) userOrganization.get(i);
+                                 Integer num=Integer.parseInt(obu.get("orgType").toString());
+                                 String name=obu.getString("name").toString();
+                                 if(num<Capital.ORGNUM &&!name.contains(Capital.NAME)) {//大于公司级别并且不包含汇总 就查询以下的公司数据
+                                     //查询该节点下的所有子节点集合 获取公司的级别
+                                     List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                                     JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                                     for (int j = 0; j < jsonArr.size(); j++) {
+                                       JSONObject json=jsonArr.getJSONObject(j);
+                                       if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
+                                           listTree.add(jsonArr.getJSONObject(j)); 
+                                       }
+                                     }
+                                 }else{ //公司级别的 及其部门级别
+                                    Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
+                                    JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
+                                    listOrganization.add(json);
+                                 }
+                                }
+                            if(listOrganization.size()>0||listTree.size()>0){
+                             String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
+                             for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
+                                 JSONObject pidJosn=listOrganization.get(i);
+                                 String id =pidJosn.getString("id"); //找到权限数据里面的组织id
+                                 oId[i]=id;
                              }
-                             list.get(i).setEditor(editor);
-                        }
-                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                         capitalResult.setData(list);
-                         capitalResult.setTotal(total.size());
-                        }else{
-                            capitalResult.setResultDesc("您没有权限操作资金流水数据！");
-                        }
-                         
+                             for (int i = 0; i < listTree.size(); i++) {
+                                 String id=listTree.get(i).getString("id");
+                                 int m=listOrganization.size();
+                                 oId[m+i]=id;
+                             }
+                             map.put("accountBank",accountBank);//开户行
+                             map.put("accountNature",accountNature);//账户性质
+                             map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
+                             map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
+                             map.put("classify",classify);//项目分类
+                             List<String> oIds = Arrays.asList(oId);
+                             List<String> companyNames = Arrays.asList(companyName);
+                             map.put("oId", oIds);//根据权限的typeId查询相对应的数据
+                             map.put("company",companyNames);//关键字获取的公司名称查询
+                             List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
+                             if(pageSize==null ||pageSize==0){
+                                 map.put("pageSize",10);
+                             }else{
+                                 map.put("pageSize",pageSize);
+                             }
+                             if(page==null){
+                                 map.put("start",0);
+                             }else{
+                                 map.put("start",pageSize * (page- 1));
+                             }
+                             List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
+                             Date  newTime=new Date();
+                             for (int i = 0; i < list.size(); i++) {
+                                 Date begTime=list.get(i).getCreateTime(); //得到开始时间
+                                 Date endTime=list.get(i).getUpdateTime(); //得到更新时间
+                                 Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+                                 Integer editor=list.get(i).getEditor();
+                                 if(num<=7 && endTime==null){
+                                     editor=1;//可编辑数据
+                                 }
+                                 list.get(i).setEditor(editor);
+                            }
+                             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                             capitalResult.setData(list);
+                             capitalResult.setTotal(total.size());
+                            }else{
+                                capitalResult.setResultDesc("您没有权限操作资金流水数据！");
+                            }
+                             
+                         }else{
+                             List<Capital> list =new ArrayList<>();
+                             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                             capitalResult.setData(list);
+                             capitalResult.setTotal(0);
+                         } 
                      }else{
-                         List<Capital> list =new ArrayList<>();
-                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                         capitalResult.setData(list);
-                         capitalResult.setTotal(0);
+                         capitalResult.setResultDesc("您输入的不存在数据!请重新输入"); 
                      }
                  }else{
                    List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
@@ -654,7 +659,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.POST)
+        @RequestMapping(value="/export",method = RequestMethod.GET)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = ResultUtils.class)
         @ApiImplicitParams({
             @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String", paramType = "query"),
@@ -674,148 +679,153 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 if(keyword!=null&&!keyword.equals("")){
+                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                     //获取输入的关键词查询其级别    如果orgType级别在权限数据级别以上  那么是查看不到数据的
                       List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                       JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
                       //查询关键字的数据  获取orgType和权限数据的orgType进行对比
                       List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null); 
-                      //不包含汇总  并且 orgType小于等于关键字查出的orgType
-                      String n=userOrganizationJson.get("name").toString();
-                      Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
-                      Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
-                      if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
-                          List<String[]> a=new ArrayList<>();
-                          response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
-                          response.setContentType("application/octet-stream");
-                          os = response.getOutputStream();
-                          ExcelUtil.export(a, os);
-                          ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                      }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
-                        //获取搜索关键字的公司名称
-                          //查询该节点下的所有子节点集合 获取公司的级别
-                         List<Organization> organization=new ArrayList<>();
-                          for (int i = 0; i < keywordOrganization.size();i++) {
-                              List<Organization> listTreeById=organizationService.listTreeByIdForSon(keywordOrganization.get(i).getId());
-                              JSONArray listTreeJson=(JSONArray) JSONArray.toJSON(listTreeById);
-                              for (int j = 0; j < listTreeJson.size(); j++) {
-                                  JSONObject json=listTreeJson.getJSONObject(j);
-                                  if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
-                                      organization.add(listTreeById.get(j)); //提取公司的数据
-                                  }
+                      if(keywordOrganization.size()>0){
+                          //不包含汇总  并且 orgType小于等于关键字查出的orgType
+                          String n=userOrganizationJson.get("name").toString();
+                          Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
+                          Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
+                          if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
+                              List<String[]> a=new ArrayList<>();
+                              response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                              response.setContentType("application/octet-stream");
+                              os = response.getOutputStream();
+                              ExcelUtil.export(a, os);
+                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                          }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
+                            //获取搜索关键字的公司名称
+                              //查询该节点下的所有子节点集合 获取公司的级别
+                             List<Organization> organization=new ArrayList<>();
+                              for (int i = 0; i < keywordOrganization.size();i++) {
+                                  List<Organization> listTreeById=organizationService.listTreeByIdForSon(keywordOrganization.get(i).getId());
+                                  JSONArray listTreeJson=(JSONArray) JSONArray.toJSON(listTreeById);
+                                  for (int j = 0; j < listTreeJson.size(); j++) {
+                                      JSONObject json=listTreeJson.getJSONObject(j);
+                                      if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
+                                          organization.add(listTreeById.get(j)); //提取公司的数据
+                                      }
+                                 }
                              }
-                         }
-                         String[] companyName=new String[organization.size()];//获取公司名字
-                         for (int i = 0; i < organization.size(); i++) {
-                             companyName[i]=organization.get(i).getOrgName();//存公司名称
-                         }
-                          List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
-                          List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
-                          for (int i = 0; i < userOrganization.size(); i++) {
-                              JSONObject obu = (JSONObject) userOrganization.get(i);
-                              Integer num=Integer.parseInt(obu.get("orgType").toString());
-                              String name=obu.getString("name").toString();
-                              if(num<Capital.ORGNUM &&!name.contains(Capital.NAME)) {//大于公司级别并且不包含汇总 就查询以下的公司数据
-                                  //查询该节点下的所有子节点集合 获取公司的级别
-                                  List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                                  JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                                  for (int j = 0; j < jsonArr.size(); j++) {
-                                    JSONObject json=jsonArr.getJSONObject(j);
-                                    if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
-                                        listTree.add(jsonArr.getJSONObject(j)); 
-                                    }
-                                  }
-                              }else{ //公司级别的 及其部门级别
-                                 Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
-                                 JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
-                                 listOrganization.add(json);
-                              }
+                             String[] companyName=new String[organization.size()];//获取公司名字
+                             for (int i = 0; i < organization.size(); i++) {
+                                 companyName[i]=organization.get(i).getOrgName();//存公司名称
                              }
-                         if(listOrganization.size()>0||listTree.size()>0){
-                          String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
-                          for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
-                              JSONObject pidJosn=listOrganization.get(i);
-                              String id =pidJosn.getString("id"); //找到权限数据里面的组织id
-                              oId[i]=id;
+                              List<JSONObject> listOrganization=new ArrayList<>();   //筛选过后就的权限数据
+                              List<JSONObject> listTree=new ArrayList<>();   //筛选过后就的权限数据
+                              for (int i = 0; i < userOrganization.size(); i++) {
+                                  JSONObject obu = (JSONObject) userOrganization.get(i);
+                                  Integer num=Integer.parseInt(obu.get("orgType").toString());
+                                  String name=obu.getString("name").toString();
+                                  if(num<Capital.ORGNUM &&!name.contains(Capital.NAME)) {//大于公司级别并且不包含汇总 就查询以下的公司数据
+                                      //查询该节点下的所有子节点集合 获取公司的级别
+                                      List<Organization> listTreeByIdForSon=organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                                      JSONArray jsonArr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                                      for (int j = 0; j < jsonArr.size(); j++) {
+                                        JSONObject json=jsonArr.getJSONObject(j);
+                                        if(Integer.parseInt(json.getString("orgType"))==Capital.ORGNUM){//获取公司级别数据
+                                            listTree.add(jsonArr.getJSONObject(j)); 
+                                        }
+                                      }
+                                  }else{ //公司级别的 及其部门级别
+                                     Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
+                                     JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
+                                     listOrganization.add(json);
+                                  }
+                                 }
+                             if(listOrganization.size()>0||listTree.size()>0){
+                              String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
+                              for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
+                                  JSONObject pidJosn=listOrganization.get(i);
+                                  String id =pidJosn.getString("id"); //找到权限数据里面的组织id
+                                  oId[i]=id;
+                              }
+                              for (int i = 0; i < listTree.size(); i++) {
+                                  String id=listTree.get(i).getString("id");
+                                  int m=listOrganization.size();
+                                  oId[m+i]=id;
+                              }
+                              map.put("accountBank",accountBank);//开户行
+                              map.put("accountNature",accountNature);//账户性质
+                              map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
+                              map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
+                              map.put("classify",classify);//项目分类
+                              List<String> oIds = Arrays.asList(oId);
+                              List<String> companyNames = Arrays.asList(companyName);
+                              map.put("oId", oIds);//根据权限的typeId查询相对应的数据
+                              map.put("company",companyNames);//关键字获取的公司名称查询
+                              List<Capital> listData = capitalService.capitalExport(map); //根据权限oId查询里面的权限数据
+                              List<String[]> strList=new ArrayList<>();
+                              String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                                      "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                              strList.add(ss);
+                              for (int i = 0; i < listData.size(); i++) {
+                                  String[] str=new String[13];
+                                  Capital capital=listData.get(i);
+                                  if(capital.getCompany()!=null &&!capital.getCompany().equals("")){
+                                      str[0]=capital.getCompany();
+                                   }
+                                  if(capital.getAccountName()!=null && !capital.getAccountName().equals("")){
+                                     str[1]=capital.getAccountName();
+                                  }
+                                  if(capital.getAccountBank()!=null&&!capital.getAccountBank().equals("")){
+                                     str[2]=capital.getAccountBank();
+                                  }
+                                  if(capital.getAccount()!=null&&!capital.getAccount().equals("")){
+                                     str[3]=capital.getAccount();
+                                  }
+                                  if(capital.getAccountNature()!=null &&!capital.getAccountNature().equals("")){
+                                     str[4]=capital.getAccountNature();
+                                  }
+                                  if(capital.getTradeTime()!=null&&!capital.getTradeTime().equals("")){
+                                     str[5]=sdf.format(capital.getTradeTime());
+                                  }
+                                  if(capital.getStartBlack()!=null &&!capital.getStartBlack().equals("")){
+                                     str[6]=capital.getStartBlack().toString();
+                                  }
+                                  if(capital.getIncom()!=null &&!capital.getIncom().equals("")){
+                                     str[7]=capital.getIncom().toString();
+                                  }
+                                  if(capital.getPay()!=null&&!capital.getPay().equals("")){
+                                     str[8]=capital.getPay().toString();
+                                  }
+                                  if(capital.getEndBlack()!=null&&!capital.getEndBlack().equals("")){
+                                     str[9]=capital.getEndBlack().toString();
+                                  }
+                                  if(capital.getAbstrac()!=null&&!capital.getAbstrac().equals("")){
+                                      str[10]=capital.getAbstrac();
+                                  }
+                                  if(capital.getClassify()!=null&&!capital.getClassify().equals("")){
+                                      str[11]=capital.getClassify();
+                                  }
+                                  if(capital.getRemarks()!=null&&!capital.getRemarks().equals("")){
+                                      str[12]=capital.getRemarks();
+                                  } 
+                                      strList.add(str);
+                              }
+                              response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                              response.setContentType("application/octet-stream");
+                              os = response.getOutputStream();
+                              ExcelUtil.export(strList, os);
+                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                             }else{
+                                 result.setResultDesc("您没有权限操作资金流水数据！");
+                             }
+                              
+                          }else{
+                              List<String[]> b=new ArrayList<>();
+                              response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                              response.setContentType("application/octet-stream");
+                              os = response.getOutputStream();
+                              ExcelUtil.export(b, os);
+                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                           }
-                          for (int i = 0; i < listTree.size(); i++) {
-                              String id=listTree.get(i).getString("id");
-                              int m=listOrganization.size();
-                              oId[m+i]=id;
-                          }
-                          map.put("accountBank",accountBank);//开户行
-                          map.put("accountNature",accountNature);//账户性质
-                          map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
-                          map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                          map.put("classify",classify);//项目分类
-                          List<String> oIds = Arrays.asList(oId);
-                          List<String> companyNames = Arrays.asList(companyName);
-                          map.put("oId", oIds);//根据权限的typeId查询相对应的数据
-                          map.put("company",companyNames);//关键字获取的公司名称查询
-                          List<Capital> listData = capitalService.capitalExport(map); //根据权限oId查询里面的权限数据
-                          List<String[]> strList=new ArrayList<>();
-                          String[] ss={"公司名称","户名","开户行","账户","账户性质",
-                                  "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
-                          strList.add(ss);
-                          for (int i = 0; i < listData.size(); i++) {
-                              String[] str=new String[13];
-                              Capital capital=listData.get(i);
-                              if(capital.getCompany()!=null &&!capital.getCompany().equals("")){
-                                  str[0]=capital.getCompany();
-                               }
-                              if(capital.getAccountName()!=null && !capital.getAccountName().equals("")){
-                                 str[1]=capital.getAccountName();
-                              }
-                              if(capital.getAccountBank()!=null&&!capital.getAccountBank().equals("")){
-                                 str[2]=capital.getAccountBank();
-                              }
-                              if(capital.getAccount()!=null&&!capital.getAccount().equals("")){
-                                 str[3]=capital.getAccount();
-                              }
-                              if(capital.getAccountNature()!=null &&!capital.getAccountNature().equals("")){
-                                 str[4]=capital.getAccountNature();
-                              }
-                              if(capital.getTradeTime()!=null&&!capital.getTradeTime().equals("")){
-                                 str[5]=sdf.format(capital.getTradeTime());
-                              }
-                              if(capital.getStartBlack()!=null &&!capital.getStartBlack().equals("")){
-                                 str[6]=capital.getStartBlack().toString();
-                              }
-                              if(capital.getIncom()!=null &&!capital.getIncom().equals("")){
-                                 str[7]=capital.getIncom().toString();
-                              }
-                              if(capital.getPay()!=null&&!capital.getPay().equals("")){
-                                 str[8]=capital.getPay().toString();
-                              }
-                              if(capital.getEndBlack()!=null&&!capital.getEndBlack().equals("")){
-                                 str[9]=capital.getEndBlack().toString();
-                              }
-                              if(capital.getAbstrac()!=null&&!capital.getAbstrac().equals("")){
-                                  str[10]=capital.getAbstrac();
-                              }
-                              if(capital.getClassify()!=null&&!capital.getClassify().equals("")){
-                                  str[11]=capital.getClassify();
-                              }
-                              if(capital.getRemarks()!=null&&!capital.getRemarks().equals("")){
-                                  str[12]=capital.getRemarks();
-                              } 
-                                  strList.add(str);
-                          }
-                          response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
-                          response.setContentType("application/octet-stream");
-                          os = response.getOutputStream();
-                          ExcelUtil.export(strList, os);
-                          ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                         }else{
-                             result.setResultDesc("您没有权限操作资金流水数据！");
-                         }
-                          
                       }else{
-                          List<String[]> b=new ArrayList<>();
-                          response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
-                          response.setContentType("application/octet-stream");
-                          os = response.getOutputStream();
-                          ExcelUtil.export(b, os);
-                          ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                         result.setResultDesc("您输入的不存在数据!请重新输入");
                       }
                   }else{
                     List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
