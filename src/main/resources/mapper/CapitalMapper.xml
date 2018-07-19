@@ -35,10 +35,10 @@
  
         <!-- 新增资金数据 -->
        <insert id="insertCapital" parameterType="capital" keyProperty="id">
-            insert into capital(id,oId,plate,bu,regionName,province,city,company,accountName,accountBank,account,accountNature,
+            insert into capital(id,oId,company,accountName,accountBank,account,accountNature,
             tradeTime,startBlack,incom,pay,endBlack,abstrac,classify,createTime,uId,year,month,remarks,status,editor)
-            values (#{id},#{oId},#{plate},#{bu},#{regionName},#{province},#{city},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},#{incom},#{pay},
-            #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status},#{editor})
+            values (#{id},#{oId},#{company},#{accountName},#{accountBank},#{account},#{accountNature},#{tradeTime},#{startBlack},
+            #{incom},#{pay}, #{endBlack},#{abstrac},#{classify},now(),#{uId},#{year},#{month},#{remarks},#{status},#{editor})
        </insert>
       
        <!--根据id查询资金数据 -->
@@ -46,7 +46,7 @@
            SELECT *
            FROM capital 
            WHERE id = #{id} and status=1
-           ORDER BY tradeTime DESC
+           ORDER BY createTime DESC
        </select>
        
        <!-- 根据条件查询资金数据-->
@@ -96,12 +96,12 @@
       <update id="updateCapital" parameterType="capital">
          UPDATE capital
         <trim prefix="set" suffixOverrides=",">
-            <if test="oId!=null and oId!=''">oId = #{oId},</if>
+           <!--  <if test="oId!=null and oId!=''">oId = #{oId},</if>
             <if test="plate!=null and plate!=''">plate = #{plate},</if>
             <if test="bu!=null and bu!=''">bu = #{bu},</if>
             <if test="regionName!=null and regionName!=''">regionName = #{regionName},</if>
             <if test="province!=null and province!=''">province = #{province},</if>
-            <if test="city!=null and city!=''">city = #{city},</if>
+            <if test="city!=null and city!=''">city = #{city},</if> -->
             <if test="company!=null and company!=''">company = #{company},</if>
             <if test="accountName!=null and accountName!=''">accountName = #{accountName},</if>
             <if test="accountBank!=null and accountBank!=''">accountBank = #{accountBank},</if>

@@ -448,6 +448,15 @@ public class CapitalController {
             boolean isImport = true;//是否可上传
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
+            Map<Object, Object> map = new HashMap<>();
+            //得到账户性质项目分类数据 如果上传的不包含在里面 则是不能上传
+            List<CapitalNatrue> capitalNatrueList= capitalNatrueService.listCapitalNatrue(map); 
+            String[] arr=new String[capitalNatrueList.size()];
+            for (int i = 0; i < capitalNatrueList.size(); i++) {
+                arr[i]=capitalNatrueList.get(i).getName();
+            }
+            List<String> fauCodeList = new ArrayList<String>();
+            fauCodeList=Arrays.asList(arr);
             if(name.equals(".xls")||name.equals(".xlsx")){
             Long size=uploadFile.getSize();
             if(uploadFile.getSize()>0 && size<5242880){  //判断文件大小是否是5M以下的
@@ -484,6 +493,13 @@ public class CapitalController {
                                  insertFlag=false;
                                  break;  
                              }
+                             if(!str[0].equals("")){
+                                 capital.setCompany(str[0]);
+                             }else{
+                                 result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格公司名字不能为空");
+                                 insertFlag=false;
+                                 break;
+                             }
                              if(!str[1].equals("")){
                                  capital.setAccountName(str[1]);
                              }else{
@@ -506,7 +522,13 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[4].equals("")){
-                                 capital.setAccountNature(str[4]);
+                                if(fauCodeList.contains(str[4])){
+                                    capital.setAccountNature(str[4]);
+                                }else{
+                                    result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格此账户性质不存在,请重新修改");
+                                    insertFlag=false;
+                                    break;  
+                                }
                              }else{
                                  result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格账户性质不能为空");
                                  insertFlag=false;
@@ -591,7 +613,13 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[11].equals("")){
-                                   capital.setClassify(str[11]);  
+                                if(fauCodeList.contains(str[11])){
+                                    capital.setClassify(str[11]); 
+                                }else{
+                                    result.setResultDesc("Excel表格第"+(i+2)+"行第十二个单元格不包含此项目分类");
+                                    insertFlag=false;
+                                    break;  
+                                }
                              }else{
                                  result.setResultDesc("Excel表格第"+(i+2)+"行第十二个单元格数据不能为空");
                                  insertFlag=false;
