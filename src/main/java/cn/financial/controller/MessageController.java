@@ -1,5 +1,10 @@
 package cn.financial.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -438,7 +443,7 @@ public class MessageController {
             ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
     	}catch (Exception e) {
     		ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
-    		this.logger.error(e.getMessage(), e);
+    		this.logger.error(e.getMessage() , e);
 		}
         
         return result;
@@ -449,14 +454,47 @@ public class MessageController {
      * @param request
      * @param response
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/getFile", method = RequestMethod.POST)
-//    @ApiOperation(value="下载文件",notes="根据地址下载文件",response = ResultUtils.class)
-//    @ApiImplicitParams({
-//        @ApiImplicitParam(name="fileurl",value="文件地址",dataType="string", paramType = "query", required = true)})
-//    @RequiresPermissions("message:view")
+    @ResponseBody
+    @RequestMapping(value = "/getFile", method = RequestMethod.GET)
+    @ApiOperation(value="下载文件",notes="根据地址下载文件",response = ResultUtils.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="id",value="消息id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 251, message = "消息id为空")})
+    @RequiresPermissions("message:download")
     public ResultUtils getFile(HttpServletRequest request, HttpServletResponse response) {
     	ResultUtils result = new ResultUtils();
+    	try {
+    			if(request.getParameter("id") == null || request.getParameter("id").equals("")) {
+    				ElementXMLUtils.returnValue(ElementConfig.MESSAGE_ID_NULL,result);
+                    return result;
+    			}
+    			Message m = messageService.getMessageById(request.getParameter("id"));
+            	String fileURL = m.getFileurl();
+            	if(null != fileURL && !"".equals(fileURL)) {
+            		File file = new File(fileURL);
+            		if(!file.exists()) {
+            			ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
+            			return result;
+            		}
+            		BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+            		byte[] buf = new byte[1024];
+            		int len = 0;
+            		response.reset();
+            		response.setContentType("application/x-msdownload"); 
+            		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+            		OutputStream out = response.getOutputStream();
+            		while((len = br.read(buf)) > 0) {
+            			out.write(buf,0,len);
+            		}
+            		br.close();
+            		out.close();
+            	}
+            
+    		ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
+    	}catch (Exception e) {
+    		e.printStackTrace();
+    		ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
+		}
     	
     	return result;
     }   
