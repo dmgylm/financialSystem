@@ -448,9 +448,8 @@ public class CapitalController {
             boolean isImport = true;//是否可上传
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
-            Map<Object, Object> map = new HashMap<>();
             //得到账户性质项目分类数据 如果上传的不包含在里面 则是不能上传
-            List<CapitalNatrue> capitalNatrueList= capitalNatrueService.listCapitalNatrue(map); 
+            List<CapitalNatrue> capitalNatrueList= capitalNatrueService.listCapitalNatrue(); 
             String[] arr=new String[capitalNatrueList.size()];
             for (int i = 0; i < capitalNatrueList.size(); i++) {
                 arr[i]=capitalNatrueList.get(i).getName();
@@ -978,19 +977,38 @@ public class CapitalController {
         * @return
         */
        @ApiOperation(value="根据条件查询账户性质项目分类数据", notes="查询账户性质项目分类数据",response = CapitalNatrueResult.class)
-       @ApiImplicitParams({@ApiImplicitParam(name="cId",value="cId (1账户性质  2项目分类)",dataType="Integer", paramType = "query", required = false)})
+       /*@ApiImplicitParams({@ApiImplicitParam(name="cId",value="cId (1账户性质  2项目分类)",dataType="Integer", paramType = "query", required = false)})*/
        @RequiresPermissions("capital:view")
        @RequestMapping(value="/listCapitalNatrue", method = RequestMethod.POST)
        @ResponseBody
-       public CapitalNatrueResult listCapitalNatrue(HttpServletRequest request,Integer cId) {
-           //Map<String, Object> dataMap = new HashMap<String, Object>();
+       public CapitalNatrueResult listCapitalNatrue(HttpServletRequest request) {
            CapitalNatrueResult result=new CapitalNatrueResult();
            try {
-              Map<Object, Object> map = new HashMap<>();
-              map.put("cId", cId);
-              List<CapitalNatrue> list= capitalNatrueService.listCapitalNatrue(map);
-              result.setData(list);
+              List<CapitalNatrue> list= capitalNatrueService.listCapitalNatrue();
+              List<CapitalNatrue> natrueList=new  ArrayList<CapitalNatrue>();//账户性质的数据
+              List<CapitalNatrue> classifyList=new  ArrayList<CapitalNatrue>();//项目分类的数据
+              for (int i = 0; i < list.size(); i++) {
+                if(list.get(i).getcId()==1){
+                    natrueList.add(list.get(i));
+                }else{
+                    classifyList.add(list.get(i));
+                }
+             }
+              String[] natrueName=new String[natrueList.size()];//获取账户性质的name
+              for (int i = 0; i < natrueList.size(); i++) {
+                  natrueName[i]=natrueList.get(i).getName();
+              }
+              String[] classifyName=new String[classifyList.size()];//获取项目分类的name
+              for (int i = 0; i < classifyList.size(); i++) {
+                  classifyName[i]=classifyList.get(i).getName();
+              }
+              Map<String, Object> map = new HashMap<String, Object>();
+              map.put("natrueName", natrueName);
+              map.put("classifyName", classifyName);
+              result.setData(map);
               result.setTotal(list.size());
+              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+              result.setResultDesc("成功！");
            } catch (Exception e) {
                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                this.logger.error(e.getMessage(), e);

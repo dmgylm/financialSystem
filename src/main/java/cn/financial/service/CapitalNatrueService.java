@@ -18,6 +18,6 @@ public interface CapitalNatrueService {
      * @param map
      * @return
      */
-    List<CapitalNatrue> listCapitalNatrue(Map<Object, Object> map);
+    List<CapitalNatrue> listCapitalNatrue();
   
 }

@@ -20,9 +20,9 @@ public class CapitalNatrueServiceImpl implements CapitalNatrueService{
     private CapitalNatrueDao capitalNatrueDao;
 
     @Override
-    public List<CapitalNatrue> listCapitalNatrue(Map<Object, Object> map) {
+    public List<CapitalNatrue> listCapitalNatrue() {
         // TODO Auto-generated method stub
-        return capitalNatrueDao.listCapitalNatrue(map);
+        return capitalNatrueDao.listCapitalNatrue();
     }
    
 

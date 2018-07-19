@@ -14,26 +14,11 @@
     
        
        <!-- 根据条件查询账户性质项目分类数据-->
-       <select id="listCapitalNatrue" parameterType="map" resultType="CapitalNatrue">
-         SELECT * FROM 
-         capitalNatrue 
-         <include refid="query_capitalNatrue_where"></include>
+       <select id="listCapitalNatrue" resultType="capitalNatrue">
+         SELECT * FROM capitalNatrue 
        </select>
        
       
       
-      <!--定义一个sql -->
-     <sql id="query_capitalNatrue_where">
-         <!-- <if test=" plate!=null and plate!=''">
-             and c.plate LIKE CONCAT('%',#{plate},'%')
-             and c.plate =#{plate}
-        </if>
-        <if test=" bu!=null and bu!=''">
-             and c.bu =#{bu}
-        </if> -->
-        <if test="cId!=null and cId!=''">
-          where  cId=#{cId}
-        </if>
-       </sql>
     
 </mapper>
