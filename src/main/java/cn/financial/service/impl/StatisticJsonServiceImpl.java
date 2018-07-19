@@ -51,7 +51,10 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@Override
 	public JSONObject findModel(String reportType, String businessType) {
 		DataModule bean = dataModuleService.getDataModule(reportType,businessType);
-		return JSONObject.parseObject(bean.getModuleData());
+		if(bean!=null){
+			JSONObject.parseObject(bean.getModuleData());
+		}
+		return null;
 	}
     
 	/**
@@ -182,6 +185,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	public JSONObject jsonCalculation(String reportType, String businessType,List<BusinessData> businessDataList) {
 		//获取模板
 		JSONObject model = findModel(reportType,businessType);
+		if(model==null){
+			return null;
+		}
 //		//获取所选机构
 //		List<Organization> codeSonList = companyList(orgId);
 //		//获取最底层数据

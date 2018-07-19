@@ -187,4 +187,8 @@
         <code>286</code>
         <description>查询详情key不能为空</description>
     </Result>
+    <Result name="STATIC_REPORTTYPE_FAIL">
+        <code>287</code>
+        <description>报表类型或业务板块有误</description>
+    </Result>
 </StateCode>

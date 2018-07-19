@@ -198,4 +198,8 @@ public class ElementConfig {
      * 组织架构orgkey为空
      */
     public static final String ORGMOVE_ORGKEY_NULL = "ORGMOVE_ORGKEY_NULL"; 
+    /**
+     * 报表类型或业务板块有误
+     */
+    public static final String STATIC_REPORTTYPE_FAIL = "STATIC_REPORTTYPE_FAIL"; 
 }

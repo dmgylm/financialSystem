@@ -110,6 +110,10 @@ public class StatisticJsonController {
     		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
         	//获取传递到页面的数据集合
         	JSONObject ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);
+        	if(ja==null){
+            	ElementXMLUtils.returnValue(ElementConfig.STATIC_REPORTTYPE_FAIL,sj);
+            	return sj;
+        	}
         	//存入缓存
     		statisticService.staticInfoMap(companyList,businessDataList,caCheUuid);
 			HtmlGenerate hg = new HtmlGenerate();
