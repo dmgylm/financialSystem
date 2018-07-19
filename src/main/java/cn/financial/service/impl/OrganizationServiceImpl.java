@@ -91,35 +91,30 @@ public class OrganizationServiceImpl implements OrganizationService {
     // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
     public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
-    	try {
-    		 if (null !=orgName && !"".equals(orgName)) {
-    				map.put("orgName", new String(orgName.getBytes("iso8859-1"),"utf-8"));
-             }
-     		 if (null !=createTime && !"".equals(createTime)) {
-     			map.put("createTime",createTime);
-             }
-     		 if (null !=updateTime && !"".equals(updateTime)) {
-     			map.put("updateTime",updateTime);
-             }
-     		 if (null !=id && !"".equals(id)) {
-     			map.put("id", id);
-             }
-     		 if (null !=code && !"".equals(code)) {
-     			map.put("code", code);
-             }
-     		 if (null !=uId && !"".equals(uId)) {
-     			map.put("uId", uId);
-             }
-     		 if (null !=parentId && !"".equals(parentId)) {
-     			map.put("parentId", parentId);
-             }
-     		 if (null !=orgType && !"".equals(orgType)) {
-     			map.put("orgType", orgType);
-             }
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	if (null !=orgName && !"".equals(orgName)) {
+        		map.put("orgName", orgName);
+         }
+         if (null !=createTime && !"".equals(createTime)) {
+        	map.put("createTime",createTime);
+         }
+         if (null !=updateTime && !"".equals(updateTime)) {
+        	map.put("updateTime",updateTime);
+         }
+         if (null !=id && !"".equals(id)) {
+        	map.put("id", id);
+         }
+         if (null !=code && !"".equals(code)) {
+        	map.put("code", code);
+         }
+         if (null !=uId && !"".equals(uId)) {
+        	map.put("uId", uId);
+         }
+         if (null !=parentId && !"".equals(parentId)) {
+        	map.put("parentId", parentId);
+         }
+         if (null !=orgType && !"".equals(orgType)) {
+        	map.put("orgType", orgType);
+         }
     
     	return organizationDAO.listOrganizationBy(map);
     }

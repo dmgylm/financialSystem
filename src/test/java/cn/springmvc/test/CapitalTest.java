@@ -37,11 +37,6 @@ public class CapitalTest {
         Capital capital =new Capital();
         capital.setId(UuidUtil.getUUID());
         capital.setoId("2a38648b34134859a018d080ae720573");
-        capital.setPlate("1235");
-        capital.setBu("1234");
-        capital.setRegionName("1111");
-        capital.setProvince("1111");
-        capital.setCity("11");
         capital.setCompany("盛世大联保险代理股份有限公司武汉分公司");
         capital.setAccountName("1");
         capital.setAccountBank("1");
@@ -76,9 +71,6 @@ public class CapitalTest {
         map.put("start",1);
         List<Capital> list = capitalService.listCapitalBy(map);
         System.out.println("所有的数据长度"+list.size());
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
-        }
     }
     
     /**
@@ -91,9 +83,6 @@ public class CapitalTest {
         map.put("plate","1");
         List<Capital> list = capitalService.getAllCapital(map);
         System.out.println("所有的数据长度"+list.size());
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println("第"+(i+1)+"条数据plate是："+list.get(i).getPlate());
-        }
     }
     
     
@@ -119,11 +108,6 @@ public class CapitalTest {
     public void updateCapital() throws UnsupportedEncodingException, ParseException {
         Capital capital=new Capital();
         capital.setId("b5d06e8791de436480d819835e32ab46");
-        capital.setPlate("1235");
-        capital.setBu("1234");
-        capital.setRegionName("1111");
-        capital.setProvince("1111");
-        capital.setCity("11");
         capital.setCompany("1");
         capital.setAccountName("1");
         capital.setAccountBank("1");

@@ -26,21 +26,6 @@ public class Capital {
          @ApiModelProperty(value="组织架构id",name="oId")
          private String oId;  //组织架构id
     	 
-         @ApiModelProperty(value="板块",name="plate")
-         private String plate; //板块
-         
-         @ApiModelProperty(value="事业部",name="bu")
-         private String bu; //事业部
-         
-         @ApiModelProperty(value="大区名称",name="regionName")
-         private String regionName; //大区名称
-         
-         @ApiModelProperty(value="省份",name="province")
-         private String province; //省份
-         
-         @ApiModelProperty(value="城市",name="city")
-         private String city; //城市
-         
          @ApiModelProperty(value="公司",name="company")
          private String company; //公司
          
@@ -113,11 +98,6 @@ public class Capital {
                  Date createTime,Date updateTime,String uId,Integer year,Integer month,String remarks,Integer status,Integer editor){
              this.id=id;
              this.oId=oId;
-             this.plate=plate;
-             this.bu=bu;
-             this.regionName=regionName;
-             this.province=province;
-             this.city=city;
              this.company=company;
              this.accountName=accountName;
              this.accountBank=accountBank;
@@ -194,47 +174,6 @@ public class Capital {
 
         public void setStatus(Integer status) {
             this.status = status;
-        }
-
-        public String getPlate() {
-            return plate;
-        }
-
-        public void setPlate(String plate) {
-            this.plate = plate;
-        }
-
-        public String getBu() {
-            return bu;
-        }
-
-        public void setBu(String bu) {
-            this.bu = bu;
-        }
-
-
-        public String getRegionName() {
-            return regionName;
-        }
-
-        public void setRegionName(String regionName) {
-            this.regionName = regionName;
-        }
-
-        public String getProvince() {
-            return province;
-        }
-
-        public void setProvince(String province) {
-            this.province = province;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
         }
 
         public String getCompany() {

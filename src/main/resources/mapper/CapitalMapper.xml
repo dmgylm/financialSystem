@@ -63,7 +63,7 @@
                #{oId}
            </foreach>
          <include refid="query_capital_where"></include>
-         ORDER BY c.tradeTime DESC
+         ORDER BY c.createTime DESC
          LIMIT #{start},#{pageSize}
        </select>
        
@@ -76,7 +76,7 @@
                #{id}
            </foreach>
          <include refid="query_capital_where"></include>
-         ORDER BY c.tradeTime DESC
+         ORDER BY c.createTime DESC
        </select>
       
        
@@ -134,8 +134,8 @@
       <!--定义一个sql -->
      <sql id="query_capital_where">
      
-        <if test=" plate!=null and plate!=''">
-             <!-- and c.plate LIKE CONCAT('%',#{plate},'%') -->
+      <!--   <if test=" plate!=null and plate!=''">
+             and c.plate LIKE CONCAT('%',#{plate},'%')
              and c.plate =#{plate}
         </if>
         <if test=" bu!=null and bu!=''">
@@ -150,30 +150,34 @@
         <if test=" city!=null and city!=''">
              and c.city=#{city}
         </if>
-         <if test=" company!=null and company!=''">
-             and  c.company =#{company} 
-        </if> 
-        <if test="accountName!=null and accountName!=''">
+         <if test="accountName!=null and accountName!=''">
              and  c.accountName =#{accountName}
         </if>
+         -->
+          <if test=" company!=null and company!=''">
+            and c.company in 
+          <foreach collection="company" item="company" index="index" open="(" separator="," close=")" >
+               #{company}
+           </foreach>
+        </if>        
         <if test="accountBank!=null and accountBank!=''">
-             and c.accountBank =#{accountBank}
+             and c.accountBank LIKE CONCAT('%',#{accountBank},'%')
          </if>
-         <if test="account!=null and account!=''">
+         <!-- <if test="account!=null and account!=''">
              and c.account =#{account}
-         </if> 
+         </if>  -->
          <if test="accountNature!=null and accountNature!=''">
-             and c.accountNature =#{accountNature}
+             and c.accountNature LIKE CONCAT('%',#{accountNature},'%')
          </if>
          <if test="tradeTimeBeg!=null and tradeTimeBeg!=''">
-             and c.tradeTime >= #{tradeTimeBeg}
+             and c.tradeTime &gt;= #{tradeTimeBeg}
               <!-- and  c.tradeTime between #{tradeTimeBeg} and #{tradeTimeEnd}  -->
             <!--  and c.tradeTime>=#{tradeTimeBeg} and c.tradeTime<=#{tradeTimeEnd} -->
           </if>
           <if test="tradeTimeEnd!=null and tradeTimeEnd!=''">
              and c.tradeTime &lt;= #{tradeTimeEnd}
           </if>
-          <if test="startBlack!=null and startBlack!=''">
+          <!-- <if test="startBlack!=null and startBlack!=''">
              and c.startBlack =#{startBlack} 
           </if>
           <if test="incom!=null and incom!=''">
@@ -187,9 +191,9 @@
           </if>
           <if test="abstrac!=null and abstrac!=''">
              and c.abstrac #{abstrac}
-          </if> 
+          </if>  -->
           <if test="classify!=null and classify!=''">
-              and c.classify =#{classify}
+              and c.classify LIKE CONCAT('%',#{classify},'%')
           </if>
          
          <!-- <if test="remarks!=null and remarks!=''">
