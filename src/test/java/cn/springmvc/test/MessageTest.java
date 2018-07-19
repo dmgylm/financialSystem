@@ -10,13 +10,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import cn.financial.model.Message;
+import cn.financial.model.User;
 import cn.financial.service.impl.MessageServiceImpl;
 import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml",
         "classpath:spring/spring-cache.xml", "classpath:spring/spring-shiro.xml", "classpath:spring/spring-redis.xml" })
@@ -32,6 +35,29 @@ public class MessageTest {
      */
     @Test
     public void listMessageforPower() {
+        User user = new User();
+        user.setId("404ed3a5442c4ed78331d6c77077958f");
+        user.setRealName("aa超级管理员");
+        user.setName("aa");
+        user.setPwd("fac136b59f9bb191a288ba589b27eafd");
+        user.setJobNumber("123456");
+        user.setStatus(1);
+        user.setSalt("0e559017bbd743e5ab05448a0a972869");
+//        String fileUrl = "asdasdasdasdsadasdas";
+        Map<Object, Object> map = new HashMap<>();
+		map.put("pageSize", 10);
+		map.put("start", 0);
+        List<Message> list = service.quartMessageByPower(user,map);
+        int unreadmessage = 0;
+        for(int i=0;i<list.size();i++) {
+            if(list.get(i).getStatus()==0) {
+               unreadmessage++;
+            }
+        }
+//        int i = service.saveMessageByUser(user,fileUrl);
+//        System.out.println(list.toString());
+        System.out.println(unreadmessage);
+//        System.out.println(i);
         http = new HttpClient3();
         try {
             String string = http.doPost(
@@ -70,12 +96,14 @@ public class MessageTest {
      * 根据消息状态展示消息列表
      */
     @Test
-    public void listMessage() {
+    public void listMessageBy() {
     	Map<Object,Object> map = new HashMap<Object,Object>();
-    	map.put("uId", "1d9fa5e93ffe46d78bb351ac05e70420");
-    	map.put("status","2");
+//    	map.put("uId", "6d66249664ea41a38ee98455fbb3fb1d");
+//    	map.put("theme","1");
+//    	map.put("start", 0);
+//    	map.put("pageSize", 10);
 		
-		List<Message> list = service.listMessage(map);
+		List<Message> list = service.listMessageBy(map);
 		
 		for (Message message : list) {
             System.out.println("status:" + message.getStatus());
@@ -88,30 +116,29 @@ public class MessageTest {
             System.out.println("uId:"+message.getuId());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
-            /*int wstatus=0;
+            int wstatus=0;
             for(int i=0;i<list.size();i++) {
             	if(list.get(i).getStatus()==0) {
             		wstatus+=1;
             	}
-            }*/
-            //System.out.println("未读消息条数"+wstatus);
+            }
+            System.out.println("未读消息条数"+wstatus);
+			/*map.put("uId","1d9fa5e93ffe46d78bb351ac05e70420" );
+	    	map.put("oId", "");*/
+	    	/*Calendar c = Calendar.getInstance();
+	    	int month = c.get(Calendar.MONTH)+1;
+	    	int year = c.get(Calendar.YEAR);
+	    	System.out.println("当前月份"+month);
+	    	System.out.println("当前年份"+year);*/
+	    	//map.put("isTag", 0);
             
-    	}
-    	/*map.put("uId","1d9fa5e93ffe46d78bb351ac05e70420" );
-    	map.put("oId", "");*/
-    	/*Calendar c = Calendar.getInstance();
-    	int month = c.get(Calendar.MONTH)+1;
-    	int year = c.get(Calendar.YEAR);
-    	System.out.println("当前月份"+month);
-    	System.out.println("当前年份"+year);*/
-    	//map.put("isTag", 0);
-    
+    }
 
     /**
      * 根据传入的map查询相应的消息表
      */
-   
-   /* public void listMessageBy() {
+//   @Test
+/*   public void listMessageBy() {
         Map<Object, Object> map = new HashMap<Object, Object>();
         //map.put("id", "aa897350206245f4aeac083865d948c3");
         //map.put("status", 1);
@@ -133,13 +160,14 @@ public class MessageTest {
             System.out.println("isTag:" + message.getIsTag());
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
-    }
-*/
+    }*/
+
     /**
      * 根据ID查询消息表
-     *//*
+     */
+    //@Test
     public void getMessageById() {
-        String id = "aa897350206245f4aeac083865d948c3";
+        String id = "93cb285521754c32a0299ae2fc43467b";
         Message message = service.getMessageById(id);
         System.out.println("id:" + message.getId());
         System.out.println("status:" + message.getStatus());
@@ -151,7 +179,7 @@ public class MessageTest {
         System.out.println("isTag:" + message.getIsTag());
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
-*/
+
     /**
      * 根据条件修改消息表,这里是根据id来修改其他项,所以map中必须包含id
      */
@@ -173,4 +201,5 @@ public class MessageTest {
         Integer i = service.deleteMessageById(id);
         System.out.println(i);
     }*/
+    
 }
