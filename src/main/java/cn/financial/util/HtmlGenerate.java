@@ -192,7 +192,7 @@ public class HtmlGenerate {
 		} else if (htmlType == HTML_TYPE_INPUT) {
 			generateInputContent(td, inputType, key,name, formula, value);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
-			generatePreviewContent(td, inputType, name, value);
+			generatePreviewContent(td, inputType,key, name, value);
 		}
 		
 		
@@ -217,15 +217,16 @@ public class HtmlGenerate {
 	 * @param name
 	 * @param value
 	 */
-	private void generatePreviewContent(Element td,int inputType,String name, String value) {
-		if (inputType == BOX_TYPE_LABEL) {// Label
-			td.text(name);
-		} else if (inputType == BOX_TYPE_INPUT) {// input
+	private void generatePreviewContent(Element td,int inputType,String key,String name, String value) {
+		if (inputType == BOX_TYPE_INPUT) {// input
 			td.text(value);
+			td.attr("id",key);
 		} else if (inputType == BOX_TYPE_FORMULA) {// formula
 			td.text(value);
+			td.attr("id",key);
 		} else if (inputType == BOX_TYPE_BUDGET) {// 预算
 			td.text(value);
+			td.attr("id",key);
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
@@ -241,9 +242,7 @@ public class HtmlGenerate {
 	 */
 	private void generateInputContent(Element td, int inputType,String key,
 			String name, String formula,String value) {
-		if(inputType==BOX_TYPE_LABEL) {//Label
-			td.text(name);
-		} else if(inputType==BOX_TYPE_INPUT) {//input
+		if(inputType==BOX_TYPE_INPUT) {//input
 			Element input = td.appendElement("input");
 			input.attr("name",key);
 			input.attr("value",value);
@@ -349,6 +348,7 @@ public class HtmlGenerate {
 		Element body = doc.select("body").get(0);
 		Element table = body.appendElement("table");
 		table.attr("border","1");
+		table.attr("id","generate_business_table");
 		return table;
 	}
 	

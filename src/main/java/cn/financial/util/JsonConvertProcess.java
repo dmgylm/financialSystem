@@ -207,17 +207,22 @@ public class JsonConvertProcess {
 				JSONObject json = (JSONObject)obj;
 				String key = json.getString("key");
 				
-				if(json.getInteger("type")==1) {
+				if (json.getInteger("type") == HtmlGenerate.BOX_TYPE_LABEL
+						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_MODULE
+						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_ITEM
+						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_MAINTITLE
+						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_SUBTITLE) {
 					bugdetLabelArr.add(json);
+				} else {
+					String month = getMonth4Key(key);
+					String replaceMonth = month.replace("yue", "");
+					JSONArray monthArr = newArr.getJSONArray(replaceMonth);
+					if(monthArr == null) {
+						monthArr = new JSONArray();
+					}
+					monthArr.add(json);
+					newArr.put(replaceMonth, monthArr);
 				}
-				String month = getMonth4Key(key);
-				String replaceMonth = month.replace("yue", "");
-				JSONArray monthArr = newArr.getJSONArray(replaceMonth);
-				if(monthArr == null) {
-					monthArr = new JSONArray();
-				}
-				monthArr.add(json);
-				newArr.put(replaceMonth, monthArr);
 			}
 		}
 	}
