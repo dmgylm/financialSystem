@@ -22,7 +22,7 @@
 			jdbcType="TIMESTAMP"></result>
 		<result property="uId" column="uId" javaType="string"
 			jdbcType="VARCHAR"></result>
-		<result property="fileurl" column="fileurl" javaType="string"
+		<result property="fileURL" column="fileURL" javaType="string"
 			jdbcType="VARCHAR"></result>
 	</resultMap>
 
@@ -38,10 +38,10 @@
 		sName,
 		createTime,
 		uId,
-		fileurl
+		fileURL
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{fileurl,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{theme,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},#{isTag,jdbcType=INTEGER},#{sName,jdbcType=VARCHAR},now(),#{uId,jdbcType=VARCHAR},#{fileURL,jdbcType=VARCHAR})
 	</insert>
 
 	<!-- 查询所有的消息
@@ -71,7 +71,7 @@
 	<!-- 根据条件查询消息 -->
     <select id="listAllMessage" resultMap="messageResultMap">
         select
-        id,status,theme,content,oId,isTag,createTime,updateTime
+        *
         from
         message
         where
@@ -83,7 +83,7 @@
 	<select id="getMessageById" parameterType="java.lang.String"
 		resultMap="messageResultMap">
 		select
-		id,status,theme,content,oId,isTag,createTime,updateTime
+		*
 		from
 		message
 		where
@@ -143,26 +143,11 @@
 
 	<!--定义一个sql片段 -->
 	<sql id="query_message_where">
-		<if test="id!=null and id!=''">
-			and id = #{id,jdbcType=VARCHAR}
-		</if>
 		<if test="status!=null and status!=''">
 			and status = #{status,jdbcType=INTEGER}
 		</if>
 		<if test="theme!=null and theme!=''">
 			and theme = #{theme,jdbcType=INTEGER}
-		</if>
-		<if test="content!=null and content!=''">
-			and content = #{content,jdbcType=VARCHAR}
-		</if>
-		<if test="sName!=null and sName!=''">
-			and sName = #{sName,jdbcType=VARCHAR}
-		</if>
-		<if test="createTime!=null and createTime!=''">
-			and createTime = #{createTime,jdbcType=DATE}
-		</if>
-		<if test="updateTime!=null and updateTime!=''">
-			and updateTime = #{updateTime,jdbcType=DATE}
 		</if>
 		<if test="isTag!=null and isTag!=''">
 			and isTag = #{isTag,jdbcType=INTEGER}
