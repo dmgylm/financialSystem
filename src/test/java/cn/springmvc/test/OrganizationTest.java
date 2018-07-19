@@ -36,7 +36,7 @@ public class OrganizationTest {
     /**
      * 测试获取xml的状态节点
      */
-    @Test
+    //@Test
     public void XMLreturnValue() {
         HashMap<String, String> returnValue = ElementXMLUtils.returnValue("RUN_SUCCESSFULLY");
         System.out.println(returnValue.toString());
@@ -46,7 +46,7 @@ public class OrganizationTest {
      * 新增组织结构
      * @throws UnsupportedEncodingException 
      */
-    @Test
+    //@Test
     public void saveOrganization() {
         http = new HttpClient3();
         try {
@@ -62,7 +62,7 @@ public class OrganizationTest {
     /**
      * 查询所有的组织结构信息
      */
-    @Test
+    //@Test
     public void listOrganization() {
         long start = System.currentTimeMillis();
         http = new HttpClient3();
@@ -82,7 +82,7 @@ public class OrganizationTest {
     /**
      * 根据传入的map查询相应的组织结构
      */
-    @Test
+    //@Test
     public void listOrganizationBy() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", "0994b84cd9e14a2cb706b53708e67f9b");
@@ -111,7 +111,7 @@ public class OrganizationTest {
     /**
      * 根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id
      */
-    @Test
+    //@Test
     public void updateOrganizationById() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", "181b407f574b4f1588aa4ad91a23a582");
@@ -134,7 +134,7 @@ public class OrganizationTest {
     /**
      * 停用(先判断此节点下是否存在未停用的子节点，若存在，则返回先删除子节点;否则继续停用此节点)
      */
-    @Test
+    //@Test
     public void deleteOrganizationByStatus() {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("id", "181b407f574b4f1588aa4ad91a23a582");
@@ -156,7 +156,7 @@ public class OrganizationTest {
     /**
      * 根据id查询该节点下的所有子节点 ,构建成树
      */
-    @Test
+    //@Test
     public void TreeByOrgId() {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("id", "");
@@ -179,6 +179,42 @@ public class OrganizationTest {
      * 查询该节点以及节点以下的
      */
     @Test
+//    public void orgshow() {
+//        try {
+//            List<String> ids = new ArrayList<String>();
+//            ids.add("f946a081eda949228537a8746200c3d6");
+//            ids.add("cced74c59a9846b5b0a81c0baf235c17");
+//            ids.add("f8483e1c85e84323853aeee27b4e8c91");
+//            ids.add("e71064dc0fc443fa8893ce489aed8c38");
+//            List<Organization> list = service.listOrganization(ids);
+//            List<String> listmap = new ArrayList<String>();
+//            for (Organization organization : list) {
+//                String his_permission = organization.getHis_permission();
+//                String[] hps = his_permission.split(",");// 分割逗号
+//                listmap.addAll(Arrays.asList(hps));// 所有的his_permission存到listmap当中
+//            }
+//            JSONObject obj = new JSONObject();
+//            // 查询对应的节点的数据
+//            List<Organization> listshow = service.listOrganizationcode(listmap);
+//            JSONArray json = JSONArray.fromObject(listshow);
+//            try {
+//                obj.put("rows", json);
+//                obj.put("resultCode", 200);
+//            } catch (Exception e) {
+//                obj.put("resultCode", 500);
+//                obj.put("resultDesc", "服务器异常");
+//            }
+//            System.out.println(json);
+///*            for (Organization organization : listshow) {
+//                System.out.println(organization.toString());
+//            }
+//            System.out.println("展示" + listmap);*/
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+    
     public void orgorganiza() {
 
             List<String> ids = new ArrayList<String>();
@@ -191,11 +227,10 @@ public class OrganizationTest {
             System.out.println(json.size());
         }
  
-
     /**
      * 根据id查询该节点下的所有子节点 的集合
      */
-    @Test
+    //@Test
     public void listTreeByOrgId() {
         List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
         for (Organization organization : list) {
@@ -207,7 +242,7 @@ public class OrganizationTest {
     /**
      * 根据id查询该节点下的所有父节点
      */
-    @Test
+    //@Test
     public void listTreeByOrgIdParent() {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("id", "2a79258d80844960ba32e8e77b1c4b88");
@@ -254,7 +289,7 @@ public class OrganizationTest {
     /**
      * 根据条件判断是否该节点存在子节点
      */
-    @Test
+    //@Test
     public void hasOrganizationSon() {
         HashMap<String, String> map = new HashMap<String, String>();
         // map.put("id", "5d9f44219a3a47aaa2a4deae332d1cb8");
@@ -286,7 +321,7 @@ public class OrganizationTest {
     /**
      * 根据公司以下节点的id，查询到该节点所属公司
      */
-    @Test
+    //@Test
     public void getCompanyNameBySon() {
         Organization organization = service.getCompanyNameBySon("06e37893beb249b7a3a34eb4cc61d7ef");
         if (null != organization) {
@@ -297,7 +332,7 @@ public class OrganizationTest {
     /**
      * 获取所有部门
      */
-    @Test
+    //@Test
     public void getDep() {
         long start1 = System.currentTimeMillis();
         List<Organization> re = service.getDep();
@@ -325,7 +360,7 @@ public class OrganizationTest {
     /**
      * 模拟根据json字符串生成html的table标签，方法一
      */
-    @Test
+    //@Test
     public void toHtml() {
         String jsonOfStr = "{\"biaoming\":null,\"gongsiming\":null,"
                 + "\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,"
@@ -397,7 +432,7 @@ public class OrganizationTest {
     /**
      * 模拟根据json字符串生成html的table标签,方法二
      */
-    @Test
+    //@Test
     public void toHtml2() {
         String jsonOfStr = "{\"biaoming\":null,\"gongsiming\":null,"
                 + "\"yewu\":null,\"bumen\":null,\"year\":null,\"month\":null,"
