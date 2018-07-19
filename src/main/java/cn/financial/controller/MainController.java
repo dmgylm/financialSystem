@@ -137,7 +137,7 @@ public class MainController {
             User user = userService.getUserByName(username);
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             //等于，则返回值 0；之前，则返回小于 0 的值；之后，则返回大于 0 的值。
-            if(sf.format(new Date()).compareTo(user.getExpreTime())>=0){
+            if(user.getExpreTime()!=null && sf.format(new Date()).compareTo(user.getExpreTime())>=0){
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.PASSWORD_INVALID_ERROR));
                 return dataMapList;
             }
