@@ -84,7 +84,8 @@ public class BudgetHtmlTest {
 		try {
 			String json = ha.analysis();
 			System.out.println(json);
-			JSONObject jsonObj = JSONObject.parseObject(json);
+			
+//			JSONObject jsonObj = JSONObject.parseObject(json);
 			
 //			JsonConvertProcess jcp = new JsonConvertProcess();
 //			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(jsonObj);//生成预算模板数据

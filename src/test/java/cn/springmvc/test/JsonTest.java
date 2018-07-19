@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.controller.DataModuleController;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.JsonDataProcess;
@@ -23,6 +24,10 @@ public class JsonTest {
 		JSONObject simplifyJson=JsonDataProcess.simplifyJson(mergin.toString(),jsons);
 		System.out.println(simplifyJson);
 	}
+    
+    public void sss(){
+//    	DataModuleController.class
+    }
     
     @Test
     public  void  simplifyJson(){
@@ -44,11 +49,16 @@ public class JsonTest {
     
     @Test
     public  void  generateHtml(){
-    	String path = "C:/Users/Admin/Desktop/车管家预算.txt";
-    	JSONObject jsonObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
-    	HtmlGenerate htmlGenerate = new HtmlGenerate();
-    	String json = htmlGenerate.generateHtml(jsonObj, HtmlGenerate.HTML_TYPE_TEMPLATE);
-    	System.out.println(json);
+    	try {
+    		String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+        	String s = JsonConvertProcess.readFileContent(path);
+        	JSONObject jsonObj = JSONObject.parseObject(s);
+        	HtmlGenerate htmlGenerate = new HtmlGenerate();
+        	String json = htmlGenerate.generateHtml(jsonObj, HtmlGenerate.HTML_TYPE_PREVIEW);
+        	System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
 	
