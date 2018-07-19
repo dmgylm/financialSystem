@@ -50,8 +50,8 @@ public class Message {
 	@ApiModelProperty(value="用户接收信息",name="uId",example="")
 	String uId;//用户接收信息
  
-	@ApiModelProperty(value="保存文件路径",name="fileurl",example="")
-	String fileurl;//保存文件路径
+	@ApiModelProperty(value="保存文件路径",name="fileURL",example="")
+	String fileURL;//保存文件路径
     
     public String getId() {
         return id;
@@ -133,17 +133,17 @@ public class Message {
     }
 
     public String getFileurl() {
-		return fileurl;
+		return fileURL;
 	}
 
-	public void setFileurl(String fileurl) {
-		this.fileurl = fileurl;
+	public void setFileurl(String fileURL) {
+		this.fileURL = fileURL;
 	}
 
 	@Override
     public String toString() {
         return "Message [id=" + id + ", status=" + status + ", theme=" + theme + ", content=" + content + ", oId="
-                + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+",fileurl="+fileurl+"]";
+                + oId + ",sName="+ sName +", isTag=" + isTag + ", createTime=" + createTime + ", updateTime=" + updateTime + ",uId="+uId+",fileURL="+fileURL+"]";
     }
 
 }
