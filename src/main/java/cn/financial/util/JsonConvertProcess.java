@@ -198,7 +198,6 @@ public class JsonConvertProcess {
 	}
 	
 	private void generateModuleBudget(JSONArray arr, JSONObject newArr) {
-		
 		for(int i=0;i<arr.size();i++) {
 			Object obj = arr.get(i);
 			if (obj instanceof JSONArray) {
@@ -206,12 +205,9 @@ public class JsonConvertProcess {
 			} else if(obj instanceof JSONObject){
 				JSONObject json = (JSONObject)obj;
 				String key = json.getString("key");
+				Integer type = json.getInteger("type");
 				
-				if (json.getInteger("type") == HtmlGenerate.BOX_TYPE_LABEL
-						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_MODULE
-						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_ITEM
-						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_MAINTITLE
-						|| json.getInteger("type") == HtmlGenerate.BOX_TYPE_SUBTITLE) {
+				if (HtmlAnalysis.isLabel(type)) {
 					bugdetLabelArr.add(json);
 				} else {
 					String month = getMonth4Key(key);

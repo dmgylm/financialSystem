@@ -212,38 +212,32 @@ public class HtmlAnalysis {
 			colKey = "";
 		}
 		
-//		if("管理费用".equals(inputValue)) {
-//			System.out.println(222);
-//		}
 		if(inputboxType==HtmlGenerate.BOX_TYPE_FORMULA) {
 			if(inputValue.startsWith("=")) {
 				inputValue = inputValue.substring(1);
 			}
 			formulaCN = inputValue;
 			formula = HanyuToPingyinUtils.hanyuToPinyin(inputValue);
-		} else if(inputboxType==HtmlGenerate.BOX_TYPE_LABEL) {
-			name = inputValue;
-		} else if(inputboxType==HtmlGenerate.BOX_TYPE_MODULE) {
-			name = inputValue;
-		} else if(inputboxType==HtmlGenerate.BOX_TYPE_ITEM) {
-			name = inputValue;
-		} else if(inputboxType==HtmlGenerate.BOX_TYPE_MAINTITLE) {
-			name = inputValue;
-		} else if(inputboxType==HtmlGenerate.BOX_TYPE_SUBTITLE) {
+		} else {
 			name = inputValue;
 		}
 		
-		String key = rowKey + Separate_X_Y + colKey;
+		String key = "";
+		if(!isLabel(inputboxType)) {
+			key = rowKey + Separate_X_Y + colKey;
+			key = removeSpecialChar(key);
+		}
+		
 //		if(StringUtils.isValid(rowKey) && StringUtils.isValid(colKey)) {
 //			name = key;
 //		}
 //		if(!StringUtils.isValid(name)) {
 //			name = key;
 //		}
-		key = removeSpecialChar(key);
-		json.put("key", HanyuToPingyinUtils.hanyuToPinyin(key));
+		
 		
 		formula = removeSpecialChar(formula);
+		json.put("key", HanyuToPingyinUtils.hanyuToPinyin(key));
 		json.put("formula", formula);
 		json.put("formulaCN", formulaCN);
 		json.put("row", rowNum);
@@ -254,6 +248,22 @@ public class HtmlAnalysis {
 		json.put("colspan", StringUtils.isValid(colspan)?colspan:1);
 		json.put("type", inputboxType);
 		return json;
+	}
+	
+	/**
+	 * 返回该是否是显示类控件,包括Label/Module/Item/MainTitle/Subtitle
+	 * @param type
+	 * @return
+	 */
+	public static boolean isLabel(Integer type){
+		if (type == HtmlGenerate.BOX_TYPE_LABEL
+				|| type == HtmlGenerate.BOX_TYPE_MODULE
+				|| type == HtmlGenerate.BOX_TYPE_ITEM
+				|| type == HtmlGenerate.BOX_TYPE_MAINTITLE
+				|| type == HtmlGenerate.BOX_TYPE_SUBTITLE) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
