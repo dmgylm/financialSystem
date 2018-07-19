@@ -33,6 +33,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	/**
 	 * 修改损益数据
 	 */
+	@Override
 	public Integer updateBusinessData(BusinessData businessData) {
 		return businessDataDao.updateBusinessData(businessData);
 	}

@@ -30,11 +30,14 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
+import cn.financial.model.CapitalNatrue;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.CapitalByIdResult;
+import cn.financial.model.response.CapitalNatrueResult;
 import cn.financial.model.response.CapitalResult;
 import cn.financial.model.response.ResultUtils;
+import cn.financial.service.CapitalNatrueService;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
@@ -63,6 +66,9 @@ public class CapitalController {
     
         @Autowired
         private  CapitalService capitalService; //资金流水表
+        
+        @Autowired
+        private  CapitalNatrueService capitalNatrueService; 
         
         @Autowired
         private  UserOrganizationService userOrganizationService; //用户组织的表
@@ -648,7 +654,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = ResultUtils.class)
         @ApiImplicitParams({
             @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String", paramType = "query"),
@@ -925,5 +931,32 @@ public class CapitalController {
                     }
             }
         }
-        
+    
+        /* * 根据条件查询账户性质项目分类数据
+        * 
+        * @param request
+        * @param id
+        *           
+        * @return
+        */
+       @ApiOperation(value="根据条件查询账户性质项目分类数据", notes="查询账户性质项目分类数据",response = CapitalNatrueResult.class)
+       @ApiImplicitParams({@ApiImplicitParam(name="cId",value="cId (1账户性质  2项目分类)",dataType="Integer", paramType = "query", required = false)})
+       @RequiresPermissions("capital:view")
+       @RequestMapping(value="/listCapitalNatrue", method = RequestMethod.POST)
+       @ResponseBody
+       public CapitalNatrueResult listCapitalNatrue(HttpServletRequest request,Integer cId) {
+           //Map<String, Object> dataMap = new HashMap<String, Object>();
+           CapitalNatrueResult result=new CapitalNatrueResult();
+           try {
+              Map<Object, Object> map = new HashMap<>();
+              map.put("cId", cId);
+              List<CapitalNatrue> list= capitalNatrueService.listCapitalNatrue(map);
+              result.setData(list);
+              result.setTotal(list.size());
+           } catch (Exception e) {
+               ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+               this.logger.error(e.getMessage(), e);
+           }
+           return result;
+       }
 }
