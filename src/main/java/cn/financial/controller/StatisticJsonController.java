@@ -58,7 +58,7 @@ public class StatisticJsonController {
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
 	@ApiOperation(value = "根据组织统计数据",notes = "根据组织统计数据",response = StaticJson.class)
     @ApiImplicitParams({ 
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型(如:BUDGET代表预算,PROFIT_LOSS代表损益,英文)", required = true),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型(如:BUDGET:预算;PROFIT_LOSS:损益;TAX:税金;ASSESSMENT:考核;SUMMARY_BUDGET:预算简易汇总;SUMMARY_PROFIT_LOSS:损益简易汇总;,英文)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块(如:b1503ff8da124fa3bce0bf07f16f56f6 具体数据从组织架构orgkey取得,接口是listBy)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔,string类型)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "endDate", value = "结束时间(年月用/分隔,string类型)", required = true),
