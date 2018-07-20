@@ -44,10 +44,10 @@ public class User implements Serializable{
     private String salt;  //uuid随机数生成
     
     
-    @ApiModelProperty(value="用户关联组织架构信息",name="jsonOrg")
-    private List<JSONObject> jsonOrg;
-    @ApiModelProperty(value="用户关联角色信息",name="jsonRole")
-    private List<JSONObject> jsonRole;
+    @ApiModelProperty(value="用户关联组织架构信息1表示已匹配0表示未匹配",name="jsonOrg")
+    private Integer orgFlag;
+    @ApiModelProperty(value="用户关联角色信息1表示已匹配0表示未匹配",name="jsonRole")
+    private Integer roleFlag;
     
     public User() {
         super();
@@ -133,20 +133,20 @@ public class User implements Serializable{
 		this.salt = salt;
 	}
 
-    public List<JSONObject> getJsonOrg() {
-        return jsonOrg;
+    public Integer getOrgFlag() {
+        return orgFlag;
     }
 
-    public void setJsonOrg(List<JSONObject> jsonOrg) {
-        this.jsonOrg = jsonOrg;
+    public void setOrgFlag(Integer orgFlag) {
+        this.orgFlag = orgFlag;
     }
 
-    public List<JSONObject> getJsonRole() {
-        return jsonRole;
+    public Integer getRoleFlag() {
+        return roleFlag;
     }
 
-    public void setJsonRole(List<JSONObject> jsonRole) {
-        this.jsonRole = jsonRole;
+    public void setRoleFlag(Integer roleFlag) {
+        this.roleFlag = roleFlag;
     }
 	
 }
