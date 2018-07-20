@@ -124,9 +124,9 @@ public class UserController{
                         item.setOrgFlag(User.UNMATCHED);
                     }
                     if(!CollectionUtils.isEmpty(jsonRole)){
-                        item.setRoleFlag(User.MATCH);
+                        item.setRoleFlag(User.SETUP);
                     }else{
-                        item.setRoleFlag(User.UNMATCHED);
+                        item.setRoleFlag(User.NOTSET);
                     }
                 }
             }
