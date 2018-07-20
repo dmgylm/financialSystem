@@ -38,12 +38,6 @@ public class UserServiceImpl implements  UserService{
      */
     @Override
     public List<User> listUser(Map<Object, Object> map) {
-        if(map.get("pageSize") == null || map.get("pageSize").equals("")){
-            map.put("pageSize",10);
-        }
-        if(map.get("page") == null || map.get("page").equals("")){
-            map.put("start", 0);
-        }
         return userDao.listUser(map);
     }
     /**
