@@ -120,8 +120,16 @@ public class UserController{
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
-                    item.setJsonOrg(jsonOrg);
-                    item.setJsonRole(jsonRole);
+                    if(!CollectionUtils.isEmpty(jsonOrg)){
+                        item.setOrgFlag(1);
+                    }else{
+                        item.setOrgFlag(0);
+                    }
+                    if(!CollectionUtils.isEmpty(jsonRole)){
+                        item.setRoleFlag(1);
+                    }else{
+                        item.setRoleFlag(0);
+                    }
                 }
             }
             List<User> userList = userService.listUserCount(map);//查询总条数
@@ -142,7 +150,7 @@ public class UserController{
      * @param id
      * @return
      */
-    @RequiresPermissions("permission:view")
+    /*@RequiresPermissions("permission:view")
     @RequestMapping(value = "/userById", method = RequestMethod.POST)
     @ApiOperation(value="根据id查询用户信息",notes="根据id查询用户信息",response = UserInfoResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true)})
@@ -166,7 +174,7 @@ public class UserController{
             e.printStackTrace();
         }
         return result;
-    }
+    }*/
     /**
      * 新增用户
      * @param request
