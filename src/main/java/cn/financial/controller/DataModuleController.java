@@ -162,8 +162,8 @@ public class DataModuleController {
 	@PostMapping("editDataModule")
 	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = ResultUtils.class)
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="reportType",required=true,value="报表类型",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="businessType",required=true,value="业务板块",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="reportType",required=true,value="报表类型(PROFIT_LOSS:损益;BUDGET:预算;ASSESSMENT:考核;TAX:税金;SUMMARY_BUDGET:预算简易汇总;SUMMARY_PROFIT_LOSS:损益简易汇总)",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="businessType",required=true,value="业务板块(从[汇总中心-查询业务板块信息]接口中获取)",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query")
 		  })
 	@ResponseBody
