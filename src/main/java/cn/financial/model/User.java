@@ -1,9 +1,6 @@
 package cn.financial.model;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.alibaba.fastjson.JSONObject;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,6 +12,10 @@ public class User implements Serializable{
     private static final long serialVersionUID = 1L; 
     
     public static final String INITIALCIPHER = "Welcome1";//初始密码
+    
+    public static final String MATCH = "已匹配";
+    
+    public static final String UNMATCHED = "未匹配";
     
     /*密码校验规则：
      * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
@@ -44,10 +45,10 @@ public class User implements Serializable{
     private String salt;  //uuid随机数生成
     
     
-    @ApiModelProperty(value="用户关联组织架构信息1表示已匹配0表示未匹配",name="jsonOrg")
-    private Integer orgFlag;
-    @ApiModelProperty(value="用户关联角色信息1表示已匹配0表示未匹配",name="jsonRole")
-    private Integer roleFlag;
+    @ApiModelProperty(value="用户关联组织架构信息  已匹配/未匹配",name="jsonOrg")
+    private String orgFlag;
+    @ApiModelProperty(value="用户关联角色信息  已匹配/未匹配",name="jsonRole")
+    private String roleFlag;
     
     public User() {
         super();
@@ -133,19 +134,19 @@ public class User implements Serializable{
 		this.salt = salt;
 	}
 
-    public Integer getOrgFlag() {
+    public String getOrgFlag() {
         return orgFlag;
     }
 
-    public void setOrgFlag(Integer orgFlag) {
+    public void setOrgFlag(String orgFlag) {
         this.orgFlag = orgFlag;
     }
 
-    public Integer getRoleFlag() {
+    public String getRoleFlag() {
         return roleFlag;
     }
 
-    public void setRoleFlag(Integer roleFlag) {
+    public void setRoleFlag(String roleFlag) {
         this.roleFlag = roleFlag;
     }
 	
