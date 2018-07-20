@@ -17,6 +17,10 @@ public class User implements Serializable{
     
     public static final String UNMATCHED = "未匹配";
     
+    public static final String SETUP = "已设置";
+    
+    public static final String NOTSET = "未设置";
+    
     /*密码校验规则：
      * 由6-15位字符组成，组成内容必须包含（但不仅限于）：
      * 至少6个字符（最多15个字符）、大写与小写字母、至少一个数字，支持特殊符号，但不支持空格
