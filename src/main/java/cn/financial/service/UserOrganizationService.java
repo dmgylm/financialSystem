@@ -1,9 +1,6 @@
 package cn.financial.service;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -15,7 +12,7 @@ public interface UserOrganizationService {
      * 查询所有
      * @return
      */
-    List<UserOrganization> listUserOrganization(String uId);
+    List<UserOrganization> listUserOrganization(String uId, String orgName);
     /**
      * 新增
      * @param userOrganization

@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,13 +86,14 @@ public class UserController{
         @ApiImplicitParam(name="status",value="状态0表示离职1表示在职",dataType="int", paramType = "query"),
         @ApiImplicitParam(name="createTime",value="创建时间（如2018-07-10 13:21:10）",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="updateTime",value="更新时间(如2018-07-10)",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="orgName",value="组织架构名称",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="pageSize",value="条数（如每页显示10条数据）",dataType="int", paramType = "query", required = true),
         @ApiImplicitParam(name="page",value="页码（第一页开始）page=1",dataType="int", paramType = "query", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
     public Map<String, Object> listUser(String name, String realName, String jobNumber,String userId,
-            String createTime, String updateTime, Integer status, Integer pageSize, Integer page){
+            String createTime, String updateTime, Integer status,String orgName, Integer pageSize, Integer page){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
@@ -101,6 +103,7 @@ public class UserController{
     	    map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
+    	    map.put("orgName", orgName);//组织架构名称
     	    map.put("createTime", createTime);//创建时间
     	    map.put("updateTime", updateTime);//修改时间
     	    if(pageSize==null || pageSize.equals("")){
@@ -113,7 +116,22 @@ public class UserController{
             }else{
                 map.put("start",pageSize * (page- 1));
             }
-            List<User> user = userService.listUser(map);//查询全部map为空
+            List<User> user = new ArrayList<>();
+            List<User> userList = new ArrayList<>();
+            if(orgName!=null && !orgName.equals("")){
+                //根据组织架构名称查询用户id
+                List<UserOrganization> userOrgName = userOrganizationService.listUserOrganization(null, orgName);
+                if(!CollectionUtils.isEmpty(userOrgName)){
+                    for(UserOrganization org : userOrgName){
+                        map.put("id", org.getuId());//用户id
+                        user.addAll(userService.listUser(map));//查询全部map为空
+                        userList.addAll(userService.listUserCount(map));//查询总条数
+                    }
+                }
+            }else{
+                user.addAll(userService.listUser(map));//查询全部map为空
+                userList.addAll(userService.listUserCount(map));//查询总条数
+            }
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
@@ -130,7 +148,6 @@ public class UserController{
                     }
                 }
             }
-            List<User> userList = userService.listUserCount(map);//查询总条数
             dataMap.put("userList", user);
             dataMap.put("total", userList.size());
             dataMapList.put("data", dataMap);

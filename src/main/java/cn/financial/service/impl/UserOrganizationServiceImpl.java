@@ -29,8 +29,8 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     @Override
-    public List<UserOrganization> listUserOrganization(String uId) {
-        return userOrganizationDao.listUserOrganization(uId);
+    public List<UserOrganization> listUserOrganization(String uId, String orgName) {
+        return userOrganizationDao.listUserOrganization(uId, orgName);
     }
     /**
      * 新增
@@ -111,7 +111,7 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
         if(uId == null || uId.equals("")){
             return null;
         }
-        List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId);
+        List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId, null);
         List<JSONObject> jsonUserOrg = new ArrayList<>();
         JSONObject jsonObject = null;
         if(!CollectionUtils.isEmpty(userOrganization)){
