@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -23,8 +26,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
+import cn.financial.model.response.OganizationNode;
 import cn.financial.model.response.StaticInfo;
 import cn.financial.model.response.StaticJson;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -44,6 +49,9 @@ public class StatisticJsonController {
 	
     @Autowired
     private StatisticJsonService statisticService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
     
@@ -130,6 +138,28 @@ public class StatisticJsonController {
             this.logger.error(e.getMessage(), e);
         }
         return sj;
+    }
+    
+    @ResponseBody
+    @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
+    @ApiOperation(value = "查询业务板块信息",notes = "查询业务板块信息",response=OganizationNode.class)
+    @PostMapping(value="listBusinessSector")
+    public OganizationNode listBusinessSector() {
+        OganizationNode organiza=new OganizationNode();
+        try {
+            List<Organization> list = organizationService.
+            	listOrganizationBy(null,null,null,null,null,null,null,4);
+           // if (!CollectionUtils.isEmpty(list)) {
+            	organiza.setData(list);
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
+           /* } else {
+            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,organiza);
+            }*/
+        } catch (Exception e) {
+        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,organiza);
+            this.logger.error(e.getMessage(), e);
+        }
+        return organiza;
     }
 	
     /**
