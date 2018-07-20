@@ -205,7 +205,7 @@ public class HtmlGenerate {
 		if (htmlType == HTML_TYPE_TEMPLATE) {
 			generateTemplateContent(td, inputType, name, formula);
 		} else if (htmlType == HTML_TYPE_INPUT) {
-			generateInputContent(td, inputType, key,name, formula, value);
+			generateInputContent(td, inputType, key,name, formula, value,display);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
 			generatePreviewContent(td, inputType,key, name, value);
 		}
@@ -262,8 +262,8 @@ public class HtmlGenerate {
 	 * @param value
 	 */
 	private void generateInputContent(Element td, int inputType,String key,
-			String name, String formula,String value) {
-		if(inputType==BOX_TYPE_INPUT) {//input
+			String name, String formula,String value,Boolean display) {
+		if(inputType==BOX_TYPE_INPUT && display) {//input
 			Element input = td.appendElement("input");
 			input.attr("name",key);
 			input.attr("value",value);
