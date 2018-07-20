@@ -37,7 +37,7 @@ import cn.financial.util.UuidUtil;
  * @author gh 2018/5/7
  *
  */
-@Api(tags = "统计相关操作")
+@Api(tags = "汇总中心")
 @Controller
 @RequestMapping("/statistic")
 public class StatisticJsonController {
@@ -56,8 +56,8 @@ public class StatisticJsonController {
      */
     @ResponseBody
     @RequiresPermissions(value={"collect:view"},logical=Logical.OR)
-	@ApiOperation(value = "根据组织统计数据",notes = "根据组织统计数据",response = StaticJson.class)
-    @ApiImplicitParams({ 
+	@ApiOperation(value = "根据组织汇总数据",notes = "根据组织汇总数据",response = StaticJson.class)
+    @ApiImplicitParams({
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "reportType", value = "报表类型(如:BUDGET:预算;PROFIT_LOSS:损益;TAX:税金;ASSESSMENT:考核;SUMMARY_BUDGET:预算简易汇总;SUMMARY_PROFIT_LOSS:损益简易汇总;,英文)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "businessType", value = "业务板块(如:b1503ff8da124fa3bce0bf07f16f56f6 具体数据从组织架构orgkey取得,接口是listBy)", required = true),
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "startDate", value = "开始时间(年月用/分隔,string类型)", required = true),
