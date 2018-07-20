@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,11 @@ import cn.financial.model.response.UserListReslult;
 import cn.financial.model.response.UserOrganizationResult;
 import cn.financial.model.response.UserResetPwd;
 import cn.financial.model.response.UserResetPwdInfo;
-import cn.financial.model.response.UserResult;
 import cn.financial.model.response.UserRoleResult;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
+import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
@@ -59,6 +60,8 @@ public class UserController{
     private UserOrganizationService userOrganizationService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private RoleResourceServiceImpl roleResourceService;
     @Autowired
     private PasswordHelper passwordHelper;
     @Autowired
@@ -89,10 +92,10 @@ public class UserController{
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
-    public UserListReslult listUser(String name, String realName, String jobNumber,String userId,
+    public Map<String, Object> listUser(String name, String realName, String jobNumber,String userId,
             String createTime, String updateTime, Integer status, Integer pageSize, Integer page){
-        UserListReslult result = new UserListReslult();
-        UserResult resultInfo = new UserResult();
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
     	try {
     	    Map<Object, Object> map = new HashMap<>();
 	        map.put("name", name);//用户名
@@ -102,19 +105,35 @@ public class UserController{
     	    map.put("status", status);//状态
     	    map.put("createTime", createTime);//创建时间
     	    map.put("updateTime", updateTime);//修改时间
-    	    map.put("pageSize",pageSize);//条数
-    	    map.put("start", page);//页码
+    	    if(pageSize==null || pageSize.equals("")){
+                map.put("pageSize",10);//条数
+            }else{
+                map.put("pageSize",pageSize);
+            }
+            if(page==null || page.equals("")){
+                map.put("start",0);//页码
+            }else{
+                map.put("start",pageSize * (page- 1));
+            }
             List<User> user = userService.listUser(map);//查询全部map为空
+            if(!CollectionUtils.isEmpty(user)){
+                for(User item : user){
+                    List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
+                    List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
+                    item.setJsonOrg(jsonOrg);
+                    item.setJsonRole(jsonRole);
+                }
+            }
             List<User> userList = userService.listUserCount(map);//查询总条数
-            resultInfo.setUserList(user);
-            resultInfo.setTotal(userList.size());
-            result.setData(resultInfo);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+            dataMap.put("userList", user);
+            dataMap.put("total", userList.size());
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-    	return result;
+    	return dataMapList;
     }
     /**
      * 根据id查询
