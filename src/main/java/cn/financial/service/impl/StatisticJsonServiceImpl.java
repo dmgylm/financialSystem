@@ -52,7 +52,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	public JSONObject findModel(String reportType, String businessType) {
 		DataModule bean = dataModuleService.getDataModule(reportType,businessType);
 		if(bean!=null){
-			JSONObject.parseObject(bean.getModuleData());
+			return JSONObject.parseObject(bean.getModuleData());
 		}
 		return null;
 	}
