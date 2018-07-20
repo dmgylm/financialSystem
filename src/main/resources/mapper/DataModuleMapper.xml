@@ -46,7 +46,7 @@
     <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
         insert into dataModule(id,moduleKey,moduleName,reportType,businessType,moduleData,versionNumber,founder,statue,createTime) 
-        values (#{id},#{moduleKey},#{moduleName},#{reportType},#{businessType},#{moduleData},#{versionNumber},#{founder},#{statue},curdate())
+        values (#{id},#{moduleKey},#{moduleName},#{reportType},#{businessType},#{moduleData},#{versionNumber},#{founder},#{statue},now())
     </insert>
 
     <!--修改模板-->

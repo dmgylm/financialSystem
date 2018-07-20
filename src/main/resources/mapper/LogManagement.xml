@@ -11,17 +11,17 @@
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
 	</resultMap>    
-	<!--查询全部模板/多条件查询模板列表-->
+	<!--查询日志列表-->
     <select id="listLogManagement" parameterType="map" resultType="logManagement">
         SELECT id,userName,workUrl,params,logCode,work,createTime,updateTime FROM logManagement WHERE 1 = 1 
         <include refid="query_logManagement_where"></include>
         ORDER BY createTime DESC 
     </select>
     
-    <!--新增模板-->
+    <!--新增用户日志-->
     <insert id="insertLogManagement" parameterType="logManagement">
         insert into logManagement(id,userName,workUrl,params,logCode,work,createTime) 
-        values (#{id},#{userName},#{workUrl},#{params},#{logCode},#{work},curdate())
+        values (#{id},#{userName},#{workUrl},#{params},#{logCode},#{work},now())
     </insert>
 
     <!--修改模板-->
