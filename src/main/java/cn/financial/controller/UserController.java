@@ -23,8 +23,6 @@ import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
 import cn.financial.model.response.ResultUtils;
-import cn.financial.model.response.UserInfo;
-import cn.financial.model.response.UserInfoResult;
 import cn.financial.model.response.UserListReslult;
 import cn.financial.model.response.UserOrganizationResult;
 import cn.financial.model.response.UserResetPwd;
@@ -121,14 +119,14 @@ public class UserController{
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
                     if(!CollectionUtils.isEmpty(jsonOrg)){
-                        item.setOrgFlag(1);
+                        item.setOrgFlag(User.MATCH);
                     }else{
-                        item.setOrgFlag(0);
+                        item.setOrgFlag(User.UNMATCHED);
                     }
                     if(!CollectionUtils.isEmpty(jsonRole)){
-                        item.setRoleFlag(1);
+                        item.setRoleFlag(User.MATCH);
                     }else{
-                        item.setRoleFlag(0);
+                        item.setRoleFlag(User.UNMATCHED);
                     }
                 }
             }
