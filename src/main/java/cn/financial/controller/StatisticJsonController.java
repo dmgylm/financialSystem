@@ -116,7 +116,7 @@ public class StatisticJsonController {
         	}
         	//存入缓存
     		statisticService.staticInfoMap(companyList,businessDataList,caCheUuid);
-			HtmlGenerate hg = new HtmlGenerate();
+			HtmlGenerate hg = new HtmlGenerate(true);
 			String html = hg.generateHtml(ja.toString(),HtmlGenerate.HTML_TYPE_PREVIEW);
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);

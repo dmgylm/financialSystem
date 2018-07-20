@@ -24,6 +24,21 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HtmlGenerate {
 	
+	public HtmlGenerate(){
+		
+	}
+	
+	/**
+	 * 显示页面是否需要在td中添加id属性
+	 * @param isPreviewNeedId
+	 */
+	public HtmlGenerate(boolean isPreviewNeedId){
+		this.isPreviewNeedId = isPreviewNeedId;
+		
+	}
+	
+	private boolean isPreviewNeedId = false;
+	
 	private static String NONE_DISPLAY_CLASS="display_none";
 	
 	/**
@@ -220,13 +235,19 @@ public class HtmlGenerate {
 	private void generatePreviewContent(Element td,int inputType,String key,String name, String value) {
 		if (inputType == BOX_TYPE_INPUT) {// input
 			td.text(value);
-			td.attr("id",key);
+			if(isPreviewNeedId) {
+				td.attr("id",key);
+			}
 		} else if (inputType == BOX_TYPE_FORMULA) {// formula
 			td.text(value);
-			td.attr("id",key);
+			if(isPreviewNeedId) {
+				td.attr("id",key);
+			}
 		} else if (inputType == BOX_TYPE_BUDGET) {// 预算
 			td.text(value);
-			td.attr("id",key);
+			if(isPreviewNeedId) {
+				td.attr("id",key);
+			}
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
