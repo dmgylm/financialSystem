@@ -202,4 +202,10 @@ public class ElementConfig {
      * 报表类型或业务板块有误
      */
     public static final String STATIC_REPORTTYPE_FAIL = "STATIC_REPORTTYPE_FAIL"; 
+    
+    
+    /**
+     * 配置模板不存在
+     */
+    public static final String DATA_MODULE_NULL = "DATA_MODULE_NULL"; 
 }

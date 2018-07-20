@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,15 @@ public class DataModuleServiceImpl implements DataModuleService{
 	/**
 	 * 获取模板列表
 	 */
-	public List<DataModule> listDataModule(Map<Object, Object> map) {
+	public List<DataModule> listDataModule(String moduleName,String versionNumber,
+			String businessType,String reportType,String founder,Integer statue ) {
+		Map<Object, Object> map=new HashMap<Object, Object>();
+		map.put("moduleName", moduleName);
+		map.put("versionNumber", versionNumber);
+		map.put("businessType", businessType);
+		map.put("reportType", reportType);
+		map.put("founder", founder);
+		map.put("statue", statue);
 		return dataModuleDao.listDataModule(map);
 	}
 	/**
@@ -75,9 +84,18 @@ public class DataModuleServiceImpl implements DataModuleService{
 		return moduleLists;
 	}
 	
-	public DataModuleResult queryModuleLists(Map<Object, Object> map,Integer page,Integer pageSize) {
+	public DataModuleResult queryModuleLists(String moduleName,String versionNumber,
+			String businessType,String reportType,String founder,Integer statue,Integer page,Integer pageSize) {
 		DataModuleResult result=new DataModuleResult();
 		List<ModuleList> moduleLists=new ArrayList<ModuleList>();
+		Map<Object,Object> map=new HashMap<Object,Object>();
+		map.put("moduleName", moduleName);
+		map.put("versionNumber", versionNumber);
+		map.put("businessType", businessType);
+		map.put("reportType", reportType);
+		map.put("founder", founder);
+		map.put("statue", statue);
+		
 		page = page == null?1:page;
 	    pageSize = pageSize == null?10:pageSize;
 		PageHelper.startPage(page, pageSize);
@@ -110,6 +128,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 		return dataModuleDao.insertDataModule(dataModule);
 	}
 
+	@CacheEvict(value="'dataModule_'+#dataModuleId", beforeInvocation=true)
 	public Integer updateDataModule(String dataModuleId) {
 		return dataModuleDao.updateDataModuleState(dataModuleId);
 	}
@@ -140,13 +159,18 @@ public class DataModuleServiceImpl implements DataModuleService{
 	@Cacheable(value="dataModule",key="'dataModule_'+#dataModuleId")
 	public DataModule getDataModule(String dataModuleId) {
 		Map<String,Object> params = new HashMap<String, Object>();
-		params.put("id", dataModuleId);
-		DataModule dataModule=dataModuleDao.getDataModule(params);
-		HtmlGenerate hg = new HtmlGenerate();
-		String html = hg.generateHtml(dataModule.getModuleData(),hg.HTML_TYPE_TEMPLATE);
-		dataModule.setDataHtml(html);
-		
-		return dataModule;
+		try {
+			params.put("id", dataModuleId);
+			DataModule dataModule=dataModuleDao.getDataModule(params);
+			HtmlGenerate hg = new HtmlGenerate();
+			String html = hg.generateHtml(dataModule.getModuleData(),hg.HTML_TYPE_TEMPLATE);
+			dataModule.setDataHtml(html);
+			
+			return dataModule;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	/**
@@ -164,6 +188,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 * 编辑模板
 	 */
 	@Transactional(rollbackFor = Exception.class)
+	@CacheEvict(value="'newestDataModule_'+#reportType+#businessType", beforeInvocation=true)
 	public void editDataModule(String reportType,
 			String businessType, String html)
 			throws FormulaAnalysisException {

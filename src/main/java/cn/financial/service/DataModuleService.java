@@ -15,7 +15,8 @@ public interface DataModuleService {
      * 查询所有用户/多条件查询用户列表
      * @return
      */
-    List<DataModule> listDataModule(Map<Object, Object> map);
+    List<DataModule> listDataModule(String moduleName,String versionNumber,
+			String businessType,String reportType,String founder,Integer statue);
     
     /**
      * 查询所有用户/多条件查询用户列表(简单列表)
@@ -24,7 +25,8 @@ public interface DataModuleService {
     List<ModuleList> queryModuleList(DataModule module,
     		Integer startPage,Integer pageSize);
 	
-    DataModuleResult queryModuleLists(Map<Object, Object> map,Integer page,Integer pageSize);
+    DataModuleResult queryModuleLists(String moduleName,String versionNumber,
+			String businessType,String reportType,String founder,Integer statue,Integer page,Integer pageSize);
     /**
      * 新增数据模块
      * @param dataModule

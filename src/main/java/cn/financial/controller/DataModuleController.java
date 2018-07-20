@@ -73,21 +73,22 @@ public class DataModuleController {
 			/*pageNo = pageNo == null?1:pageNo;
 		    pageSize = pageSize == null?10:pageSize;*/
 		   
-			Map<Object, Object> map = new HashMap<>();
+			/*Map<Object, Object> map = new HashMap<>();
 			
-			
+			//String moduleName="";
 			if(null!= moduleName && !"".equals(moduleName)){
                // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
 				map.put("moduleName",moduleName);
-            }
+            }*/
 			//配置模板列表 默认查询有效
-			map.put("statue",DataModule.STATUS_CONSUMED);
+			Integer statue=DataModule.STATUS_CONSUMED;
 //			pageNo = pageNo == null?0:(pageNo - 1) * pageSize;
 //		    pageSize = pageSize == null?10:pageSize;
 //			List<ModuleList> list=dataModuleService.queryModuleList(bean, pageNo, pageSize);
 //			result.setData(list);
 			
-			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(map,page,pageSize);
+			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(moduleName,null,
+					 null,null,null,statue,page,pageSize);
 			result.setData(dataModuleResult);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {
@@ -115,11 +116,15 @@ public class DataModuleController {
 		DataResult dataResult=new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(dataModuleId);
-			bean.setModuleData("");  //清空返回值的json数据
-			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+			if(bean!=null){
+				bean.setModuleData("");  //清空返回值的json数据
+				/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 			dataMap.put("data", bean);*/
-			dataResult.setData(bean);
-			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
+				dataResult.setData(bean);
+				ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
+			}else{
+				ElementXMLUtils.returnValue(ElementConfig.DATA_MODULE_NULL,dataResult);
+			}
 		} catch (Exception e) {
 			logger.error("根据ID查询模板错误",e);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,dataResult);
@@ -167,7 +172,7 @@ public class DataModuleController {
 	 * @param secondColNum 纵向标题后缀
 	 * @return
 	 */
-	@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
+	//@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
 	@PostMapping("editDataModule")
 	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = ResultUtils.class)
 	@ApiImplicitParams({
