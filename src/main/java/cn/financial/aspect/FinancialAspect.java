@@ -64,7 +64,7 @@ public class FinancialAspect {
         ApiOperation methodAnnotation = method.getAnnotation(ApiOperation.class);
         
         
-        Object object = pjp.proceed(params);//执行该方法  
+        Object object = pjp.proceed(args);//执行该方法  
         
         String classWork="用户执行的操作是:";
         if(classAnnotation!=null){
