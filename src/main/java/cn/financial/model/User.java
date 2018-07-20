@@ -1,6 +1,9 @@
 package cn.financial.model;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -39,6 +42,12 @@ public class User implements Serializable{
     private String expreTime;//密码到期时间
     @ApiModelProperty(value="uuid随机数生成盐",name="salt")
     private String salt;  //uuid随机数生成
+    
+    
+    @ApiModelProperty(value="用户关联组织架构信息",name="jsonOrg")
+    private List<JSONObject> jsonOrg;
+    @ApiModelProperty(value="用户关联角色信息",name="jsonRole")
+    private List<JSONObject> jsonRole;
     
     public User() {
         super();
@@ -124,4 +133,20 @@ public class User implements Serializable{
 		this.salt = salt;
 	}
 
+    public List<JSONObject> getJsonOrg() {
+        return jsonOrg;
+    }
+
+    public void setJsonOrg(List<JSONObject> jsonOrg) {
+        this.jsonOrg = jsonOrg;
+    }
+
+    public List<JSONObject> getJsonRole() {
+        return jsonRole;
+    }
+
+    public void setJsonRole(List<JSONObject> jsonRole) {
+        this.jsonRole = jsonRole;
+    }
+	
 }
