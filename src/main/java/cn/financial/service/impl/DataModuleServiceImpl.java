@@ -188,7 +188,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 * 编辑模板
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	@CacheEvict(value="'newestDataModule_'+#reportType+#businessType", beforeInvocation=true)
+//	@CacheEvict(value="'newestDataModule_'+#reportType+#businessType", beforeInvocation=true)
 	public void editDataModule(String reportType,
 			String businessType, String html)
 			throws FormulaAnalysisException {
@@ -231,8 +231,12 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 */
 	private String getDataModuleName(String reportType, String businessType) {
 		Organization org = organizationService.getOrgaByKey(businessType);
+		String orgName = "";
+		if(org != null) {
+			orgName = org.getOrgName();
+		}
 		String reportTypeName = DataModule.getReprtTypeName(reportType);
-		return org.getOrgName() + reportTypeName;
+		return orgName + reportTypeName;
 	}
 	
 	
