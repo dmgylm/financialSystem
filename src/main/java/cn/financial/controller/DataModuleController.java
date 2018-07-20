@@ -69,24 +69,10 @@ public class DataModuleController {
 //		OutResult<List<DataModule>> outResult=new OutResult<List<DataModule>>();
 		DataModulesResult result=new DataModulesResult();
 		try {
-			//JSONObject json=JSONObject.fromObject(jsonData);
-			/*pageNo = pageNo == null?1:pageNo;
-		    pageSize = pageSize == null?10:pageSize;*/
-		   
-			/*Map<Object, Object> map = new HashMap<>();
 			
-			//String moduleName="";
-			if(null!= moduleName && !"".equals(moduleName)){
-               // map.put("moduleName",  new String(json.getString("moduleName").getBytes("ISO-8859-1"), "UTF-8"));//用户名
-				map.put("moduleName",moduleName);
-            }*/
 			//配置模板列表 默认查询有效
 			Integer statue=DataModule.STATUS_CONSUMED;
-//			pageNo = pageNo == null?0:(pageNo - 1) * pageSize;
-//		    pageSize = pageSize == null?10:pageSize;
-//			List<ModuleList> list=dataModuleService.queryModuleList(bean, pageNo, pageSize);
-//			result.setData(list);
-			
+
 			DataModuleResult dataModuleResult=dataModuleService.queryModuleLists(moduleName,null,
 					 null,null,null,statue,page,pageSize);
 			result.setData(dataModuleResult);

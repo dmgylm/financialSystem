@@ -33,6 +33,7 @@ import cn.financial.service.LogManagementService;
 import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
 
 @Component
 @Aspect
@@ -77,8 +78,9 @@ public class FinancialAspect {
     		
     		StringBuffer url = request.getRequestURL();
     		
-    		String logCode=((ResultUtils)object).getResultCode();
-    		
+    		JSONObject json=JSONObject.fromObject(object);
+    		//String logCode=((ResultUtils)object).getResultCode();
+    		String logCode=json.getString("resultCode");
     		//Subject subject = SecurityUtils.getSubject();
     		//User user = (User) SecurityUtils.getSubject().getPrincipal();  
     		String username = (String) SecurityUtils.getSubject().getPrincipal();
