@@ -51,7 +51,7 @@ public class User implements Serializable{
     
     @ApiModelProperty(value="用户关联组织架构信息  已匹配/未匹配",name="jsonOrg")
     private String orgFlag;
-    @ApiModelProperty(value="用户关联角色信息  已匹配/未匹配",name="jsonRole")
+    @ApiModelProperty(value="用户关联角色信息  已设置/未设置",name="jsonRole")
     private String roleFlag;
     
     public User() {
