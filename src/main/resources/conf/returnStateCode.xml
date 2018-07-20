@@ -191,4 +191,8 @@
         <code>287</code>
         <description>报表类型或业务板块有误</description>
     </Result>
+        <Result name="DATA_MODULE_NULL">
+        <code>261</code>
+        <description>配置模板不存在</description>
+    </Result>
 </StateCode>

@@ -27,7 +27,7 @@
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
-    
+    <aop:aspectj-autoproxy/>
     <!-- 用户登录后进行保存 -->
       <mvc:annotation-driven>
         <mvc:argument-resolvers>

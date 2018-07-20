@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.financial.dao.LogManagementDao">
+    <resultMap type="cn.financial.model.LogManagement" id="logManagement" >
+	   <id column="id" property="id" jdbcType="VARCHAR" />
+	   <result column="userName" property="userName" jdbcType="VARCHAR" />
+	   <result column="workUrl" property="workUrl" jdbcType="VARCHAR" />
+	   <result column="params" property="params" jdbcType="VARCHAR" />
+	   <result column="logCode" property="logCode" jdbcType="VARCHAR" />
+	   <result column="work" property="work" jdbcType="VARCHAR" />
+	   <result column="createTime" property="createTime" jdbcType="DATE" />
+	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	</resultMap>    
+	<!--查询全部模板/多条件查询模板列表-->
+    <select id="listLogManagement" parameterType="map" resultType="logManagement">
+        SELECT id,userName,workUrl,params,logCode,work,createTime,updateTime FROM logManagement WHERE 1 = 1 
+        <include refid="query_logManagement_where"></include>
+        ORDER BY createTime DESC 
+    </select>
+    
+    <!--新增模板-->
+    <insert id="insertLogManagement" parameterType="logManagement">
+        insert into logManagement(id,userName,workUrl,params,logCode,work,createTime) 
+        values (#{id},#{userName},#{workUrl},#{params},#{logCode},#{work},curdate())
+    </insert>
+
+    <!--修改模板-->
+    <!-- <update id="updateUser" parameterType="user">
+         UPDATE user
+		 <trim prefix="set" suffixOverrides=",">
+		  <if test="name!=null and name!=''">name=#{name},</if>
+		  <if test="realName!=null and realName!=''">realName=#{realName},</if>
+		  <if test="pwd!=null and pwd!=''">pwd=#{pwd},</if>
+		  <if test="jobNumber!=null and jobNumber!=''">jobNumber=#{jobNumber},</if>
+		  <if test="salt!=null and salt!=''">salt=#{salt},</if> 
+		  updateTime = curdate(),
+		 </trim>
+		 WHERE id=#{id}
+    </update> -->
+    <!-- <update id="updateDataModuleState">
+        UPDATE logManagement SET statue=0,updateTime = curdate() WHERE id=#{id}
+    </update> -->
+    
+    <!--定义一个sql片段 -->
+    <sql id="query_logManagement_where">
+        <if test="id!=null and id!=''">
+            and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="userName!=null and userName!=''">
+            and userName = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="workUrl!=null and workUrl!=''">
+            and workUrl = #{workUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="params!=null and params!=''">
+            and params = #{params,jdbcType=VARCHAR}
+        </if>
+        <if test="logCode!=null and logCode!=''">
+            and logCode = #{logCode,jdbcType=VARCHAR}
+        </if>
+        <if test="work!=null and work!=''">
+            and work = #{work,jdbcType=VARCHAR}
+        </if>
+    </sql>
+</mapper>
