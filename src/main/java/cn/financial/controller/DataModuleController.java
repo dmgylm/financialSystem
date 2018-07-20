@@ -172,7 +172,7 @@ public class DataModuleController {
 	 * @param secondColNum 纵向标题后缀
 	 * @return
 	 */
-	//@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
+	@RequiresPermissions(value={"data:create","data:update"},logical=Logical.OR)
 	@PostMapping("editDataModule")
 	@ApiOperation(value = "修改或新增模板",notes = "修改或新增模板",response = ResultUtils.class)
 	@ApiImplicitParams({
