@@ -686,7 +686,7 @@ public class CapitalController {
          * @throws Exception 
          */
         @RequiresPermissions("capital:download")
-        @RequestMapping(value="/export",method = RequestMethod.GET)
+        @RequestMapping(value="/export",method = RequestMethod.POST)
         @ApiOperation(value="导出资金流水数据", notes="根据条件查资金数据 (不传数据就是查询所有的) 并且导出",response = ResultUtils.class)
         @ApiImplicitParams({
             @ApiImplicitParam(name = "accountBank", value = "开户的银行", required = false, dataType = "String", paramType = "query"),
