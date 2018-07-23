@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "用户操作日志记录")
+@Api(tags = "用户接口调用日志记录")
 @Controller
 @RequestMapping("/logManagement")
 public class LogManagementController {

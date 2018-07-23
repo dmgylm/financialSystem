@@ -54,7 +54,7 @@ public class FinancialAspect {
        
         
 		Object[] args = pjp.getArgs();
-        Object[] params = new Object[args.length];
+        //Object[] params = new Object[args.length];
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method=signature.getMethod();
         
@@ -65,40 +65,47 @@ public class FinancialAspect {
         
         
         Object object = pjp.proceed(args);//执行该方法  
+        try {
+        	
+        	String classWork="用户执行的操作是:";
+            if(classAnnotation!=null){
+            	classWork+="'"+classAnnotation.tags()[0]+"'中的";
+            }
+            
+            if(methodAnnotation!=null) {
+            	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        		StringBuffer param = joinRequestParams(request);
+        		classWork+="'"+methodAnnotation.value()+"'";
+        		
+        		StringBuffer url = request.getRequestURL();
+        		String logCode="";
+        		//判断返回值类型
+        		if (object instanceof String) {
+        			logCode=object.toString();
+        		}else{
+        			JSONObject json=JSONObject.fromObject(object);
+            		//String logCode=((ResultUtils)object).getResultCode();
+            		logCode=json.getString("resultCode");
+        		}
+        		
+        		String username = (String) SecurityUtils.getSubject().getPrincipal();
+        		
+        		LogManagement logManagement=new LogManagement();
+        		logManagement.setId(UuidUtil.getUUID());
+        		logManagement.setLogCode(logCode);
+        		logManagement.setParams(param.toString());
+        		logManagement.setWork(classWork);
+        		logManagement.setUserName(username);
+        		logManagement.setWorkUrl(url.toString());
+        		logManagementService.insertLogManagement(logManagement);
+        		/*System.out.println("url是:"+url);
+        		System.out.println("param是:"+param.toString());
+            	System.out.println(classWork);
+            	System.out.println("返回状态码是:"+((ResultUtils)object).getResultCode());*/
+            }
+		} catch (Exception e) {
+		}
         
-        String classWork="用户执行的操作是:";
-        if(classAnnotation!=null){
-        	classWork+="'"+classAnnotation.tags()[0]+"'中的";
-        }
-        
-        if(methodAnnotation!=null) {
-        	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    		StringBuffer param = joinRequestParams(request);
-    		classWork+="'"+methodAnnotation.value()+"'";
-    		
-    		StringBuffer url = request.getRequestURL();
-    		
-    		JSONObject json=JSONObject.fromObject(object);
-    		//String logCode=((ResultUtils)object).getResultCode();
-    		String logCode=json.getString("resultCode");
-    		//Subject subject = SecurityUtils.getSubject();
-    		//User user = (User) SecurityUtils.getSubject().getPrincipal();  
-    		String username = (String) SecurityUtils.getSubject().getPrincipal();
-    		
-    		LogManagement logManagement=new LogManagement();
-    		logManagement.setId(UuidUtil.getUUID());
-    		logManagement.setLogCode(logCode);
-    		logManagement.setParams(param.toString());
-    		logManagement.setWork(classWork);
-    		logManagement.setUserName(username);
-    		logManagement.setWorkUrl(url.toString());
-    		logManagementService.insertLogManagement(logManagement);
-    		/*System.out.println("url是:"+url);
-    		System.out.println("param是:"+param.toString());
-        	System.out.println(classWork);
-        	System.out.println("返回状态码是:"+((ResultUtils)object).getResultCode());*/
-        }
-       
         return object;
     }  
 	
