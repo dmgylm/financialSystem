@@ -11,7 +11,7 @@
             and u.id=#{uId}
         </if> 
         <if test="orgName!=null and orgName!=''">
-            and o.orgName=#{orgName}
+            and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
         </if> 
 		ORDER BY m.createTime DESC
     </select>
