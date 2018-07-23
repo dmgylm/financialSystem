@@ -117,20 +117,15 @@ public class UserController{
                 map.put("start",pageSize * (page- 1));
             }
             List<User> user = new ArrayList<>();
-            List<User> userList = new ArrayList<>();
+            Integer userList = 0;
             if(orgName!=null && !orgName.equals("")){
-                //根据组织架构名称查询用户id
-                List<UserOrganization> userOrgName = userOrganizationService.listUserOrganization(null, orgName);
-                if(!CollectionUtils.isEmpty(userOrgName)){
-                    for(UserOrganization org : userOrgName){
-                        map.put("id", org.getuId());//用户id
-                        user.addAll(userService.listUser(map));//查询全部map为空
-                        userList.addAll(userService.listUserCount(map));//查询总条数
-                    }
-                }
+                //根据组织架构名称查询用户列表信息
+                map.put("orgName", orgName);
+                user = userService.listUserOrgName(map);
+                userList = userService.listUserOrgNameCount(map);//查询总条数
             }else{
                 user.addAll(userService.listUser(map));//查询全部map为空
-                userList.addAll(userService.listUserCount(map));//查询总条数
+                userList = userService.listUserCount(map);//查询总条数
             }
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
@@ -149,7 +144,7 @@ public class UserController{
                 }
             }
             dataMap.put("userList", user);
-            dataMap.put("total", userList.size());
+            dataMap.put("total", userList);
             dataMapList.put("data", dataMap);
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
