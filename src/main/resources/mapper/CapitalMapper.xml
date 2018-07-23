@@ -6,11 +6,7 @@
      
        <resultMap id="capital" type="cn.financial.model.Capital">
            <id column="id" property="id" jdbcType="INTEGER" />
-           <result column="plate" property="plate" jdbcType="VARCHAR" />
-           <result column="bu" property="bu" jdbcType="VARCHAR" />
-           <result column="regionName" property="regionName" jdbcType="VARCHAR" />
-           <result column="province" property="province" jdbcType="VARCHAR" />
-           <result column="city" property="city" jdbcType="VARCHAR" />
+           <result column="oId" property="oId" jdbcType="VARCHAR" />
            <result column="company" property="company" jdbcType="VARCHAR" />
            <result column="accountName" property="accountName" jdbcType="VARCHAR" />
            <result column="accountBank" property="accountBank" jdbcType="VARCHAR" />
@@ -30,6 +26,7 @@
            <result column="month" property="month" jdbcType="INTEGER" /> 
            <result column="status" property="status" jdbcType="INTEGER"/> 
            <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+           <result column="editor" property="editor" jdbcType="INTEGER" />
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap>    
  

@@ -7,7 +7,6 @@
        <resultMap id="businessData" type="cn.financial.model.BusinessData">
            <id column="id" property="id" jdbcType="INTEGER" />
            <result column="oId" property="oId" jdbcType="VARCHAR" />
-           <result column="info" property="info"  />
            <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
            <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
            <result column="typeId" property="typeId" jdbcType="VARCHAR" />
@@ -18,7 +17,7 @@
            <result column="delStatus" property="delStatus" jdbcType="INTEGER"/>
            <result column="sId" property="sId" jdbcType="INTEGER"/>
            <result column="dataModuleId" property="dataModuleId" jdbcType="VARCHAR" />
-           
+           <result column="version" property="version" jdbcType="INTEGER"/>
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
