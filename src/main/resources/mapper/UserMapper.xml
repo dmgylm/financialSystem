@@ -23,9 +23,8 @@
         </if>
     </select>
     <!--查询全部用户/多条件查询用户列表 总条数-->
-    <select id="listUserCount" parameterType="map" resultType="user">
-        SELECT id,name,realName,jobNumber,status,DATE_FORMAT(createTime,"%Y-%m-%d %h:%i:%s") as createTime,
-        DATE_FORMAT(updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(expreTime,"%Y-%m-%d") as expreTime FROM user WHERE 1 = 1 
+    <select id="listUserCount" parameterType="map" resultType="INTEGER">
+        SELECT count(1) FROM user WHERE 1 = 1 
         <include refid="query_user_where"></include>
     </select>
     <!--新增用户-->
@@ -75,6 +74,32 @@
         UPDATE user SET status=0 WHERE id=#{userId}
     </update>
     
+    <!--根据组织架构名称查询用户列表信息   从小到大-->
+    <select id="listUserOrgName" parameterType="map" resultType="user">    
+        SELECT u.id as id,u.name as name,u.realName as realName,u.jobNumber as jobNumber,u.status as status,
+        DATE_FORMAT(u.createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+        DATE_FORMAT(u.updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(u.expreTime,"%Y-%m-%d") as expreTime
+        FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        WHERE 1=1
+        <include refid="query_userOrganization_where"></include>
+        <if test="orgName!=null and orgName!=''">
+            and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
+        </if> 
+        ORDER BY u.createTime DESC
+        <if test="pageSize!=null and pageSize!=''">
+            LIMIT #{start},#{pageSize}
+        </if>
+    </select>
+    <!--根据组织架构名称查询用户列表信息总条数-->
+    <select id="listUserOrgNameCount" parameterType="map" resultType="INTEGER">    
+        SELECT count(1) FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        WHERE 1=1
+        <include refid="query_userOrganization_where"></include>
+        <if test="orgName!=null and orgName!=''">
+            and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
+        </if> 
+    </select>
+    
     <!--定义一个sql片段 -->
     <sql id="query_user_where">
         <if test="id!=null and id!=''">
@@ -92,7 +117,7 @@
         <if test="jobNumber!=null and jobNumber!=''">
             and jobNumber = #{jobNumber,jdbcType=VARCHAR}
         </if>
-        <if test="status!=null and status!=''">
+        <if test="status!=null">
             and status = #{status,jdbcType=INTEGER}
         </if>
         <if test="createTime!=null and createTime!=''">
@@ -103,6 +128,33 @@
         </if>
         <if test="expreTime!=null and expreTime!=''">
             and expreTime LIKE CONCAT('%',#{expreTime,jdbcType=TIMESTAMP},'%')
+        </if>
+    </sql>
+    
+    <sql id="query_userOrganization_where">
+        <if test="id!=null and id!=''">
+            and u.id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+            and u.name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="realName!=null and realName!=''">
+            and u.realName LIKE CONCAT('%',#{realName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="jobNumber!=null and jobNumber!=''">
+            and u.jobNumber = #{jobNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="status!=null">
+            and u.status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+            and u.createTime LIKE CONCAT('%',#{createTime,jdbcType=TIMESTAMP},'%')
+        </if>
+        <if test="updateTime!=null and updateTime!=''">
+            and u.updateTime LIKE CONCAT('%',#{updateTime,jdbcType=TIMESTAMP},'%')
+        </if>
+        <if test="expreTime!=null and expreTime!=''">
+            and u.expreTime LIKE CONCAT('%',#{expreTime,jdbcType=TIMESTAMP},'%')
         </if>
     </sql>
 </mapper>

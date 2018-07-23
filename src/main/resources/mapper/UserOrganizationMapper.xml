@@ -10,12 +10,11 @@
 		<if test="uId!=null and uId!=''">
             and u.id=#{uId}
         </if> 
-        <if test="orgName!=null and orgName!=''">
-            and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
-        </if> 
 		ORDER BY m.createTime DESC
     </select>
     
+    
+
     <!--新增-->
     <insert id="insertUserOrganization" parameterType="cn.financial.model.UserOrganization">
         insert into user_organization_mapping(id,uId,oId,createTime) values (#{id},#{uId},#{oId},now())
