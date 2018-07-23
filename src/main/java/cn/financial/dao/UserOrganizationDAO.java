@@ -16,7 +16,7 @@ public interface UserOrganizationDAO {
      * 查询所有
      * @return
      */
-    List<UserOrganization> listUserOrganization(@Param("uId") String uId, @Param("orgName") String orgName);
+    List<UserOrganization> listUserOrganization(@Param("uId") String uId);
     /**
      * 新增
      * @param userOrganization

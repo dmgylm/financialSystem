@@ -22,7 +22,7 @@ public interface UserDAO {
      * 查询所有用户/多条件查询用户列表  总条数 
      * @return
      */
-    List<User> listUserCount(Map<Object, Object> map);
+    Integer listUserCount(Map<Object, Object> map);
     /**
      * 根据name/jobNumber查询用户
      * @param name
@@ -67,4 +67,16 @@ public interface UserDAO {
      * @return
      */
     Integer deleteUser(String userId);
+    /**
+     * 根据组织架构名称查询用户列表信息
+     * @param map
+     * @return
+     */
+    List<User> listUserOrgName(Map<Object, Object> map);
+    /**
+     * 根据组织架构名称查询用户列表信息总条数
+     * @param map
+     * @return
+     */
+    Integer listUserOrgNameCount(Map<Object, Object> map);
 }
