@@ -44,7 +44,7 @@ public class UserServiceImpl implements  UserService{
      * 查询全部/多条件查询用户列表  总条数
      */
     @Override
-    public List<User> listUserCount(Map<Object, Object> map) {
+    public Integer listUserCount(Map<Object, Object> map) {
         return userDao.listUserCount(map);
     }
     /**
@@ -111,6 +111,20 @@ public class UserServiceImpl implements  UserService{
             return -1;
         }
         return userDao.deleteUser(userId);
+    }
+    /**
+     * 根据组织架构名称查询用户列表信息
+     */
+    @Override
+    public List<User> listUserOrgName(Map<Object, Object> map) {
+        return userDao.listUserOrgName(map);
+    }
+    /**
+     * 根据组织架构名称查询用户列表信息总条数
+     */
+    @Override
+    public Integer listUserOrgNameCount(Map<Object, Object> map) {
+        return userDao.listUserOrgNameCount(map);
     }
     //角色
     @Cacheable(value = "find_Roles_Permissions", key = "'findRoles_name_'+#username")
