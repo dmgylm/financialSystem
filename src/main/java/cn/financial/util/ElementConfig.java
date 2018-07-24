@@ -202,8 +202,14 @@ public class ElementConfig {
      * 报表类型或业务板块有误
      */
     public static final String STATIC_REPORTTYPE_FAIL = "STATIC_REPORTTYPE_FAIL"; 
-    
-    
+    /**
+     * 业务id为null
+     */
+    public static final String BUSINESSDATA_ID_NULL="BUSINESSDATA_ID_NULL";
+    /**
+     * 业务id不正确
+     */
+    public static final String BUSINESSDATA_ID_FAIL="BUSINESSDATA_ID_FAIL";
     /**
      * 配置模板不存在
      */
