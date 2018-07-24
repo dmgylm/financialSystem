@@ -73,4 +73,10 @@ public interface UserService {
      * @return
      */
     Integer listUserOrgNameCount(Map<Object, Object> map);
+    /**
+     * 根据组织架构id查询用户列表信息
+     * @param map
+     * @return
+     */
+    List<User> listUserOrgOId(Map<Object, Object> map);
 }
