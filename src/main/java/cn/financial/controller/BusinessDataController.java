@@ -308,62 +308,78 @@ public class BusinessDataController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "修改损益/预算的数据", notes = "根据条件修改损益/预算数据", response = ResultUtils.class)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "html", value = "传的json格式", required = true, dataType = "file", paramType = "query"),
-			@ApiImplicitParam(name = "id", value = "表id", required = true, dataType = "String", paramType = "query"),
-			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = true, dataType = "String", paramType = "query") })
+			@ApiImplicitParam(name = "html", value = "传的json格式", required = false, dataType = "file", paramType = "query"),
+			@ApiImplicitParam(name = "id", value = "表id", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
 	@ResponseBody
 	public ResultUtils updateBusinessData(HttpServletRequest request, String html, Integer status, String id) {
-		// 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 3退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
-		// Map<String, Object> dataMap = new HashMap<String, Object>();
+		// 需要参数，前端传来的HTML，业务表的id，状态（1保存  2提交 3退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
 		ResultUtils result = new ResultUtils();
 		// File file = new File("C:/Users/ellen/Downloads/测试html.txt");
 		try {
-			if (status == 1 || status == 2) {
-				if (status == 1) {// 如果状态是保存 数据库状态修改为 待提交 0 否者 改为已提交 2
-					status = 0;
-				} else {
-					status = 2;// 否者 改为已提交 2
-				}
-				Document doc = Jsoup.parse(html);// 得到html
-				// Document doc = Jsoup.parse(file, "UTF-8", "http://example.com/");
-				Elements inputHtml = doc.select("input");// 获取HTML所有input属性
-				/* System.out.println(inputHtml); */
-				BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
-				DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
-				JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
-				Map<String, Object> mo = new HashMap<String, Object>();
-				for (int i = 0; i < inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
-					mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val());
-				}
-				JSONObject newBudgetHtml = businessDataInfoServiceImpl.dgkey(dataMjo, mo);
-				BusinessData businessData = new BusinessData();
-				businessData.setId(id);
-				businessData.setStatus(status);
-				// map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
-				Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
-				if (i == 1) {
-					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("损益/预算数据 修改成功");
-				} else {
-					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("损益/预算数据 修改失败");
-				}
-				// 修改从表的info
-				BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
-				BusinessDataInfo businessDataInfo = new BusinessDataInfo();
-				businessDataInfo.setId(selectBusinessDataById.getId());
-				businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
-				Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
-				if (infoId == 1) {
-					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("损益/预算从表数据修改成功");
-				} else {
-					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("损益/预算从表数据修改失败");
-				}
-			} else {
-				result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）");
-			}
+		    //如果有html则是在编辑页面提交（可能是保存  或者提交） 
+		    if(html!=null&&!html.equals("")&&id!=null&&!id.equals("")){
+		        if (status == 1 || status == 2) {
+	                if (status == 1) {// 如果状态是保存 数据库状态修改为 待提交 0 否者 改为已提交 2
+	                    status = 0;
+	                } else {
+	                    status = 2;// 否者 改为已提交 2
+	                }
+	                Document doc = Jsoup.parse(html);// 得到html
+	                // Document doc = Jsoup.parse(file, "UTF-8", "http://example.com/");
+	                Elements inputHtml = doc.select("input");// 获取HTML所有input属性
+	                /* System.out.println(inputHtml); */
+	                BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
+	                DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
+	                JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
+	                Map<String, Object> mo = new HashMap<String, Object>();
+	                for (int i = 0; i < inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
+	                    mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val());
+	                }
+	                JSONObject newBudgetHtml = businessDataInfoServiceImpl.dgkey(dataMjo, mo);
+	                BusinessData businessData = new BusinessData();
+	                businessData.setId(id);
+	                businessData.setStatus(status);
+	                // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+	                Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
+	                if (i == 1) {
+	                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+	                    result.setResultDesc("损益/预算数据 修改成功");
+	                } else {
+	                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+	                    result.setResultDesc("损益/预算数据 修改失败");
+	                }
+	                // 修改从表的info
+	                BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
+	                BusinessDataInfo businessDataInfo = new BusinessDataInfo();
+	                businessDataInfo.setId(selectBusinessDataById.getId());
+	                businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+	                Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
+	                if (infoId == 1) {
+	                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+	                    result.setResultDesc("损益/预算从表数据修改成功");
+	                } else {
+	                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+	                    result.setResultDesc("损益/预算从表数据修改失败");
+	                }
+	            } else {
+	                result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）或者id不能为空");
+	            }
+		    }else if(status == 2&&id!=null&&!id.equals("")){ //如果html为空，则是直接提交（此时状态是提交 2）只需要把损益表的状态修改下
+		        BusinessData businessData = new BusinessData();
+                businessData.setId(id);
+                businessData.setStatus(status);
+                Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
+                if (i == 1) {
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                    result.setResultDesc("损益/预算数据 修改成功");
+                } else {
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                    result.setResultDesc("损益/预算数据 修改失败");
+                }
+		    }else{
+		        result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）或者id不能为空");
+		    }
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
 
@@ -482,7 +498,7 @@ public class BusinessDataController {
 	 * 
 	 * @param response
 	 * @throws Exception
-	 */
+	 *//*
 	@RequiresPermissions("businessData:download")
 	@RequestMapping(value = "/export", method = RequestMethod.POST)
 	@ApiOperation(value = "导出损益/预算数据", notes = "根据条件导出所有的数据", response = ResultUtils.class)
@@ -534,11 +550,11 @@ public class BusinessDataController {
 					String pid = pidJosn.getString("pid"); // 找到权限数据里面的组织id
 					typeId[i] = pid;
 					// 找权限的pid和损益表的typeId进行筛选
-					/*
+					
 					 * for (int j = 0; j < list.size(); j++) { String
 					 * typeId=list.get(j).getTypeId();//找损益表里面的typeId if(pid.equals(typeId)){
 					 * //判断权限pid 和全部数据的typeId是否相同 businessData.add(list.get(j)); // 可以显示的损益数据 } }
-					 */
+					 
 				}
 				for (int i = 0; i < listTree.size(); i++) {
 					String id = listTree.get(i).getString("id");
@@ -629,7 +645,7 @@ public class BusinessDataController {
 				}
 		}
 	}
-
+*/
 	/**
 	 * 根据业务表id导出excel
 	 * 
@@ -637,19 +653,17 @@ public class BusinessDataController {
 	 * @param response
 	 */
 	@ResponseBody
+	@RequiresPermissions("businessData:download")
 	@RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
 	@ApiOperation(value = "导出Excel", notes = "根据业务表id导出excel", response = ResultUtils.class)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "businId", value = "业务表id", dataType = "string", paramType = "query", required = true) })
 	@ApiResponses({ @ApiResponse(code = 200, message = "成功"), @ApiResponse(code = 400, message = "失败"),
 			@ApiResponse(code = 500, message = "系统错误"), @ApiResponse(code = 251, message = "业务表id为空") })
-	@RequiresPermissions("businessData:download")
-	public ResultUtils exportExcel(HttpServletRequest request, HttpServletResponse response, String businId)
-			throws IOException {
+	public ResultUtils exportExcel(HttpServletRequest request, HttpServletResponse response, String businId)throws IOException {
 		ResultUtils result = new ResultUtils();
 		if (("").equals(businId) || businId == null) {
 			ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_NULL, result);
-
 		} else {
 			try {
 				BusinessData businessData = businessDataService.selectBusinessDataById(businId);
@@ -678,8 +692,6 @@ public class BusinessDataController {
 					os.close();
 					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
 				}
-			
-				
 			} catch (Exception e) {
 				ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
 			}
