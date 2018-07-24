@@ -1,6 +1,7 @@
 package cn.financial.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Organization;
+import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
@@ -29,12 +33,14 @@ import cn.financial.model.response.UserOrganizationResult;
 import cn.financial.model.response.UserResetPwd;
 import cn.financial.model.response.UserResetPwdInfo;
 import cn.financial.model.response.UserRoleResult;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
 import io.swagger.annotations.Api;
@@ -61,6 +67,8 @@ public class UserController{
     private UserRoleService userRoleService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
+    @Autowired
+    private OrganizationService organizationService;
     @Autowired
     private PasswordHelper passwordHelper;
     @Autowired
@@ -92,10 +100,11 @@ public class UserController{
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
-    public Map<String, Object> listUser(String name, String realName, String jobNumber,String userId,
+    public Map<String, Object> listUser(HttpServletRequest request, String name, String realName, String jobNumber,String userId,
             String createTime, String updateTime, Integer status,String orgName, Integer pageSize, Integer page){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        User currentUser = (User) request.getAttribute("user");
     	try {
     	    Map<Object, Object> map = new HashMap<>();
 	        map.put("name", name);//用户名
@@ -103,7 +112,6 @@ public class UserController{
     	    map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
-    	    map.put("orgName", orgName);//组织架构名称
     	    map.put("createTime", createTime);//创建时间
     	    map.put("updateTime", updateTime);//修改时间
     	    if(pageSize==null || pageSize.equals("")){
@@ -117,12 +125,56 @@ public class UserController{
                 map.put("start",pageSize * (page- 1));
             }
             List<User> user = new ArrayList<>();
+            List<UserOrganization> userOrgPermission = new ArrayList<>();
             Integer userList = 0;
+            //判断当前登录用户数据权限范围
+            if(currentUser.getId()!=null && !currentUser.getId().equals("")){
+                //根据当前登录用户id查询组织节点信息
+                userOrgPermission = userOrganizationService.listUserOrganization(currentUser.getId());
+            }
             if(orgName!=null && !orgName.equals("")){
-                //根据组织架构名称查询用户列表信息
-                map.put("orgName", orgName);
-                user = userService.listUserOrgName(map);
-                userList = userService.listUserOrgNameCount(map);//查询总条数
+                List<Organization> userOrg = new ArrayList<>();
+                List<Organization> userOrganization = new ArrayList<>();
+                List<Organization> userOrganizationList = new ArrayList<>();
+                Map<String, Organization> removalOrg = new HashMap<>();
+                Map<String, Organization> removal = new HashMap<>();
+                if(!CollectionUtils.isEmpty(userOrgPermission)){
+                    for(UserOrganization userOrgId : userOrgPermission){
+                        //根据当前节点id查询子节点名称
+                        userOrg.addAll(organizationService.listTreeByIdForSon(userOrgId.getoId()));
+                    }
+                }else{
+                    dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION));
+                    return dataMapList;
+                }
+                List<String> org = new ArrayList<>();
+                if(!CollectionUtils.isEmpty(userOrg)){
+                    for(Organization orgId : userOrg){
+                        removalOrg.put(orgId.getId(), orgId);
+                    }
+                    for(Organization orgRemoval : removalOrg.values()){
+                        if(orgRemoval.getOrgName().contains(orgName)){
+                            userOrganization.add(orgRemoval);
+                        }
+                    }
+                    if(!CollectionUtils.isEmpty(userOrganization)){
+                        for(Organization orgId : userOrganization){
+                            //根据oId查询当前节点名称和子节点名称
+                            userOrganizationList.addAll(organizationService.listTreeByIdForSon(orgId.getId()));
+                        }
+                        if(!CollectionUtils.isEmpty(userOrganizationList)){
+                           for(Organization orgTion : userOrganizationList){
+                               removal.put(orgTion.getId(), orgTion);
+                           }
+                           for(Organization orgRemoval : removal.values()){
+                               org.add(orgRemoval.getId()); 
+                           }
+                           map.put("oId", org);
+                           user.addAll(userService.listUserOrgOId(map));//查询全部map为空
+                           userList = userService.listUserOrgNameCount(map);
+                        }
+                    }     
+                }
             }else{
                 user.addAll(userService.listUser(map));//查询全部map为空
                 userList = userService.listUserCount(map);//查询总条数
@@ -131,6 +183,7 @@ public class UserController{
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
+                    //item.setJsonOrg(jsonOrg);
                     if(!CollectionUtils.isEmpty(jsonOrg)){
                         item.setOrgFlag(User.MATCH);
                     }else{
