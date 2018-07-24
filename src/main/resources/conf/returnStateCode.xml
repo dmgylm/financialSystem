@@ -195,4 +195,12 @@
         <code>261</code>
         <description>配置模板不存在</description>
     </Result>
+    <Result name="BUSINESSDATA_ID_NULL">
+        <code>288</code>
+        <description>业务id不能为空</description>
+    </Result>
+    <Result name="BUSINESSDATA_ID_FAIL">
+        <code>289</code>
+        <description>业务id输入不正确</description>
+    </Result>
 </StateCode>
