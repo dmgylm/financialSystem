@@ -126,6 +126,13 @@ public class UserServiceImpl implements  UserService{
     public Integer listUserOrgNameCount(Map<Object, Object> map) {
         return userDao.listUserOrgNameCount(map);
     }
+    /**
+     * 根据组织架构id查询用户列表信息
+     */
+    @Override
+    public List<User> listUserOrgOId(Map<Object, Object> map) {
+        return userDao.listUserOrgOId(map);
+    }
     //角色
     @Cacheable(value = "find_Roles_Permissions", key = "'findRoles_name_'+#username")
     public Set<String> findRoles(String username) {
