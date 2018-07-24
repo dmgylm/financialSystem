@@ -109,7 +109,6 @@ public class BusinessDataController {
 	@ResponseBody
 	public BusinessResult listBusinessDataBy(HttpServletRequest request, String year, String month, Integer sId,
 			Integer page, Integer pageSize) {
-		// Map<String, Object> dataMap = new HashMap<String, Object>();
 		BusinessResult businessResult = new BusinessResult();
 		try {
 			Map<Object, Object> map = new HashMap<>();
@@ -144,10 +143,8 @@ public class BusinessDataController {
 				}
 			}
 			if (listOrganization.size() > 0 || listTree.size() > 0) {
-				// List<BusinessData> list = businessDataService.listBusinessDataBy(map);
 				// //查询所有符合搜索条件的表数据
 				String[] typeId = new String[listOrganization.size() + listTree.size()];// 获取权限的typeId
-				// List<BusinessData> businessData=new ArrayList<>(); //所有符合权限的数据
 				for (int i = 0; i < listOrganization.size(); i++) { // 循环权限全部数据
 					JSONObject pidJosn = listOrganization.get(i);
 					String pid = pidJosn.getString("pid"); // 找到权限数据里面的组织id
@@ -180,7 +177,6 @@ public class BusinessDataController {
 				List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
 				// 根据oId查询部门信息
 				// 循环合格数据的oid 去查询他的所有部门
-				// List<Business> businessList=new ArrayList<>();//页面列表排列数据
 				List<Business> businessList = new ArrayList<>();
 				for (int i = 0; i < businessData.size(); i++) {
 					List<Organization> listTreeByIdForSon = organizationService
@@ -233,7 +229,6 @@ public class BusinessDataController {
 			@ApiImplicitParam(name = "htmlType", value = "1：HTML类型:配置模板  2：HTML类型:录入页面 3：HTML类型:查看页面 这里的htmlType是2", required = true, dataType = "integer", paramType = "query") })
 	@ResponseBody
 	public HtmlResult selectBusinessDataById(HttpServletRequest request, String id, Integer htmlType) {
-		// Map<String, Object> dataMap = new HashMap<String, Object>();
 		HtmlResult htmlResult = new HtmlResult();
 		try {
 			if (id != null && !id.equals("") && htmlType != null) {
