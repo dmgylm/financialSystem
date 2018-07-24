@@ -661,7 +661,7 @@ public class BusinessDataController {
 					JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
 					JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
 					// HtmlGenerate htmlGenerate=new HtmlGenerate();
-					String mergeJson = JsonConvertProcess.mergeJson(joTemp, joInfo).toString();
+					JSONObject mergeJson = JsonConvertProcess.mergeJson(joTemp, joInfo);
 					Workbook wb = JsonConvertExcel.getExcel(mergeJson, dm.getModuleName());
 				/*	response.setContentType("application/vnd.ms-excel;charset=utf-8");*/
 					response.setContentType("application/x-download");
