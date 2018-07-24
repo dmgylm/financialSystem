@@ -34,11 +34,8 @@ public class JsonConvertExcel {
  * @return Workbook (excel)
  * @throws IOException
  */
-	public  static Workbook getExcel(String Json,String sheetName) throws IOException {
-		String paths = "C:/Users/admin/Desktop/test.txt";
-		JSONObject json = JSONObject.parseObject(JsonConvertProcess.readFileContent(paths));
-		System.out.println(json);
-		Map<Integer, Map<Integer, JSONObject>> trMap = assembleData(json);
+	public  static Workbook getExcel(JSONObject Json,String sheetName) throws IOException {
+		Map<Integer, Map<Integer, JSONObject>> trMap = assembleData(Json);
 		trMap = sortTableRowMap(trMap);
 		return assembleTable(trMap, sheetName);
 	}
