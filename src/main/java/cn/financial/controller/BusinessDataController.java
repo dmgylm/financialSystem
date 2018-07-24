@@ -660,7 +660,6 @@ public class BusinessDataController {
 					BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(businId);
 					JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
 					JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
-					JsonConvertProcess.mergeJson(joTemp, joInfo);
 					// HtmlGenerate htmlGenerate=new HtmlGenerate();
 					String mergeJson = JsonConvertProcess.mergeJson(joTemp, joInfo).toString();
 					Workbook wb = JsonConvertExcel.getExcel(mergeJson, dm.getModuleName());
