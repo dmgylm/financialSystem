@@ -30,7 +30,7 @@ public class HtmlAnalysis {
 	
 	private static String modelRowKey = "";
 	private static String prefixCelKey = "";
-	private static String Separate_Modular = "_";//模块和科目间的字符间隔
+	public static String Separate_Modular = "_";//模块和科目间的字符间隔
 	private static String Separate_X_Y = "";//科目和横向标题间(本月实际)的字符间隔
 	
 	private Map<String,String> rowKeyMap = new HashMap<String, String>();
@@ -223,7 +223,7 @@ public class HtmlAnalysis {
 		}
 		
 		String key = "";
-		if(!isLabel(inputboxType)) {
+		if(!isLabel(inputboxType) && StringUtils.isValid(rowKey) && StringUtils.isValid(colKey)) {
 			key = rowKey + Separate_X_Y + colKey;
 			key = removeSpecialChar(key);
 		}

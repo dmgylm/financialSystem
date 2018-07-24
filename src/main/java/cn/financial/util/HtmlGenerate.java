@@ -196,7 +196,7 @@ public class HtmlGenerate {
 				}
 				
 				Element td = tr.appendElement("td");
-				setTableCellAttr(td,col,display,htmlType);
+				setTableCellAttr(td,col,display,htmlType,rowNum,colNum);
 			}
 		}
 	}
@@ -207,7 +207,7 @@ public class HtmlGenerate {
 	 * @param td
 	 * @param col
 	 */
-	private void setTableCellAttr(Element td, JSONObject col,Boolean display,Integer htmlType) {
+	private void setTableCellAttr(Element td, JSONObject col,Boolean display,Integer htmlType,Integer rowNum,Integer colNum) {
 		int inputType = col.getInteger("type");
 		String name = "";
 		String key = "";
@@ -225,8 +225,12 @@ public class HtmlGenerate {
 			value = col.getString("value");
 		}
 		
+		if(HtmlAnalysis.isLabel(inputType) || !isValid(key)) {
+			key = generateValidKey(rowNum,colNum);
+		}
+		
 		if (htmlType == HTML_TYPE_TEMPLATE) {
-			generateTemplateContent(td, inputType, name, formula);
+			generateTemplateContent(td, inputType,key, name, formula);
 		} else if (htmlType == HTML_TYPE_INPUT) {
 			generateInputContent(td, inputType, key,name, formula, value,display);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
@@ -247,7 +251,7 @@ public class HtmlGenerate {
 			td.addClass(NONE_DISPLAY_CLASS);
 		}
 	}
-
+	
 	/**
 	 * 预览页面生成
 	 * @param td
@@ -290,6 +294,7 @@ public class HtmlGenerate {
 			Element input = td.appendElement("input");
 			input.attr("name",key);
 			input.attr("value",value);
+			input.attr("id",key);
 			input.addClass("input");
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
 			td.text(value);
@@ -307,9 +312,11 @@ public class HtmlGenerate {
 	 * @param name
 	 * @param formula
 	 */
-	private void generateTemplateContent(Element td, int inputType,
+	private void generateTemplateContent(Element td, int inputType,String key,
 			String name, String formula) {
 		Element input = td.appendElement("input");
+		input.attr("id",key);//添加ID属性,保证前端编辑后可正常赋值并提交后台
+		
 		if(inputType==BOX_TYPE_INPUT) {//input
 //			input.attr("value",col.getString("name"));
 			input.addClass(CLASS_INPUT);
@@ -395,6 +402,16 @@ public class HtmlGenerate {
 		table.attr("id","generate_business_table");
 		return table;
 	}
+	
+	private String generateValidKey(int rowNum, int colNum) {
+		return "row_col_"+rowNum+"_"+colNum;
+	}
+
+	private boolean isValid(String key) {
+		key = key.replace(HtmlAnalysis.Separate_Modular, "");
+		return StringUtils.isValid(key);
+	}
+
 	
 	static class MapKeyComparator implements Comparator<Integer>{
 	    public int compare(Integer value1, Integer value2) {

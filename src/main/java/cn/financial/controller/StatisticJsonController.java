@@ -250,7 +250,7 @@ public class StatisticJsonController {
 			response.setContentType("application/vnd.ms-excel");
 			response.setCharacterEncoding("utf-8");
 			// 对文件名进行处理。防止文件名乱码
-			String fileName =  dataModuleName+".xls";
+			String fileName =  dataModuleName+".xlsx";
 			fileName = URLEncoder.encode(fileName, "UTF-8");
 			// Content-disposition属性设置成以附件方式进行下载
 			response.setHeader("Content-disposition", "attachment;filename=" + fileName);

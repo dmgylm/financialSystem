@@ -26,20 +26,21 @@ public class SessionManager extends DefaultWebSessionManager{
 	}
 	
 	private Serializable getReferencedSessionId(ServletRequest request, ServletResponse response) {
-
-        String id = getSessionIdCookieValue(request, response);
-        if (id != null) {
-            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
-                    ShiroHttpServletRequest.COOKIE_SESSION_ID_SOURCE);
-        } else {
-            //not in a cookie, or cookie is disabled - try the request URI as a fallback (i.e. due to URL rewriting):
-
-            //try the URI path segment parameters first:
-            id = getUriPathSegmentParamValue(request, ShiroHttpSession.DEFAULT_SESSION_ID_NAME);
-
-            if (id == null) {
-            	 id = WebUtils.toHttp(request).getHeader(this.authorization);  
-            	if(id == null) {
+		//url Session
+		String id = getUriPathSegmentParamValue(request, ShiroHttpSession.DEFAULT_SESSION_ID_NAME);
+		if(id != null) {
+			request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
+                    ShiroHttpServletRequest.URL_SESSION_ID_SOURCE);
+		} else {
+			//Header Session
+			 id = WebUtils.toHttp(request).getHeader(this.authorization);
+			 if(id == null) {
+				 //Cookie Session
+				 id = getSessionIdCookieValue(request, response);
+				 if (id != null) {
+		            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
+		                    ShiroHttpServletRequest.COOKIE_SESSION_ID_SOURCE);
+		        } else {
             		//not a URI path segment parameter, try the query parameters:
             		String name = getSessionIdName();
             		id = request.getParameter(name);
@@ -47,13 +48,10 @@ public class SessionManager extends DefaultWebSessionManager{
             			//try lowercase:
             			id = request.getParameter(name.toLowerCase());
             		}
-            	}
-            }
-            if (id != null) {
-                request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,
-                        ShiroHttpServletRequest.URL_SESSION_ID_SOURCE);
-            }
-        }
+		        }
+			 }
+		}
+		
         if (id != null) {
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);
             //automatically mark it valid here.  If it is invalid, the
