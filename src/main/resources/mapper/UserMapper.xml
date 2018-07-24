@@ -74,7 +74,7 @@
         UPDATE user SET status=0 WHERE id=#{userId}
     </update>
     
-    <!--根据组织架构名称查询用户列表信息   从小到大-->
+    <!--根据组织架构名称查询用户列表信息-->
     <select id="listUserOrgName" parameterType="map" resultType="user">    
         SELECT u.id as id,u.name as name,u.realName as realName,u.jobNumber as jobNumber,u.status as status,
         DATE_FORMAT(u.createTime,"%Y-%m-%d %h:%i:%s") as createTime,
@@ -84,20 +84,42 @@
         <include refid="query_userOrganization_where"></include>
         <if test="orgName!=null and orgName!=''">
             and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
-        </if> 
+        </if>
+    </select>
+    
+    <!--根据组织架构id查询用户列表信息-->
+    <select id="listUserOrgOId" parameterType="map" resultType="user">    
+        SELECT u.id as id,u.name as name,u.realName as realName,u.jobNumber as jobNumber,u.status as status,
+        DATE_FORMAT(u.createTime,"%Y-%m-%d %h:%i:%s") as createTime,
+        DATE_FORMAT(u.updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(u.expreTime,"%Y-%m-%d") as expreTime
+        FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        WHERE 1=1
+        <include refid="query_userOrganization_where"></include>
+        <if test="oId!=null and oId!=''">
+            and m.oId in 
+            <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+                #{oId}
+            </foreach>
+        </if>
+        GROUP BY u.name
         ORDER BY u.createTime DESC
         <if test="pageSize!=null and pageSize!=''">
             LIMIT #{start},#{pageSize}
         </if>
     </select>
-    <!--根据组织架构名称查询用户列表信息总条数-->
+    
+    <!--根据组织架构id查询用户列表信息总条数-->
     <select id="listUserOrgNameCount" parameterType="map" resultType="INTEGER">    
-        SELECT count(1) FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        select count(1) from (SELECT u.name as name FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
-        <if test="orgName!=null and orgName!=''">
-            and o.orgName LIKE CONCAT('%',#{orgName,jdbcType=TIMESTAMP},'%')
-        </if> 
+        <if test="oId!=null and oId!=''">
+            and m.oId in 
+            <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+                #{oId}
+            </foreach>
+        </if>
+        GROUP BY u.name) total
     </select>
     
     <!--定义一个sql片段 -->
