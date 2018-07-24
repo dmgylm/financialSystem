@@ -1,6 +1,5 @@
 package cn.financial.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jsoup.Jsoup;
@@ -24,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
@@ -43,10 +38,8 @@ import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
-import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
 import cn.financial.util.JsonConvertProcess;
@@ -55,10 +48,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -267,38 +258,9 @@ public class BusinessDataController {
 		return htmlResult;
 	}
 
-	/*  *//**
-			 * 新增损益数据
-			 * 
-			 * @param request
-			 * @param response
-			 * @return
-			 *//*
-				 * @RequiresPermissions("businessData:view")
-				 * 
-				 * @RequestMapping(value="/insert", method = RequestMethod.GET) public
-				 * Map<String, Object> insertBusinessData(HttpServletRequest request){
-				 * Map<String, Object> dataMap = new HashMap<String, Object>(); try {
-				 * BusinessData businessData=new BusinessData(); User user = (User)
-				 * request.getAttribute("user"); String uId = user.getId();
-				 * businessData.setId(UuidUtil.getUUID()); //id自动生成
-				 * businessData.setoId("b3cb5b87b5b54bec811b484810e9646a");
-				 * businessData.setTypeId("06aecd35fbf9451aab2b761ff9952123");
-				 * businessData.setuId(uId); businessData.setYear(2018);
-				 * businessData.setMonth(7); businessData.setStatus(2);
-				 * businessData.setDelStatus(1); businessData.setsId(1);
-				 * businessData.setDataModuleId("d4418bffb86742039358a3895d4f55c6"); Integer i =
-				 * businessDataService.insertBusinessData(businessData); if (i == 1) {
-				 * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-				 * } else {
-				 * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR)); } }
-				 * catch (Exception e) {
-				 * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-				 * 
-				 * this.logger.error(e.getMessage(), e); } return dataMap; }
-				 */
-	/*
-	 * /** 修改损益数据
+	
+	
+	  /** 修改损益数据
 	 * 
 	 * @param request
 	 * 

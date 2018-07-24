@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
 import cn.financial.model.CapitalNatrue;
 import cn.financial.model.Organization;
@@ -110,7 +108,6 @@ public class CapitalController {
          @ResponseBody
         public CapitalResult listCapitalBy(HttpServletRequest request,String keyword,String accountBank,String accountNature,
                 String tradeTimeBeg,String tradeTimeEnd,String classify,Integer page,Integer pageSize) {
-            //Map<String, Object> dataMap = new HashMap<String, Object>();
             CapitalResult capitalResult=new CapitalResult();
             try {
                 Map<Object, Object> map = new HashMap<>();
@@ -333,7 +330,6 @@ public class CapitalController {
         @RequestMapping(value="/listById", method = RequestMethod.POST)
         @ResponseBody
         public CapitalByIdResult selectCapitalById(HttpServletRequest request,String id) {
-            //Map<String, Object> dataMap = new HashMap<String, Object>();
             CapitalByIdResult capitalByIdResult=new CapitalByIdResult();
             try {
                      if(id!=null&&!id.equals("")){
@@ -375,7 +371,6 @@ public class CapitalController {
                 @ApiImplicitParam(name = "remarks", value = "备注", required = false, dataType = "String",paramType = "query")})
         @ResponseBody
         public ResultUtils updateCapital(HttpServletRequest request,String id,String classify,String remarks) {
-            //Map<String, Object> dataMap = new HashMap<String, Object>();
             ResultUtils result=new ResultUtils();
             try {
                 Capital capital =new Capital();
@@ -399,38 +394,9 @@ public class CapitalController {
             return result;
         }
         
-       /* *//**
-         * 删除损益数据 （修改Status为0）
-         * @param request
-         * @return
-         *//*
-        @RequiresPermissions("capital:update")
-        @RequestMapping(value="/delete", method = RequestMethod.POST)
-        @ApiOperation(value="删除损益数据 （修改Status为0）", notes="根据id删除资金数据（修改Status为0）")
-        @ApiImplicitParam(name = "id", value = "资金流水表的id", required = true, dataType = "String")
-        @ResponseBody
-        public Map<Object, Object> deleteOrganization(HttpServletRequest request) {
-            Map<Object, Object> dataMap = new HashMap<Object, Object>();
-            String id = request.getParameter("id");
-            try {
-                if(id!=null && !id.equals("")){
-                Integer i =capitalService.deleteCapital(id);
-                if (i == 1) {
-                    dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                 } else {
-                     dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-                 }     
-                }
-            } catch (Exception e) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-                this.logger.error(e.getMessage(), e);
-            }
-            return dataMap;
-        }*/
-        
       
         /***
-         * 导入
+         * 导入上传
          */
         @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
@@ -438,7 +404,6 @@ public class CapitalController {
         @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=ResultUtils.class)
         @ResponseBody
         public ResultUtils excelImport(@RequestPart(value="uploadFile") @ApiParam(name="uploadFile",value="文件流对象,接收数组格式",required=true) MultipartFile uploadFile,HttpServletRequest request) throws IOException{
-            //Map<String, Object> dataMap = new HashMap<String, Object>();
             ResultUtils result=new ResultUtils();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
@@ -969,7 +934,7 @@ public class CapitalController {
             }
         }
     
-        /* * 根据条件查询账户性质项目分类数据
+        /** 根据条件查询账户性质项目分类数据
         * 
         * @param request
         * @param id
@@ -977,7 +942,6 @@ public class CapitalController {
         * @return
         */
        @ApiOperation(value="根据条件查询账户性质项目分类数据", notes="查询账户性质项目分类数据",response = CapitalNatrueResult.class)
-       /*@ApiImplicitParams({@ApiImplicitParam(name="cId",value="cId (1账户性质  2项目分类)",dataType="Integer", paramType = "query", required = false)})*/
        @RequiresPermissions("capital:view")
        @RequestMapping(value="/listCapitalNatrue", method = RequestMethod.POST)
        @ResponseBody
