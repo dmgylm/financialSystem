@@ -5,12 +5,16 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -27,13 +32,18 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
 import cn.financial.model.response.OganizationNode;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.StaticInfo;
 import cn.financial.model.response.StaticJson;
+import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.RedisCacheService;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HtmlGenerate;
+import cn.financial.util.JsonConvertExcel;
+import cn.financial.util.StringUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -52,6 +62,12 @@ public class StatisticJsonController {
 
     @Autowired
     private OrganizationService organizationService;
+    
+    @Autowired
+    private RedisCacheService redisCacheService;
+    
+    @Autowired
+    private DataModuleService dataModuleService;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
     
@@ -124,8 +140,13 @@ public class StatisticJsonController {
         	}
         	//存入缓存
     		statisticService.staticInfoMap(companyList,businessDataList,caCheUuid);
+    		JSONObject excelCacheJson = new JSONObject();
+    		excelCacheJson.put("json", ja);
+    		excelCacheJson.put("reportType", reportType);
+    		excelCacheJson.put("businessType", businessType);
+    		redisCacheService.put("staticInfoMap", caCheUuid, excelCacheJson);
 			HtmlGenerate hg = new HtmlGenerate(true);
-			String html = hg.generateHtml(ja.toString(),HtmlGenerate.HTML_TYPE_PREVIEW);
+			String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
@@ -207,5 +228,40 @@ public class StatisticJsonController {
             this.logger.error(e.getMessage(), e);
         }
         return si;
+    }
+    
+	@RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "导出Excel",notes = "导出Excel",response = ResultUtils.class)
+    @ApiImplicitParams({ 
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "caCheUuid", value = "缓存id(如:9ee9313edc334232b7a64a60f27ce5dd 对应缓存id,从staticJson接口获取caCheUuid值)", required = true)
+    	})
+    public ResultUtils exportExcel(HttpServletResponse response,String caCheUuid){
+    	ResultUtils result = new ResultUtils();
+    	try {
+    		if(!StringUtils.isValid(caCheUuid)) {
+    			 return ElementXMLUtils.returnValue(ElementConfig.STATIC_CACHEUUID_NULL, result);
+    		}
+    		JSONObject json = (JSONObject) redisCacheService.get("staticInfoMap", caCheUuid);
+    		String reportType = json.getString("reportType");
+    		String businessType = json.getString("businessType");
+    		String dataModuleName = dataModuleService.getDataModuleName(reportType, businessType);
+			Workbook excel = JsonConvertExcel.getExcel(json.getJSONObject("json"), dataModuleName);
+			response.setContentType("application/vnd.ms-excel");
+			response.setCharacterEncoding("utf-8");
+			// 对文件名进行处理。防止文件名乱码
+			String fileName =  dataModuleName+".xls";
+			fileName = URLEncoder.encode(fileName, "UTF-8");
+			// Content-disposition属性设置成以附件方式进行下载
+			response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+			OutputStream os = response.getOutputStream();
+			excel.write(os);
+			os.flush();
+			os.close();
+			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+		} catch (IOException e) {
+			logger.error("导出汇总数据失败:",e);
+		}
+    	return result;
     }
 }

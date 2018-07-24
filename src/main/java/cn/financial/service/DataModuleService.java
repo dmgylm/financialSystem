@@ -68,5 +68,7 @@ public interface DataModuleService {
 	 * @throws FormulaAnalysisException
 	 */
 	void editDataModule(String reportType, String businessType, String html) throws FormulaAnalysisException;
+	
+	String getDataModuleName(String reportType, String businessType);
 
 }

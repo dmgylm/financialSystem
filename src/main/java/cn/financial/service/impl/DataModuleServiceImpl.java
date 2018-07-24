@@ -229,7 +229,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 * @param businessType
 	 * @return
 	 */
-	private String getDataModuleName(String reportType, String businessType) {
+	public String getDataModuleName(String reportType, String businessType) {
 		Organization org = organizationService.getOrgaByKey(businessType);
 		String orgName = "";
 		if(org != null) {
