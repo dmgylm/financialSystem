@@ -463,7 +463,7 @@ public class BusinessDataController {
                     response.setContentType("application/x-download");
                     response.setCharacterEncoding("utf-8");
                     // 对文件名进行处理。防止文件名乱码
-                    String fileName = dm.getModuleName() + ".xls";
+                    String fileName = dm.getModuleName() + ".xlsx";
                     fileName = URLEncoder.encode(fileName, "UTF-8");
                     System.out.println(fileName+"~~~");
                     // Content-disposition属性设置成以附件方式进行下载
