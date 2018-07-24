@@ -469,6 +469,61 @@ public class BusinessDataController {
 		}
 		return result;
 	}
+	
+	
+	/**
+     * 根据业务表id导出excel
+     * 
+     * @param request
+     * @param response
+     */
+    @ResponseBody
+    @RequiresPermissions("businessData:download")
+    @RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
+    @ApiOperation(value = "导出Excel", notes = "根据业务表id导出excel", response = ResultUtils.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "businId", value = "业务表id", dataType = "string", paramType = "query", required = true) })
+    @ApiResponses({ @ApiResponse(code = 200, message = "成功"), @ApiResponse(code = 400, message = "失败"),
+            @ApiResponse(code = 500, message = "系统错误"), @ApiResponse(code = 251, message = "业务表id为空") })
+    public ResultUtils exportExcel(HttpServletRequest request, HttpServletResponse response, String businId)throws IOException {
+        ResultUtils result = new ResultUtils();
+        if (("").equals(businId) || businId == null) {
+            ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_NULL, result);
+        } else {
+            try {
+                BusinessData businessData = businessDataService.selectBusinessDataById(businId);
+                if(businessData==null) {
+                    ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_FAIL, result);
+                }else {
+                    DataModule dm = dataModuleService.getDataModule(businessData.getDataModuleId());
+                    BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(businId);
+                    JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
+                    JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
+                    // HtmlGenerate htmlGenerate=new HtmlGenerate();
+                    JSONObject mergeJson = JsonConvertProcess.mergeJson(joTemp, joInfo);
+                    Workbook wb = JsonConvertExcel.getExcel(mergeJson, dm.getModuleName());
+                /*  response.setContentType("application/vnd.ms-excel;charset=utf-8");*/
+                    response.setContentType("application/x-download");
+                    response.setCharacterEncoding("utf-8");
+                    // 对文件名进行处理。防止文件名乱码
+                    String fileName = dm.getModuleName() + ".xls";
+                    fileName = URLEncoder.encode(fileName, "UTF-8");
+                    System.out.println(fileName+"~~~");
+                    // Content-disposition属性设置成以附件方式进行下载
+                    response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                    OutputStream os = response.getOutputStream();
+                    wb.write(os);
+                    os.flush();
+                    os.close();
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                }
+            } catch (Exception e) {
+                ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            }
+        }
+        return result;
+
+    }
 
 	/**
 	 * 删除损益数据 （修改Status为0）
@@ -646,57 +701,5 @@ public class BusinessDataController {
 		}
 	}
 */
-	/**
-	 * 根据业务表id导出excel
-	 * 
-	 * @param request
-	 * @param response
-	 */
-	@ResponseBody
-	@RequiresPermissions("businessData:download")
-	@RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
-	@ApiOperation(value = "导出Excel", notes = "根据业务表id导出excel", response = ResultUtils.class)
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "businId", value = "业务表id", dataType = "string", paramType = "query", required = true) })
-	@ApiResponses({ @ApiResponse(code = 200, message = "成功"), @ApiResponse(code = 400, message = "失败"),
-			@ApiResponse(code = 500, message = "系统错误"), @ApiResponse(code = 251, message = "业务表id为空") })
-	public ResultUtils exportExcel(HttpServletRequest request, HttpServletResponse response, String businId)throws IOException {
-		ResultUtils result = new ResultUtils();
-		if (("").equals(businId) || businId == null) {
-			ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_NULL, result);
-		} else {
-			try {
-				BusinessData businessData = businessDataService.selectBusinessDataById(businId);
-				if(businessData==null) {
-					ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_FAIL, result);
-				}else {
-					DataModule dm = dataModuleService.getDataModule(businessData.getDataModuleId());
-					BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(businId);
-					JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
-					JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
-					// HtmlGenerate htmlGenerate=new HtmlGenerate();
-					JSONObject mergeJson = JsonConvertProcess.mergeJson(joTemp, joInfo);
-					Workbook wb = JsonConvertExcel.getExcel(mergeJson, dm.getModuleName());
-				/*	response.setContentType("application/vnd.ms-excel;charset=utf-8");*/
-					response.setContentType("application/x-download");
-					response.setCharacterEncoding("utf-8");
-					// 对文件名进行处理。防止文件名乱码
-					String fileName = dm.getModuleName() + ".xls";
-					fileName = URLEncoder.encode(fileName, "UTF-8");
-					System.out.println(fileName+"~~~");
-					// Content-disposition属性设置成以附件方式进行下载
-					response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-					OutputStream os = response.getOutputStream();
-					wb.write(os);
-					os.flush();
-					os.close();
-					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-				}
-			} catch (Exception e) {
-				ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
-			}
-		}
-		return result;
-
-	}
+	
 }
