@@ -149,11 +149,11 @@ public class JsonConvertExcel {
 				Cell cell = row1.createCell(colNum);
 				boolean display = (boolean) col.get("display");
 				if (col.get("name").equals("") && col.containsKey("value") && display == true) {
-					if (Integer.parseInt(col.get("type").toString()) == 11
-							|| Integer.parseInt(col.get("type").toString()) == 12
-							|| Integer.parseInt(col.get("type").toString()) == 13
-							|| Integer.parseInt(col.get("type").toString()) == 14
-							|| Integer.parseInt(col.get("type").toString()) == 15) {
+					if (Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_LABEL
+							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_MODULE
+							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_ITEM
+							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_MAINTITLE
+							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_SUBTITLE) {
 						cell.setCellValue(col.get("name").toString());
 					} else {
 						cell.setCellValue(col.get("value").toString());

@@ -55,15 +55,38 @@ public class HtmlGenerate {
 	 * HTML类型:查看页面
 	 */
 	public static int HTML_TYPE_PREVIEW = 3;
-	
-	public static int BOX_TYPE_LABEL = 11;//输入框类型(label)
-	public static int BOX_TYPE_MODULE = 12;//输入框类型(模块)
-	public static int BOX_TYPE_ITEM = 13;//输入框类型(科目)
-	public static int BOX_TYPE_MAINTITLE = 14;//输入框类型(主标题)
-	public static int BOX_TYPE_SUBTITLE = 15;//输入框类型(子标题)
-	public static int BOX_TYPE_INPUT = 2;//输入框类型(录入框)
-	public static int BOX_TYPE_FORMULA = 3;//输入框类型(公式)
-	public static int BOX_TYPE_BUDGET = 4;//输入框类型(预算)
+	/**
+	 * 11 输入框类型(label)
+	 */
+	public static int BOX_TYPE_LABEL = 11;
+	/**
+	 * 12  输入框类型(模块)
+	 */
+	public static int BOX_TYPE_MODULE = 12;
+	/**
+	 * 13 输入框类型(科目)
+	 */
+	public static int BOX_TYPE_ITEM = 13;
+	/**
+	 * 14 输入框类型(主标题)
+	 */
+	public static int BOX_TYPE_MAINTITLE = 14;
+	/**
+	 * 15 输入框类型(子标题)
+	 */
+	public static int BOX_TYPE_SUBTITLE = 15;
+	/**
+	 * 2 输入框类型(录入框)
+	 */
+	public static int BOX_TYPE_INPUT = 2;
+	/**
+	 * 3 输入框类型(公式)
+	 */
+	public static int BOX_TYPE_FORMULA = 3;
+	/**
+	 * 4 输入框类型(预算)
+	 */
+	public static int BOX_TYPE_BUDGET = 4;
 	
 	public static String CLASS_LABEL = "title";// Label所带Class
 	public static String CLASS_MODULE = "module";// 模块所带Class
