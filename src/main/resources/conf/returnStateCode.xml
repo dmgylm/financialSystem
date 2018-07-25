@@ -159,6 +159,16 @@
         <description>组织架构orgkey为空</description>
     </Result>
     
+    <Result name="USER_ROLEID_ISNULL">
+        <code>253</code>
+        <description>请先新增用户角色</description>
+    </Result>
+    
+    <Result name="USER_ORGID_ISNULL">
+        <code>254</code>
+        <description>请先新增用户组织架构</description>
+    </Result>
+    
     <Result name="STATIC_REPORTTYPE_NULL">
         <code>280</code>
         <description>报表类型不能为空</description>
