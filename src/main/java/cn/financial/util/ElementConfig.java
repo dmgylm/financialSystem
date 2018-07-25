@@ -114,6 +114,10 @@ public class ElementConfig {
      */
     public static final String USER_ID_NULL = "USER_ID_NULL";
     /**
+     * 角色id为空
+     */
+    public static final String USER_ROLEID_ISNULL = "USER_ROLEID_ISNULL";
+    /**
      * 用户名为空
      */
     public static final String USER_NAME_NULL = "USER_NAME_NULL";
@@ -137,6 +141,10 @@ public class ElementConfig {
      * 组织结构id为空
      */
     public static final String USER_ORGID_NULL = "USER_ORGID_NULL";
+    /**
+     * 组织结构id为空
+     */
+    public static final String USER_ORGID_ISNULL = "USER_ORGID_ISNULL";
     /**
      * 角色id为空
      */
