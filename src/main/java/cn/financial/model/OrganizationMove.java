@@ -33,7 +33,19 @@ public class OrganizationMove {
 	
 	@ApiModelProperty(value="修改人",name="modifier",example="")
 	private String modifier;	//修改人
+	@ApiModelProperty(value="移动后新节点的父节点id",name="newParent_Id",example="")
+	private String newParent_Id;//移动后新节点的父节点id
 	
+	
+	
+	public String getNewParent_Id() {
+		return newParent_Id;
+	}
+
+	public void setNewParent_Id(String newParent_Id) {
+		this.newParent_Id = newParent_Id;
+	}
+
 	public String getId() {
 		return id;
 	}
