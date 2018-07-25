@@ -254,9 +254,11 @@ public class CapitalController {
                           listOrganization.add(json);
                        }
                       }
+                  
                   if(listOrganization.size()>0||listTree.size()>0){
                    String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
-                   for (int i = 0; i < listOrganization.size(); i++) { //循环权限全部数据    
+                   for (int i = 0; i < listOrganization.size(); i++) {
+                       //循环权限全部数据    
                        JSONObject pidJosn=listOrganization.get(i);
                        String id =pidJosn.getString("id"); //找到权限数据里面的组织id
                        oId[i]=id;
