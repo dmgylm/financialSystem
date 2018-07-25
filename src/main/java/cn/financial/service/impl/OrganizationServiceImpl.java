@@ -3,6 +3,7 @@ package cn.financial.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import cn.financial.dao.OrganizationMoveDao;
 import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
@@ -383,8 +385,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
-    @CacheEvict(value = "organizationValue", allEntries = true)
-    @Transactional(rollbackFor = Exception.class)
+   // @CacheEvict(value = "organizationValue", allEntries = true)
+   // @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer moveOrganization(User user, String id, String parentOrgId) {
         // 根据id查询到该节点信息
@@ -414,6 +416,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         map.put("parentId", orgParent.get(0).getCode());
         List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
         if (!CollectionUtils.isEmpty(listSon)) {
+        	for(Organization listson:listSon){
+        		UserOrganization lists=new UserOrganization();
+        		lists.setoId(listson.getId());
+        		lists.setuId(user.getId());
+        		lists.setId(UuidUtil.getUUID());
+        		organizationDAO.saveUserOrganization(lists);
+        		
+        	}
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {
                 codes.add(orgaSon.getCode());
@@ -441,6 +451,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organizationMove.setHis_Id(org.get(0).getId());
             organizationMove.setNew_Id(new_id);
             organizationMove.setModifier(user.getId());
+            organizationMove.setNewParent_Id(org.get(0).getParentId());
             moveDao.saveOrganizationMove(organizationMove);
         }
 
@@ -479,6 +490,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                         organizationMove.setHis_Id(orga.getId());
                         organizationMove.setNew_Id(new_id1);
                         organizationMove.setModifier(user.getId());
+                        organizationMove.setNewParent_Id(org.get(0).getParentId());
                         moveDao.saveOrganizationMove(organizationMove);
                     }
                 }
