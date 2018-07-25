@@ -100,8 +100,8 @@ public class UserController{
         @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 222, message = "用户名为空"),
         @ApiResponse(code = 224, message = "工号为空"),@ApiResponse(code = 209, message = "用户名已存在"),
         @ApiResponse(code = 212, message = "工号已存在"),@ApiResponse(code = 223, message = "真实姓名为空"),
-        @ApiResponse(code = 228, message = "角色id为空"),@ApiResponse(code = 254, message = "请先新增用户组织架构"),
-        @ApiResponse(code = 253, message = "请先新增用户角色")})
+        @ApiResponse(code = 228, message = "角色id为空"),@ApiResponse(code = 254, message = "请先新增组织架构配置"),
+        @ApiResponse(code = 253, message = "请先新增角色设置")})
     @ResponseBody
     public ResultUtils insert(String name, String realName, String jobNumber,String roleId,String orgId) {
     	ResultUtils result = new ResultUtils();
