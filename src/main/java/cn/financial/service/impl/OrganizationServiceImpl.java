@@ -385,8 +385,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
-   // @CacheEvict(value = "organizationValue", allEntries = true)
-   // @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "organizationValue", allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer moveOrganization(User user, String id, String parentOrgId) {
         // 根据id查询到该节点信息
