@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import cn.financial.model.Organization;
+import cn.financial.model.UserOrganization;
 
 /**
  * 组织结构Dao层
@@ -96,6 +97,8 @@ public interface OrganizationDAO {
      * @return
      */
     List<Organization> listOrganizationcode(@Param("code") List<String> code);
+
+	void saveUserOrganization(UserOrganization lists);
 
 
 }
