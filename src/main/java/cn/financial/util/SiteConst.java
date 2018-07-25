@@ -1,7 +1,6 @@
 package cn.financial.util;
 
 
-
 /**
  * @ClassName SiteConst 
  * @Description  常量
@@ -12,5 +11,6 @@ package cn.financial.util;
 public abstract interface SiteConst {
 	//文件保存路径
 		public static final String  FILEURL=PropertiesUtils.getProperty("FILEURL");
-
+    //资金流水模板文件保存路径
+		public static final String  CAPITALEXPORT=PropertiesUtils.getProperty("CAPITALEXPORT");
 }

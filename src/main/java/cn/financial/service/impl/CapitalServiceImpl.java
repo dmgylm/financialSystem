@@ -1,7 +1,17 @@
 package cn.financial.service.impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.financial.dao.CapitalDao;
@@ -102,5 +112,30 @@ public class CapitalServiceImpl implements CapitalService{
         return capitalDao.capitalExport(map);
     }
 
+    public Boolean export(HttpServletRequest request, HttpServletResponse response,String fileURL) throws IOException {
+        Boolean result=true;
+        if(null != fileURL && !"".equals(fileURL)) {
+            File file = new File(fileURL);
+            if(file.exists()) {
+                BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+                byte[] buf = new byte[1024];
+                int len = 0;
+                response.reset();
+                response.setContentType("application/x-msdownload"); 
+                response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+                OutputStream out = response.getOutputStream();
+                while((len = br.read(buf)) > 0) {
+                    out.write(buf,0,len);
+                }
+                br.close();
+                out.close();
+            }
+        }else{
+            result=false;
+        }
+        return result;
+    }
+
+  
 }
  

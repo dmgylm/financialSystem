@@ -14,7 +14,8 @@ public class PropertiesUtils {
 	private PropertiesUtils() {
 		System.out.println(getClass().getResource("/"));
 		
-		config = new Config(getClass().getResource("/").getPath() + configName);
+		config = new Config(getClass().getResource("/conf"
+		        + "/").getPath() + configName);
 	}
 	
 	public static PropertiesUtils getInstance() {

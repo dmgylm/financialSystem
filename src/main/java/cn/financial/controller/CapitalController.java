@@ -35,13 +35,16 @@ import cn.financial.model.response.CapitalByIdResult;
 import cn.financial.model.response.CapitalNatrueResult;
 import cn.financial.model.response.CapitalResult;
 import cn.financial.model.response.ResultUtils;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.CapitalNatrueService;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.service.impl.CapitalServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelUtil;
+import cn.financial.util.SiteConst;
 import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
@@ -64,6 +67,9 @@ public class CapitalController {
     
         @Autowired
         private  CapitalService capitalService; //资金流水表
+        
+        @Autowired
+        private  CapitalServiceImpl capitalServiceImpl; //资金流水表
         
         @Autowired
         private  CapitalNatrueService capitalNatrueService; 
@@ -935,6 +941,34 @@ public class CapitalController {
                     }
             }
         }
+        
+        
+        /***
+         * 导出
+         * @param response
+         * @throws Exception 
+         */
+        @RequiresPermissions("capital:download")
+        @RequestMapping(value="/exportModule",method = RequestMethod.GET)
+        @ApiOperation(value="下载资金流水模板", notes="下载资金流水模板",response = ResultUtils.class)
+        @ApiImplicitParams({
+           })
+        @ResponseBody
+        public void exportModule(HttpServletRequest request,HttpServletResponse response) throws Exception{
+           ResultUtils result =new ResultUtils();
+           String fileURL= SiteConst.CAPITALEXPORT;
+           Boolean sucess=capitalServiceImpl.export(request, response,new String(fileURL.getBytes("iso8859-1"),"utf-8"));
+           if(sucess){
+               ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result); 
+               result.setResultDesc("模板下载成功");
+           }else{
+               ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result); 
+               result.setResultDesc("模板下载失败");
+           }
+        }
+        
+        
+        
     
         /** 根据条件查询账户性质项目分类数据
         * 
