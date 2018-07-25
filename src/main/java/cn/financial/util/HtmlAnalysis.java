@@ -171,6 +171,8 @@ public class HtmlAnalysis {
 						inputboxType = HtmlGenerate.BOX_TYPE_SUBTITLE;
 					} else if(input.hasClass(HtmlGenerate.CLASS_LABEL)) {//普通Label
 						inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
+					} else {
+						inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
 					}
 				}
 				addRowAndColKey(inputValue, inputClassSet,rowNum, colNum);
