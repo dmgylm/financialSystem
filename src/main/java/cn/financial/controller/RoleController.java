@@ -15,21 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
-import cn.financial.model.User;
-import cn.financial.model.UserRole;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.RoleInfo;
 import cn.financial.model.response.RoleResourceInfo;
 import cn.financial.model.response.RoleResult;
 import cn.financial.service.RoleService;
-import cn.financial.service.UserRoleService;
-import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -39,8 +33,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * 角色(角色资源关联表)
