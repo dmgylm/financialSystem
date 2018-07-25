@@ -161,12 +161,12 @@
     
     <Result name="USER_ROLEID_ISNULL">
         <code>253</code>
-        <description>请先新增用户角色</description>
+        <description>请先新增角色设置</description>
     </Result>
     
     <Result name="USER_ORGID_ISNULL">
         <code>254</code>
-        <description>请先新增用户组织架构</description>
+        <description>请先新增组织架构配置</description>
     </Result>
     
     <Result name="STATIC_REPORTTYPE_NULL">
