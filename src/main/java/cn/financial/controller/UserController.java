@@ -245,13 +245,13 @@ public class UserController{
             }
             
             if(userList == -1){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);//用户id为空
             }else if(userList == -2){
-                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
+                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);//密码输入格式错误
             }else if(userRoleList == -3){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ROLE, result);
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLE, result);//用户角色关联系信息不存在 
             }else if(userOrganizationList == -3){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION, result);
+                ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION, result);//用户组织架构关联信息不存在
             }else if(userList > 0 || userRoleList > 0 || userOrganizationList > 0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
