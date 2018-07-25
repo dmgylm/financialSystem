@@ -14,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import cn.financial.model.Organization;
+import cn.financial.model.User;
+import cn.financial.service.OrganizationService;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HttpClient3;
@@ -78,7 +80,13 @@ public class OrganizationTest {
         System.out.println(result);
         System.out.println("花费时间:" + (end - start));
     }
-
+    @Autowired
+    private OrganizationService services;
+  @Test 
+  public void sss(){
+	  List<Organization> ls=services.listOrganizationBy("盛世大联保险代理股份有限公司内蒙古分公司",null,null,null,null, "404ed3a5442c4ed78331d6c77077958f",null,2);
+	  System.out.println("展示数据"+ls.size());
+  }
     /**
      * 根据传入的map查询相应的组织结构
      */
@@ -159,14 +167,15 @@ public class OrganizationTest {
     //@Test
     public void TreeByOrgId() {
         HashMap<String, String> map = new HashMap<String, String>();
-        map.put("id", "");
+        map.put("id", "00a1f4a699c945638e4c6114e9a8448d");
         long start = System.currentTimeMillis();
         http = new HttpClient3();
         String result = "";
         try {
             result = http.doPost(
-                    "http://192.168.111.162:8083/financialSys/organization/getsubnode?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    "http://localhost:8080/financialSys/organization/getSubnode?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
                     map);
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,12 +240,18 @@ public class OrganizationTest {
      * 根据id查询该节点下的所有子节点 的集合
      */
     //@Test
-    public void listTreeByOrgId() {
-        List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
+    public void listTreeByOrgId() {                           
+        List<Organization> list = service.listTreeByIdForSon("0101b938e7ca4f1dae06303c06425138");
         for (Organization organization : list) {
             System.out.println(organization.toString());
         }
         System.out.println(list.size());
+    }
+    @Test
+    public void sar() {
+      com.alibaba.fastjson.JSONObject json= service.TreeByIdForSon("");
+      System.out.println(json);
+       
     }
 
     /**
@@ -260,7 +275,11 @@ public class OrganizationTest {
         System.out.println(result);
         System.out.println("花费时间:" + (end - start));
     }
-
+    @Test
+    public void organizamove(){
+    	User user=new User();
+    	service.moveOrganization(user, "01ec615faf1747fb92f3b28e3225910f", "");
+    }
     /**
      * 移动组织机构
      * 
@@ -501,4 +520,5 @@ public class OrganizationTest {
 
         System.out.println(result);
     }
+
 }
