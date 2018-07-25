@@ -90,7 +90,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据条件查询组织结构信息
      */
-    // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
+     @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
     public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
     	if (null !=orgName && !"".equals(orgName)) {
