@@ -1,7 +1,5 @@
 package cn.financial.service;
 
-import java.util.List;
-import java.util.Map;
 
 import cn.financial.model.LogManagement;
 import cn.financial.model.response.LogManagerInfo;

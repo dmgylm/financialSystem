@@ -2,8 +2,6 @@ package cn.financial.aspect;
 
 import java.lang.reflect.Method;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,8 +24,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.financial.model.LogManagement;
-import cn.financial.model.User;
-import cn.financial.model.response.ResultUtils;
 import cn.financial.service.LogManagementService;
 import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
@@ -104,6 +99,7 @@ public class FinancialAspect {
             	System.out.println("返回状态码是:"+((ResultUtils)object).getResultCode());*/
             }
 		} catch (Exception e) {
+			logger.error("AOP错误",e);
 		}
         
         return object;

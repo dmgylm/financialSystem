@@ -1,11 +1,5 @@
 package cn.financial.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -13,21 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-
 import cn.financial.model.DataModule;
-import cn.financial.model.OutResult;
 import cn.financial.model.response.DataModuleResult;
 import cn.financial.model.response.DataModulesResult;
 import cn.financial.model.response.DataResult;
-import cn.financial.model.response.ModuleList;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.DataModuleService;
 import cn.financial.util.ElementConfig;
@@ -36,10 +23,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import net.sf.json.JSONObject;
 
 @Api(tags = "数据模板配置")
 @Controller
