@@ -163,7 +163,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 			params.put("id", dataModuleId);
 			DataModule dataModule=dataModuleDao.getDataModule(params);
 			HtmlGenerate hg = new HtmlGenerate();
-			String html = hg.generateHtml(dataModule.getModuleData(),hg.HTML_TYPE_TEMPLATE);
+			String html = hg.generateHtml(dataModule.getModuleData(),HtmlGenerate.HTML_TYPE_TEMPLATE);
 			dataModule.setDataHtml(html);
 			
 			return dataModule;
@@ -211,7 +211,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 		bean.setStatue(DataModule.STATUS_CONSUMED);
 		bean.setModuleName(getDataModuleName(reportType,businessType));
 		
-		if(reportType.equals(reportType)) {
+		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)) {
 			JsonConvertProcess jcp = new JsonConvertProcess();
 			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);//生成预算模板数据
 			bean.setModuleData(budgetJson.toJSONString());
