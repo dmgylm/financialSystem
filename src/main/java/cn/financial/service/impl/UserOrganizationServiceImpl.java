@@ -74,12 +74,12 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      */
     @Override
     public Integer updateUserOrganization(UserOrganization userOrganization) {
-        if(userOrganization.getuId() == null || userOrganization.getuId().equals("")){
-            return -1;
-        }
-        if(userOrganization.getoId() == null || userOrganization.getoId().equals("")){
-            return -2;
-        }
+//        if(userOrganization.getuId() == null || userOrganization.getuId().equals("")){
+//            return -1;
+//        }
+//        if(userOrganization.getoId() == null || userOrganization.getoId().equals("")){
+//            return -2;
+//        }
         int userOrganizationList = 0;
         int userOrgDelete = userOrganizationDao.deleteUserOrganization(userOrganization.getuId());//删除
         if(userOrgDelete > 0){
