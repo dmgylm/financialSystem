@@ -25,10 +25,11 @@
 			his_Id,
 			new_Id,
 			createTime,
-			modifier
+			modifier,
+			newParent_Id 
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{his_Id,jdbcType=VARCHAR},#{new_Id,jdbcType=VARCHAR},now(),#{modifier,jdbcType=VARCHAR})
+		(#{id,jdbcType=VARCHAR},#{his_Id,jdbcType=VARCHAR},#{new_Id,jdbcType=VARCHAR},now(),#{modifier,jdbcType=VARCHAR},#{newParent_Id,jdbcType=VARCHAR})
 	</insert>
 	<!-- 查询 -->
 	<select id="listOrganizationMoveBy" resultType="OrganizationMove">

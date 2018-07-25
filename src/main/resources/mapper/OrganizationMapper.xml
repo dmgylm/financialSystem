@@ -30,7 +30,18 @@
         <result property="orgPlateId" column="orgPlateId" javaType="string"
             jdbcType="VARCHAR"></result>
 	</resultMap>
-
+<!-- 新增 -->
+	<insert id="saveUserOrganization" parameterType="UserOrganization" keyProperty="id" >
+		insert into user_organization_mapping(
+			id,
+			uId,
+			oId,
+			createTime,
+			updateTime
+		)
+		values
+		(#{id,jdbcType=VARCHAR},#{uId,jdbcType=VARCHAR},#{oId,jdbcType=VARCHAR},now(),#{updateTime,jdbcType=VARCHAR})
+	</insert>
 	<!-- 新增组织结构节点信息 -->
 	<insert id="saveOrganization" parameterType="Organization"
 		keyProperty="id">
