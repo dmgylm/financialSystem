@@ -31,11 +31,13 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
+import cn.financial.model.User;
 import cn.financial.model.response.OganizationNode;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.StaticInfo;
 import cn.financial.model.response.StaticJson;
 import cn.financial.service.DataModuleService;
+import cn.financial.service.MessageService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.RedisCacheService;
 import cn.financial.service.StatisticJsonService;
@@ -68,6 +70,9 @@ public class StatisticJsonController {
     
     @Autowired
     private DataModuleService dataModuleService;
+    
+    @Autowired
+    private MessageService messageservice;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
     
@@ -97,11 +102,11 @@ public class StatisticJsonController {
 //	    @ApiResponse(code = 283, message = "结束时间不能为空"),
 //	    @ApiResponse(code = 284, message = "选中组织架构id集合不能为空")})
     @PostMapping(value = "/staticJson")
-    public StaticJson staticJson(String reportType,String businessType,String startDate,String endDate,String orgId) {
+    public StaticJson staticJson(HttpServletRequest request,String reportType,String businessType,String startDate,String endDate,String orgId) {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
     	StaticJson sj = new StaticJson();
         try {
-        	
+			User user = (User) request.getAttribute("user");
         	if(reportType == null || reportType.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_REPORTTYPE_NULL, sj);
                 return sj;
@@ -149,6 +154,7 @@ public class StatisticJsonController {
 			String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);
+			messageservice.saveMessageByUser(user, "null");
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
 //            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 //            dataMap.put("caCheId", caCheUuid);
