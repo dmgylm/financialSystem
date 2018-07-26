@@ -98,7 +98,7 @@ public interface OrganizationDAO {
      */
     List<Organization> listOrganizationcode(@Param("code") List<String> code);
 
-	void saveUserOrganization(UserOrganization lists);
+	Integer  saveUserOrganization(UserOrganization lists);
 
 
 }
