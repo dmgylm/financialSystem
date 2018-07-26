@@ -32,6 +32,7 @@ import cn.financial.model.response.MessageInfo;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.UnreadInfo;
 import cn.financial.service.MessageService;
+import cn.financial.service.impl.CapitalServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.webSocket.FinancialSocketHandler;
@@ -55,6 +56,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+    
+    @Autowired
+    private CapitalServiceImpl capitalServiceImpl;
     
     @Bean
 	public FinancialSocketHandler financialWebSocketHandler() {
@@ -470,27 +474,10 @@ public class MessageController {
     			}
     			Message m = messageService.getMessageById(request.getParameter("id"));
             	String fileURL = m.getFileurl();
-            	if(null != fileURL && !"".equals(fileURL)) {
-            		File file = new File(fileURL);
-            		if(!file.exists()) {
-            			ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
-            			return result;
-            		}
-            		BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
-            		byte[] buf = new byte[1024];
-            		int len = 0;
-            		response.reset();
-            		response.setContentType("application/x-msdownload"); 
-            		response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
-            		OutputStream out = response.getOutputStream();
-            		while((len = br.read(buf)) > 0) {
-            			out.write(buf,0,len);
-            		}
-            		br.close();
-            		out.close();
+            	boolean b = capitalServiceImpl.export(request, response, fileURL);
+            	if(b) {
+            		ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             	}
-            
-    		ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
     	}catch (Exception e) {
     		e.printStackTrace();
     		ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
