@@ -416,14 +416,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         map.put("parentId", orgParent.get(0).getCode());
         List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
         if (!CollectionUtils.isEmpty(listSon)) {
-        	for(Organization listson:listSon){
+/*        	for(Organization listson:listSon){
         		UserOrganization lists=new UserOrganization();
         		lists.setoId(listson.getId());
         		lists.setuId(user.getId());
         		lists.setId(UuidUtil.getUUID());
         		organizationDAO.saveUserOrganization(lists);
         		
-        	}
+        	}*/
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {
                 codes.add(orgaSon.getCode());
