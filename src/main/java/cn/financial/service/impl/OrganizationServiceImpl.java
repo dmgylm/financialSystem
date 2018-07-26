@@ -26,7 +26,10 @@ import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.OrganizationService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
@@ -391,7 +394,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * @id 要移动的节点的id
      * @parentOrgId 将要移动到其下的节点的id
      */
-    @CacheEvict(value = "organizationValue", allEntries = true)
+   // @CacheEvict(value = "organizationValue", allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer moveOrganization(User user, String id, String parentOrgId) {
@@ -422,15 +425,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         map.put("parentId", orgParent.get(0).getCode());
         List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
         if (!CollectionUtils.isEmpty(listSon)) {
-/*        	for(Organization listson:listSon){
-        		UserOrganization lists=new UserOrganization();
-        		lists.setoId(listson.getId());
-        		lists.setuId(user.getId());
-        		lists.setId(UuidUtil.getUUID());
-        		organizationDAO.saveUserOrganization(lists);
-        		
-        	}*/
-        	
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {
                 codes.add(orgaSon.getCode());
@@ -458,22 +452,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     		lists.setoId(new_id);
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
-    		Integer i=organizationDAO.saveUserOrganization(lists);
-    		if(i<=0){
-    			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-    			logger.error("新增失败");
-    		}
+            organizationDAO.saveUserOrganization(lists);
         }else{
         	UserOrganization lists=new UserOrganization();
     		lists.setoId(new_id);
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
-    		Integer i=organizationDAO.saveUserOrganization(lists);
-    		if(i<=0){
-    			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-    			logger.error("新增失败");
-    		}
-    		
+    		organizationDAO.saveUserOrganization(lists);
         }
         
         // 父节点新增成功后，在organization_move表中记录
