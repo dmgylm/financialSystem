@@ -184,7 +184,55 @@ public class UserServiceImpl implements  UserService{
             }
         }
          
+    }   
+ 
+    public static void addItem(List<JSONObject>  obj,List<JSONObject> object){
+        //获取第二个list的所有pid
+        HashSet<Object> twoList = new HashSet<>();
+        for (JSONObject item : object) {
+            twoList.add(item.getString("pid"));
+            addItems(item, twoList);
+        }
+        //System.out.println("--------"+JSON.toJSONString(twoList));
+        //循环匹配
+        for (JSONObject item : obj) {
+            item.put("mathc", "N");
+            if(twoList.contains(item.getString("pid"))){
+                item.put("mathc", "Y");
+            }
+            checkItems(item, twoList);
+        }
     }
     
+    //循环匹配
+    public static void checkItems(JSONObject object,HashSet<Object> obj){
+        if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
+            for (Object item : object.getJSONArray("children")) {
+                JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
+                for (Object itemStr : obj) {
+                    itemChildrens.put("mathc", "N");
+                    //System.out.println("------"+itemStr+"========="+itemChildrens.getString("pid"));
+                   if(itemChildrens.getString("pid").equals(itemStr)){
+                       itemChildrens.put("mathc", "Y");
+                       break;
+                   }
+                }
+                checkItems(itemChildrens, obj);
+             }
+            
+        }
+    }
+    
+    public static void addItems(JSONObject object,HashSet<Object> obj){
+        if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
+            for (Object item : object.getJSONArray("children")) {
+               JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
+               obj.add(itemChildrens.getString("pid"));
+               addItems(itemChildrens, obj);
+            }
+            
+        }
+        
+    }
 }
  

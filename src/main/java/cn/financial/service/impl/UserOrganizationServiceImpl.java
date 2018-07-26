@@ -108,12 +108,9 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     public List<JSONObject> userOrganizationList(String uId){
-        if(uId == null || uId.equals("")){
-            return null;
-        }
         List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId);
         List<JSONObject> jsonUserOrg = new ArrayList<>();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject = new JSONObject();
         if(!CollectionUtils.isEmpty(userOrganization)){
             for (UserOrganization rss : userOrganization) {
                 //根据id查询该节点下的所有子节点,构建成树
