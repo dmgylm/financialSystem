@@ -314,7 +314,7 @@ public class OrganizationController {
     @ApiOperation(value = "移动组织机构",notes = "移动组织机构",response=ResultUtils.class)
     @ApiImplicitParams({ 
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "id", value = "组织id", required = true),
-    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = false),
+    	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = true),
     	})
     @PostMapping(value = "/move")
     public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
