@@ -202,4 +202,19 @@ public class MessageTest {
         System.out.println(i);
     }*/
     
+    @Test
+    public void saveMessageToUser() {
+//    	User user = new User();
+//        user.setId("404ed3a5442c4ed78331d6c77077958f");
+//        user.setRealName("aa超级管理员");
+//        user.setName("aa");
+//        user.setPwd("fac136b59f9bb191a288ba589b27eafd");
+//        user.setJobNumber("123456");
+//        user.setStatus(1);
+//        user.setSalt("0e559017bbd743e5ab05448a0a972869");
+//    	service.saveMessageByUser(user, null);
+    	String userName = "MessageSocketServerInfo;JSESSIONID=b005b66b-b631-4ff6-a8ae-78e971a0c8c7";
+    	String nn = userName.substring(0,userName.indexOf(";"));
+    	System.out.println(nn);
+    }
 }
