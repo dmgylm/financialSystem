@@ -2,18 +2,17 @@ package cn.financial.model.response;
 
 import java.util.List;
 
-import cn.financial.model.UserRole;
 import io.swagger.annotations.ApiModelProperty;
 
 public class UserRoleInfo {
     @ApiModelProperty(value = "用户角色对象信息")
-    private List<UserRole> userRoleList;
+    private List<UserChildrenObject> userRoleList;
 
-    public List<UserRole> getUserRoleList() {
+    public List<UserChildrenObject> getUserRoleList() {
         return userRoleList;
     }
 
-    public void setUserRoleList(List<UserRole> userRoleList) {
+    public void setUserRoleList(List<UserChildrenObject> userRoleList) {
         this.userRoleList = userRoleList;
     }
 }
