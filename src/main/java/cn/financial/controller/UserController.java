@@ -38,6 +38,7 @@ import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
+import cn.financial.service.impl.UserServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.UuidUtil;
@@ -105,7 +106,6 @@ public class UserController{
     @ResponseBody
     public ResultUtils insert(String name, String realName, String jobNumber,String roleId,String orgId) {
     	ResultUtils result = new ResultUtils();
-    	
     	try {
     		//判断传值是否为空
 			if (name == null || name.equals("")) {
@@ -174,10 +174,7 @@ public class UserController{
                 
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }
-
-           
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             this.logger.error(e.getMessage(), e);
@@ -695,7 +692,7 @@ public class UserController{
         return result;
     }
     /**
-     * 根据用户id查询组织结构关联信息(用户组织结构关联表)
+     * 根据用户id查询组织结构关联信息(用户组织结构关联表)/获取当前登录人组织架构关联信息
      * @param request
      * @param response
      */
@@ -706,18 +703,25 @@ public class UserController{
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误"),
         @ApiResponse(code = 221, message = "用户id为空")})
     @ResponseBody
-    public Map<String, Object> listUserOrganization(String uId){
+    public Map<String, Object> listUserOrganization(HttpServletRequest request, String uId){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(uId);
-            if(jsonUserOrg == null){
-                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL));
-                return dataMapList;
+            User newuser = (User) request.getAttribute("user");//获取当前登录id
+            List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(newuser.getId());
+            if(uId == null || uId.equals("")){
+                dataMap.put("userOrganizationList", jsonUserOrg);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }else{
+                List<JSONObject> jsonUserOrgList = userOrganizationService.userOrganizationList(uId);
+                if(!CollectionUtils.isEmpty(jsonUserOrg)){
+                    UserServiceImpl.addItem(jsonUserOrg, jsonUserOrgList);
+                }
+                dataMap.put("userOrganizationList", jsonUserOrg);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }
-            dataMap.put("userOrganizationList", jsonUserOrg);
-            dataMapList.put("data", dataMap);
-            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         } catch (Exception e) {
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
