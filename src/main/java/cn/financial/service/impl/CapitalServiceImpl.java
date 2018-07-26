@@ -111,7 +111,11 @@ public class CapitalServiceImpl implements CapitalService{
        
         return capitalDao.capitalExport(map);
     }
-
+    
+    
+    /**
+     * 文件导出
+     */
     public Boolean export(HttpServletRequest request, HttpServletResponse response,String fileURL) throws IOException {
         Boolean result=true;
         if(null != fileURL && !"".equals(fileURL)) {

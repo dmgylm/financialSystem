@@ -669,7 +669,7 @@ public class CapitalController {
             @ApiImplicitParam(name = "tradeTimeEnd", value = "结束交易日期（格式：2018-01-02 ）", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "classify", value = "项目分类", required = false, dataType = "String", paramType = "query")})
         @ResponseBody
-        public void export(HttpServletRequest request,HttpServletResponse response,String keyword,String accountBank,String accountNature,
+        public ResultUtils export(HttpServletRequest request,HttpServletResponse response,String keyword,String accountBank,String accountNature,
                 String tradeTimeBeg,String tradeTimeEnd,String classify) throws Exception{
             OutputStream os = null;
             //Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -940,6 +940,7 @@ public class CapitalController {
                         e.printStackTrace();
                     }
             }
+            return result;
         }
         
         
@@ -954,7 +955,7 @@ public class CapitalController {
         @ApiImplicitParams({
            })
         @ResponseBody
-        public void exportModule(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        public ResultUtils exportModule(HttpServletRequest request,HttpServletResponse response) throws Exception{
            ResultUtils result =new ResultUtils();
            String fileURL= SiteConst.CAPITALEXPORT;
            Boolean sucess=capitalServiceImpl.export(request, response,new String(fileURL.getBytes("iso8859-1"),"utf-8"));
@@ -965,6 +966,8 @@ public class CapitalController {
                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result); 
                result.setResultDesc("模板下载失败");
            }
+           
+           return result;
         }
         
         
