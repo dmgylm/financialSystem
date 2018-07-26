@@ -1,9 +1,7 @@
 package cn.financial.service.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -26,10 +23,7 @@ import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
-import cn.financial.model.response.ResultUtils;
 import cn.financial.service.OrganizationService;
-import cn.financial.util.ElementConfig;
-import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
@@ -398,6 +392,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer moveOrganization(User user, String id, String parentOrgId) {
+    	//保存code，id键值对
+    	Map<Object, Object> icMap = new HashMap<Object, Object>();
         // 根据id查询到该节点信息
         Map<Object, Object> map = new HashMap<>();
         map.put("id", id);
@@ -445,6 +441,9 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setOrgType(org.get(0).getOrgType());
         organization.setOrgPlateId(orgParent.get(0).getOrgPlateId());
         Integer saveInteger = organizationDAO.saveOrganization(organization);
+        
+        icMap.put(code, new_id);//新节点的code和id
+        
         List<UserOrganization> listsize= userorganization.listUserOrganization(user.getId());
         if(listsize.size()>0){
         	userorganization.deleteUserOrganization(user.getId());
@@ -468,7 +467,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organizationMove.setHis_Id(org.get(0).getId());
             organizationMove.setNew_Id(new_id);
             organizationMove.setModifier(user.getId());
-            organizationMove.setNewParent_Id(org.get(0).getParentId());
+            organizationMove.setNewParent_Id(parentOrgId);
             moveDao.saveOrganizationMove(organizationMove);
         }
 
@@ -500,6 +499,9 @@ public class OrganizationServiceImpl implements OrganizationService {
                     organization1.setOrgType(orga.getOrgType());
                     organization1.setOrgPlateId(orgParent.get(0).getOrgPlateId());
                     Integer saveOrganization1 = organizationDAO.saveOrganization(organization1);
+                    
+                    icMap.put(code1, new_id1);
+                    
                     // 子节点新增成功后，在organization_move表中记录
                     if (Integer.valueOf(1).equals(saveOrganization1)) {
                         OrganizationMove organizationMove = new OrganizationMove();
@@ -507,7 +509,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                         organizationMove.setHis_Id(orga.getId());
                         organizationMove.setNew_Id(new_id1);
                         organizationMove.setModifier(user.getId());
-                        organizationMove.setNewParent_Id(org.get(0).getParentId());
+                        organizationMove.setNewParent_Id(icMap.get(parentId1).toString());
                         moveDao.saveOrganizationMove(organizationMove);
                     }
                 }
