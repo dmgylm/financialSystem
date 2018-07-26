@@ -1,10 +1,5 @@
 package cn.financial.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +66,11 @@ public class MessageController {
     	
     	JSONObject jsonObject = new JSONObject();
         jsonObject.put("unread",unread);
-        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage(jsonObject.toString()));
+        System.out.println(jsonObject);
+        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage("100"));
     	
     }
+    
     
     protected Logger logger = LoggerFactory.getLogger(MessageController.class);
     
