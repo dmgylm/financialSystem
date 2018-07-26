@@ -11,6 +11,8 @@ public class LoginResult{
     private List<ChildrenObject> userOrganization;
     @ApiModelProperty(value = "用户sessionId")
     private String sessionId;
+    @ApiModelProperty(value = "未读消息条数")
+    private String unreadMessage;
     
     public List<ChildrenObject> getRoleResource() {
         return roleResource;
@@ -29,6 +31,12 @@ public class LoginResult{
     }
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+    public String getUnreadMessage() {
+        return unreadMessage;
+    }
+    public void setUnreadMessage(String unreadMessage) {
+        this.unreadMessage = unreadMessage;
     }
     
 }
