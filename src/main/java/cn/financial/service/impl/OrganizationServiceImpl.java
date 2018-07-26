@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -37,6 +39,7 @@ import cn.financial.util.UuidUtil;
 @Service("OrganizationServiceImpl")
 @Transactional
 public class OrganizationServiceImpl implements OrganizationService {
+	private Logger logger = Logger.getLogger(OrganizationServiceImpl.class);
 
     @Autowired
     private OrganizationDAO organizationDAO;
@@ -455,15 +458,24 @@ public class OrganizationServiceImpl implements OrganizationService {
     		lists.setoId(new_id);
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
-    		organizationDAO.saveUserOrganization(lists);
-        }
-        else{
+    		Integer i=organizationDAO.saveUserOrganization(lists);
+    		if(i<=0){
+    			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+    			logger.error("新增失败");
+    		}
+        }else{
         	UserOrganization lists=new UserOrganization();
     		lists.setoId(new_id);
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
-    		organizationDAO.saveUserOrganization(lists);
+    		Integer i=organizationDAO.saveUserOrganization(lists);
+    		if(i<=0){
+    			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+    			logger.error("新增失败");
+    		}
+    		
         }
+        
         // 父节点新增成功后，在organization_move表中记录
         if (Integer.valueOf(1).equals(saveInteger)) {
             OrganizationMove organizationMove = new OrganizationMove();
