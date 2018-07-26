@@ -239,9 +239,9 @@ public class OrganizationTest {
     /**
      * 根据id查询该节点下的所有子节点 的集合
      */
-    //@Test
+    @Test
     public void listTreeByOrgId() {                           
-        List<Organization> list = service.listTreeByIdForSon("0101b938e7ca4f1dae06303c06425138");
+        List<Organization> list = service.listTreeByIdForSon("cced74c59a9846b5b0a81c0baf235c17");
         for (Organization organization : list) {
             System.out.println(organization.toString());
         }
@@ -278,7 +278,7 @@ public class OrganizationTest {
     @Test
     public void organizamove(){
     	User user=new User();
-    	service.moveOrganization(user, "01ec615faf1747fb92f3b28e3225910f", "");
+    	service.moveOrganization(user, "03a8b64983c64adc8e9bf198917748b8", "");
     }
     /**
      * 移动组织机构
