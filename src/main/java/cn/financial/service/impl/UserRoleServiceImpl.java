@@ -26,9 +26,6 @@ public class UserRoleServiceImpl implements UserRoleService{
      */
     @Override
     public List<UserRole> listUserRole(String name) {
-        if(name == null || name.equals("")){
-            return null;
-        }
         return userRoleDao.listUserRole(name);
     }
     /**
@@ -77,12 +74,6 @@ public class UserRoleServiceImpl implements UserRoleService{
     @Override
     @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer updateUserRole(UserRole user) {
-//        if(user.getrId() == null || user.getrId().equals("")){//roleId前台传入的数据是JSON格式
-//            return -1;
-//        }
-//        if(user.getuId() == null || user.getuId().equals("")){
-//            return -2;
-//        }
         int userRoleList = 0;
         int userRoleDelete = userRoleDao.deleteUserRole(user.getuId());//删除
         if(userRoleDelete > 0){
