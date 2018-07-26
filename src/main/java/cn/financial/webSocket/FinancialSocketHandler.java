@@ -60,13 +60,16 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 * @param message
 	 */
 	public void sendMessageToUser(String userName,TextMessage message) {
-		
+		System.out.println("userName"+userName);
+		System.out.println("message"+message);
+	
 		for(WebSocketSession user : users) {
-			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).equals(userName)) {
+			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)) {
 				try {
 					if(user.isOpen()) {
 						synchronized (user) {
 							user.sendMessage(message);
+							System.out.println("发送消息成功"+message);
 						}
 					}
 				}catch (IOException e) {
