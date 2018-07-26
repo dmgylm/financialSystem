@@ -852,8 +852,8 @@ public class UserController{
                 List<UserRole> userRole = userRoleService.listUserRole(name);
                 if(!CollectionUtils.isEmpty(userRole)){
                     for(Role role : roleList){
+                        role.setMathc("N");
                         for(UserRole uRole : userRole){
-                            role.setMathc("N");
                             if(role.getId().contains(uRole.getrId())){
                                 role.setMathc("Y");
                             }
