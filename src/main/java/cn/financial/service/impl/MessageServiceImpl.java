@@ -144,7 +144,7 @@ public class MessageServiceImpl implements MessageService {
 				message.setuId(user.getId());//发送指定人的id
 				message.setIsTag(0);
 				message.setsName("系统");
-				message.setFileurl(fileUrl);//汇总表文件的路径
+				message.setFileurl("");//汇总表文件的路径
 				n = saveMessage(message);
 				
 				Map<Object, Object> map = new HashMap<>();
