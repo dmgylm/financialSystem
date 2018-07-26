@@ -46,7 +46,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     
     @Autowired
     private OrganizationService organizationService;
-
+    
+    @Autowired
+    private UserOrganizationServiceImpl userorganization;
+ 
     /**
      * 新增组织结构
      */
@@ -424,6 +427,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         		organizationDAO.saveUserOrganization(lists);
         		
         	}*/
+        	
             List<String> codes = new ArrayList<String>();
             for (Organization orgaSon : listSon) {
                 codes.add(orgaSon.getCode());
@@ -444,6 +448,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setOrgType(org.get(0).getOrgType());
         organization.setOrgPlateId(orgParent.get(0).getOrgPlateId());
         Integer saveInteger = organizationDAO.saveOrganization(organization);
+        List<UserOrganization> listsize= userorganization.listUserOrganization(user.getId());
+        if(listsize.size()>0){
+        	userorganization.deleteUserOrganization(user.getId());
+        	UserOrganization lists=new UserOrganization();
+    		lists.setoId(new_id);
+    		lists.setuId(user.getId());//用户id
+    		lists.setId(UuidUtil.getUUID());
+    		organizationDAO.saveUserOrganization(lists);
+        }
+        else{
+        	UserOrganization lists=new UserOrganization();
+    		lists.setoId(new_id);
+    		lists.setuId(user.getId());//用户id
+    		lists.setId(UuidUtil.getUUID());
+    		organizationDAO.saveUserOrganization(lists);
+        }
         // 父节点新增成功后，在organization_move表中记录
         if (Integer.valueOf(1).equals(saveInteger)) {
             OrganizationMove organizationMove = new OrganizationMove();
