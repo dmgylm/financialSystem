@@ -67,7 +67,7 @@ public class MessageController {
     	JSONObject jsonObject = new JSONObject();
         jsonObject.put("unread",unread);
         System.out.println(jsonObject);
-        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage("100"));
+        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage(jsonObject.toString()));
     	
     }
     
