@@ -11,12 +11,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+
 import cn.financial.model.Capital;
 import cn.financial.model.User;
 import cn.financial.service.CapitalService;
+import cn.financial.util.SiteConst;
 import cn.financial.util.UuidUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml" ,"classpath:spring/spring-redis.xml"})
@@ -136,8 +140,10 @@ public class CapitalTest {
      */
     @Test
     public void deleteCapital(){
-        Integer i = capitalService.deleteCapital("b5d06e8791de436480d819835e32ab46");
-         System.out.println("结果"+i);
+        String fileURL= SiteConst.CAPITALEXPORT;
+        System.out.println("地址"+fileURL);
+        /*Integer i = capitalService.deleteCapital("b5d06e8791de436480d819835e32ab46");
+         System.out.println("结果"+i);*/
     }
 
 }
