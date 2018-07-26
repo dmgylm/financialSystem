@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
+import cn.financial.model.Role;
+import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
 import cn.financial.model.UserRole;
@@ -34,6 +36,7 @@ import cn.financial.model.response.UserResetPwd;
 import cn.financial.model.response.UserResetPwdInfo;
 import cn.financial.model.response.UserRoleResult;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.RoleService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
@@ -41,6 +44,7 @@ import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.service.impl.UserServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import cn.financial.util.shiro.PasswordHelper;
 import io.swagger.annotations.Api;
@@ -69,6 +73,8 @@ public class UserController{
     private RoleResourceServiceImpl roleResourceService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private PasswordHelper passwordHelper;
     @Autowired
@@ -369,7 +375,6 @@ public class UserController{
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
-                    //item.setJsonOrg(jsonOrg);
                     if(!CollectionUtils.isEmpty(jsonOrg)){
                         item.setOrgFlag(User.MATCH);
                     }else{
@@ -698,10 +703,9 @@ public class UserController{
      */
     @RequiresPermissions({"organization:view","permission:view"})
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
-    @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
-    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误"),
-        @ApiResponse(code = 221, message = "用户id为空")})
+    @ApiOperation(value="获取当前登录人组织架构关联信息/根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query")})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
     public Map<String, Object> listUserOrganization(HttpServletRequest request, String uId){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
@@ -806,26 +810,61 @@ public class UserController{
     
     /**
      * 根据用户名查询用户角色关联信息(用户角色关联表)
+     * name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息
      * @param request
      * @param response
      */
-    @RequiresPermissions({"permission:view","role:view"})
+    @RequiresPermissions({"permission:view","role:view","jurisdiction:view"})
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据用户名查询用户角色关联信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
-    @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query", required = true)})
+    @ApiOperation(value="name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
     @ResponseBody
     public Map<String, Object> listUserRole(String name){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            List<UserRole> userRole = userRoleService.listUserRole(name);
-            if(userRole == null){
-                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL));
-                return dataMapList;
+            //name为空查全部角色信息及关联的功能权限信息
+            List<Role> roleList = roleService.listRole("");//查询全部参数为空
+            for(Role uRole : roleList){
+                List<RoleResource> roleResource = roleResourceService.listRoleResource(uRole.getId());
+                List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+                JSONObject jsonObject = new JSONObject();
+                if(!CollectionUtils.isEmpty(roleResource)){
+                    for (RoleResource rss : roleResource) {
+                        TreeNode<RoleResource> node = new TreeNode<>();
+                        node.setId(rss.getCode().toString());//当前code
+                        String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                        node.setParentId(b);//父id
+                        node.setName(rss.getName());//功能权限名称
+                        node.setPid(rss.getsId());//当前权限id
+                        nodes.add(node);
+                    }
+                    jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+                    uRole.setJsonRoleResource(jsonObject);//角色功能能权限关联信息
+                }
             }
-            dataMap.put("userRoleList", userRole);
-            dataMapList.put("data", dataMap);
-            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            if(name == null || name.equals("")){
+                dataMap.put("userRoleList", roleList);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }else{
+                //不为空根据name查询关联角色信息
+                List<UserRole> userRole = userRoleService.listUserRole(name);
+                if(!CollectionUtils.isEmpty(userRole)){
+                    for(Role role : roleList){
+                        for(UserRole uRole : userRole){
+                            role.setMathc("N");
+                            if(role.getId().contains(uRole.getrId())){
+                                role.setMathc("Y");
+                            }
+                        }
+                    }
+                }
+                dataMap.put("userRoleList", roleList);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }
+            
         } catch (Exception e) {
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
