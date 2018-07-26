@@ -21,6 +21,8 @@ public class ChildrenObject {
     private String pid;
     @ApiModelProperty(value = "是否是叶子节点")
     private String leaf;
+    @ApiModelProperty(value = "是否匹配组织架构信息Y表示匹配N表示不匹配")
+    private String mathc;
     public String getOrgType() {
         return orgType;
     }
@@ -74,5 +76,11 @@ public class ChildrenObject {
     }
     public void setLeaf(String leaf) {
         this.leaf = leaf;
+    }
+    public String getMathc() {
+        return mathc;
+    }
+    public void setMathc(String mathc) {
+        this.mathc = mathc;
     }
 }
