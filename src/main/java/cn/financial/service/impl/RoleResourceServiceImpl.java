@@ -51,12 +51,6 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer insertRoleResource(RoleResource roleResource) {
-        if(roleResource.getrId() == null || roleResource.getrId().equals("")){
-            return -1;
-        }
-        if(roleResource.getsId() == null || roleResource.getsId().equals("")){
-            return -2;
-        }
         JSONArray sArray = JSON.parseArray(roleResource.getsId());
         int roleResourceList = 0;
         RoleResource roleResources = null;
