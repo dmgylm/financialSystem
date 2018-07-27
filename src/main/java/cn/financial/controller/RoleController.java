@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -111,16 +113,24 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions("role:create")
+    @Transactional(rollbackFor = Exception.class)
+    @RequiresPermissions({"jurisdiction:create","role:create"})
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ApiOperation(value="新增角色信息",notes="新增角色信息", response = ResultUtils.class)
-    @ApiImplicitParams({@ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true)})
+    @ApiOperation(value="新增角色信息及角色功能权限关联信息(必须勾选父节点,父节点相当于查看权限)",notes="新增角色信息及角色功能权限关联信息", response = ResultUtils.class)
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}]",
+        paramType = "query", required = true)})
     @ResponseBody
-    public ResultUtils insertRole(String roleName){
+    public ResultUtils insertRole(String roleName, String resourceId){
         ResultUtils result = new ResultUtils();
         try {
             if(roleName == null || roleName.equals("")){
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLENAME_NULL, result);
+                return result;
+            }
+            if(resourceId == null || resourceId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
                 return result;
             }
             List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
@@ -133,13 +143,24 @@ public class RoleController {
             role.setRoleName(roleName);
             int roleList = roleService.insertRole(role);
             if(roleList>0){
-                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                RoleResource roleResource = new RoleResource();
+                roleResource.setId(UuidUtil.getUUID());
+                roleResource.setsId(resourceId);
+                roleResource.setrId(role.getId());
+                int roleResourceList = roleResourceService.insertRoleResource(roleResource);
+                if(roleResourceList > 0){
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                }else{
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
             
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             this.logger.error(e.getMessage(), e);
         }
         return result;
@@ -259,12 +280,12 @@ public class RoleController {
      * @param rid
      * @param createTime
      */
-    @RequiresPermissions({"jurisdiction:create","role:create"})
+    /*@RequiresPermissions({"jurisdiction:create","role:create"})
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}](斜线不要加，这里代表转译符)",
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}]",
             paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertRoleResource(String roleId, String resourceId){
@@ -290,7 +311,7 @@ public class RoleController {
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
     /**
      * 修改(角色功能权限关联表)先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息
      * （根据角色id修改角色功能权限关联信息）

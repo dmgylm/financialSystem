@@ -183,6 +183,7 @@ public class UserController{
             }
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             this.logger.error(e.getMessage(), e);
 		}
 		return result;
@@ -199,6 +200,7 @@ public class UserController{
      * @param orgId			组织结构id
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @RequiresPermissions({"role:update","permission:update","organization:update"})
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value="修改用户，对应的角色以及对应的权限信息",notes="超级管理员修改用户，对应的角色以及对应的权限信息", response = ResultUtils.class)
@@ -263,6 +265,7 @@ public class UserController{
            
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             this.logger.error(e.getMessage(), e);
 		}
     	
