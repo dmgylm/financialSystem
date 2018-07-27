@@ -719,7 +719,7 @@ public class UserController{
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
                 List<JSONObject> jsonUserOrgList = userOrganizationService.userOrganizationList(uId);
-                if(!CollectionUtils.isEmpty(jsonUserOrg)){
+                if(!CollectionUtils.isEmpty(jsonUserOrgList)){
                     UserServiceImpl.addItem(jsonUserOrg, jsonUserOrgList);
                 }
                 dataMap.put("userOrganizationList", jsonUserOrg);
