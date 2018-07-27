@@ -151,19 +151,19 @@ public class MainController {
             Map<Object, Object> map = new HashMap<Object, Object>();
             map.put("pageSize", Message.PAGESIZE);
             map.put("start", 0);
-            List<Message> list = messageService.quartMessageByPower(user,map);
-            int unreadMessage = 0;
+       /*     List<Message> list = messageService.quartMessageByPower(user,map);*/
+           /* int unreadMessage = 0;
             if(list.size()>0){
                 for(int i=0;i<list.size();i++) {
                     if(list.get(i).getStatus() == 0) {
                         unreadMessage++;
                     }
                 } 
-            }
+            }*/
             dataMap.put("roleResource", jsonObject);
             dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
-            dataMap.put("unreadMessage", unreadMessage);
+          /*  dataMap.put("unreadMessage", unreadMessage);*/
             dataMapList.put("data", dataMap);
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
