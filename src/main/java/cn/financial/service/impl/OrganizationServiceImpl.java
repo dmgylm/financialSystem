@@ -238,7 +238,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!CollectionUtils.isEmpty(list)) {
             List<TreeNode<Organization>> nodes = new ArrayList<>();
             for (Organization organization : list) {
-                Organization organizationList = organizationService.getOrgaByKey(organization.getOrgPlateId());
+                Organization organizationList = new Organization();
+                if(organization.getOrgPlateId()!=null && !organization.getOrgPlateId().equals("")){
+                     organizationList = organizationService.listOrganizationBy(null, null, null,  organization.getOrgPlateId(), null, null, null, null).get(0);
+                }
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
                 node.setParentId(organization.getParentId().toString());
