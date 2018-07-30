@@ -215,16 +215,16 @@
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
 		<if test="id!=null and id!=''">
-			and id = #{id,jdbcType=VARCHAR}
+			and id like #{id}
 		</if>
 		<if test="code!=null and code!=''">
-			and code = #{code,jdbcType=VARCHAR}
+			and code like #{code}
 		</if>
 		<if test="parentId!=null and parentId!=''">
-			and parentId = #{parentId,jdbcType=VARCHAR}
+			and parentId like #{parentId}
 		</if>
 		<if test="orgName!=null and orgName!=''">
-			and orgName = #{orgName,jdbcType=VARCHAR}
+			and orgName like #{orgName} 
 		</if>
 		<if test="createTime!=null and createTime!=''">
 			and createTime &gt;=  #{createTime,jdbcType=TIMESTAMP}
@@ -233,22 +233,22 @@
 			and updateTime &lt;=  #{updateTime,jdbcType=TIMESTAMP}
 		</if>
 		<if test="uId!=null and uId!=''">
-			and uId = #{uId,jdbcType=VARCHAR}
+			and uId like #{uId}
 		</if>
 		<if test="status!=null and status!=''">
 			and status = #{status,jdbcType=INTEGER}
 		</if>
 		<if test="his_permission!=null and his_permission!=''">
-			and his_permission = #{his_permission,jdbcType=VARCHAR}
+			and his_permission like #{his_permission}
 		</if>
         <if test="orgkey!=null and orgkey!=''">
-            and orgkey = #{orgkey,jdbcType=INTEGER}
+            and orgkey like #{orgkey}
         </if>
 		<if test="orgType!=null and orgType!=''">
-            and orgType = #{orgType,jdbcType=INTEGER}
+            and orgType like #{orgType}
         </if>
         <if test="orgPlateId!=null and orgPlateId!=''">
-            and orgPlateId = #{orgPlateId,jdbcType=INTEGER}
+            and orgPlateId like #{orgPlateId}
         </if>
 	</sql>
 
