@@ -75,7 +75,8 @@ public class FormulaUtil {
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("a", 3);
 		params.put("b", 5);
-		Double value = calculationByFormula(params, "a+b");
+		params.put("c", 2);
+		Double value = calculationByFormula(params, "c+(a+b)");
 		System.out.println(value);
 	}
 	
@@ -88,10 +89,18 @@ public class FormulaUtil {
 	public static Double calculationByFormula(Map<String,Object> params,String formula){
 		Binding binding = new Binding();
         GroovyShell shell = new GroovyShell(binding);
-        for(Iterator<String> iter = params.keySet().iterator();iter.hasNext();) {
-        	String key = iter.next();
-        	binding.setVariable(key,params.get(key));
+        String[] varArray = splitFormula(formula);
+        for(String var:varArray) {
+        	Object value = params.get(var);
+        	if(value == null) {
+        		value = 0;
+        	}
+        	binding.setVariable(var,value);
         }
+//        for(Iterator<String> iter = params.keySet().iterator();iter.hasNext();) {
+//        	String key = iter.next();
+//        	binding.setVariable(key,params.get(key));
+//        }
         Object obj =shell.evaluate("return "+formula);
         return Double.valueOf(obj.toString());
 	}
