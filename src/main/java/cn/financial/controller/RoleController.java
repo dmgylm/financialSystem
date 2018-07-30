@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Resource;
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.RoleInfo;
 import cn.financial.model.response.RoleResourceInfo;
 import cn.financial.model.response.RoleResult;
+import cn.financial.service.ResourceService;
 import cn.financial.service.RoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
+import cn.financial.service.impl.RoleServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.TreeNode;
@@ -46,7 +49,9 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/role")
 public class RoleController {
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
+    @Autowired
+    private ResourceService resourceService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
     
@@ -243,6 +248,24 @@ public class RoleController {
     public RoleResourceInfo listRoleResource(String roleId){
         RoleResourceInfo result = new RoleResourceInfo();
         try {
+            //查询全部功能权限信息
+            List<Resource> resource = resourceService.listResource();
+            List<TreeNode<Resource>> resourceNodes = new ArrayList<>();
+            JSONObject resourceObject = new JSONObject();
+            if(!CollectionUtils.isEmpty(resource)){
+                for (Resource rss : resource) {
+                    TreeNode<Resource> node = new TreeNode<>();
+                    node.setId(rss.getCode().toString());//当前code
+                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                    node.setParentId(b);//父节点
+                    node.setName(rss.getName());//权限名称
+                    node.setPid(rss.getId());//当前权限id
+                   // node.setNodeData(rss);
+                    resourceNodes.add(node);
+                }
+                resourceObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(resourceNodes));
+            }
+            //筛选角色关联功能权限信息
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
             if(roleResource == null){
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
@@ -263,7 +286,10 @@ public class RoleController {
                 }
                 jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
             }
-            result.setRoleResourceList(jsonObject);
+            if(jsonObject!=null && !jsonObject.equals("")){
+                roleService.addRoleType(resourceObject, jsonObject);
+            }
+            result.setRoleResourceList(resourceObject);
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             
         } catch (Exception e) {
