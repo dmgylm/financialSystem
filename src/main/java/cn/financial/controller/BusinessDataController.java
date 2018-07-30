@@ -50,6 +50,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -282,17 +284,26 @@ public class BusinessDataController {
 	                } else {
 	                    status = 2;// 否者 改为已提交 2
 	                }
-	                Document doc = Jsoup.parse(html);// 得到html
+	                /*Document doc = Jsoup.parse(html);// 得到html
 	                // Document doc = Jsoup.parse(file, "UTF-8", "http://example.com/");
 	                Elements inputHtml = doc.select("input");// 获取HTML所有input属性
-	                /* System.out.println(inputHtml); */
+*/	                /* System.out.println(inputHtml); */
+	                JSONArray jsonArr=JSONArray.parseArray(html);
+	                Map<String, Object> mo = new HashMap<String, Object>();
+	                for (int i = 0; i < jsonArr.size(); i++) {
+                        JSONObject json=jsonArr.getJSONObject(i);
+                        Map mapTypes = (Map) JSON.toJSON(json);
+                        for (Object obj : mapTypes.keySet()){
+                            mo.put(obj.toString(), mapTypes.get(obj));
+                        }
+                    }
 	                BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
 	                DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
 	                JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
-	                Map<String, Object> mo = new HashMap<String, Object>();
+	               /* Map<String, Object> mo = new HashMap<String, Object>();
 	                for (int i = 0; i < inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
 	                    mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val());
-	                }
+	                }*/
 	                JSONObject newBudgetHtml = businessDataInfoServiceImpl.dgkey(dataMjo, mo);
 	                BusinessData businessData = new BusinessData();
 	                businessData.setId(id);
