@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -265,6 +266,7 @@ public class BusinessDataController {
 	 * 
 	 * @return
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	@RequiresPermissions("businessData:update")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "修改损益/预算的数据", notes = "根据条件修改损益/预算数据", response = ResultUtils.class)
@@ -361,6 +363,7 @@ public class BusinessDataController {
 	 * @param request
 	 * @return
 	 */
+	
 	@RequiresPermissions("businessData:update")
 	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
 	@ApiOperation(value = "修改退回的损益/预算的数据", notes = "根据天剑修改退回损益/预算数据", response = ResultUtils.class)
