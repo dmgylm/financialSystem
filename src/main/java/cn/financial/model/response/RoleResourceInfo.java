@@ -1,18 +1,16 @@
 package cn.financial.model.response;
 
-import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.ApiModelProperty;
 
-public class RoleResourceInfo extends ResultUtils{
+public class RoleResourceInfo{
     @ApiModelProperty(value = "角色功能权限信息")
-    private JSONObject roleResourceList;
+    private ChildrenObject roleResourceList;
 
-    public JSONObject getRoleResourceList() {
+    public ChildrenObject getRoleResourceList() {
         return roleResourceList;
     }
 
-    public void setRoleResourceList(JSONObject roleResourceList) {
+    public void setRoleResourceList(ChildrenObject roleResourceList) {
         this.roleResourceList = roleResourceList;
     }
     
