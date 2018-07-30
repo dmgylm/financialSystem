@@ -13,6 +13,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.financial.model.Message;
 import cn.financial.model.User;
@@ -32,6 +33,7 @@ public class QuartzPwdTime implements Job {
 	protected Logger logger = LoggerFactory.getLogger(QuartzJob.class);
 	
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		
 		userServiceImpl = (UserServiceImpl) AccountQuartzListener.getSpringContext().getBean("UserServiceImpl");

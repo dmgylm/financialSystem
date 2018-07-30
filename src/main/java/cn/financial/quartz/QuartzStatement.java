@@ -9,6 +9,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.financial.model.Message;
 import cn.financial.model.BusinessData;
@@ -24,9 +25,13 @@ import cn.financial.util.UuidUtil;
  */
 public class QuartzStatement implements Job{
 	private MessageServiceImpl messageService;
+	
     private UserRoleServiceImpl userRoleService;
+    
     protected Logger logger = LoggerFactory.getLogger(QuartzStatement.class);
+    
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		userRoleService = (UserRoleServiceImpl) AccountQuartzListener.getSpringContext().getBean("UserRoleServiceImpl");

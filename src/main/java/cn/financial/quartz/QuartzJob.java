@@ -13,6 +13,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -44,7 +45,9 @@ public class QuartzJob implements Job{
 	private BusinessDataInfoServiceImpl businessDataInfoService;
     
     protected Logger logger = LoggerFactory.getLogger(QuartzJob.class);
+    
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		long start = System.currentTimeMillis();
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
