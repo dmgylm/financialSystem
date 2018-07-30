@@ -215,7 +215,7 @@
 	<!--定义一个sql片段 -->
 	<sql id="query_organization_where">
 		<if test="id!=null and id!=''">
-			and id like  '%${id}%'
+			and id = #{id,jdbcType=VARCHAR}
 		</if>
 		<if test="code!=null and code!=''">
 			and code like '%${code}%'
@@ -245,7 +245,7 @@
             and orgkey like '%${orgkey}%'
         </if>
 		<if test="orgType!=null and orgType!=''">
-            and orgType like '%${orgType}%'
+            and orgType = #{orgType,jdbcType=INTEGER}
         </if>
         <if test="orgPlateId!=null and orgPlateId!=''">
             and orgPlateId like '%${orgPlateId}%'
