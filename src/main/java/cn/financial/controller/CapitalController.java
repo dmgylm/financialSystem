@@ -172,8 +172,10 @@ public class CapitalController {
                                      }
                                  }else{ //公司级别的 及其部门级别
                                     Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
+                                    if(CompanyName!=null){
                                     JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
                                     listOrganization.add(json);
+                                   }
                                  }
                                 }
                             if(listOrganization.size()>0||listTree.size()>0){
@@ -256,11 +258,12 @@ public class CapitalController {
                            }
                        }else{ //公司级别的 及其部门级别
                           Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
-                          JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
-                          listOrganization.add(json);
+                          if(CompanyName!=null){
+                              JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
+                              listOrganization.add(json);  
+                          }
                        }
                       }
-                  
                   if(listOrganization.size()>0||listTree.size()>0){
                    String[] oId=new String[listOrganization.size()+listTree.size()];//获取权限的oId
                    for (int i = 0; i < listOrganization.size(); i++) {
@@ -315,7 +318,6 @@ public class CapitalController {
                   }else{
                       capitalResult.setResultDesc("您没有权限操作资金流水数据！");
                   } 
-                         
                  }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
@@ -733,8 +735,10 @@ public class CapitalController {
                                       }
                                   }else{ //公司级别的 及其部门级别
                                      Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
+                                     if(CompanyName!=null){
                                      JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
                                      listOrganization.add(json);
+                                     }
                                   }
                                  }
                              if(listOrganization.size()>0||listTree.size()>0){
@@ -847,8 +851,10 @@ public class CapitalController {
                             }
                         }else{ //公司级别的 及其部门级别
                            Organization CompanyName= organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));//查询所属的公司名
+                           if(CompanyName!=null){
                            JSONObject json=(JSONObject) JSONObject.toJSON(CompanyName);
                            listOrganization.add(json);
+                           }
                         }
                        }
                    if(listOrganization.size()>0||listTree.size()>0){
