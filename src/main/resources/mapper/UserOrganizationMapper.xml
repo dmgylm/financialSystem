@@ -6,7 +6,7 @@
         SELECT o.id as oId,u.id as uId,u.realName as realName,u.name as name,u.jobNumber as jobNumber,
 		o.code as code,o.parentId as parentId,o.orgName as orgName,o.his_permission as his_permission,DATE_FORMAT(m.createTime,"%Y-%m-%d %h:%i:%s") as createTime
 		FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId 
-		WHERE 1 = 1 and o.status = 1 and u.status = 1
+		WHERE 1 = 1 and o.status = 1
 		<if test="uId!=null and uId!=''">
             and u.id=#{uId}
         </if> 
