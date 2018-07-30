@@ -311,10 +311,10 @@ public class BusinessDataController {
 	                Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
 	                if (i == 1) {
 	                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-	                    result.setResultDesc("成功");
+	                    result.setResultDesc("修改成功");
 	                } else {
 	                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-	                    result.setResultDesc("失败");
+	                    result.setResultDesc("修改失败");
 	                }
 	                // 修改从表的info
 	                BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
@@ -324,10 +324,10 @@ public class BusinessDataController {
 	                Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
 	                if (infoId == 1) {
 	                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-	                    result.setResultDesc("成功");
+	                    result.setResultDesc("修改成功");
 	                } else {
 	                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-	                    result.setResultDesc("失败");
+	                    result.setResultDesc("修改失败");
 	                }
 	            } else {
 	                result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）或者id不能为空");
@@ -339,10 +339,10 @@ public class BusinessDataController {
                 Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                 if (i == 1) {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                    result.setResultDesc("成功");
+                    result.setResultDesc("修改成功");
                 } else {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                    result.setResultDesc("失败");
+                    result.setResultDesc("修改失败");
                 }
 		    }else{
 		        result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）或者id不能为空");
@@ -392,18 +392,18 @@ public class BusinessDataController {
 				Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
 				if (insertBusinessData == 1) {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("成功");
+					result.setResultDesc("修改成功");
 				} else {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("失败");
+					result.setResultDesc("修改失败");
 				}
 				Integer deleteBusinessData = businessDataService.deleteBusinessData(id);// 旧数据的删除状态为0
 				if (deleteBusinessData == 1) {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("成功");
+					result.setResultDesc("修改成功");
 				} else {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("失败");
+					result.setResultDesc("修改失败");
 				}
 				BusinessDataInfo selectBusiness = businessDataInfoService.selectBusinessDataById(id);
 				BusinessDataInfo businessDataInfo = new BusinessDataInfo();
@@ -414,18 +414,18 @@ public class BusinessDataController {
 				Integer insertBusinessDataInfo = businessDataInfoService.insertBusinessDataInfo(businessDataInfo);
 				if (insertBusinessDataInfo == 1) {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("成功");
+					result.setResultDesc("修改成功");
 				} else {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("失败");
+					result.setResultDesc("修改失败");
 				}
 				Integer deleteBusinessDataInfo = businessDataInfoService.deleteBusinessDataInfo(selectBusiness.getId());
 				if (deleteBusinessDataInfo == 1) {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-					result.setResultDesc("成功");
+					result.setResultDesc("修改成功");
 				} else {
 					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-					result.setResultDesc("失败");
+					result.setResultDesc("修改失败");
 				}
 			} else {
 				result.setResultDesc("该状态不是退回状态");
