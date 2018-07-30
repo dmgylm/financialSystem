@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,7 @@ import io.swagger.annotations.ApiResponses;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.mail.imap.protocol.Item;
 
 /**
  * 损益表Controller
@@ -267,7 +269,7 @@ public class BusinessDataController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "修改损益/预算的数据", notes = "根据条件修改损益/预算数据", response = ResultUtils.class)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name1':'value1'},{'name2':'value2'}]", required = false, dataType = "String", paramType = "query"),
+			@ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name':'name1','value':'value1'},{'name':'name2','value':'value2'}]", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "id", value = "表id", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
 	@ResponseBody
@@ -290,12 +292,9 @@ public class BusinessDataController {
 */	                /* System.out.println(inputHtml); */
 	                JSONArray jsonArr=JSONArray.parseArray(strJson);
 	                Map<String, Object> mo = new HashMap<String, Object>();
-	                for (int i = 0; i < jsonArr.size(); i++) {
+	                for (int i = 0; i < jsonArr.size();i++) {
                         JSONObject json=jsonArr.getJSONObject(i);
-                        Map mapTypes = (Map) JSON.toJSON(json);
-                        for (Object obj : mapTypes.keySet()){
-                            mo.put(obj.toString(), mapTypes.get(obj));
-                        }
+                        mo.put(json.getString("name"),json.getString("value"));
                     }
 	                BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
 	                DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
