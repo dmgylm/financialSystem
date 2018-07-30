@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -45,6 +46,7 @@ import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
+import cn.financial.util.SiteConst;
 import cn.financial.util.StringUtils;
 import cn.financial.util.UuidUtil;
 
@@ -102,7 +104,7 @@ public class StatisticJsonController {
 //	    @ApiResponse(code = 283, message = "结束时间不能为空"),
 //	    @ApiResponse(code = 284, message = "选中组织架构id集合不能为空")})
     @PostMapping(value = "/staticJson")
-    public StaticJson staticJson(HttpServletRequest request,String reportType,String businessType,String startDate,String endDate,String orgId) {
+    public StaticJson staticJson(HttpServletRequest request, HttpServletResponse response,String reportType,String businessType,String startDate,String endDate,String orgId) {
 //        Map<String, Object> dataMap = new HashMap<String, Object>();
     	StaticJson sj = new StaticJson();
         try {
@@ -154,7 +156,15 @@ public class StatisticJsonController {
 			String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);
-			messageservice.saveMessageByUser(user, "null");
+			
+            String fileName = "汇总数据表单.xlsx";
+            String saveName = SiteConst.FILEURL + "\\" + fileName;
+			Workbook wb = JsonConvertExcel.getExcel(ja,fileName);
+			FileOutputStream fos = new FileOutputStream(saveName);
+			wb.write(fos);
+			fos.close();
+			
+			messageservice.saveMessageByUser(user, saveName);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
 //            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 //            dataMap.put("caCheId", caCheUuid);
