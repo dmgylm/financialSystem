@@ -267,7 +267,7 @@ public class BusinessDataController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "修改损益/预算的数据", notes = "根据条件修改损益/预算数据", response = ResultUtils.class)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name1':'value1'},{'name2':'value2'}]", required = false, dataType = "file", paramType = "query"),
+			@ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name1':'value1'},{'name2':'value2'}]", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "id", value = "表id", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
 	@ResponseBody
