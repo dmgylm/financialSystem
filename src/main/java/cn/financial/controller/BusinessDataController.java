@@ -267,17 +267,17 @@ public class BusinessDataController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "修改损益/预算的数据", notes = "根据条件修改损益/预算数据", response = ResultUtils.class)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "html", value = "传的json格式", required = false, dataType = "file", paramType = "query"),
+			@ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name1':'value1'},{'name2':'value2'}]", required = false, dataType = "file", paramType = "query"),
 			@ApiImplicitParam(name = "id", value = "表id", required = false, dataType = "String", paramType = "query"),
 			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
 	@ResponseBody
-	public ResultUtils updateBusinessData(HttpServletRequest request, String html, Integer status, String id) {
+	public ResultUtils updateBusinessData(HttpServletRequest request, String strJson, Integer status, String id) {
 		// 需要参数，前端传来的HTML，业务表的id，状态（1保存  2提交 3退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
 		ResultUtils result = new ResultUtils();
 		// File file = new File("C:/Users/ellen/Downloads/测试html.txt");
 		try {
 		    //如果有html则是在编辑页面提交（可能是保存  或者提交） 
-		    if(html!=null&&!html.equals("")&&id!=null&&!id.equals("")){
+		    if(strJson!=null&&!strJson.equals("")&&id!=null&&!id.equals("")){
 		        if (status == 1 || status == 2) {
 	                if (status == 1) {// 如果状态是保存 数据库状态修改为 待提交 0 否者 改为已提交 2
 	                    status = 0;
@@ -288,7 +288,7 @@ public class BusinessDataController {
 	                // Document doc = Jsoup.parse(file, "UTF-8", "http://example.com/");
 	                Elements inputHtml = doc.select("input");// 获取HTML所有input属性
 */	                /* System.out.println(inputHtml); */
-	                JSONArray jsonArr=JSONArray.parseArray(html);
+	                JSONArray jsonArr=JSONArray.parseArray(strJson);
 	                Map<String, Object> mo = new HashMap<String, Object>();
 	                for (int i = 0; i < jsonArr.size(); i++) {
                         JSONObject json=jsonArr.getJSONObject(i);
