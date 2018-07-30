@@ -25,9 +25,9 @@ import cn.financial.model.RoleResource;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.RoleInfo;
 import cn.financial.model.response.RoleResourceInfo;
+import cn.financial.model.response.RoleResourceResult;
 import cn.financial.model.response.RoleResult;
 import cn.financial.service.ResourceService;
-import cn.financial.service.RoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.service.impl.RoleServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -242,11 +242,12 @@ public class RoleController {
      */
     @RequiresPermissions({"jurisdiction:view","role:view"})
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceInfo.class)
+    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
-    public RoleResourceInfo listRoleResource(String roleId){
-        RoleResourceInfo result = new RoleResourceInfo();
+    public Map<String, Object> listRoleResource(String roleId){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
             //查询全部功能权限信息
             List<Resource> resource = resourceService.listResource();
@@ -268,8 +269,8 @@ public class RoleController {
             //筛选角色关联功能权限信息
             List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
             if(roleResource == null){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
-                return result;
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL));
+                return dataMapList;
             }
             List<TreeNode<RoleResource>> nodes = new ArrayList<>();
             JSONObject jsonObject = new JSONObject();
@@ -289,14 +290,15 @@ public class RoleController {
             if(jsonObject!=null && !jsonObject.equals("")){
                 roleService.addRoleType(resourceObject, jsonObject);
             }
-            result.setRoleResourceList(resourceObject);
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            dataMap.put("roleResourceList", resourceObject);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
-            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
         }
-        return result;
+        return dataMapList;
     }
     /**
      * 新增(角色功能权限关联表)必须勾选父节点,父节点相当于查看权限
