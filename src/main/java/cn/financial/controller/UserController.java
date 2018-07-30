@@ -367,7 +367,14 @@ public class UserController{
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
-                    List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());
+                    //List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());//查询角色功能权限关联信息
+                    List<RoleResource> jsonRole = new ArrayList<>();
+                    List<UserRole> userRole = userRoleService.listUserRole(name);//根据用户名查询用户角色关联信息是否存在
+                    if(!CollectionUtils.isEmpty(userRole)){
+                        for(UserRole uRole : userRole){
+                            jsonRole = roleResourceService.listRoleResource(uRole.getrId()); 
+                        }
+                    }
                     if(!CollectionUtils.isEmpty(jsonOrg)){
                         item.setOrgFlag(User.MATCH);
                     }else{
