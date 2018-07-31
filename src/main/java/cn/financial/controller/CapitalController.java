@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
 import cn.financial.model.CapitalNatrue;
 import cn.financial.model.Organization;
@@ -129,14 +132,20 @@ public class CapitalController {
                      if(keywordOrganization.size()>0){
                        //不包含汇总  并且 orgType小于等于关键字查出的orgType
                          String n=userOrganizationJson.get("name").toString();
-                         Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
+                         List<String> minOrgType=new ArrayList<>();
+                         for (int i = 0; i < keywordOrganization.size(); i++) {
+                             if(keywordOrganization.get(i).getOrgName()!=BusinessData.NAME){ //去除汇总的级别
+                                 minOrgType.add(keywordOrganization.get(i).getOrgType().toString());    
+                             }
+                         }
+                         Integer keywordOrgType=Integer.parseInt(Collections.min(minOrgType));//获取最小值 
                          Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
                          if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
                              List<Capital> list =new ArrayList<>();
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                              capitalResult.setData(list);
                              capitalResult.setTotal(0);
-                         }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
+                         }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType||u==4){
                              //获取搜索关键字的公司名称
                              //查询该节点下的所有子节点集合 获取公司的级别
                             List<Organization> organization=new ArrayList<>();
@@ -690,7 +699,13 @@ public class CapitalController {
                       if(keywordOrganization.size()>0){
                           //不包含汇总  并且 orgType小于等于关键字查出的orgType
                           String n=userOrganizationJson.get("name").toString();
-                          Integer keywordOrgType=keywordOrganization.get(0).getOrgType();
+                          List<String> minOrgType=new ArrayList<>();
+                          for (int i = 0; i < keywordOrganization.size(); i++) {
+                              if(keywordOrganization.get(i).getOrgName()!=BusinessData.NAME){ //去除汇总的级别
+                                  minOrgType.add(keywordOrganization.get(i).getOrgType().toString());    
+                              }
+                          }
+                          Integer keywordOrgType=Integer.parseInt(Collections.min(minOrgType));//获取最小值 
                           Integer u=Integer.parseInt(userOrganizationJson.get("orgType").toString());
                           if(keywordOrgType==3){ //如果关键字是部门级别则是没数据
                               List<String[]> a=new ArrayList<>();
@@ -699,7 +714,7 @@ public class CapitalController {
                               os = response.getOutputStream();
                               ExcelUtil.export(a, os);
                               ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                          }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType){
+                          }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType ||u==4){
                             //获取搜索关键字的公司名称
                               //查询该节点下的所有子节点集合 获取公司的级别
                              List<Organization> organization=new ArrayList<>();

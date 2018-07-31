@@ -48,11 +48,6 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         <!-- SELECT * FROM 
-         capital 
-         WHERE status=1
-         <include refid="query_capital_where"></include>
-         ORDER BY tradeTime DESC -->
          SELECT * FROM 
          capital c,organization o
          WHERE c.status=1 and o.id=c.oId and c.oId in 

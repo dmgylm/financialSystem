@@ -44,13 +44,6 @@
        
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
-         <!-- SELECT *
-         FROM businessData
-         WHERE delStatus=1 
-         <include refid="query_businessData_where"></include>
-         ORDER BY updateTime DESC
-         LIMIT #{start},#{pageSize}
-         -->
          SELECT *
          FROM businessData b,organization o
          WHERE b.delStatus=1 and o.id=b.oId and b.typeId in 
@@ -109,14 +102,20 @@
       <!--sql-->
      <sql id="query_businessData_where">
         <if test="year !=null and year!=''">
-            and year = #{year}
+            and b.year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            and month = #{month}
+            and b.month = #{month}
         </if>
         <if test="sId!=null and sId!=''">
-            and sId = #{sId}
+            and b.sId = #{sId}
         </if>
+         <if test=" orgName!=null and orgName!=''">
+            and o.orgName in 
+          <foreach collection="orgName" item="orgName" index="index" open="(" separator="," close=")" >
+               #{orgName}
+           </foreach>
+        </if> 
     </sql>
     
      <!--data sql-->
