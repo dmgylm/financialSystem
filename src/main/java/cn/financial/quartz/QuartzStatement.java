@@ -35,7 +35,7 @@ public class QuartzStatement implements Job{
 	public void execute(JobExecutionContext arg0) throws JobExecutionException{
 		messageService = (MessageServiceImpl) AccountQuartzListener.getSpringContext().getBean("MessageServiceImpl");
 		userRoleService = (UserRoleServiceImpl) AccountQuartzListener.getSpringContext().getBean("UserRoleServiceImpl");
-        List<UserRole> rolelist = userRoleService.listUserRole(null);
+        List<UserRole> rolelist = userRoleService.listUserRole(null, null);
 		try {
 			for( int i =0;i<rolelist.size();i++ ) {
 				
