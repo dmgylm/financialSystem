@@ -441,63 +441,63 @@ public class UserController{
      * @param updateTime
      * @param oId
      */
-//    @RequiresPermissions("permission:create")
-//    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-//    @ApiOperation(value="新增用户信息",notes="新增用户信息", response = ResultUtils.class)
-//    @ApiImplicitParams({
-//        @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
-//        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
-//        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query", required = true)})
-//    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
-//        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 222, message = "用户名为空"),
-//        @ApiResponse(code = 224, message = "工号为空"),@ApiResponse(code = 209, message = "用户名已存在"),
-//        @ApiResponse(code = 212, message = "工号已存在"),@ApiResponse(code = 223, message = "真实姓名为空")})
-//    @ResponseBody
-//    public ResultUtils insertUser(String name, String realName, String jobNumber){
-//        ResultUtils result = new ResultUtils();
-//        try {
-//            if(name == null || name.equals("")){
-//                ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
-//                return result;
-//            }
-//            if(jobNumber == null || jobNumber.equals("")){
-//                ElementXMLUtils.returnValue(ElementConfig.USER_JOBNUMBER_NULL, result);
-//                return result;
-//            }
-//            if(realName == null || realName.equals("")){
-//                ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
-//                return result;
-//            }
-//            Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
-//            Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
-//            if(flag > 0){
-//                ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, result);
-//                return result;
-//            }
-//            if(jobNumberFlag > 0){
-//                ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE, result);
-//                return result;
-//            }
-//            User user = new User();
-//            user.setId(UuidUtil.getUUID());
-//            user.setSalt(UuidUtil.getUUID());
-//            user.setName(name);
-//            user.setRealName(realName);
-//            user.setPwd(User.INITIALCIPHER);//用户新增默认密码为Welcome1
-//            user.setJobNumber(jobNumber);
-//            int userList = userService.insertUser(user);
-//            if(userList > 0){
-//                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-//            }else{
-//                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-//            }
-//            
-//        } catch (Exception e) {
-//            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
-//            this.logger.error(e.getMessage(), e);
-//        }
-//        return result;
-//    }
+    /*@RequiresPermissions("permission:create")
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @ApiOperation(value="新增用户信息",notes="新增用户信息", response = ResultUtils.class)
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 222, message = "用户名为空"),
+        @ApiResponse(code = 224, message = "工号为空"),@ApiResponse(code = 209, message = "用户名已存在"),
+        @ApiResponse(code = 212, message = "工号已存在"),@ApiResponse(code = 223, message = "真实姓名为空")})
+    @ResponseBody
+    public ResultUtils insertUser(String name, String realName, String jobNumber){
+        ResultUtils result = new ResultUtils();
+        try {
+            if(name == null || name.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL, result);
+                return result;
+            }
+            if(jobNumber == null || jobNumber.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_JOBNUMBER_NULL, result);
+                return result;
+            }
+            if(realName == null || realName.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_REALNAME_NULL, result);
+                return result;
+            }
+            Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
+            Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
+            if(flag > 0){
+                ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, result);
+                return result;
+            }
+            if(jobNumberFlag > 0){
+                ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE, result);
+                return result;
+            }
+            User user = new User();
+            user.setId(UuidUtil.getUUID());
+            user.setSalt(UuidUtil.getUUID());
+            user.setName(name);
+            user.setRealName(realName);
+            user.setPwd(User.INITIALCIPHER);//用户新增默认密码为Welcome1
+            user.setJobNumber(jobNumber);
+            int userList = userService.insertUser(user);
+            if(userList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            }else{
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+            }
+            
+        } catch (Exception e) {
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            this.logger.error(e.getMessage(), e);
+        }
+        return result;
+    }*/
     
     /**
      * 超级管理员修改用户信息
@@ -509,45 +509,45 @@ public class UserController{
      * @param updateTime
      * @param oId
      */
-//    @RequiresPermissions("permission:update")
-//    @RequestMapping(value = "/update", method = RequestMethod.POST)
-//    @ApiOperation(value="修改用户信息",notes="超级管理员修改用户信息", response = ResultUtils.class)
-//    @ApiImplicitParams({
-//        @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
-//        @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
-//        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
-//        @ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
-//        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query")})
-//    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
-//        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空"),
-//        @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
-//    @ResponseBody
-//    public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
-//        ResultUtils result = new ResultUtils();
-//        try {
-//            User user = new User();
-//            user.setId(userId);
-//            user.setName(name);
-//            user.setRealName(realName);
-//            user.setPwd(pwd);
-//            user.setJobNumber(jobNumber);
-//            Integer userList = userService.updateUser(user);
-//            if(userList == -1){
-//                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
-//            }else if(userList == -2){
-//                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
-//            }else if(userList > 0){
-//                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-//            }else{
-//                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-//            } 
-//            
-//        } catch (Exception e) {
-//            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
-//            this.logger.error(e.getMessage(), e);
-//        }
-//        return result;
-//    }
+/*    @RequiresPermissions("permission:update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ApiOperation(value="修改用户信息",notes="超级管理员修改用户信息", response = ResultUtils.class)
+    @ApiImplicitParams({
+        @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
+        @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query")})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
+        @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 221, message = "用户id为空"),
+        @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成")})
+    @ResponseBody
+    public ResultUtils updateUser(String userId, String name, String realName, String pwd, String jobNumber){
+        ResultUtils result = new ResultUtils();
+        try {
+            User user = new User();
+            user.setId(userId);
+            user.setName(name);
+            user.setRealName(realName);
+            user.setPwd(pwd);
+            user.setJobNumber(jobNumber);
+            Integer userList = userService.updateUser(user);
+            if(userList == -1){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL, result);
+            }else if(userList == -2){
+                ElementXMLUtils.returnValue(ElementConfig.USER_PWDFORMAT_ERROR, result);
+            }else if(userList > 0){
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            }else{
+                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+            } 
+            
+        } catch (Exception e) {
+            ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            this.logger.error(e.getMessage(), e);
+        }
+        return result;
+    }*/
     /**
      * 管理员删除用户(停用)
      * @param request
@@ -739,7 +739,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions({"organization:create","permission:create"})
+    /*@RequiresPermissions({"organization:create","permission:create"})
     @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -768,14 +768,14 @@ public class UserController{
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
     /**
      * 修改（先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息）（根据用户id修改用户组织架构关联信息）
      * @param request
      * @param response
      * @return
      */
-    @RequiresPermissions({"organization:update","permission:update"})
+    /*@RequiresPermissions({"organization:update","permission:update"})
     @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -808,7 +808,7 @@ public class UserController{
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
     
     /**
      * 根据用户名查询用户角色关联信息(用户角色关联表)
@@ -880,7 +880,7 @@ public class UserController{
      * @param uid
      * @param rid
      */
-    @RequiresPermissions({"permission:create","role:create"})
+    /*@RequiresPermissions({"permission:create","role:create"})
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -910,7 +910,7 @@ public class UserController{
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
     /**
      * 修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息（根据用户id修改用户角色关联信息）
      * @param request
@@ -919,7 +919,7 @@ public class UserController{
      * @param rid
      * @param updateTime
      */
-    @RequiresPermissions({"permission:update","role:update"})
+    /*@RequiresPermissions({"permission:update","role:update"})
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -951,5 +951,5 @@ public class UserController{
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
 }
