@@ -136,7 +136,7 @@ public class UserServiceImpl implements  UserService{
     //角色
     @Cacheable(value = "find_Roles_Permissions", key = "'findRoles_name_'+#username")
     public Set<String> findRoles(String username) {
-        List<UserRole> userRole = userRoleDao.listUserRole(username);
+        List<UserRole> userRole = userRoleDao.listUserRole(username, null);
         Set<String> roles = new HashSet<String>();
         if(!CollectionUtils.isEmpty(userRole)){
             for(int j=0;j<userRole.size();j++){

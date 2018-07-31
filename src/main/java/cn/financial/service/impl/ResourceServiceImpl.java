@@ -1,19 +1,13 @@
 package cn.financial.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.dao.ResourceDAO;
 import cn.financial.model.Resource;
-import cn.financial.model.RoleResource;
 import cn.financial.service.ResourceService;
-import cn.financial.util.TreeNode;
 
 
 @Service("ResourceServiceImpl")
@@ -21,21 +15,21 @@ public class ResourceServiceImpl implements ResourceService{
     @Autowired
     private ResourceDAO resourceDao;
     /**
-     * 查询全部角色
+     * 查询全部功能权限信息
      */
     @Override
     public List<Resource> listResource(){
         return resourceDao.listResource();
     }
     /**
-     * 根据id/code查询角色
+     * 根据id/code查询功能权限信息
      */
     @Override
     public Resource getResourceById(String resourceId, String code) {
         return resourceDao.getResourceById(resourceId, code);
     }
     /**
-     * 新增角色
+     * 新增功能权限信息
      */
     @Override
     public Integer insertResource(Resource resource) {
@@ -45,14 +39,14 @@ public class ResourceServiceImpl implements ResourceService{
         return resourceDao.insertResource(resource);
     }
     /**
-     * 修改角色
+     * 修改功能权限信息
      */
     @Override
     public Integer updateResource(Resource resource) {
         return resourceDao.updateResource(resource);
     }
     /**
-     * 删除角色
+     * 删除功能权限信息
      */
     @Override
     public Integer deleteResource(String resourceId) {

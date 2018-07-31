@@ -25,8 +25,8 @@ public class UserRoleServiceImpl implements UserRoleService{
      * @return
      */
     @Override
-    public List<UserRole> listUserRole(String name) {
-        return userRoleDao.listUserRole(name);
+    public List<UserRole> listUserRole(String name, String rId) {
+        return userRoleDao.listUserRole(name, rId);
     }
     /**
      * 新增

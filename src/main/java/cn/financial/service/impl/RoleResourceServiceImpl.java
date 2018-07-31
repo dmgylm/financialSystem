@@ -118,8 +118,8 @@ public class RoleResourceServiceImpl implements RoleResourceService{
      */
     public List<JSONObject> roleResourceList(String userName){
         List<JSONObject> jsonObject = new ArrayList<>();
-        Map<String, TreeNode<RoleResource>>  map=new HashMap<>();
-        List<UserRole> userRole = userRoleService.listUserRole(userName);//根据用户名查询对应角色信息
+        Map<String, TreeNode<RoleResource>> map = new HashMap<>();
+        List<UserRole> userRole = userRoleService.listUserRole(userName, null);//根据用户名查询对应角色信息
         if(userRole.size()>0){//用户可能拥有多个角色，需要去重权限信息
             for(UserRole list:userRole){
               //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）

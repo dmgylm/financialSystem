@@ -191,7 +191,7 @@ public class MessageServiceImpl implements MessageService {
             start = pageSize * (Integer.parseInt(pagingMap.get("page").toString()) - 1);
         }
 		
-		List<UserRole> lur = userRoleDao.listUserRole(user.getName());
+		List<UserRole> lur = userRoleDao.listUserRole(user.getName(), null);
 		List<Message> lm = new ArrayList<Message>();
 		List<Organization> lo = new ArrayList<Organization>();
 		List<String> oIdList = new ArrayList<String>();

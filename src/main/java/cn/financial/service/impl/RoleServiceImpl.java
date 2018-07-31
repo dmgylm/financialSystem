@@ -22,8 +22,8 @@ public class RoleServiceImpl implements RoleService{
      * 查询全部角色/根据roleName查询
      */
     @Override
-    public List<Role> listRole(String roleName) {
-        return roleDao.listRole(roleName);
+    public List<Role> listRole(String roleName, String rName) {
+        return roleDao.listRole(roleName, rName);
     }
     /**
      * 根据roleId查询角色
@@ -68,19 +68,18 @@ public class RoleServiceImpl implements RoleService{
         addRoleItems(object, twoList);
         //System.out.println("--------"+JSON.toJSONString(twoList));
         //循环匹配
-        json.put("mathc", "N");
+        json.put("mathc", false);
         if(twoList.contains(json.getString("pid"))){
-            json.put("mathc", "Y");
+            json.put("mathc", true);
         }
         if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
             for (Object item : json.getJSONArray("children")) {
                 JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
-                itemChildren.put("mathc", "N");
                 for (Object itemStr : twoList) {
-                    itemChildren.put("mathc", "N");
+                    itemChildren.put("mathc", false);
                     //System.out.println("------"+itemStr+"========="+itemChildren.getString("pid"));
                    if(itemChildren.getString("pid").equals(itemStr)){
-                       itemChildren.put("mathc", "Y");
+                       itemChildren.put("mathc", true);
                        break;
                    }
                 }
