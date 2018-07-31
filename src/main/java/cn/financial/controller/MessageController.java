@@ -48,7 +48,7 @@ import io.swagger.annotations.ApiResponses;
 @Controller
 @RequestMapping("/message")
 public class MessageController {
-
+	
     @Autowired
     private MessageService messageService;
     
@@ -481,4 +481,5 @@ public class MessageController {
     	
     	return result;
     }   
+    
 }
