@@ -23,8 +23,8 @@ public class Role {
     private String updateTime;//修改时间
     @ApiModelProperty(value="角色功能能权限关联信息",name="jsonRoleResource")
     private JSONObject jsonRoleResource;//角色功能能权限关联信息
-    @ApiModelProperty(value="用户角色关联信息匹配状态Y表示匹配N表示不匹配",name="mathc")
-    private String mathc;//用户角色关联信息匹配状态
+    @ApiModelProperty(value="用户角色关联信息匹配状态true表示匹配false表示不匹配",name="mathc")
+    private boolean mathc;//用户角色关联信息匹配状态
     public Role() {
         super();
     }
@@ -72,12 +72,11 @@ public class Role {
         this.jsonRoleResource = jsonRoleResource;
     }
 
-    public String getMathc() {
+    public boolean isMathc() {
         return mathc;
     }
 
-    public void setMathc(String mathc) {
+    public void setMathc(boolean mathc) {
         this.mathc = mathc;
     }
-    
 }
