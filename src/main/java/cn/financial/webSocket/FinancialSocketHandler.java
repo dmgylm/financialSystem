@@ -10,8 +10,8 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-
 public class FinancialSocketHandler implements WebSocketHandler {
+	
 	
 	private static final Logger logger;
 	
@@ -60,9 +60,6 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 * @param message
 	 */
 	public void sendMessageToUser(String userName,TextMessage message) {
-		System.out.println("userName"+userName);
-		System.out.println("message"+message);
-	
 		for(WebSocketSession user : users) {
 			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)) {
 				try {
