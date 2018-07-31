@@ -15,7 +15,7 @@ public interface RoleDAO {
      * 查询所有角色/根据roleName查询
      * @return
      */
-    List<Role> listRole(@Param("roleName")String roleName);
+    List<Role> listRole(@Param("roleName")String roleName, @Param("rName")String rName);
     /**
      * 根据roleId查询角色
      * @param userId

@@ -13,10 +13,10 @@ import cn.financial.model.UserRole;
  */
 public interface UserRoleDAO {
     /**
-     * 查询所有/根据用户查对应角色
+     * 查询所有/根据用户查对应角色/角色id查询用户角色关联信息
      * @return
      */
-    List<UserRole> listUserRole(@Param("name") String name);
+    List<UserRole> listUserRole(@Param("name") String name, @Param("rId") String rId);
     /**
      * 新增
      * @param user
