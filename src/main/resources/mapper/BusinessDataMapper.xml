@@ -110,12 +110,24 @@
         <if test="sId!=null and sId!=''">
             and b.sId = #{sId}
         </if>
-         <if test=" orgName!=null and orgName!=''">
-            and o.orgName in 
+       <!--  <if test="oId!=null and oId!=''">
+         and o.id=b.oId and b.oId in 
+         <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+               #{oId}
+           </foreach>
+        </if>
+         <if test="typeId!=null and typeId!=''">
+         and o.id=b.typeId and b.oId in 
+         <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
+               #{typeId}
+           </foreach>
+        </if> -->
+         <!-- <if test=" orgName!=null and orgName!=''">
+            and o.orgName LIKE CONCAT('%',#{orgName},'%') in 
           <foreach collection="orgName" item="orgName" index="index" open="(" separator="," close=")" >
                #{orgName}
            </foreach>
-        </if> 
+        </if>  -->
     </sql>
     
      <!--data sql-->
