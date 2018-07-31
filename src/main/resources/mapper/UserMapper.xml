@@ -93,12 +93,20 @@
         DATE_FORMAT(u.createTime,"%Y-%m-%d %h:%i:%s") as createTime,
         DATE_FORMAT(u.updateTime,"%Y-%m-%d %h:%i:%s") as updateTime,DATE_FORMAT(u.expreTime,"%Y-%m-%d") as expreTime
         FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
         <if test="oId!=null and oId!=''">
             and m.oId in 
             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
                 #{oId}
+            </foreach>
+        </if>
+        <!--超级管理员uId-->
+        <if test="uId!=null and uId!=''">
+            and u.id not in
+            <foreach collection="uId" item="uId" index="index" open="(" separator="," close=")" >
+                #{uId}
             </foreach>
         </if>
         GROUP BY u.name
@@ -111,12 +119,20 @@
     <!--根据组织架构id查询用户列表信息总条数-->
     <select id="listUserOrgNameCount" parameterType="map" resultType="INTEGER">    
         select count(1) from (SELECT u.name as name FROM organization o inner join user_organization_mapping m on o.id=m.oId INNER JOIN user u on u.id=m.uId
+        INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
         <if test="oId!=null and oId!=''">
             and m.oId in 
             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
                 #{oId}
+            </foreach>
+        </if>
+        <!--超级管理员uId-->
+        <if test="uId!=null and uId!=''">
+            and u.id not in
+            <foreach collection="uId" item="uId" index="index" open="(" separator="," close=")" >
+                #{uId}
             </foreach>
         </if>
         GROUP BY u.name) total

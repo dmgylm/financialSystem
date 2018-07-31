@@ -15,6 +15,10 @@
         <if test="roleName!=null and roleName!=''">
             and roleName = #{roleName}
         </if>
+        <!--是否是超级管理员-->
+        <if test="rName!=null and rName!=''">
+            and roleName not in ('超级管理员')
+        </if>
         ORDER BY createTime DESC
     </select>
     <!--新增角色-->

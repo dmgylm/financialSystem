@@ -10,6 +10,9 @@
 		<if test="name!=null and name!=''">
             and u.name=#{name}
         </if>
+        <if test="rId!=null and rId!=''">
+            and r.id=#{rId}
+        </if>
 		ORDER BY m.createTime DESC
     </select>
     <!--新增-->
