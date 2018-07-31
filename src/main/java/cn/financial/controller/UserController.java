@@ -325,9 +325,9 @@ public class UserController{
             List<UserOrganization> userOrgPermission = new ArrayList<>();
             List<Role> role = new ArrayList<>();
             List<UserRole> userRoleId = new ArrayList<>();
-            List<String> uId = null;
-            List<String> rIdList = new ArrayList<>();
-            boolean superAdmin = true;
+            List<String> uId = null;//超级管理员用户id
+            List<String> rIdList = new ArrayList<>();//超级管理员角色id
+            boolean superAdmin = true;//当前登录用户是否是超级管理员
             Integer userList = 0;
             //判断当前登录用户数据权限范围
             if(currentUser.getId()!=null && !currentUser.getId().equals("")){
@@ -363,10 +363,12 @@ public class UserController{
                         //根据超级管理员角色id查询关联的用户id
                         userRoleId.addAll(userRoleService.listUserRole(null, r));
                     }
-                    uId = new ArrayList<>();
-                    for(int i=0;i<userRoleId.size();i++){
-                        //把超级管理员的uId作为条件查询
-                        uId.add(userRoleId.get(i).getuId());
+                    if(!CollectionUtils.isEmpty(userRoleId)){
+                        uId = new ArrayList<>();
+                        for(int i=0;i<userRoleId.size();i++){
+                            //把超级管理员的uId作为条件查询
+                            uId.add(userRoleId.get(i).getuId());
+                        }
                     }
                 } 
             }
