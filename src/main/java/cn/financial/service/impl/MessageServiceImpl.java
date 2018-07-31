@@ -139,7 +139,7 @@ public class MessageServiceImpl implements MessageService {
 	        	Message message = new Message();
 				message.setId(UuidUtil.getUUID());
 				message.setStatus(0);
-				message.setTheme(1);
+				message.setTheme(2);
 				message.setContent("汇总损益表已生成");
 				message.setuId(user.getId());//发送指定人的id
 				message.setIsTag(0);
