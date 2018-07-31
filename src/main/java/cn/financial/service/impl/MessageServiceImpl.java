@@ -220,10 +220,14 @@ public class MessageServiceImpl implements MessageService {
 							}else if(THREE == num) {
 								Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
 								Organization orgt=new Organization();
-								orgt.setId(org.getId());
-								if(!lo.contains(orgt)) {
-									oIdList.add(org.getId());
-									lo.add(org);
+								if(org != null) {
+									orgt.setId(org.getId());
+									if(!lo.contains(orgt)) {
+										oIdList.add(org.getId());
+										lo.add(org);
+									}
+								}else {
+									continue;
 								}
 							}
 						}
