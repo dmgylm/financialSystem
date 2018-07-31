@@ -63,11 +63,11 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService{
 		for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
 			String keyIncome = iterIncome.next();
 			Object objIncome = dataMjo.get(keyIncome);
-			if (objIncome instanceof JSONArray) {
-				newBudgetHtml.put(keyIncome, mergeHtml(dataMjo, mo));
+			if (objIncome instanceof JSONArray) {; 
+				newBudgetHtml=mergeHtml(dataMjo, mo);
 			} else {
 				JSONObject longData = (JSONObject) objIncome;
-				newBudgetHtml.put(keyIncome, mergeHtml(longData, mo));
+				newBudgetHtml=mergeHtml(longData, mo);
 			}
 		}
 		return newBudgetHtml;
@@ -96,12 +96,11 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService{
 						obj.put(keysIncomes, objsIncome);
 						
 						if(mo.containsKey(longJson.get("key"))) {
-							Double value= 0.0;
+							double value= 0.0;
 							if(Integer.parseInt(longJson.get("type").toString())==HtmlGenerate.BOX_TYPE_FORMULA) {//判断当前类型是不是公式
 								 value=FormulaUtil.calculationByFormula(mo,longJson.get("reallyFormula").toString());
 							}else {
-								value=Double.valueOf(mo.get(longJson.get("key")).toString());
-								
+								value=Double.parseDouble((mo.get(longJson.get("key")).toString()).toString());
 							}
 							obj.put("value", value);
 						}
