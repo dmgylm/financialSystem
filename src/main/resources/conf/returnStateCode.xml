@@ -169,6 +169,11 @@
         <description>请先新增组织架构配置</description>
     </Result>
     
+    <Result name="MESSAGE_LIST_NULL">
+        <code>255</code>
+        <description>该用户没有消息存在</description>
+    </Result>
+    
     <Result name="STATIC_REPORTTYPE_NULL">
         <code>280</code>
         <description>报表类型不能为空</description>
