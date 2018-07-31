@@ -196,9 +196,9 @@ public class UserServiceImpl implements  UserService{
         //System.out.println("--------"+JSON.toJSONString(twoList));
         //循环匹配
         for (JSONObject item : obj) {
-            item.put("mathc", "N");
+            item.put("mathc", false);
             if(twoList.contains(item.getString("pid"))){
-                item.put("mathc", "Y");
+                item.put("mathc", true);
             }
             checkItems(item, twoList);
         }
@@ -210,10 +210,10 @@ public class UserServiceImpl implements  UserService{
             for (Object item : object.getJSONArray("children")) {
                 JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
                 for (Object itemStr : obj) {
-                    itemChildrens.put("mathc", "N");
+                    itemChildrens.put("mathc", false);
                     //System.out.println("------"+itemStr+"========="+itemChildrens.getString("pid"));
                    if(itemChildrens.getString("pid").equals(itemStr)){
-                       itemChildrens.put("mathc", "Y");
+                       itemChildrens.put("mathc", true);
                        break;
                    }
                 }
