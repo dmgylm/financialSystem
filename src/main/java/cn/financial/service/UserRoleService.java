@@ -12,7 +12,7 @@ public interface UserRoleService {
      * 查询所有/根据用户查对应角色
      * @return
      */
-    List<UserRole> listUserRole(String name);
+    List<UserRole> listUserRole(String name, String rId);
     /**
      * 新增
      * @param user

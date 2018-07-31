@@ -14,7 +14,7 @@ public interface RoleService {
      * 查询所有角色/根据roleName查询
      * @return
      */
-    List<Role> listRole(String roleName);
+    List<Role> listRole(String roleName, String rName);
     /**
      * 根据roleId查询角色
      * @param userId
