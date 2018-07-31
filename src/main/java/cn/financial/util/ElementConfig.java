@@ -222,4 +222,8 @@ public class ElementConfig {
      * 配置模板不存在
      */
     public static final String DATA_MODULE_NULL = "DATA_MODULE_NULL"; 
+    /**
+     * 根据用户组织权限查询消息为空
+     */
+    public static final String MESSAGE_LIST_NULL = "MESSAGE_LIST_NULL";
 }
