@@ -110,7 +110,7 @@ public class MessageController {
             	result.setData(lm);
                 ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
-            	ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
+            	ElementXMLUtils.returnValue((ElementConfig.MESSAGE_LIST_NULL),result);
             }
         } catch (Exception e) {
         	ElementXMLUtils.returnValue((ElementConfig.RUN_FAILURE),result);
