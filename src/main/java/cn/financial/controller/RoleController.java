@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -22,12 +24,14 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.model.Resource;
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
+import cn.financial.model.User;
+import cn.financial.model.UserRole;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.model.response.RoleInfo;
-import cn.financial.model.response.RoleResourceInfo;
 import cn.financial.model.response.RoleResourceResult;
 import cn.financial.model.response.RoleResult;
 import cn.financial.service.ResourceService;
+import cn.financial.service.UserRoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.service.impl.RoleServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -54,6 +58,8 @@ public class RoleController {
     private ResourceService resourceService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
+    @Autowired
+    private UserRoleService userRoleService;
     
     protected Logger logger = LoggerFactory.getLogger(RoleController.class);
     
@@ -66,11 +72,31 @@ public class RoleController {
     @RequestMapping(value = "/roleList", method = RequestMethod.POST)
     @ApiOperation(value="查询所有角色信息",notes="查询所有角色信息", response = RoleResult.class)
     @ResponseBody
-    public Map<String, Object> listRole(){
+    public Map<String, Object> listRole(HttpServletRequest request){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        User currentUser = (User) request.getAttribute("user");
     	try {
-            List<Role> role = roleService.listRole("");//查询全部参数为空
+    	    List<Role> roleNameList = new ArrayList<>();
+            String rName = "N";//不是超级管理员
+            if(currentUser.getId()!=null && !currentUser.getId().equals("")){
+                //根据当前登录用户名查询是否是超级管理员
+                List<UserRole> userRole = userRoleService.listUserRole(currentUser.getName(), null);//根据用户名查询用户是否是超级管理员
+                if(!CollectionUtils.isEmpty(userRole)){
+                    for(UserRole uRole : userRole){
+                        Role roleName = roleService.getRoleById(uRole.getrId());
+                        roleNameList.add(roleName); 
+                    }
+                }
+            }
+            if(!CollectionUtils.isEmpty(roleNameList)){
+                for(Role roles : roleNameList){
+                    if(roles.getRoleName().equals("超级管理员")){//是超级管理员
+                        rName = null;
+                    }
+                }
+            }
+            List<Role> role = roleService.listRole(null,rName);//查询全部参数为空
             dataMap.put("roleList", role);
             dataMapList.put("data", dataMap);
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
@@ -138,7 +164,7 @@ public class RoleController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCEID_NULL, result);
                 return result;
             }
-            List<Role> roleNameList = roleService.listRole(roleName);//根据roleName查询角色信息
+            List<Role> roleNameList = roleService.listRole(roleName,null);//根据roleName查询角色信息
             if(roleNameList.size()>0){//roleName不能重复
                 ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
                 return result;

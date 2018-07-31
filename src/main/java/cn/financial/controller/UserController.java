@@ -2,6 +2,7 @@ package cn.financial.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class UserController{
     protected Logger logger = LoggerFactory.getLogger(UserController.class);
     
     /**
-     * 新增用户，对应的角色以及对应的权限
+     * 管理员新增用户，对应的角色，组织结构信息
      * @param roleName			角色名称
      * @param userName			用户名称
      * @param realName			真实姓名
@@ -96,7 +97,7 @@ public class UserController{
     @Transactional(rollbackFor = Exception.class)
     @RequiresPermissions({"role:create","permission:create","organization:create"})
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    @ApiOperation(value="新增用户，对应的角色以及对应的权限",notes="新增用户，对应的角色以及对应的权限", response = ResultUtils.class)
+    @ApiOperation(value="管理员新增用户，对应的角色，组织结构信息",notes="新增用户，对应的角色以及对应的权限", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名称",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query", required = true),
@@ -190,7 +191,7 @@ public class UserController{
     }
     
     /**
-     * 超级管理员修改用户,对应的角色以及对应的权限信息
+     * 管理员修改用户,对应的角色，组织结构信息
      * @param userId		用户id
      * @param name			用户名称
      * @param realName		真实姓名
@@ -203,7 +204,7 @@ public class UserController{
     @Transactional(rollbackFor = Exception.class)
     @RequiresPermissions({"role:update","permission:update","organization:update"})
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value="修改用户，对应的角色以及对应的权限信息",notes="超级管理员修改用户，对应的角色以及对应的权限信息", response = ResultUtils.class)
+    @ApiOperation(value="管理员修改用户,对应的角色，组织结构信息",notes="超级管理员修改用户，对应的角色以及对应的权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
@@ -322,15 +323,56 @@ public class UserController{
             }
             List<User> user = new ArrayList<>();
             List<UserOrganization> userOrgPermission = new ArrayList<>();
+            List<Role> role = new ArrayList<>();
+            List<UserRole> userRoleId = new ArrayList<>();
+            List<String> uId = null;
+            List<String> rIdList = new ArrayList<>();
+            boolean superAdmin = true;
             Integer userList = 0;
             //判断当前登录用户数据权限范围
             if(currentUser.getId()!=null && !currentUser.getId().equals("")){
                 //根据当前登录用户id查询组织节点信息
                 userOrgPermission = userOrganizationService.listUserOrganization(currentUser.getId());
+                //根据当前登录用户名查询用户关联的角色id信息
+                List<UserRole> userRole = userRoleService.listUserRole(currentUser.getName(), null);
+                if(!CollectionUtils.isEmpty(userRole)){
+                    for(UserRole uRole : userRole){
+                        Role roleName = roleService.getRoleById(uRole.getrId());
+                        role.add(roleName);
+                        if(!CollectionUtils.isEmpty(role)){
+                            for(Role roles : role){
+                                //查询当前登录用户是不是超级管理员
+                                if(roles.getRoleName().equals("超级管理员")){
+                                    superAdmin = false;//是超级管理员
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(superAdmin){//不是超级管理员就把超级管理员的uId作为条件查询
+                //根据超级管理员查询角色id
+                List<Role> rolelists = roleService.listRole("超级管理员", null);
+                if(!CollectionUtils.isEmpty(rolelists)){
+                    for(Role rid : rolelists){
+                        rIdList.add(rid.getId());
+                    }
+                }
+                if(!CollectionUtils.isEmpty(rIdList)){
+                    for(String r : rIdList){
+                        //根据超级管理员角色id查询关联的用户id
+                        userRoleId.addAll(userRoleService.listUserRole(null, r));
+                    }
+                    uId = new ArrayList<>();
+                    for(int i=0;i<userRoleId.size();i++){
+                        //把超级管理员的uId作为条件查询
+                        uId.add(userRoleId.get(i).getuId());
+                    }
+                } 
             }
             List<Organization> userOrg = new ArrayList<>();
             List<Organization> userOrganization = new ArrayList<>();
-            Map<String, Organization> removalOrg = new HashMap<>();
+            //Map<String, Organization> removalOrg = new HashMap<>();
             if(!CollectionUtils.isEmpty(userOrgPermission)){
                 for(UserOrganization userOrgId : userOrgPermission){
                     //根据当前节点id查询子节点信息
@@ -343,10 +385,17 @@ public class UserController{
             List<String> org = new ArrayList<>();
             if(!CollectionUtils.isEmpty(userOrg)){
                 for(Organization orgId : userOrg){
-                    removalOrg.put(orgId.getId(), orgId);
+                    if(orgName!=null && !orgName.equals("")){
+                        if(orgId.getOrgName().contains(orgName.toUpperCase())){
+                            userOrganization.add(orgId);
+                        }
+                    }else{
+                        userOrganization.add(orgId);
+                    }
+                    //removalOrg.put(orgId.getId(), orgId);
                 }
                 //判断去重之后的orgName
-                for(Organization orgRemoval : removalOrg.values()){
+                /*for(Organization orgRemoval : removalOrg.values()){
                     if(orgName!=null && !orgName.equals("")){
                         if(orgRemoval.getOrgName().contains(orgName.toUpperCase())){
                             userOrganization.add(orgRemoval);
@@ -354,11 +403,12 @@ public class UserController{
                     }else{
                         userOrganization.add(orgRemoval);
                     }
-                }
+                }*/
                 if(!CollectionUtils.isEmpty(userOrganization)){
                     for(Organization orgId : userOrganization){
                         org.add(orgId.getId());//添加筛选之后的oId
                     }
+                    map.put("uId", uId);
                     map.put("oId", org);
                     user.addAll(userService.listUserOrgOId(map));//查询全部map为空
                     userList = userService.listUserOrgNameCount(map);
@@ -369,7 +419,8 @@ public class UserController{
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     //List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());//查询角色功能权限关联信息
                     List<RoleResource> jsonRole = new ArrayList<>();
-                    List<UserRole> userRole = userRoleService.listUserRole(name);//根据用户名查询用户角色关联信息是否存在
+                    //根据用户名查询用户角色关联信息是否存在
+                    List<UserRole> userRole = userRoleService.listUserRole(name, null);
                     if(!CollectionUtils.isEmpty(userRole)){
                         for(UserRole uRole : userRole){
                             jsonRole = roleResourceService.listRoleResource(uRole.getrId()); 
@@ -821,12 +872,32 @@ public class UserController{
     @ApiOperation(value="name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
     @ResponseBody
-    public Map<String, Object> listUserRole(String name){
+    public Map<String, Object> listUserRole(HttpServletRequest request, String name){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        User currentUser = (User) request.getAttribute("user");
         try {
+            List<Role> roleNameList = new ArrayList<>();
+            String rName = "N";//不是超级管理员
+            if(currentUser.getId()!=null && !currentUser.getId().equals("")){
+                //根据当前登录用户名查询是否是超级管理员
+                List<UserRole> userRole = userRoleService.listUserRole(currentUser.getName(), null);//根据用户名查询用户是否是超级管理员
+                if(!CollectionUtils.isEmpty(userRole)){
+                    for(UserRole uRole : userRole){
+                        Role roleName = roleService.getRoleById(uRole.getrId());
+                        roleNameList.add(roleName); 
+                    }
+                }
+            }
+            if(!CollectionUtils.isEmpty(roleNameList)){
+                for(Role roles : roleNameList){
+                    if(roles.getRoleName().equals("超级管理员")){//是超级管理员
+                        rName = null;
+                    }
+                }
+            }
             //name为空查全部角色信息及关联的功能权限信息
-            List<Role> roleList = roleService.listRole("");//查询全部参数为空
+            List<Role> roleList = roleService.listRole("",rName);//查询全部参数为空
             for(Role uRole : roleList){
                 List<RoleResource> roleResource = roleResourceService.listRoleResource(uRole.getId());
                 List<TreeNode<RoleResource>> nodes = new ArrayList<>();
@@ -851,7 +922,7 @@ public class UserController{
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }else{
                 //不为空根据name查询关联角色信息
-                List<UserRole> userRole = userRoleService.listUserRole(name);
+                List<UserRole> userRole = userRoleService.listUserRole(name, null);
                 if(!CollectionUtils.isEmpty(userRole)){
                     for(Role role : roleList){
                         role.setMathc(false);
