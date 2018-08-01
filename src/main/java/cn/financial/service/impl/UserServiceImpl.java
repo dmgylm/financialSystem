@@ -224,9 +224,6 @@ public class UserServiceImpl implements  UserService{
     }
     
     public static void addItems(JSONObject object,HashSet<Object> obj){
-        if(object.containsKey("pid") && StringUtils.isNotEmpty(object.getString("pid"))){
-            obj.add(object.getString("pid"));
-        }
         if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
             for (Object item : object.getJSONArray("children")) {
                JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
