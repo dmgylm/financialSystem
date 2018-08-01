@@ -1,20 +1,22 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.dao.RoleResourceDAO;
 import cn.financial.dao.UserDAO;
 import cn.financial.dao.UserRoleDAO;
+import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.service.UserService;
@@ -29,7 +31,7 @@ public class UserServiceImpl implements  UserService{
     @Autowired
     private UserRoleDAO userRoleDao;
     @Autowired
-    private RoleResourceServiceImpl roleResourceService;
+    private RoleResourceDAO roleResourceDao;
     @Autowired
     private PasswordHelper passwordHelper;
     
@@ -152,10 +154,23 @@ public class UserServiceImpl implements  UserService{
         Set<String> permissions = new HashSet<String>();
         try {
             if(username!=null && !"".equals(username)){
-                List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
-                if(!CollectionUtils.isEmpty(jsonObject)){
-                    for (JSONObject item : jsonObject) {
-                        this.addOrgTypes(item, permissions);
+                List<UserRole> userRole = userRoleDao.listUserRole(username, null);//根据用户名查询对应角色信息
+                List<RoleResource> roleResource = new ArrayList<>();
+                HashSet<Object> twoList = new HashSet<>();
+                if(userRole.size()>0){//用户可能拥有多个角色，需要去重权限信息
+                    for(UserRole list:userRole){
+                        //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
+                        roleResource = roleResourceDao.listRoleResource(list.getrId());
+                    }
+                    if(!CollectionUtils.isEmpty(roleResource)){
+                        for(RoleResource roleRes : roleResource){
+                            twoList.add(roleRes.getPermssion());
+                        }
+                    }
+                }
+                if(!CollectionUtils.isEmpty(twoList)){
+                    for(Object itemStr : twoList){
+                        permissions.add(itemStr.toString());
                     }
                     System.out.println("权限-----------"+permissions);
                 }
@@ -167,7 +182,7 @@ public class UserServiceImpl implements  UserService{
     }
     
     
-    public static void addOrgTypes(JSONObject json,Set<String> permissions){
+    /*public static void addOrgTypes(JSONObject json,Set<String> permissions){
         if(json==null || json.equals("")){
             return;
         }
@@ -184,7 +199,7 @@ public class UserServiceImpl implements  UserService{
             }
         }
          
-    }   
+    }*/   
  
     public static void addItem(List<JSONObject>  obj,List<JSONObject> object){
         //获取第二个list的所有pid

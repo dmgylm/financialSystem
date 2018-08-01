@@ -64,13 +64,8 @@ public class RoleServiceImpl implements RoleService{
         return roleDao.deleteRole(roleId);
     }
     
-    public static void addRoleType(JSONObject json, JSONObject object){
-        HashSet<Object> twoList = new HashSet<>();
-        if(object.containsKey("pid") && StringUtils.isNotEmpty(object.getString("pid"))){
-            twoList.add(object.getString("pid"));
-        }
-        addRoleItems(object, twoList);
-        //System.out.println("--------"+JSON.toJSONString(twoList));
+    public static void addRoleType(JSONObject json, HashSet<Object> twoList){
+        //System.out.println("--------"+twoList);
         //循环匹配
         json.put("mathc", false);
         if(twoList.contains(json.getString("pid"))){
@@ -87,21 +82,9 @@ public class RoleServiceImpl implements RoleService{
                        break;
                    }
                 }
-                addRoleType(itemChildren,object);
+                addRoleType(itemChildren,twoList);
             }
         }
     } 
-    
-    public static void addRoleItems(JSONObject object,HashSet<Object> obj){
-        if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
-            for (Object item : object.getJSONArray("children")) {
-               JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
-               obj.add(itemChildrens.getString("pid"));
-               addRoleItems(itemChildrens, obj);
-            }
-            
-        }
-        
-    }
 }
  
