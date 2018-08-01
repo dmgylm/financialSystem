@@ -1,6 +1,6 @@
 package cn.financial.model;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +22,7 @@ public class Role {
     @ApiModelProperty(value="更新时间",name="updateTime")
     private String updateTime;//修改时间
     @ApiModelProperty(value="角色功能能权限关联信息",name="jsonRoleResource")
-    private JSONObject jsonRoleResource;//角色功能能权限关联信息
+    private JSONArray jsonRoleResource;//角色功能能权限关联信息
     @ApiModelProperty(value="用户角色关联信息匹配状态true表示匹配false表示不匹配",name="mathc")
     private boolean mathc;//用户角色关联信息匹配状态
     public Role() {
@@ -63,12 +63,13 @@ public class Role {
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
+    
 
-    public JSONObject getJsonRoleResource() {
+    public JSONArray getJsonRoleResource() {
         return jsonRoleResource;
     }
 
-    public void setJsonRoleResource(JSONObject jsonRoleResource) {
+    public void setJsonRoleResource(JSONArray jsonRoleResource) {
         this.jsonRoleResource = jsonRoleResource;
     }
 
