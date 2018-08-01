@@ -37,8 +37,8 @@ public class Business {
         @ApiModelProperty(value="更新时间操作时间",name="updateTime")
         private Date updateTime; //操作时间
         
-        @ApiModelProperty(value="状态 （0待提交  1已提交 2新增  3退回）",name="status")
-        private Integer status; //状态 （0待提交  1已提交 2新增  3退回）
+        @ApiModelProperty(value="状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）",name="status")
+        private Integer status; //状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
 
        
 

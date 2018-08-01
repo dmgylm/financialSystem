@@ -38,7 +38,7 @@ public class BusinessData {
             	 
         private Integer month; //月份
         
-        private Integer status; //提交状态 （0待提交  1已提交 2新增）
+        private Integer status; //提交状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
         
         private Integer delStatus; //删除状态（0已删除 1未删除）
         
