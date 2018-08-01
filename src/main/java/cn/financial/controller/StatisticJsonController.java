@@ -137,6 +137,10 @@ public class StatisticJsonController {
     		List<String> typeIdList = statisticService.typeIdList(codeSonList);
     		//获取对应公司列表
      		Map<String,List<String>> companyList =  statisticService.companyCacheList(codeSonList);
+     		if(companyList==null){
+                ElementXMLUtils.returnValue(ElementConfig.STATIC_ORGLIST_FAIL, sj);
+                return sj;
+     		}
     		//获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
         	//获取传递到页面的数据集合
