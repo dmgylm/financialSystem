@@ -2,6 +2,7 @@ package cn.financial.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -298,23 +299,12 @@ public class RoleController {
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL));
                 return dataMapList;
             }
-            List<TreeNode<RoleResource>> nodes = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject();
+            HashSet<Object> twoList = new HashSet<>();
             if(!CollectionUtils.isEmpty(roleResource)){
-                for (RoleResource rss : roleResource) {
-                    TreeNode<RoleResource> node = new TreeNode<>();
-                    node.setId(rss.getCode().toString());//当前code
-                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                    node.setParentId(b);//父id
-                    node.setName(rss.getName());//功能权限名称
-                    node.setPid(rss.getsId());//当前权限id
-                    // node.setNodeData(rss);
-                    nodes.add(node);
+                for(RoleResource roleRes : roleResource){
+                    twoList.add(roleRes.getsId());
                 }
-                jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
-            }
-            if(jsonObject!=null && !jsonObject.equals("")){
-                roleService.addRoleType(resourceObject, jsonObject);
+                roleService.addRoleType(resourceObject, twoList);
             }
             dataMap.put("roleResourceList", resourceObject);
             dataMapList.put("data", dataMap);
