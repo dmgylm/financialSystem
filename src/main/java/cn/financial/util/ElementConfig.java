@@ -230,4 +230,8 @@ public class ElementConfig {
      * 下载文件失败
      */
     public static final String GETFILE_FAIL = "GETFILE_FAIL";
+    /**
+     * 查询部门下没有公司级别或部门错误
+     */
+    public static final String STATIC_ORGLIST_FAIL = "STATIC_ORGLIST_FAIL";
 }
