@@ -463,6 +463,7 @@ public class MessageController {
     @RequiresPermissions("message:download")
     public ResultUtils getFile(HttpServletRequest request, HttpServletResponse response) {
     	ResultUtils result = new ResultUtils();
+    	Map<Object, Object> map = new HashMap<Object, Object>();
     	try {
     			if(request.getParameter("id") == null || request.getParameter("id").equals("")) {
     				ElementXMLUtils.returnValue(ElementConfig.MESSAGE_ID_NULL,result);
@@ -472,11 +473,20 @@ public class MessageController {
             	String fileURL = m.getFileurl();
             	boolean b = capitalServiceImpl.export(request, response, fileURL);
             	if(b) {
-            		ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
+            		map.put("id", request.getParameter("id"));
+            		map.put("status", 1);
+            		Integer i = messageService.updateMessageById(map);
+            		if(Integer.valueOf(1).equals(i)) {
+            			ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
+            		}else {
+            			ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
+            		}
+            	}else {
+            		ElementXMLUtils.returnValue((ElementConfig.GETFILE_FAIL),result);
             	}
     	}catch (Exception e) {
     		e.printStackTrace();
-    		ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
+    		ElementXMLUtils.returnValue((ElementConfig.RUN_FAILURE),result);
 		}
     	
     	return result;
