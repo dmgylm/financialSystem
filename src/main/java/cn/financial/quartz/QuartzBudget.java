@@ -75,7 +75,7 @@ public class QuartzBudget implements Job {
 							statement.setTypeId(orgDep.get(i).getId());// 部门（根据部门id查分公司id）
 							statement.setYear(year);
 							statement.setMonth(month);
-							statement.setStatus(2);// 提交状态（0 待提交 1已提交 2新增）
+							statement.setStatus(3);// 提交状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
 							statement.setDelStatus(1);
 							statement.setsId(bunType);// 1表示损益表 2表示预算表
 							statement.setDataModuleId(dm.getId());// 数据模板id
