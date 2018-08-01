@@ -211,6 +211,10 @@
         <code>287</code>
         <description>报表类型或业务板块有误</description>
     </Result>
+    <Result name="STATIC_ORGLIST_FAIL">
+        <code>290</code>
+        <description>查询部门下没有公司级别或部门错误</description>
+    </Result>
         <Result name="DATA_MODULE_NULL">
         <code>261</code>
         <description>配置模板不存在</description>
