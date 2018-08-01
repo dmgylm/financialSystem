@@ -3,7 +3,7 @@ package cn.financial.model.response;
 import io.swagger.annotations.ApiModelProperty;
 
 public class ChildrenObject {
-    @ApiModelProperty(value = "权限信息/板块类型")
+    @ApiModelProperty(value = "板块类型")
     private String orgType;
     @ApiModelProperty(value = "当前节点序号")
     private String id;
