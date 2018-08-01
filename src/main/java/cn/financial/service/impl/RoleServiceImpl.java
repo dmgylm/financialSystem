@@ -66,6 +66,9 @@ public class RoleServiceImpl implements RoleService{
     
     public static void addRoleType(JSONObject json, JSONObject object){
         HashSet<Object> twoList = new HashSet<>();
+        if(object.containsKey("pid") && StringUtils.isNotEmpty(object.getString("pid"))){
+            twoList.add(object.getString("pid"));
+        }
         addRoleItems(object, twoList);
         //System.out.println("--------"+JSON.toJSONString(twoList));
         //循环匹配
@@ -78,7 +81,7 @@ public class RoleServiceImpl implements RoleService{
                 JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
                 for (Object itemStr : twoList) {
                     itemChildren.put("mathc", false);
-                    System.out.println("------"+itemStr+"========="+itemChildren.getString("pid"));
+                    //System.out.println("------"+itemStr+"========="+itemChildren.getString("pid"));
                    if(itemChildren.getString("pid").equals(itemStr)){
                        itemChildren.put("mathc", true);
                        break;
@@ -90,9 +93,6 @@ public class RoleServiceImpl implements RoleService{
     } 
     
     public static void addRoleItems(JSONObject object,HashSet<Object> obj){
-        if(object.containsKey("pid") && StringUtils.isNotEmpty(object.getString("pid"))){
-            obj.add(object.getString("pid"));
-        }
         if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
             for (Object item : object.getJSONArray("children")) {
                JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
