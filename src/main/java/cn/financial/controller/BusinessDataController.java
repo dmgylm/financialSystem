@@ -125,33 +125,37 @@ public class BusinessDataController {
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
-            Integer org=Integer.parseInt(userOrganization.get(0).getString("orgType"));
-            String name=userOrganization.get(0).getString("name");
-            if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)) { //公司及其公司以下级别才有权限进行录入中心
             List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
             for (int i = 0; i < userOrganization.size(); i++) {
-                if(keyword!=null&&!keyword.equals("")){
-                    Organization CompanyName = organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));// 查询所属的公司名
-                    if(CompanyName.getOrgName().contains(keyword)){
-                        listOrganization.add(userOrganization.get(i));
-                    }
-                    List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                    JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                    for (int j = 0; j < jsonArr.size(); j++) {
-                        JSONObject json = jsonArr.getJSONObject(j);
-                        if(json.getString("orgName").contains(keyword)&&Integer.parseInt(json.getString("orgType"))!=BusinessData.ORGNUM){
-                          listTree.add(jsonArr.getJSONObject(j)); 
+                Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                String name=userOrganization.get(i).getString("name"); 
+                if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)) { //公司及其公司以下级别才有权限进行录入中心
+                    if(keyword!=null&&!keyword.equals("")){
+                        Organization CompanyName = organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));// 查询所属的公司名
+                        if(CompanyName.getOrgName().contains(keyword)){
+                            listOrganization.add(userOrganization.get(i));
                         }
-                    }                    
-                }else{//查询orgName以下所有级别数据
                         List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                         JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                         for (int j = 0; j < jsonArr.size(); j++) {
-                            listTree.add(jsonArr.getJSONObject(j));
-                        }
-                    }  
-              }
+                            JSONObject json = jsonArr.getJSONObject(j);
+                            if(json.getString("orgName").contains(keyword)&&Integer.parseInt(json.getString("orgType"))!=BusinessData.ORGNUM){
+                              listTree.add(jsonArr.getJSONObject(j)); 
+                            }
+                        }                    
+                    }else{//查询orgName以下所有级别数据
+                            List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                            JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                            for (int j = 0; j < jsonArr.size(); j++) {
+                                JSONObject json = jsonArr.getJSONObject(j);
+                                if(Integer.parseInt(json.getString("orgType"))!=BusinessData.ORGNUM){
+                                    listTree.add(jsonArr.getJSONObject(j)); 
+                                }
+                            }
+                        }  
+                }
+            }
               if(listOrganization.size()>0 && listOrganization!=null||listTree.size()>0 && listTree!=null){
                // //查询所有符合搜索条件的表数据
                   String[] oId = new String[listOrganization.size() + listTree.size()];// 获取权限的typeId
@@ -220,12 +224,6 @@ public class BusinessDataController {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
                   businessResult.setData(businessList); // 返回的资金流水数据
                   businessResult.setTotal(total.size());// 返回的总条数  
-              }else{
-                  List<Business> businessList = new ArrayList<>();
-                  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
-                  businessResult.setData(businessList); // 返回的资金流水数据
-                  businessResult.setTotal(businessList.size());// 返回的总条数    
-              }
             } else {
                 businessResult.setResultDesc("您没有权限操作损益表！");
             }             
