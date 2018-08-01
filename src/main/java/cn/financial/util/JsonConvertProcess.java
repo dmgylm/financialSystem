@@ -136,7 +136,7 @@ public class JsonConvertProcess {
 							|| type == HtmlGenerate.BOX_TYPE_BUDGET) {
 						if(json.containsKey("key")) {
 							String key = json.getString("key");
-							Object value = i;
+							Object value = 0;
 							if(json.containsKey("value")) {
 								value = json.get("value");
 							}
