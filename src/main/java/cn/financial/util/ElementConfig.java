@@ -226,4 +226,8 @@ public class ElementConfig {
      * 根据用户组织权限查询消息为空
      */
     public static final String MESSAGE_LIST_NULL = "MESSAGE_LIST_NULL";
+    /**
+     * 下载文件失败
+     */
+    public static final String GETFILE_FAIL = "GETFILE_FAIL";
 }
