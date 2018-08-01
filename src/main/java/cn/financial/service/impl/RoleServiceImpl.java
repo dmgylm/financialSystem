@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +78,7 @@ public class RoleServiceImpl implements RoleService{
                 JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
                 for (Object itemStr : twoList) {
                     itemChildren.put("mathc", false);
-                    //System.out.println("------"+itemStr+"========="+itemChildren.getString("pid"));
+                    System.out.println("------"+itemStr+"========="+itemChildren.getString("pid"));
                    if(itemChildren.getString("pid").equals(itemStr)){
                        itemChildren.put("mathc", true);
                        break;
@@ -89,6 +90,9 @@ public class RoleServiceImpl implements RoleService{
     } 
     
     public static void addRoleItems(JSONObject object,HashSet<Object> obj){
+        if(object.containsKey("pid") && StringUtils.isNotEmpty(object.getString("pid"))){
+            obj.add(object.getString("pid"));
+        }
         if(object!=null && CollectionUtils.isNotEmpty(object.getJSONArray("children"))){
             for (Object item : object.getJSONArray("children")) {
                JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(item);
