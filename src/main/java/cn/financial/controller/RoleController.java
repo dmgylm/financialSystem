@@ -339,7 +339,7 @@ public class RoleController {
     @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}]",
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"e845649552244dec9cf4673d2ea3a384\"},{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}]",
             paramType = "query", required = true)})
     @ResponseBody
     public ResultUtils insertRoleResource(String roleId, String resourceId){

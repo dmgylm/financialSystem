@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
@@ -904,6 +905,7 @@ public class UserController{
                 List<RoleResource> roleResource = roleResourceService.listRoleResource(uRole.getId());
                 List<TreeNode<RoleResource>> nodes = new ArrayList<>();
                 JSONObject jsonObject = new JSONObject();
+                JSONArray  jsonArray = new JSONArray();
                 if(!CollectionUtils.isEmpty(roleResource)){
                     for (RoleResource rss : roleResource) {
                         TreeNode<RoleResource> node = new TreeNode<>();
@@ -915,7 +917,12 @@ public class UserController{
                         nodes.add(node);
                     }
                     jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
-                    uRole.setJsonRoleResource(jsonObject);//角色功能能权限关联信息
+                    if(jsonObject.getString("id").equals("-1")){
+                        jsonArray = jsonObject.getJSONArray("children");
+                    }else{
+                        jsonArray.add(jsonObject);
+                    }
+                    uRole.setJsonRoleResource(jsonArray);//角色功能能权限关联信息
                 }
             }
             if(name == null || name.equals("")){

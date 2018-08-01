@@ -1,7 +1,6 @@
 package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,13 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.model.Message;
 import cn.financial.model.User;
 import cn.financial.model.response.LoginInfo;
 import cn.financial.model.response.ResultUtils;
-import cn.financial.service.MessageService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
@@ -54,8 +52,6 @@ public class MainController {
     private RoleResourceServiceImpl roleResourceService;
     @Autowired
     private UserOrganizationService userOrganizationService;
-    @Autowired
-    private MessageService messageService;
     
     /**
      * swagger插件默认接口
@@ -146,24 +142,19 @@ public class MainController {
                 return dataMapList;
             }
             System.out.println("~~~session:"+subject.getSession().getId());
+            JSONArray  jsonArray = new JSONArray();
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
+            for(JSONObject obj : jsonObject){
+                 if(obj.getString("id").equals("-1")){
+                     jsonArray = obj.getJSONArray("children");
+                 }else{
+                     jsonArray.add(obj);
+                 }
+            }
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
-            Map<Object, Object> map = new HashMap<Object, Object>();
-            map.put("pageSize", Message.PAGESIZE);
-            map.put("start", 0);
-       /*     List<Message> list = messageService.quartMessageByPower(user,map);*/
-           /* int unreadMessage = 0;
-            if(list.size()>0){
-                for(int i=0;i<list.size();i++) {
-                    if(list.get(i).getStatus() == 0) {
-                        unreadMessage++;
-                    }
-                } 
-            }*/
-            dataMap.put("roleResource", jsonObject);
+            dataMap.put("roleResource", jsonArray);
             dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
-          /*  dataMap.put("unreadMessage", unreadMessage);*/
             dataMapList.put("data", dataMap);
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
         }catch (UnknownAccountException e) {
