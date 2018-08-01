@@ -1,9 +1,7 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,11 +116,11 @@ public class RoleResourceServiceImpl implements RoleResourceService{
      */
     public List<JSONObject> roleResourceList(String userName){
         List<JSONObject> jsonObject = new ArrayList<>();
-        Map<String, TreeNode<RoleResource>> map = new HashMap<>();
+        //Map<String, TreeNode<RoleResource>> map = new HashMap<>();
         List<UserRole> userRole = userRoleService.listUserRole(userName, null);//根据用户名查询对应角色信息
-        if(userRole.size()>0){//用户可能拥有多个角色，需要去重权限信息
+        if(userRole.size()>0){//用户可能拥有多个角色
             for(UserRole list:userRole){
-              //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
+                //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
                 List<RoleResource> roleResource = roleResourceDao.listRoleResource(list.getrId());
                 List<TreeNode<RoleResource>> nodes = new ArrayList<>();
                 if(!CollectionUtils.isEmpty(roleResource)){
@@ -133,21 +131,22 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                         node.setParentId(b);//父id
                         node.setName(rss.getName());//功能权限名称
                         node.setPid(rss.getsId());//当前权限id
-                        node.setOrgType(rss.getPermssion());//权限信息
+                        //node.setOrgType(rss.getPermssion());//权限信息
                         // node.setNodeData(rss);
                         nodes.add(node);
-                        map.put(node.getPid(), node);
+                        //map.put(node.getPid(), node);
                     }
+                    jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes)));
                 }
             }
          }
-        List<TreeNode<RoleResource>> roleList=new ArrayList<>();
+        /*List<TreeNode<RoleResource>> roleList=new ArrayList<>();
         for (TreeNode<RoleResource> item : map.values()) {
             roleList.add(item);
         }
         if(TreeNode.buildTree(roleList) != null){
             jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roleList)));
-        }
+        }*/
         return jsonObject;
      }
 }
