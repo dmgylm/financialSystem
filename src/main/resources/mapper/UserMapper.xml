@@ -153,7 +153,7 @@
             and pwd = #{pwd,jdbcType=VARCHAR}
         </if> -->
         <if test="jobNumber!=null and jobNumber!=''">
-            and jobNumber = #{jobNumber,jdbcType=VARCHAR}
+            and jobNumber LIKE CONCAT('%',#{jobNumber,jdbcType=VARCHAR},'%')
         </if>
         <if test="status!=null">
             and status = #{status,jdbcType=INTEGER}
@@ -180,7 +180,7 @@
             and u.realName LIKE CONCAT('%',#{realName,jdbcType=VARCHAR},'%')
         </if>
         <if test="jobNumber!=null and jobNumber!=''">
-            and u.jobNumber = #{jobNumber,jdbcType=VARCHAR}
+            and u.jobNumber LIKE CONCAT('%',#{jobNumber,jdbcType=VARCHAR},'%')
         </if>
         <if test="status!=null">
             and u.status = #{status,jdbcType=INTEGER}
