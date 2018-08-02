@@ -12,6 +12,12 @@ public class LogManagement {
 	@ApiModelProperty(value="用户名",name="userName",example="")
 	private String userName;
 	
+	@ApiModelProperty(value="服务器的IP地址",name="localAddr",example="")
+	private String localAddr;
+	
+	@ApiModelProperty(value="客户机的IP地址",name="remoteAddr",example="")
+	private String remoteAddr;
+	
 	@ApiModelProperty(value="用户操作的url",name="workUrl",example="")
 	private String workUrl;
 	
@@ -23,6 +29,9 @@ public class LogManagement {
 	
 	@ApiModelProperty(value="操作记录",name="work",example="")
 	private String work;
+	
+	@ApiModelProperty(value="操作方法",name="method",example="")
+	private String method;
 	
 	@ApiModelProperty(value="创建时间",name="createTime",example="")
 	private String createTime; // 创建时间
@@ -92,6 +101,30 @@ public class LogManagement {
 
 	public void setWorkUrl(String workUrl) {
 		this.workUrl = workUrl;
+	}
+
+	public String getLocalAddr() {
+		return localAddr;
+	}
+
+	public void setLocalAddr(String localAddr) {
+		this.localAddr = localAddr;
+	}
+
+	public String getRemoteAddr() {
+		return remoteAddr;
+	}
+
+	public void setRemoteAddr(String remoteAddr) {
+		this.remoteAddr = remoteAddr;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
 	}
 
 	

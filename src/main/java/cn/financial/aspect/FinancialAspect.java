@@ -62,26 +62,45 @@ public class FinancialAspect {
         Object object = pjp.proceed(args);//执行该方法  
         try {
         	
-        	String classWork="用户执行的操作是:";
+        	//String classWork="用户执行的操作是:";
+        	String work="";
+        	String method1="";
             if(classAnnotation!=null){
-            	classWork+="'"+classAnnotation.tags()[0]+"'中的";
+            	//classWork+="'"+classAnnotation.tags()[0]+"'中的";
+            	work=classAnnotation.tags()[0];
             }
             
             if(methodAnnotation!=null) {
             	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         		StringBuffer param = joinRequestParams(request);
-        		classWork+="'"+methodAnnotation.value()+"'";
-        		
+        		//classWork+="'"+methodAnnotation.value()+"'";
+        		method1=methodAnnotation.value();
         		StringBuffer url = request.getRequestURL();
+        		String remoteAddr=request.getRemoteAddr();
+        		//String getRemoteHost=request.getRemoteHost();
+        		String localAddr=request.getLocalAddr();
+        		//String getLocalName=request.getLocalName();
+        		
+        		/*logger.info("getRemoteAddr: " + getRemoteAddr);
+        		logger.info("getRemoteHost: " + getRemoteHost);
+        		logger.info("getLocalAddr: " + getLocalAddr);
+        		logger.info("getLocalName: " + getLocalName);*/
+        		
+        		
         		String logCode="";
         		//判断返回值类型
-        		if (object instanceof String) {
-        			logCode=object.toString();
+        		if(object!=null){
+        			if (object instanceof String) {
+            			logCode=object.toString();
+            		}else{
+            			JSONObject json=JSONObject.fromObject(object);
+                		//String logCode=((ResultUtils)object).getResultCode();
+                		logCode=json.getString("resultCode");
+            		}
         		}else{
-        			JSONObject json=JSONObject.fromObject(object);
-            		//String logCode=((ResultUtils)object).getResultCode();
-            		logCode=json.getString("resultCode");
+        			logCode="无返回值";
         		}
+        		
         		
         		String username = (String) SecurityUtils.getSubject().getPrincipal();
         		
@@ -89,7 +108,10 @@ public class FinancialAspect {
         		logManagement.setId(UuidUtil.getUUID());
         		logManagement.setLogCode(logCode);
         		logManagement.setParams(param.toString());
-        		logManagement.setWork(classWork);
+        		logManagement.setWork(work);
+        		logManagement.setRemoteAddr(remoteAddr);
+        		logManagement.setLocalAddr(localAddr);
+        		logManagement.setMethod(method1);
         		logManagement.setUserName(username);
         		logManagement.setWorkUrl(url.toString());
         		logManagementService.insertLogManagement(logManagement);
