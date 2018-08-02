@@ -38,15 +38,15 @@
       <!--  根据id查询损益数据 -->
        <select id="selectBusinessDataById" parameterType="String" resultMap="businessData" >
            SELECT * 
-           FROM businessData b,businessDataInfo o
-           WHERE b.id=o.businessDataId AND b.id=#{id} AND b.delStatus=1 AND o.delStatus=1
+           FROM businessData 
+           WHERE id=#{id} AND delStatus=1 
        </select>
        
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
          SELECT *
-         FROM businessData b,organization o
-         WHERE b.delStatus=1 and o.id=b.oId and b.typeId in 
+         FROM businessData b,organization o,businessDataInfo info
+         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.oId and b.typeId in 
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
                #{typeId}
            </foreach>
@@ -65,8 +65,8 @@
        <!-- 导出数据查询-->
        <select id="businessDataExport" parameterType="map" resultType="businessData">
          SELECT *
-         FROM businessData b,organization o
-         WHERE b.delStatus=1 and o.id=b.oId and b.typeId in 
+         FROM businessData b,organization o,businessDataInfo info
+         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.oId and b.typeId in 
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
                #{typeId}
            </foreach>
