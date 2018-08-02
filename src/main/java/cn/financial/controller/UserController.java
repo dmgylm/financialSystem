@@ -196,7 +196,7 @@ public class UserController{
      * @param userId		用户id
      * @param name			用户名称
      * @param realName		真实姓名
-     * @param pwd			密码
+     * @param status		状态
      * @param jobNumber		工号
      * @param roleId		角色id
      * @param orgId			组织结构id
@@ -210,7 +210,8 @@ public class UserController{
         @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query", required = true),
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
+        //@ApiImplicitParam(name="pwd",value="密码",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="status",value="员工状态0表示离职1表示在职",dataType="int", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="roleId",value = "角色id,传入json格式,例如：[{\"roleId\":\"0603027a3a0948729c47a9f279ca3b34\"}]", paramType = "query"),
         @ApiImplicitParam(name="orgId",value="组织结构id,传入json格式,例如：[{\"orgId\":\"fef092ad443546aca122c0616f069089\"}]", paramType = "query")})
@@ -219,7 +220,7 @@ public class UserController{
         @ApiResponse(code = 208, message = "密码由6～15位数字、大小写字母组成"),@ApiResponse(code = 217, message = "用户组织架构关联信息不存在"),
         @ApiResponse(code = 218, message = "用户角色关联系信息不存在")})
     @ResponseBody
-    public ResultUtils update(String userId, String name, String realName, String pwd, String jobNumber,String roleId,String orgId) {
+    public ResultUtils update(String userId, String name, String realName, Integer status, String jobNumber,String roleId,String orgId) {
     	ResultUtils result = new ResultUtils();
     	
     	try {
@@ -228,7 +229,8 @@ public class UserController{
             user.setId(userId);
             user.setName(name);
             user.setRealName(realName);
-            user.setPwd(pwd);
+            user.setStatus(status);
+            //user.setPwd(pwd);
             user.setJobNumber(jobNumber);
             Integer userList = userService.updateUser(user);
             //修改用户角色关联信息,先删除用户关联的角色信息，再重新添加该用户的角色信息
@@ -286,7 +288,7 @@ public class UserController{
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
-        @ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
+        //@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="status",value="状态0表示离职1表示在职",dataType="int", paramType = "query"),
         @ApiImplicitParam(name="createTime",value="创建时间（如2018-07-10 13:21:10）",dataType="string", paramType = "query"),
@@ -297,7 +299,7 @@ public class UserController{
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误")})
     @ResponseBody
-    public Map<String, Object> listUser(HttpServletRequest request, String name, String realName, String jobNumber,String userId,
+    public Map<String, Object> listUser(HttpServletRequest request, String name, String realName, String jobNumber,
             String createTime, String updateTime, Integer status,String orgName, Integer pageSize, Integer page){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -307,7 +309,7 @@ public class UserController{
     	    Map<Object, Object> map = new HashMap<>();
 	        map.put("name", name);//用户名
             map.put("realName", realName);//真实姓名
-    	    map.put("id", userId);//用户id
+    	    //map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
     	    map.put("createTime", createTime);//创建时间
