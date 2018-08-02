@@ -294,7 +294,7 @@ public class BusinessDataController {
 			@ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
 	@ResponseBody
 	public ResultUtils updateBusinessData(HttpServletRequest request, String strJson, Integer status, String id) {
-		// 需要参数，前端传来的HTML，业务表的id，状态（1保存 2提交 3退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
+		// 需要参数，前端传来的HTML，业务表的id，状态（1保存 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
 		ResultUtils result = new ResultUtils();
 		// File file = new File("C:/Users/ellen/Downloads/测试html.txt");
 		try {
@@ -396,14 +396,14 @@ public class BusinessDataController {
 	@ApiOperation(value = "修改退回的损益/预算的数据", notes = "根据天剑修改退回损益/预算数据", response = ResultUtils.class)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "id", value = "表id", required = true, dataType = "String", paramType = "query"),
-			@ApiImplicitParam(name = "status", value = "状态 只能为3", required = true, dataType = "integer", paramType = "query") })
+			@ApiImplicitParam(name = "status", value = "状态 只能为4", required = true, dataType = "integer", paramType = "query") })
 	@ResponseBody
 	public ResultUtils updateStatus(HttpServletRequest request, String id, Integer status) {
-		// 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 3退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
+		// 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
 		// Map<String, Object> dataMap = new HashMap<String, Object>();
 		ResultUtils result = new ResultUtils();
 		try {
-			if (status == 3) {
+			if (status == 4) {
 				// 如果是退回状态的话 1,2个表里面都增加一条一模一样的数据 2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改
 				// 版本号状态加1
 				BusinessData selectBusinessDataById = businessDataService.selectBusinessDataById(id);// 查询对应id的数据
@@ -458,7 +458,7 @@ public class BusinessDataController {
 					result.setResultDesc("修改失败");
 				}
 			} else {
-				result.setResultDesc("该状态不是退回状态");
+				result.setResultDesc("该状态不是4退回状态");
 			}
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
