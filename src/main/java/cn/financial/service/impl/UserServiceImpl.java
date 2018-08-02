@@ -143,8 +143,8 @@ public class UserServiceImpl implements  UserService{
         if(!CollectionUtils.isEmpty(userRole)){
             for(int j=0;j<userRole.size();j++){
                 roles.add(userRole.get(j).getRoleName());
-                System.out.println("角色-----------"+userRole.get(j).getRoleName());
             }
+            System.out.println("角色-----------"+roles);
         }
         return roles;
     }
@@ -160,7 +160,7 @@ public class UserServiceImpl implements  UserService{
                 if(userRole.size()>0){//用户可能拥有多个角色，需要去重权限信息
                     for(UserRole list:userRole){
                         //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
-                        roleResource = roleResourceDao.listRoleResource(list.getrId());
+                        roleResource.addAll(roleResourceDao.listRoleResource(list.getrId()));
                     }
                     if(!CollectionUtils.isEmpty(roleResource)){
                         for(RoleResource roleRes : roleResource){
