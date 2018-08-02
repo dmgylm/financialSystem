@@ -128,7 +128,7 @@ public class OrganizationController {
         OganizationNode organiza=new OganizationNode();
         try {
             List<Organization> list = organizationService.
-            	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType);
+            	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType,null);
            // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
