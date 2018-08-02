@@ -94,7 +94,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据条件查询组织结构信息
      */
     // @Cacheable(value = "organizationValue" , key = "'orga_key_listby_'+#map.toString()")
-    public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType) {
+    public List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType,String orgkey) {
     	Map<Object, Object> map=new HashMap<Object, Object>();
     	if (null !=orgName && !"".equals(orgName)) {
         		map.put("orgName", orgName);
@@ -120,6 +120,9 @@ public class OrganizationServiceImpl implements OrganizationService {
          if (null !=orgType && !"".equals(orgType)) {
         	map.put("orgType", orgType);
          }
+         if (null !=orgkey && !"".equals(orgkey)) {
+             map.put("orgkey", orgkey);
+          }
     
     	return organizationDAO.listOrganizationBy(map);
     }
@@ -240,7 +243,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             for (Organization organization : list) {
                 Organization organizationList = new Organization();
                 if(organization.getOrgPlateId()!=null && !organization.getOrgPlateId().equals("")){
-                     organizationList = organizationService.listOrganizationBy(null, null, null,  organization.getOrgPlateId(), null, null, null, null).get(0);
+                     organizationList = organizationService.listOrganizationBy(null, null, null, null, null, null, null, null, organization.getOrgPlateId()).get(0);
                 }
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
