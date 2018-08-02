@@ -31,7 +31,7 @@ public interface OrganizationService {
      * @param map
      * @return
      */
-    List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType);
+    List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType,String orgkey);
 
     /**
      * 接口（根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id）
