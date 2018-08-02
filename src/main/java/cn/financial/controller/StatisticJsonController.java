@@ -189,7 +189,7 @@ public class StatisticJsonController {
         OganizationNode organiza=new OganizationNode();
         try {
             List<Organization> list = organizationService.
-            	listOrganizationBy(null,null,null,null,null,null,null,4);
+            	listOrganizationBy(null,null,null,null,null,null,null,4,null);
            // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);

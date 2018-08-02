@@ -129,7 +129,7 @@ public class CapitalController {
                      List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                      JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
                      //查询关键字的数据  获取orgType和权限数据的orgType进行对比
-                     List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null); 
+                     List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null,null); 
                      if(keywordOrganization.size()>0){
                        //不包含汇总  并且 orgType小于等于关键字查出的orgType
                          String n=userOrganizationJson.get("name").toString();
@@ -464,7 +464,7 @@ public class CapitalController {
                              capital.setId(UuidUtil.getUUID());
                              if(!str[0].equals("")){
                                  String orgName=str[0];
-                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", uId, "",null); //查询公司的信息
+                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", uId, "",null,null); //查询公司的信息
                                  if(listOrganization.size()>0){
                                      capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id
                                  }else{
@@ -696,7 +696,7 @@ public class CapitalController {
                       List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                       JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
                       //查询关键字的数据  获取orgType和权限数据的orgType进行对比
-                      List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null); 
+                      List<Organization>  keywordOrganization= organizationService.listOrganizationBy(keyword, "", "", "", "", "", "",null,null); 
                       if(keywordOrganization.size()>0){
                           //不包含汇总  并且 orgType小于等于关键字查出的orgType
                           String n=userOrganizationJson.get("name").toString();
