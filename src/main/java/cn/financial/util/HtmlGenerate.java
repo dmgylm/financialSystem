@@ -295,7 +295,8 @@ public class HtmlGenerate {
 			input.attr("name",key);
 			input.attr("value",value);
 			input.attr("id",key);
-			input.addClass("input");
+			input.attr("type","number");
+			input.addClass(CLASS_INPUT);
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
 			td.text(value);
 		} else if(inputType==BOX_TYPE_BUDGET) {//预算
