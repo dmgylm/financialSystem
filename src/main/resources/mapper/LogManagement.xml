@@ -4,24 +4,27 @@
     <resultMap type="cn.financial.model.LogManagement" id="logManagement" >
 	   <id column="id" property="id" jdbcType="VARCHAR" />
 	   <result column="userName" property="userName" jdbcType="VARCHAR" />
+	   <result column="localAddr" property="localAddr" jdbcType="VARCHAR" />
+	   <result column="remoteAddr" property="remoteAddr" jdbcType="VARCHAR" />
 	   <result column="workUrl" property="workUrl" jdbcType="VARCHAR" />
 	   <result column="params" property="params" jdbcType="VARCHAR" />
 	   <result column="logCode" property="logCode" jdbcType="VARCHAR" />
 	   <result column="work" property="work" jdbcType="VARCHAR" />
+	   <result column="method" property="method" jdbcType="VARCHAR" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
 	</resultMap>    
 	<!--查询日志列表-->
     <select id="listLogManagement" parameterType="map" resultType="logManagement">
-        SELECT id,userName,workUrl,params,logCode,work,createTime,updateTime FROM logManagement WHERE 1 = 1 
+        SELECT id,userName,localAddr,remoteAddr,workUrl,params,logCode,work,method,createTime,updateTime FROM logManagement WHERE 1 = 1 
         <include refid="query_logManagement_where"></include>
         ORDER BY createTime DESC 
     </select>
     
     <!--新增用户日志-->
     <insert id="insertLogManagement" parameterType="logManagement">
-        insert into logManagement(id,userName,workUrl,params,logCode,work,createTime) 
-        values (#{id},#{userName},#{workUrl},#{params},#{logCode},#{work},now())
+        insert into logManagement(id,userName,localAddr,remoteAddr,workUrl,params,logCode,work,method,createTime) 
+        values (#{id},#{userName},#{localAddr},#{remoteAddr},#{workUrl},#{params},#{logCode},#{work},#{method},now())
     </insert>
 
     <!--修改模板-->
