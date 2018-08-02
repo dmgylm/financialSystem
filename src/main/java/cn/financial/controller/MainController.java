@@ -1,6 +1,7 @@
 package cn.financial.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +27,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.User;
+import cn.financial.model.UserRole;
 import cn.financial.model.response.LoginInfo;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -52,7 +55,8 @@ public class MainController {
     private RoleResourceServiceImpl roleResourceService;
     @Autowired
     private UserOrganizationService userOrganizationService;
-    
+    @Autowired
+    private UserRoleService userRoleService;
     /**
      * swagger插件默认接口
      * @param request
@@ -142,6 +146,13 @@ public class MainController {
                 return dataMapList;
             }
             System.out.println("~~~session:"+subject.getSession().getId());
+            List<String> roleName = new ArrayList<>();
+            List<UserRole> userRole = userRoleService.listUserRole(username, null);//根据用户名查询对应角色信息
+            if(userRole.size()>0){//用户可能拥有多个角色
+                for(UserRole list : userRole){
+                    roleName.add(list.getRoleName());
+                }
+            }
             JSONArray  jsonArray = new JSONArray();
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
             for(JSONObject obj : jsonObject){
@@ -152,6 +163,8 @@ public class MainController {
                  }
             }
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
+            dataMap.put("userName", username);
+            dataMap.put("roleName", roleName);
             dataMap.put("roleResource", jsonArray);
             dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
