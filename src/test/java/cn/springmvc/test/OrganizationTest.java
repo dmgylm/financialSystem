@@ -53,7 +53,7 @@ public class OrganizationTest {
         http = new HttpClient3();
         try {
             String string = http.doPost(
-                    "http://192.168.111.162:8083/financialSys/organization/save?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    "http://192.168.111.162:8083/financialSystem/organization/save?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
                     "orgName=测试&orgType=3&parentOrgId=5d9f44219a3a47aaa2a4deae332d1cb8");
             System.out.println(string);
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class OrganizationTest {
     private OrganizationService services;
   @Test 
   public void sss(){
-	  List<Organization> ls=services.listOrganizationBy("盛世大联保险代理股份有限公司内蒙古分公司",null,null,null,null, "404ed3a5442c4ed78331d6c77077958f",null,2);
+	  List<Organization> ls=services.listOrganizationBy("盛世大联保险代理股份有限公司内蒙古分公司",null,null,null,null, "404ed3a5442c4ed78331d6c77077958f",null,2,null);
 	  System.out.println("展示数据"+ls.size());
   }
     /**
@@ -164,16 +164,16 @@ public class OrganizationTest {
     /**
      * 根据id查询该节点下的所有子节点 ,构建成树
      */
-    //@Test
+    @Test
     public void TreeByOrgId() {
         HashMap<String, String> map = new HashMap<String, String>();
-        map.put("id", "00a1f4a699c945638e4c6114e9a8448d");
+//        map.put("id", "00a1f4a699c945638e4c6114e9a8448d");
         long start = System.currentTimeMillis();
         http = new HttpClient3();
         String result = "";
         try {
             result = http.doPost(
-                    "http://localhost:8080/financialSys/organization/getSubnode?meta.session.id=e8ea950b-1fd3-411c-a85b-3bf5358195b6",
+                    "http://localhost:8083/financialSystem/organization/getSubnode?meta.session.id=8ada939f-4536-4d92-b3d3-244fd94fdb4a",
                     map);
             System.out.println(result);
         } catch (Exception e) {
