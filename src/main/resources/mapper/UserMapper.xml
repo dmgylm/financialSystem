@@ -59,6 +59,7 @@
 		  <if test="name!=null and name!=''">name=#{name},</if>
 		  <if test="realName!=null and realName!=''">realName=#{realName},</if>
 		  <if test="pwd!=null and pwd!=''">pwd=#{pwd},</if>
+		  <if test="status!=null">status=#{status},</if>
 		  <if test="jobNumber!=null and jobNumber!=''">jobNumber=#{jobNumber},</if>
 		  <if test="salt!=null and salt!=''">salt=#{salt},</if>
 		  <if test="expreTime!=null and expreTime!=''">expreTime=#{expreTime},</if> 
