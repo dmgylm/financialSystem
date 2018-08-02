@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -471,7 +472,8 @@ public class MessageController {
     			}
     			Message m = messageService.getMessageById(request.getParameter("id"));
             	String fileURL = m.getFileurl();
-            	boolean b = capitalServiceImpl.export(request, response, fileURL);
+            	File file=new File(fileURL);
+            	boolean b = capitalServiceImpl.export(request, response, file);
             	if(b) {
             		map.put("id", request.getParameter("id"));
             		map.put("status", 1);

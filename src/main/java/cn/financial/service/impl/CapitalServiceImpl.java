@@ -116,10 +116,8 @@ public class CapitalServiceImpl implements CapitalService{
     /**
      * 文件导出
      */
-    public Boolean export(HttpServletRequest request, HttpServletResponse response,String fileURL) throws IOException {
+    public Boolean export(HttpServletRequest request, HttpServletResponse response,File file) throws IOException {
         Boolean result=true;
-        if(null != fileURL && !"".equals(fileURL)) {
-            File file = new File(fileURL);
             if(file.exists()) {
                 BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
                 byte[] buf = new byte[1024];
@@ -133,8 +131,7 @@ public class CapitalServiceImpl implements CapitalService{
                 }
                 br.close();
                 out.close();
-            }
-        }else{
+            }else{
             result=false;
         }
         return result;

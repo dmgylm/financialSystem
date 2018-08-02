@@ -1,5 +1,6 @@
 package cn.financial.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -979,15 +980,15 @@ public class CapitalController {
         public ResultUtils exportModule(HttpServletRequest request,HttpServletResponse response) throws Exception{
            ResultUtils result =new ResultUtils();
            String fileURL= SiteConst.CAPITALEXPORT;
-           Boolean sucess=capitalServiceImpl.export(request, response,new String(fileURL.getBytes("iso8859-1"),"utf-8"));
+           File file=new File(new String(fileURL.getBytes("iso8859-1"),"utf-8"));
+           Boolean sucess=capitalServiceImpl.export(request, response,file);
            if(sucess){
                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result); 
                result.setResultDesc("模板下载成功");
            }else{
-               ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result); 
-               result.setResultDesc("模板下载失败");
-           }
-           
+               ElementXMLUtils.returnValue(ElementConfig.GETFILE_FAIL,result); 
+               result.setResultDesc("模板下载失败，模板文件不存在！");
+           } 
            return result;
         }
         
