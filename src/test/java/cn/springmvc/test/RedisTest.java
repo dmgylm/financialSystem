@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.alibaba.fastjson.JSONArray;
 
@@ -15,6 +16,7 @@ import cn.financial.service.RedisTestService;
 //import cn.financial.util.RedisUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
         "classpath:spring/spring-mybatis.xml", "classpath:spring/mybatis-config.xml", "classpath:spring/spring-cache.xml",
         "classpath:spring/spring-shiro.xml","classpath:spring/spring-redis.xml"})
@@ -33,10 +35,10 @@ public class RedisTest {
 	
 	@Test
 	public void testRedisCache(){
-		cache.put("testCache", "test1", 233333);//添加缓存
-		cache.put("testCache", "test2", 233333);//添加缓存
-		cache.remove("testCache", "test1");//删除单个缓存KEY
-		cache.removeAll("testCache");//删除整个Cache
+//		cache.put("testCache", "test1", 233333);//添加缓存
+//		cache.put("testCache", "test2", 233333);//添加缓存
+//		cache.remove("testCache", "test1");//删除单个缓存KEY
+		cache.removeAll("staticInfoMap");//删除整个Cache
 	}
 
 	@Test

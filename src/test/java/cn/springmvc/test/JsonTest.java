@@ -29,9 +29,15 @@ public class JsonTest {
 //    	DataModuleController.class
     }
     
+    public static void main(String[] args) {
+		for(int i=0;i<4;i++) {
+			System.out.println(i);
+		}
+	}
+    
     @Test
     public  void  simplifyJson(){
-    	String path = "C:/Users/Admin/Desktop/ffff.txt";
+    	String path = "C:/Users/Admin/Desktop/车管家损益.txt";
     	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
     	JSONObject jsons=JsonConvertProcess.simplifyJson(newObj);
     	System.out.println(jsons);
@@ -39,9 +45,9 @@ public class JsonTest {
 
     @Test
     public  void  mergeJson(){
-    	String path = "C:/Users/Admin/Desktop/测试模板.txt";
+    	String path = "C:/Users/Admin/Desktop/车管家损益.txt";
     	JSONObject newObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(path));
-    	String shortPath = "C:/Users/Admin/Desktop/测试简化.txt";
+    	String shortPath = "C:/Users/Admin/Desktop/车管家预算简化.txt";
     	JSONObject shortObj = JSONObject.parseObject(JsonConvertProcess.readFileContent(shortPath));
     	JSONObject jsons=JsonConvertProcess.mergeJson(newObj,shortObj);
     	System.out.println(jsons);
@@ -50,11 +56,11 @@ public class JsonTest {
     @Test
     public  void  generateHtml(){
     	try {
-    		String path = "C:/Users/Admin/Desktop/车管家预算.txt";
+    		String path = "C:/Users/Admin/Desktop/车管家损益.txt";
         	String s = JsonConvertProcess.readFileContent(path);
         	JSONObject jsonObj = JSONObject.parseObject(s);
         	HtmlGenerate htmlGenerate = new HtmlGenerate();
-        	String json = htmlGenerate.generateHtml(jsonObj, HtmlGenerate.HTML_TYPE_PREVIEW);
+        	String json = htmlGenerate.generateHtml(jsonObj, HtmlGenerate.HTML_TYPE_INPUT);
         	System.out.println(json);
 		} catch (Exception e) {
 			e.printStackTrace();

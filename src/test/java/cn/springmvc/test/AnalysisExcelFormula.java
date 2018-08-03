@@ -51,8 +51,8 @@ public class AnalysisExcelFormula {
 	private static String firstCelKey = "";//列标题前缀
 	
 	private Integer budgetCell = 4;//预算列
-	private Integer prefiRowNum;//横向标题前缀
-	private Integer suffixrowNum ;//横向标题后缀
+	private Integer maintitleRowNum;//横向标题前缀
+	private Integer subtitleRowNum ;//横向标题后缀
 	private Integer modelColNum ;//纵向标题前缀
 	private Integer itemColNum;//纵向标题后缀
 	
@@ -62,8 +62,8 @@ public class AnalysisExcelFormula {
 	 */
 	public AnalysisExcelFormula(String filepath,Integer modelColNum,Integer itemColNum,Integer prefixRowNum,Integer suffixRowNum,Integer BUDGET_CELL) {
 		this.file = new File(filepath);
-		this.prefiRowNum = prefixRowNum;
-		this.suffixrowNum = suffixRowNum;
+		this.maintitleRowNum = prefixRowNum;
+		this.subtitleRowNum = suffixRowNum;
 		this.modelColNum = modelColNum;
 		this.itemColNum = itemColNum;
 		this.budgetCell = BUDGET_CELL;
@@ -141,13 +141,13 @@ public class AnalysisExcelFormula {
 //						continue;
 					}
 					Integer type = null;
-					if(cellValue!=null && !cellValue.trim().equals("") && (i<=suffixrowNum || j<=modelColNum || j<=itemColNum)) {
+					if(cellValue!=null && !cellValue.trim().equals("") && (i<=subtitleRowNum || j<=modelColNum || j<=itemColNum)) {
 						type = HtmlGenerate.BOX_TYPE_LABEL;
 					} else if(cellValue == null && cellFormula==null) {
 						type = HtmlGenerate.BOX_TYPE_INPUT;
 					} else if(cellFormula!=null) {
 						type = HtmlGenerate.BOX_TYPE_FORMULA;
-					} else if(i>suffixrowNum && j>itemColNum && type == null) {
+					} else if(i>subtitleRowNum && j>itemColNum && type == null) {
 						type = HtmlGenerate.BOX_TYPE_INPUT;
 					}
 					if(/*(type==HtmlGenerate.BOX_TYPE_FORMULA || type==HtmlGenerate.BOX_TYPE_INPUT) &&*/ j==budgetCell && budgetCell != 0) {
@@ -312,31 +312,32 @@ public class AnalysisExcelFormula {
 	/**
 	 * 添加行与列标题到全局变量
 	 * @param cellValue
-	 * @param j
-	 * @param i
+	 * @param colNum
+	 * @param rowNum
 	 */
-	private Integer addRowAndColKey(String cellValue, int j, int i) {
+	private Integer addRowAndColKey(String cellValue, int colNum, int rowNum) {
 		Integer type = null;
 		if(cellValue==null) {
 			cellValue = "";
 		}
 		cellValue = cellValue.trim();
-		if(j==modelColNum && StringUtils.isValid(cellValue)) {
+		if(colNum==modelColNum && StringUtils.isValid(cellValue)) {
 			type = HtmlGenerate.BOX_TYPE_MODULE;
 			firstRowKey = cellValue;
 		}
-		if(j==itemColNum) {
+		if(colNum==itemColNum) {
 			type = HtmlGenerate.BOX_TYPE_ITEM;
 			String key = firstRowKey+Separate_Modular+cellValue;
-			rowKeyMap.put(i+"", key);
+			rowKeyMap.put(rowNum+"", key);
 		}
-//		if(i==2) {
-//			firstCelKey = cellValue;
-//		}
-		if(i==suffixrowNum) {
+		if(maintitleRowNum!=null && rowNum==maintitleRowNum) {
+			type = HtmlGenerate.BOX_TYPE_MAINTITLE;
+			firstCelKey = cellValue;
+		}
+		if(rowNum==subtitleRowNum) {
 			type = HtmlGenerate.BOX_TYPE_SUBTITLE;
 			String key = firstCelKey + cellValue;
-			colKeyMap.put(j+"", key);
+			colKeyMap.put(colNum+"", key);
 		}
 		return type;
 	}
