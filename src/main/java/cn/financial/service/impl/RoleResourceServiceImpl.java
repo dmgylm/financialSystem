@@ -82,12 +82,6 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     @CacheEvict(value = "find_Roles_Permissions", allEntries = true)
     public Integer updateRoleResource(RoleResource roleResource) {
-        if(roleResource.getrId() == null || roleResource.getrId().equals("")){
-            return -1;
-        }
-        if(roleResource.getsId() == null || roleResource.getsId().equals("")){
-            return -2;
-        }
         int roleResourceList = 0;
         int roleResourceDelete = roleResourceDao.deleteRoleResource(roleResource.getrId());//删除
         if(roleResourceDelete > 0){

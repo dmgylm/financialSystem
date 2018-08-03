@@ -48,9 +48,6 @@ public class RoleServiceImpl implements RoleService{
      */
     @Override
     public Integer updateRole(Role role) {
-        if(role.getId() == null || role.getId().equals("")){
-            return -1;
-        }
         return roleDao.updateRole(role);
     }
     /**
