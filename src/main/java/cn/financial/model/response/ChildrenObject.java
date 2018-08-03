@@ -13,7 +13,7 @@ public class ChildrenObject {
     private String orgPlateId;
     @ApiModelProperty(value = "组织架构名称")
     private String name;
-    @ApiModelProperty(value = "所属板块名称")
+    @ApiModelProperty(value = "所属板块名称/菜单栏英文名")
     private String orgkeyName;
     @ApiModelProperty(value = "子节点")
     private String children;
