@@ -112,37 +112,86 @@ public class RoleResourceServiceImpl implements RoleResourceService{
      */
     public List<JSONObject> roleResourceList(String userName){
         List<JSONObject> jsonObject = new ArrayList<>();
-        Map<String, TreeNode<RoleResource>> map = new HashMap<>();
+        List<TreeNode<RoleResource>> nodes = new ArrayList<>();
         List<UserRole> userRole = userRoleService.listUserRole(userName, null);//根据用户名查询对应角色信息
-        if(userRole.size()>0){//用户可能拥有多个角色，需要去重
+        if(userRole.size()>0){//用户可能拥有多个角色
             for(UserRole list:userRole){
               //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
                 List<RoleResource> roleResource = roleResourceDao.listRoleResource(list.getrId());
-                List<TreeNode<RoleResource>> nodes = new ArrayList<>();
                 if(!CollectionUtils.isEmpty(roleResource)){
                     for (RoleResource rss : roleResource) {
                         TreeNode<RoleResource> node = new TreeNode<>();
+                        if(rss.getName().equals("录入中心")){
+                            node.setLink("/recodercenter/index");
+                            node.setIcon("iconfont icon-luruzhongxin");
+                        }
+                        if(rss.getName().equals("资金流水")){
+                            node.setLink("/financeflow/index");
+                            node.setIcon("iconfont icon-zijinliushui");
+                        }
+                        if(rss.getName().equals("汇总中心")){
+                            node.setLink("/summarycenter/index");
+                            node.setIcon("iconfont icon-huizongzhongxin");
+                        }
+                        if(rss.getName().equals("消息中心")){
+                            node.setLink("/infocenter/index");
+                            node.setIcon("iconfont icon-xiaoxizhongxin");
+                        }
+                        if(rss.getName().equals("系统设置")){
+                            node.setOrgType("Y");//是按钮
+                            node.setIcon("iconfont icon-xitongshezhi");
+                        }
+                        if(rss.getName().equals("权限设置")){
+                            node.setLink("/setting/permissions-settings");
+                            node.setIcon("anticon anticon-appstore-o");
+                        }
+                        if(rss.getName().equals("组织机构管理")){
+                            node.setLink("/setting/organization-management");
+                            node.setIcon("anticon anticon-rocket");
+                        }
+                        if(rss.getName().equals("数据模板配置")){
+                            node.setLink("/setting/data-configure/index");
+                            node.setIcon("anticon anticon-rocket");
+                        }
+                        if(rss.getName().equals("角色设置")){
+                            node.setLink("/setting/role-setting");
+                            node.setIcon("anticon anticon-rocket");
+                        }
+                        if(rss.getName().equals("修改密码")){
+                            node.setLink("/setting/change-pw");
+                            node.setIcon("anticon anticon-rocket");
+                        }
                         node.setId(rss.getCode().toString());//当前code
                         String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
                         node.setParentId(b);//父id
                         node.setName(rss.getName());//功能权限名称
                         node.setPid(rss.getsId());//当前权限id
-                        //node.setOrgType(rss.getPermssion());//权限信息
-                        // node.setNodeData(rss);
                         nodes.add(node);
-                        map.put(node.getPid(), node);
                     }
                 }
             }
          }
-        List<TreeNode<RoleResource>> roleList=new ArrayList<>();
-        for (TreeNode<RoleResource> item : map.values()) {
-            roleList.add(item);
+        List<String>  nodeList = new ArrayList<>();
+        List<TreeNode<RoleResource>>  roles = new ArrayList<TreeNode<RoleResource>>();
+        //去除多个角色重复功能权限数据
+        if(!CollectionUtils.isEmpty(nodes)){
+            for (TreeNode<RoleResource> item : nodes) {
+                if(!nodeList.contains(item.getPid())){
+                    roles.add(item);
+                    nodeList.add(item.getPid());
+                }
+                for (TreeNode<RoleResource> items : item.getChildren()) {
+                    if(!nodeList.contains(items.getPid())){
+                        roles.add(items);
+                        nodeList.add(items.getPid());
+                    }
+                }
+            }
         }
-        if(TreeNode.buildTree(roleList) != null){
-            jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roleList)));
-        }
+        jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roles)));
         return jsonObject;
      }
+    
+    
 }
  
