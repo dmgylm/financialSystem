@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -232,7 +233,8 @@ public class HtmlGenerate {
 		if (htmlType == HTML_TYPE_TEMPLATE) {
 			generateTemplateContent(td, inputType,key, name, formula);
 		} else if (htmlType == HTML_TYPE_INPUT) {
-			generateInputContent(td, inputType, key,name, formula, value,display);
+			
+			generateInputContent(td, inputType, key, name, formula, value, display);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
 			generatePreviewContent(td, inputType,key, name, value);
 		}
@@ -291,11 +293,28 @@ public class HtmlGenerate {
 	private void generateInputContent(Element td, int inputType,String key,
 			String name, String formula,String value,Boolean display) {
 		if(inputType==BOX_TYPE_INPUT && display) {//input
+			String month = JsonConvertProcess.getMonthForKey(key);
 			Element input = td.appendElement("input");
 			input.attr("name",key);
 			input.attr("value",value);
 			input.attr("id",key);
 			input.attr("type","number");
+			
+			Integer monthInt = null;
+			try {
+				monthInt = Integer.parseInt(month);
+			} catch (Exception e) {
+			}
+			
+			int disableMonth = TimeUtils.getCurrentMonth();
+			int today = TimeUtils.getCurrentDayOfMonth();
+			if(today < 11) {
+				disableMonth = disableMonth - 1;
+			}
+			
+			if(monthInt != null && monthInt <= disableMonth) {
+				input.attr("readonly", "true");
+			}
 			input.addClass(CLASS_INPUT);
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
 			td.text(value);

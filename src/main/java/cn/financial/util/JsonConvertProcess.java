@@ -210,28 +210,32 @@ public class JsonConvertProcess {
 				if (HtmlAnalysis.isLabel(type)) {
 					bugdetLabelArr.add(json);
 				} else {
-					String month = getMonth4Key(key);
-					String replaceMonth = month.replace("yue", "");
-					JSONArray monthArr = newArr.getJSONArray(replaceMonth);
+					String month = getMonthForKey(key);
+					JSONArray monthArr = newArr.getJSONArray(month);
 					if(monthArr == null) {
 						monthArr = new JSONArray();
 					}
 					monthArr.add(json);
-					newArr.put(replaceMonth, monthArr);
+					newArr.put(month, monthArr);
 				}
 			}
 		}
 	}
 	
-	private String getMonth4Key(String value) {
+	public static void main(String[] args) {
+		String value = "jfdjk1yue";
+		System.out.println(getMonthForKey(value));
+	}
+	
+	public static String getMonthForKey(String value) {
 		//从字符串中抽取出月份
-		 String pattern = "(([1-9]{1})|(1[0-2]{1})yue)";
+		 String pattern = "([1-9]{1}|1[0-2]{1})yue{1}$";
 		 Pattern r = Pattern.compile(pattern);
 		 Matcher matcher = r.matcher(value);
 		 String month = "";
 		 if(matcher.find()) {
 			 month = value.substring(matcher.start());
 		 }
-		return month;
+		return month.replace("yue", "");
 	}
 }

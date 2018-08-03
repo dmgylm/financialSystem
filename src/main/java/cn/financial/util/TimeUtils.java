@@ -172,6 +172,16 @@ public class TimeUtils {
 		return  date;
 	}
 	
+	public static int getCurrentMonth(){
+		return getCurrentMonth(getCurrentTime()) ;
+	}
+	
+	public static int getCurrentMonth(Date date){
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		return c.get(Calendar.MONTH) + 1 ;
+	}
+	
 	public static int getCurrentYear(){
 		return getYear(getCurrentTime());
 	}
@@ -188,6 +198,11 @@ public class TimeUtils {
 		c.set(Calendar.MONTH, m);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.add(Calendar.DAY_OF_MONTH, -1);
+		return c.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	public static int getCurrentDayOfMonth(){
+		Calendar c = Calendar.getInstance();
 		return c.get(Calendar.DAY_OF_MONTH);
 	}
 	
@@ -234,7 +249,8 @@ public class TimeUtils {
 //		System.out.println(compareTime(s));
 		
 //		System.out.println(dayInterval(TimeUtils.getCurrentTime(),TimeUtils.string2Date("2017-01-20")));
-		System.out.println(dayInterval(TimeUtils.getCurrentTime(),TimeUtils.string2Date("2017-01-20")));
+//		System.out.println(dayInterval(TimeUtils.getCurrentTime(),TimeUtils.string2Date("2017-01-20")));
+		System.out.println(getCurrentDayOfMonth());
 	}
 	
 	/**
