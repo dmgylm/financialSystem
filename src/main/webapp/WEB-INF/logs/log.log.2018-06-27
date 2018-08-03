@@ -1,0 +1,43 @@
+2018-06-27 15:35:36 [ localhost-startStop-1:5239 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 15:37:21 [ localhost-startStop-1:5554 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 15:38:00 [ DefaultQuartzScheduler_Worker-1:44094 ] - [ ERROR ] Job EXTJWEB_JOBGROUP_NAME.预算表生成消息提醒任务定时器 threw an unhandled Exception: 
+java.lang.NullPointerException
+	at cn.financial.quartz.QuartzJob.execute(QuartzJob.java:43)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:525)
+2018-06-27 15:38:00 [ DefaultQuartzScheduler_Worker-1:44098 ] - [ ERROR ] Job (EXTJWEB_JOBGROUP_NAME.预算表生成消息提醒任务定时器 threw an exception.
+org.quartz.SchedulerException: Job threw an unhandled exception. [See nested exception: java.lang.NullPointerException]
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:525)
+Caused by: java.lang.NullPointerException
+	at cn.financial.quartz.QuartzJob.execute(QuartzJob.java:43)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	... 1 more
+2018-06-27 15:38:52 [ localhost-startStop-1:5442 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:07:45 [ localhost-startStop-1:5575 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:11:16 [ localhost-startStop-1:4977 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:15:55 [ localhost-startStop-1:5357 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:16:54 [ localhost-startStop-1:4500 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:32:09 [ localhost-startStop-1:6129 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:51:07 [ localhost-startStop-1:5627 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 16:56:34 [ localhost-startStop-1:4752 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:03:09 [ localhost-startStop-1:5803 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:04:03 [ localhost-startStop-1:4448 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:05:06 [ localhost-startStop-1:6407 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:06:19 [ localhost-startStop-1:6930 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:12:40 [ localhost-startStop-1:4645 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:16:17 [ localhost-startStop-1:5803 ] - [ ERROR ] maxIdle is deprecated
+2018-06-27 17:17:00 [ DefaultQuartzScheduler_Worker-1:48468 ] - [ ERROR ] Job EXTJWEB_JOBGROUP_NAME.预算表生成消息提醒任务定时器 threw an unhandled Exception: 
+java.lang.NullPointerException
+	at cn.financial.quartz.QuartzJob.execute(QuartzJob.java:52)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:525)
+2018-06-27 17:17:00 [ DefaultQuartzScheduler_Worker-1:48480 ] - [ ERROR ] Job (EXTJWEB_JOBGROUP_NAME.预算表生成消息提醒任务定时器 threw an exception.
+org.quartz.SchedulerException: Job threw an unhandled exception. [See nested exception: java.lang.NullPointerException]
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:525)
+Caused by: java.lang.NullPointerException
+	at cn.financial.quartz.QuartzJob.execute(QuartzJob.java:52)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	... 1 more
+2018-06-27 17:18:27 [ localhost-startStop-1:5765 ] - [ ERROR ] maxIdle is deprecated
