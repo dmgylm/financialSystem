@@ -146,7 +146,7 @@ public class RoleController {
      * @param updateTime
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermissions({"jurisdiction:create","role:create"})
+    @RequiresPermissions("role:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ApiOperation(value="新增角色信息及角色功能权限关联信息(必须勾选父节点,父节点相当于查看权限)",notes="新增角色信息及角色功能权限关联信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -206,7 +206,7 @@ public class RoleController {
      * @param updateTime
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermissions({"jurisdiction:update","role:update"})
+    @RequiresPermissions("role:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value="修改角色信息",notes="修改角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -283,7 +283,7 @@ public class RoleController {
      * @param request
      * @param response
      */
-    @RequiresPermissions({"jurisdiction:view","role:view"})
+    @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
     @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})

@@ -754,7 +754,7 @@ public class UserController{
         return result;
     }
     /**
-     * 根据用户id查询用户组织结构关联信息(用户组织结构关联表)(查询用)
+     * 根据用户id查询用户组织结构关联信息(用户组织结构关联表)(详情用)
      * @param request
      * @param response
      */
@@ -896,14 +896,74 @@ public class UserController{
     }*/
     
     /**
+     * 根据用户名查询用户关联的角色信息和功能权限信息(详情用)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"permission:view","role:view"})
+    @RequestMapping(value = "/userRoleById", method = RequestMethod.POST)
+    @ApiOperation(value="根据用户名查询用户关联的角色信息和功能权限信息",notes="根据用户名查询用户关联的角色信息和功能权限信息", response = UserRoleResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
+    @ResponseBody
+    public Map<String, Object> listUserRole(String name){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        if(name == null || name.equals("")){
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_NAME_NULL));
+            return dataMapList;
+        }
+        List<Role> roleList = new ArrayList<>();
+        List<RoleResource> roleResource = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray  jsonArray = new JSONArray();
+        //根据用户名查询用户角色关联信息
+        List<UserRole> userRole = userRoleService.listUserRole(name, null);
+        for(UserRole uRole : userRole){//循环获取角色名
+            roleList.addAll(roleService.listRole(uRole.getRoleName(), null));
+        }
+        if(!CollectionUtils.isEmpty(roleList)){
+            for(Role role : roleList){
+                //根据角色id查询角色关联功能权限信息
+                roleResource = roleResourceService.listRoleResource(role.getId());
+                List<TreeNode<RoleResource>> nodes = new ArrayList<>();
+                if(!CollectionUtils.isEmpty(roleResource)){
+                    for (RoleResource rss : roleResource) {
+                        TreeNode<RoleResource> node = new TreeNode<>();
+                        node.setId(rss.getCode().toString());//当前code
+                        String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                        node.setParentId(b);//父id
+                        node.setName(rss.getName());//功能权限名称
+                        node.setPid(rss.getsId());//当前权限id
+                        nodes.add(node);
+                    }
+                    if(!CollectionUtils.isEmpty(nodes)){
+                        jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
+                    }
+                    if(jsonObject.getString("id").equals("-1")){
+                        jsonArray = jsonObject.getJSONArray("children");
+                    }else{
+                        jsonArray.add(jsonObject);
+                    }
+                    role.setJsonRoleResource(jsonArray);//角色功能能权限关联信息
+                }
+            }
+        }
+        
+        dataMap.put("userRoleList", roleList);
+        dataMapList.put("data", dataMap);
+        dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+        return dataMapList;
+    }
+    
+    /**
      * 根据用户名查询用户角色关联信息(用户角色关联表)
      * name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息
      * @param request
      * @param response
      */
-    @RequiresPermissions({"permission:view","role:view","jurisdiction:view"})
+    @RequiresPermissions({"permission:view","role:view"})
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
-    @ApiOperation(value="name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息",notes="查询所有(用户角色关联表)", response = UserRoleResult.class)
+    @ApiOperation(value="name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息",notes="修改用", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
     @ResponseBody
     public Map<String, Object> listUserRole(HttpServletRequest request, String name){
