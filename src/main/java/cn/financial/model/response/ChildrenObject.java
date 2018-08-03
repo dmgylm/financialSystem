@@ -3,7 +3,7 @@ package cn.financial.model.response;
 import io.swagger.annotations.ApiModelProperty;
 
 public class ChildrenObject {
-    @ApiModelProperty(value = "板块类型")
+    @ApiModelProperty(value = "板块类型/是否是按钮Y表示是")
     private String orgType;
     @ApiModelProperty(value = "当前节点序号")
     private String id;
@@ -23,6 +23,11 @@ public class ChildrenObject {
     private String leaf;
     @ApiModelProperty(value = "是否匹配  true表示匹配false表示不匹配")
     private boolean mathc;
+    @ApiModelProperty(value = "跳转路径")
+    private String link;
+    @ApiModelProperty(value = "图片名称")
+    private String icon;
+    
     public String getOrgType() {
         return orgType;
     }
@@ -82,5 +87,17 @@ public class ChildrenObject {
     }
     public void setMathc(boolean mathc) {
         this.mathc = mathc;
+    }
+    public String getLink() {
+        return link;
+    }
+    public void setLink(String link) {
+        this.link = link;
+    }
+    public String getIcon() {
+        return icon;
+    }
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

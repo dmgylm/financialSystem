@@ -1,7 +1,5 @@
 package cn.financial.model.response;
 
-import com.alibaba.fastjson.JSONObject;
-
 import io.swagger.annotations.ApiModelProperty;
 
 public class UserChildrenObject {

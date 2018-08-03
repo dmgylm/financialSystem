@@ -21,6 +21,11 @@ public class UserRRChildrenObject {
     private String pid;
     @ApiModelProperty(value = "是否是叶子节点")
     private String leaf;
+    @ApiModelProperty(value = "跳转路径")
+    private String link;
+    @ApiModelProperty(value = "图片名称")
+    private String icon;
+    
     public String getOrgType() {
         return orgType;
     }
@@ -74,5 +79,17 @@ public class UserRRChildrenObject {
     }
     public void setLeaf(String leaf) {
         this.leaf = leaf;
+    }
+    public String getLink() {
+        return link;
+    }
+    public void setLink(String link) {
+        this.link = link;
+    }
+    public String getIcon() {
+        return icon;
+    }
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
