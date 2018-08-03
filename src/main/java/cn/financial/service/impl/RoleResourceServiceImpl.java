@@ -124,18 +124,22 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                         if(rss.getName().equals("录入中心")){
                             node.setLink("/recodercenter/index");
                             node.setIcon("iconfont icon-luruzhongxin");
+                            node.setOrgkeyName("recodercenter");
                         }
                         if(rss.getName().equals("资金流水")){
                             node.setLink("/financeflow/index");
                             node.setIcon("iconfont icon-zijinliushui");
+                            node.setOrgkeyName("financeflow");
                         }
                         if(rss.getName().equals("汇总中心")){
                             node.setLink("/summarycenter/index");
                             node.setIcon("iconfont icon-huizongzhongxin");
+                            node.setOrgkeyName("summarycenter");
                         }
                         if(rss.getName().equals("消息中心")){
                             node.setLink("/infocenter/index");
                             node.setIcon("iconfont icon-xiaoxizhongxin");
+                            node.setOrgkeyName("infocenter");
                         }
                         if(rss.getName().equals("系统设置")){
                             node.setOrgType("Y");//是按钮
@@ -144,22 +148,27 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                         if(rss.getName().equals("权限设置")){
                             node.setLink("/setting/permissions-settings");
                             node.setIcon("anticon anticon-appstore-o");
+                            node.setOrgkeyName("permissions-settings");
                         }
                         if(rss.getName().equals("组织机构管理")){
                             node.setLink("/setting/organization-management");
                             node.setIcon("anticon anticon-rocket");
+                            node.setOrgkeyName("organization-management");
                         }
                         if(rss.getName().equals("数据模板配置")){
                             node.setLink("/setting/data-configure/index");
                             node.setIcon("anticon anticon-rocket");
+                            node.setOrgkeyName("data-configure");
                         }
                         if(rss.getName().equals("角色设置")){
                             node.setLink("/setting/role-setting");
                             node.setIcon("anticon anticon-rocket");
+                            node.setOrgkeyName("role-setting");
                         }
                         if(rss.getName().equals("修改密码")){
                             node.setLink("/setting/change-pw");
                             node.setIcon("anticon anticon-rocket");
+                            node.setOrgkeyName("change-pw");
                         }
                         node.setId(rss.getCode().toString());//当前code
                         String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
