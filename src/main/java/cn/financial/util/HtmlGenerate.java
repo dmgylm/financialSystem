@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,9 +24,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HtmlGenerate {
 	
-	public HtmlGenerate(){
-		
-	}
+	public HtmlGenerate(){}
 	
 	/**
 	 * 显示页面是否需要在td中添加id属性
@@ -35,10 +32,17 @@ public class HtmlGenerate {
 	 */
 	public HtmlGenerate(boolean isPreviewNeedId){
 		this.isPreviewNeedId = isPreviewNeedId;
-		
 	}
 	
+	
+	
 	private boolean isPreviewNeedId = false;
+	
+	private boolean isDisableBudgetInput = false;
+	
+	public void disableBudgetInput(){
+		isDisableBudgetInput = true;
+	}
 	
 	private static String NONE_DISPLAY_CLASS="display_none";
 	
@@ -293,26 +297,15 @@ public class HtmlGenerate {
 	private void generateInputContent(Element td, int inputType,String key,
 			String name, String formula,String value,Boolean display) {
 		if(inputType==BOX_TYPE_INPUT && display) {//input
-			String month = JsonConvertProcess.getMonthForKey(key);
 			Element input = td.appendElement("input");
 			input.attr("name",key);
 			input.attr("value",value);
 			input.attr("id",key);
 			input.attr("type","number");
 			
-			Integer monthInt = null;
-			try {
-				monthInt = Integer.parseInt(month);
-			} catch (Exception e) {
-			}
+			boolean disableInput = isDisable(key);
 			
-			int disableMonth = TimeUtils.getCurrentMonth();
-			int today = TimeUtils.getCurrentDayOfMonth();
-			if(today < 11) {
-				disableMonth = disableMonth - 1;
-			}
-			
-			if(monthInt != null && monthInt <= disableMonth) {
+			if(disableInput) {
 				input.attr("readonly", "true");
 			}
 			input.addClass(CLASS_INPUT);
@@ -323,6 +316,27 @@ public class HtmlGenerate {
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
+	}
+	
+	
+
+	private boolean isDisable(String key) {
+		if(!isDisableBudgetInput) {//不需要禁用预算编辑,则直接返回flase
+			return false;
+		}
+		String month = JsonConvertProcess.getMonthForKey(key);
+		Integer monthInt = null;
+		try {
+			monthInt = Integer.parseInt(month);
+		} catch (Exception e) {
+		}
+		
+		int disableMonth = TimeUtils.getCurrentMonth();
+		int today = TimeUtils.getCurrentDayOfMonth();
+		if(today < SiteConst.PROFIT_LOSS_GENERATE_DAY) {
+			disableMonth = disableMonth - 1;
+		}
+		return monthInt != null && monthInt <= disableMonth;
 	}
 
 	/**
