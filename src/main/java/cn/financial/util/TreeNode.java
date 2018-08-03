@@ -51,7 +51,31 @@ public class TreeNode<T> {
      * 节点的数据库id,这里用String兼容
      */
     private String pid;
+    /**
+     * 跳转路径
+     */
+    private String link;
+    /**
+     * 图片名称
+     */
+    private String icon;
     
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     public String getPid() {
         return pid;
     }
