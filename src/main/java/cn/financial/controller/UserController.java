@@ -2,7 +2,6 @@ package cn.financial.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -755,7 +754,37 @@ public class UserController{
         return result;
     }
     /**
-     * 根据用户id查询组织结构关联信息(用户组织结构关联表)/获取当前登录人组织架构关联信息
+     * 根据用户id查询用户组织结构关联信息(用户组织结构关联表)(查询用)
+     * @param request
+     * @param response
+     */
+    @RequiresPermissions({"organization:view","permission:view"})
+    @RequestMapping(value = "/userOrganizationById", method = RequestMethod.POST)
+    @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
+    @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 500, message = "系统错误"),
+        @ApiResponse(code = 221, message = "用户id为空")})
+    @ResponseBody
+    public Map<String, Object> listUserOrganization(String uId){
+        Map<String, Object> dataMapList = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        try {
+            if(uId == null || uId.equals("")){
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ID_NULL));
+                return dataMapList;
+            }
+            List<JSONObject> jsonUserOrg = userOrganizationService.userOrganizationList(uId);
+            dataMap.put("userOrganizationList", jsonUserOrg);
+            dataMapList.put("data", dataMap);
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+        } catch (Exception e) {
+            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
+            this.logger.error(e.getMessage(), e);
+        }
+        return dataMapList;
+    }
+    /**
+     * 根据用户id查询组织结构关联信息(用户组织结构关联表)/获取当前登录人组织架构关联信息(修改用)
      * @param request
      * @param response
      */

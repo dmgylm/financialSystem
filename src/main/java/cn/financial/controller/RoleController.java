@@ -205,29 +205,45 @@ public class RoleController {
      * @param createTime
      * @param updateTime
      */
-    @RequiresPermissions("role:update")
+    @Transactional(rollbackFor = Exception.class)
+    @RequiresPermissions({"jurisdiction:update","role:update"})
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value="修改角色信息",notes="修改角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
         @ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true),
-        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query")})
+        @ApiImplicitParam(name="roleName",value="角色名称",dataType="string", paramType = "query"),
+        @ApiImplicitParam(name="resourceId",value="功能权限id,传入json格式,例如：[{\"resourceId\":\"e845649552244dec9cf4673d2ea3a384\"},{\"resourceId\":\"921bfa83018e467091faf34f91b7e401\"},{\"resourceId\":\"03767670e631466fb284391768110a59\"}]",
+                paramType = "query", required = true)})
     @ResponseBody
-    public ResultUtils updateRole(String roleName, String roleId){
+    public ResultUtils updateRole(String roleName, String roleId, String resourceId){
         ResultUtils result = new ResultUtils();
         try {
+            if(roleId == null || roleId.equals("")){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
+                return result;
+            }
             Role role = new Role();
             role.setId(roleId);
             role.setRoleName(roleName);
             Integer roleList = roleService.updateRole(role);
-            if(roleList == -1){
-                ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
-            }else if(roleList>0){
+            int roleResourceList = 0;
+            if(resourceId!=null && !resourceId.equals("")){
+                RoleResource roleResource = new RoleResource();
+                roleResource.setId(UuidUtil.getUUID());
+                roleResource.setsId(resourceId);
+                roleResource.setrId(roleId);
+                roleResourceList = roleResourceService.updateRoleResource(roleResource);//修改（新增数据）
+            }
+            if(roleResourceList == -3){
+                ElementXMLUtils.returnValue(ElementConfig.USER_RESOURCE, result);
+            }else if(roleList>0 || roleResourceList > 0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             this.logger.error(e.getMessage(), e);
         }
         return result;
@@ -365,7 +381,7 @@ public class RoleController {
      * @param rid
      * @param updateTime
      */
-    @RequiresPermissions({"jurisdiction:update","role:update"})
+    /*@RequiresPermissions({"jurisdiction:update","role:update"})
     @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -398,5 +414,5 @@ public class RoleController {
             this.logger.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
 }
