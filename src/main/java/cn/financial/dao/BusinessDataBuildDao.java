@@ -15,6 +15,12 @@ public interface BusinessDataBuildDao {
 	Integer saveBusinessDataBuild(BusinessDataBuild businessDataBuild);
 	
 	/**
+	 * 清空表
+	 * @return
+	 */
+	Integer deleteBusinessDataBuild();
+	
+	/**
 	 * 修改
 	 * @param map
 	 * @return
@@ -22,16 +28,10 @@ public interface BusinessDataBuildDao {
 	Integer updateBusinessDataBuild(Map<Object, Object> map);
 	
 	/**
-	 * 清空表
-	 * @return
-	 */
-	Integer deleteBusinessDataBuild();
-	
-	/**
 	 * 查询
 	 * @param map
 	 * @return
 	 */
-	List<BusinessDataBuild> listBusinessDataBuild(Map<Object, Object> map);
+	List<BusinessDataBuild> listBusinessDataBuild(String id);
 
 }
