@@ -10,6 +10,8 @@
 			jdbcType="INTEGER"></result>
 		<result property="orgPlate" column="orgPlate" javaType="String"
 			jdbcType="VARCHAR"></result>
+		<result property="orgName" column="orgName" javaType="String"
+			jdbcType="VARCHAR"></result>
 		<result property="createTime" column="createTime" javaType="date"
 			jdbcType="TIMESTAMP"></result>
 		<result property="updateTime" column="updateTime" javaType="date"
@@ -22,10 +24,11 @@
 			id,
 			status,
 			orgPlate,
+			orgName,
 			createTime
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{orgPlate,jdbcType=VARCHAR},now())
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{orgPlate,jdbcType=VARCHAR},#{orgName,jdbcType=VARCHAR},now())
 	</insert>
 	
 	<!-- 清空表 -->
