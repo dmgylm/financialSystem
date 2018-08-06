@@ -31,23 +31,18 @@ public class QuartzBusinessData implements Job{
 		
 		System.out.println("启动损益状态生成记录任务~~~~");
 		
-		final Integer THREE = 3;
-		
 		buildServiceImpl.deleteBusinessDataBuild();
 		
 		System.out.println("清空表完成~~~~");
 		
-		List<Organization> list = oImpl.listOrganizationBy(null, null, null, null, null, null, null, null, null);
+		List<Organization> list = oImpl.getDep();
 		
 		for(int i=0; i<list.size(); i++) {
 			
-			int num = list.get(i).getOrgType();
-			if(num == THREE) {
 				BusinessDataBuild bdb = new BusinessDataBuild();
 				bdb.setId(list.get(i).getId());
 				bdb.setStatus(0);
 				buildServiceImpl.saveBusinessDataBuild(bdb);
-			}
 			
 		}
 		
