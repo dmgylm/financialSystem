@@ -9,10 +9,11 @@
 		insert into businessData_build(
 			id,
 			status,
+			orgPlate,
 			createTime
 		)
 		values
-		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},now())
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{orgPlate,jdbcType=VARCHAR},now())
 	</insert>
 	
 	<!-- 清空表 -->
@@ -32,7 +33,7 @@
 	<!-- 查询 -->
 	<select id="listBusinessDataBuild" parameterType="map">
 		select * from businessData_build
-		where id = #{id,jdbcType=VARCHAR}
+		where status = #{status,jdbcType=INTEGER}
 		order by createTime desc
 	</select>
 	
