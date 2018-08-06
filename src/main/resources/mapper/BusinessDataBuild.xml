@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 损益表生成状态记录表 -->
+<mapper namespace="cn.financial.dao.BusinessDataBuildDao">
+
+	<!-- 新增 -->
+	<insert id="saveBusinessDataBuild" parameterType="BusinessDataBuild">
+		insert into businessData_sczt(
+			id,
+			status,
+			createTime
+		)
+		values
+		(#{id,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},now())
+	</insert>
+	
+	<!-- 清空表 -->
+	<delete id="deleteBusinessDataBuild" parameterType="java.lang.String">
+		delete from businessData_sczt
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="updateBusinessDataBuild" parameterType="map">
+		update businessData_sczt
+			set updateTime = curdate()	
+			,status = #{status,jdbcType=INTEGER}
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询 -->
+	<select id="listBusinessDataBuild" parameterType="map">
+		select * from businessData_sczt
+		order by createTime desc
+	</select>
+	
+</mapper>
