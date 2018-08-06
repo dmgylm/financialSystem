@@ -6,7 +6,7 @@
 
 	<!-- 新增 -->
 	<insert id="saveBusinessDataBuild" parameterType="BusinessDataBuild">
-		insert into businessData_sczt(
+		insert into businessData_build(
 			id,
 			status,
 			createTime
@@ -17,12 +17,12 @@
 	
 	<!-- 清空表 -->
 	<delete id="deleteBusinessDataBuild" parameterType="java.lang.String">
-		delete from businessData_sczt
+		delete from businessData_build
 	</delete>
 	
 	<!-- 修改 -->
 	<update id="updateBusinessDataBuild" parameterType="map">
-		update businessData_sczt
+		update businessData_build
 			set updateTime = curdate()	
 			,status = #{status,jdbcType=INTEGER}
 		where
@@ -31,7 +31,8 @@
 	
 	<!-- 查询 -->
 	<select id="listBusinessDataBuild" parameterType="map">
-		select * from businessData_sczt
+		select * from businessData_build
+		where id = #{id,jdbcType=VARCHAR}
 		order by createTime desc
 	</select>
 	
