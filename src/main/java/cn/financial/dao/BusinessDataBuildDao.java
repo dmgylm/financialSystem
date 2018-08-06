@@ -29,7 +29,7 @@ public interface BusinessDataBuildDao {
 	
 	/**
 	 * 查询
-	 * @param map
+	 * @param status
 	 * @return
 	 */
 	List<BusinessDataBuild> listBusinessDataBuild(Integer status);
