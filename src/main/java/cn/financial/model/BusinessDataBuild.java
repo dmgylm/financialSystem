@@ -12,6 +12,8 @@ public class BusinessDataBuild {
 	
 	private String orgPlate;//板块
 	
+	private String orgName;//部门名称
+	
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     Date createTime; // 创建时间
 	
@@ -56,6 +58,14 @@ public class BusinessDataBuild {
 
 	public void setOrgPlate(String orgPlate) {
 		this.orgPlate = orgPlate;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 
 }
