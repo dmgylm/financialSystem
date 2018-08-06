@@ -32,8 +32,8 @@ public class BusinessDataBuildServiceImpl implements BusinessDataBuildService{
 	}
 	
 	@Override
-	public List<BusinessDataBuild> listBusinessDataBuild(String id){
-		return dao.listBusinessDataBuild(id);
+	public List<BusinessDataBuild> listBusinessDataBuild(Integer status){
+		return dao.listBusinessDataBuild(status);
 	}
 
 }
