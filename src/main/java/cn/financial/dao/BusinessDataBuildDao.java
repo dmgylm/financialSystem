@@ -32,6 +32,6 @@ public interface BusinessDataBuildDao {
 	 * @param map
 	 * @return
 	 */
-	List<BusinessDataBuild> listBusinessDataBuild(String id);
+	List<BusinessDataBuild> listBusinessDataBuild(Integer status);
 
 }
