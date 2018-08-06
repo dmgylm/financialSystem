@@ -4,6 +4,18 @@
 <!-- 损益表生成状态记录表 -->
 <mapper namespace="cn.financial.dao.BusinessDataBuildDao">
 
+	<resultMap type="BusinessDataBuild" id="businessDataBuildResultMap">
+		<id property="id" column="id" javaType="string" jdbcType="VARCHAR"></id>
+		<result property="status" column="status" javaType="int"
+			jdbcType="INTEGER"></result>
+		<result property="orgPlate" column="orgPlate" javaType="String"
+			jdbcType="VARCHAR"></result>
+		<result property="createTime" column="createTime" javaType="date"
+			jdbcType="TIMESTAMP"></result>
+		<result property="updateTime" column="updateTime" javaType="date"
+			jdbcType="TIMESTAMP"></result>
+	</resultMap>
+
 	<!-- 新增 -->
 	<insert id="saveBusinessDataBuild" parameterType="BusinessDataBuild">
 		insert into businessData_build(
@@ -31,9 +43,10 @@
 	</update>
 	
 	<!-- 查询 -->
-	<select id="listBusinessDataBuild" parameterType="map">
+	<select id="listBusinessDataBuild" parameterType="java.lang.Integer" resultMap="businessDataBuildResultMap">
 		select * from businessData_build
-		where status = #{status,jdbcType=INTEGER}
+		where 
+		status = #{status,jdbcType=INTEGER}
 		order by createTime desc
 	</select>
 	
