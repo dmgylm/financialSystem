@@ -34,6 +34,7 @@ import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserRole;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
 import cn.financial.model.response.ResultUtils;
@@ -42,6 +43,7 @@ import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.service.UserRoleService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -90,6 +92,9 @@ public class BusinessDataController {
 
 	@Autowired
 	private DataModuleService dmService;
+	
+	@Autowired
+    private UserRoleService userRoleService;
 
 	@Autowired
 	private BusinessDataInfoService businessDataInfoService;
@@ -127,10 +132,11 @@ public class BusinessDataController {
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
             List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
+           // List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
             for (int i = 0; i < userOrganization.size(); i++) {
-                Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
-                String name=userOrganization.get(i).getString("name"); 
-                if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)) { //公司及其公司以下级别才有权限进行录入中心
+                //Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+               // String name=userOrganization.get(i).getString("name"); 
+               // if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)||role==true) { //公司及其公司以下级别才有权限进行录入中心
                     if(keyword!=null&&!keyword.equals("")){
                         Organization CompanyName = organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));// 查询所属的公司名
                         if(CompanyName.getOrgName().contains(keyword)){
@@ -154,7 +160,7 @@ public class BusinessDataController {
                                 }
                             }
                         }  
-                }
+                //}
             }
               if(listOrganization.size()>0 && listOrganization!=null||listTree.size()>0 && listTree!=null){
                // //查询所有符合搜索条件的表数据
@@ -255,17 +261,42 @@ public class BusinessDataController {
 	public HtmlResult selectBusinessDataById(HttpServletRequest request, String id, Integer htmlType) {
 		HtmlResult htmlResult = new HtmlResult();
 		try {
+            User user = (User) request.getAttribute("user");
+		    List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
+		    Boolean role=false;
+		    if(userRole.size()>0){
+		        for(UserRole list : userRole){
+                 if(list.getRoleName().contains("制单员")){
+                     role=true;
+                 }
+                }
+		    }
 			if (id != null && !id.equals("") && htmlType != null) {
-				BusinessData businessData = businessDataService.selectBusinessDataById(id);
-				DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
-				BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
-				JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
-				JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
-				//JsonConvertProcess.mergeJson(joTemp, joInfo);
-				HtmlGenerate htmlGenerate = new HtmlGenerate();
-				String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
-				ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
-				htmlResult.setData(html);
+			    if(htmlType==2&&role==true){ //有权限编辑录入中心页面
+			        BusinessData businessData = businessDataService.selectBusinessDataById(id);
+	                DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
+	                BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
+	                JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
+	                JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
+	                //JsonConvertProcess.mergeJson(joTemp, joInfo);
+	                HtmlGenerate htmlGenerate = new HtmlGenerate();
+	                String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
+	                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
+	                htmlResult.setData(html);  
+			    }else if(htmlType==3){//查看详情
+			        BusinessData businessData = businessDataService.selectBusinessDataById(id);
+                    DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
+                    BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
+                    JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
+                    JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
+                    //JsonConvertProcess.mergeJson(joTemp, joInfo);
+                    HtmlGenerate htmlGenerate = new HtmlGenerate();
+                    String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
+                    htmlResult.setData(html); 
+			    }else{
+			        htmlResult.setResultDesc("您不可以编辑录入中心数据！"); 
+			    }
 			} else {
 				htmlResult.setResultDesc("id或者htmlType为空！");
 			}
