@@ -38,12 +38,21 @@ public class HtmlGenerate {
 	
 	private boolean isPreviewNeedId = false;
 	
+	/**
+	 * 预算编辑是否需要禁止输入
+	 */
 	private boolean isDisableBudgetInput = false;
 	
+	/**
+	 * 预算编辑禁止输入判断
+	 */
 	public void disableBudgetInput(){
 		isDisableBudgetInput = true;
 	}
 	
+	/**
+	 * 预算编辑都可以输入
+	 */
 	public void enableBudgetInput(){
 		isDisableBudgetInput = false;
 	}
