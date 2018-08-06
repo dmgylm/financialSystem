@@ -42,6 +42,7 @@ public class QuartzBusinessData implements Job{
 				BusinessDataBuild bdb = new BusinessDataBuild();
 				bdb.setId(list.get(i).getId());
 				bdb.setStatus(0);
+				bdb.setOrgPlate(list.get(i).getOrgPlateId());
 				buildServiceImpl.saveBusinessDataBuild(bdb);
 			
 		}
