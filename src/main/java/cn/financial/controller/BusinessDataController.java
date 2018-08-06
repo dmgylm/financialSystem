@@ -403,7 +403,7 @@ public class BusinessDataController {
 		// Map<String, Object> dataMap = new HashMap<String, Object>();
 		ResultUtils result = new ResultUtils();
 		try {
-			if (status == 4) {
+			if (id!=null&&!id.equals("")&&status == 4) {
 				// 如果是退回状态的话 1,2个表里面都增加一条一模一样的数据 2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改
 				// 版本号状态加1
 				BusinessData selectBusinessDataById = businessDataService.selectBusinessDataById(id);// 查询对应id的数据
