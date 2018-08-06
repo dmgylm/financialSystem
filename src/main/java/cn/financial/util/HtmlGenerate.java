@@ -44,6 +44,10 @@ public class HtmlGenerate {
 		isDisableBudgetInput = true;
 	}
 	
+	public void enableBudgetInput(){
+		isDisableBudgetInput = false;
+	}
+	
 	private static String NONE_DISPLAY_CLASS="display_none";
 	
 	/**
