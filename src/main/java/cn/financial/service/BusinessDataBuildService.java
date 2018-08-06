@@ -16,6 +16,6 @@ public interface BusinessDataBuildService {
 	
 	Integer updateBusinessDataBuild(Map<Object, Object> map);
 	
-	List<BusinessDataBuild> listBusinessDataBuild(String id);
+	List<BusinessDataBuild> listBusinessDataBuild(Integer status);
 
 }
