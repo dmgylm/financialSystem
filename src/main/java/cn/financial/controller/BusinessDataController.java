@@ -261,10 +261,9 @@ public class BusinessDataController {
 				BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
 				JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
 				JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
-				JsonConvertProcess.mergeJson(joTemp, joInfo);
+				//JsonConvertProcess.mergeJson(joTemp, joInfo);
 				HtmlGenerate htmlGenerate = new HtmlGenerate();
 				String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
-				System.out.println(html);
 				ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
 				htmlResult.setData(html);
 			} else {
