@@ -279,13 +279,13 @@ public class RoleController {
     }*/
     
     /**
-     * 根据角色id查对应的功能权限(角色功能权限关联表)
+     * 根据角色id查对应的功能权限(角色功能权限关联表)/查询全部功能权限信息
      * @param request
      * @param response
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
-    @ApiOperation(value="根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
+    @ApiOperation(value="不传角色id查询全部功能权限信息/根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
     @ResponseBody
     public Map<String, Object> listRoleResource(String roleId){
@@ -309,22 +309,24 @@ public class RoleController {
                 }
                 resourceObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(resourceNodes));
             }
-            //筛选角色关联功能权限信息
-            List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
-            if(roleResource == null){
-                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL));
-                return dataMapList;
-            }
-            HashSet<Object> twoList = new HashSet<>();
-            if(!CollectionUtils.isEmpty(roleResource)){
-                for(RoleResource roleRes : roleResource){
-                    twoList.add(roleRes.getsId());
+            if(roleId == null || roleId.equals("")){
+                dataMap.put("roleResourceList", resourceObject);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }else{
+                //筛选角色关联功能权限信息
+                List<RoleResource> roleResource = roleResourceService.listRoleResource(roleId);
+                HashSet<Object> twoList = new HashSet<>();
+                if(!CollectionUtils.isEmpty(roleResource)){
+                    for(RoleResource roleRes : roleResource){
+                        twoList.add(roleRes.getsId());
+                    }
+                    roleService.addRoleType(resourceObject, twoList);
                 }
-                roleService.addRoleType(resourceObject, twoList);
+                dataMap.put("roleResourceList", resourceObject);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             }
-            dataMap.put("roleResourceList", resourceObject);
-            dataMapList.put("data", dataMap);
-            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
             
         } catch (Exception e) {
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
