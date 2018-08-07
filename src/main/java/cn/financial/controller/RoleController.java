@@ -286,7 +286,7 @@ public class RoleController {
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
     @ApiOperation(value="不传角色id查询全部功能权限信息/根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
-    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query")})
     @ResponseBody
     public Map<String, Object> listRoleResource(String roleId){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
