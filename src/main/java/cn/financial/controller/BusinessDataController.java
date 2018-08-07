@@ -436,9 +436,10 @@ public class BusinessDataController {
 			if (id!=null&&!id.equals("")&&status == 4) {
 				// 如果是退回状态的话 1,2个表里面都增加一条一模一样的数据 2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改
 				// 版本号状态加1
+			    String businessId=UuidUtil.getUUID();
 				BusinessData selectBusinessDataById = businessDataService.selectBusinessDataById(id);// 查询对应id的数据
 				BusinessData businessData = new BusinessData();
-				businessData.setId(UuidUtil.getUUID()); // id自动生成
+				businessData.setId(businessId); // id自动生成
 				businessData.setoId(selectBusinessDataById.getoId());
 				businessData.setTypeId(selectBusinessDataById.getTypeId());
 				businessData.setuId(selectBusinessDataById.getuId());
@@ -468,7 +469,7 @@ public class BusinessDataController {
 				BusinessDataInfo selectBusiness = businessDataInfoService.selectBusinessDataById(id);
 				BusinessDataInfo businessDataInfo = new BusinessDataInfo();
 				businessDataInfo.setId(UuidUtil.getUUID()); // id自动生成
-				businessDataInfo.setBusinessDataId(selectBusiness.getBusinessDataId());
+				businessDataInfo.setBusinessDataId(businessId);
 				businessDataInfo.setInfo(selectBusiness.getInfo());
 				businessDataInfo.setuId(selectBusiness.getuId());
 				Integer insertBusinessDataInfo = businessDataInfoService.insertBusinessDataInfo(businessDataInfo);
