@@ -68,7 +68,9 @@ public class QuartzBudget implements Job {
 					if (dm != null) {
 						Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
 						if (org != null) {
-							BusinessData statement = new BusinessData();
+							Organization getOrgDep=orgDep.get(i);
+							businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataService, businessDataInfoService, organizationService);
+						/*	BusinessData statement = new BusinessData();
 							String sid = UuidUtil.getUUID();
 							statement.setId(sid);
 							statement.setoId(org.getId());// 分公司id
@@ -93,7 +95,7 @@ public class QuartzBudget implements Job {
 								if (flagt != 1) {
 									logger.error(msgType + "从表数据新增失败");
 								}
-							}
+							}*/
 						}
 					}
 				}
