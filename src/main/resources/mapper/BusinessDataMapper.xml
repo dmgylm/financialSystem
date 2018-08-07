@@ -58,7 +58,7 @@
 
        <!--不分页，根据条件查询业务表  -->
        <select id="getBusinessAllBySomeOne" parameterType="map" resultType="businessData">
-       select  * from businessData where 1=1
+       select  * from businessData as b where 1=1
        <include refid="query_businessData_where"></include> 
        </select>
        
@@ -109,6 +109,12 @@
         </if>
         <if test="sId!=null and sId!=''">
             and b.sId = #{sId}
+        </if>
+        <if test="status!=null and status!=''">
+            and b.status = #{status}
+        </if>
+         <if test="typeId!=null and typeId!=''">
+            and b.typeId = #{typeId}
         </if>
        <!--  <if test="oId!=null and oId!=''">
          and o.id=b.oId and b.oId in 
