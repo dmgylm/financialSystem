@@ -3,12 +3,18 @@ package cn.financial.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.financial.dao.BusinessDataDao;
 import cn.financial.model.BusinessData;
+import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.DataModule;
+import cn.financial.model.Organization;
 import cn.financial.service.BusinessDataService;
+import cn.financial.util.JsonConvertProcess;
+import cn.financial.util.UuidUtil;
 
 /**
  * 损益表 ServiceImpl
@@ -86,5 +92,36 @@ public class BusinessDataServiceImpl implements BusinessDataService {
     @Override
 	public List<BusinessData> getBusinessAllBySomeOne(Map<Object, Object> map) {
 		return businessDataDao.getBusinessAllBySomeOne(map);
+	}
+    @Override
+	public void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) {
+		
+		Organization org = organizationService.getCompanyNameBySon(orgDep.getId());// 获取对应部门的公司
+		if (org != null) {
+			BusinessData statement = new BusinessData();
+			String sid = UuidUtil.getUUID();
+			statement.setId(sid);
+			statement.setoId(org.getId());// 分公司id
+			statement.setTypeId(orgDep.getId());// 部门（根据部门id查分公司id）
+			statement.setYear(year);
+			statement.setMonth(month);
+			statement.setStatus(3);// 提交状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
+			statement.setDelStatus(1);
+			statement.setsId(2);// 1表示损益表 2表示预算表
+			statement.setDataModuleId(dm.getId());// 数据模板id
+			Integer flag = businessDataService.insertBusinessData(statement);
+			if (flag != 1) {
+				logger.error("预算主表数据新增失败");
+			} else {
+				BusinessDataInfo sdi = new BusinessDataInfo();
+				sdi.setId(UuidUtil.getUUID());
+				sdi.setBusinessDataId(sid);
+				sdi.setInfo(JsonConvertProcess.simplifyJson(dm.getModuleData()).toString());
+				Integer flagt = businessDataInfoService.insertBusinessDataInfo(sdi);
+				if (flagt != 1) {
+					logger.error("预算从表数据新增失败");
+				}
+			}
+		}
 	}
 }
