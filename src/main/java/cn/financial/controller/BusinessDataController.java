@@ -280,6 +280,7 @@ public class BusinessDataController {
 	                JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
 	                //JsonConvertProcess.mergeJson(joTemp, joInfo);
 	                HtmlGenerate htmlGenerate = new HtmlGenerate();
+	                htmlGenerate.disableBudgetInput();
 	                String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
 	                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
 	                htmlResult.setData(html);  
