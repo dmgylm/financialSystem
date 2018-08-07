@@ -3,7 +3,14 @@ package cn.financial.service;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+
 import cn.financial.model.BusinessData;
+import cn.financial.model.DataModule;
+import cn.financial.model.Organization;
+import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.BusinessDataServiceImpl;
+import cn.financial.service.impl.OrganizationServiceImpl;
 
 /**
  * 业务表Service
@@ -71,4 +78,16 @@ public interface BusinessDataService {
      * @return
      */
 	List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);  
+	/**
+	 * 
+	 * @param orgDep 部门对象
+	 * @param year  当前年份
+	 * @param month 当前月份
+	 * @param dm  数据模板对象
+	 * @param logger 异常类
+	 * @param businessDataService  
+	 * @param businessDataInfoService
+	 * @param organizationService
+	 */
+	void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) ;
 }
