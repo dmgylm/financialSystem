@@ -39,9 +39,6 @@ public class RoleResourceServiceImpl implements RoleResourceService{
      */
     @Override
     public List<RoleResource> listRoleResource(String rId) {
-        if(rId == null || rId.equals("")){
-            return null;
-        }
         return roleResourceDao.listRoleResource(rId);
     }
     /**
