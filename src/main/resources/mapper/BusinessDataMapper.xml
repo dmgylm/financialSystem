@@ -42,6 +42,13 @@
            WHERE id=#{id} AND delStatus=1 
        </select>
        
+         <!--  根据组织id查询损益数据 -->
+       <select id="selectBusinessDataByType" parameterType="String" resultMap="businessData" >
+           SELECT * 
+           FROM businessData 
+           WHERE typeId=#{id} AND delStatus=1 LIMIT 1
+       </select>
+       
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
          SELECT *
@@ -79,6 +86,7 @@
         update businessData
         <set>
            <if test="status!=null">status = #{status},</if>
+            <if test="delStatus!=null">delStatus = #{delStatus},</if>
               updateTime = now()
         </set>
          where id = #{id}
