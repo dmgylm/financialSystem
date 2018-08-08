@@ -234,4 +234,13 @@ public class ElementConfig {
      * 查询部门下没有公司级别或部门错误
      */
     public static final String STATIC_ORGLIST_FAIL = "STATIC_ORGLIST_FAIL";
+    /**
+     * 查询移动节点时间判断
+     */
+    public static final String MOBILE_ORGANIZATION_FAIL="MOBILE_ORGANIZATION_FAIL";
+    /**
+     * 对应部门预算表已生成
+     */
+    public static final String BUDGET_GENERATE="BUDGET_GENERATE";
+  
 }
