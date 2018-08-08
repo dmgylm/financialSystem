@@ -124,4 +124,11 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 			}
 		}
 	}
+     /**
+      * 根据组织id查询
+      */
+	@Override
+	public BusinessData selectBusinessDataByType(String id) {
+		return businessDataDao.selectBusinessDataByType(id);
+	}
 }
