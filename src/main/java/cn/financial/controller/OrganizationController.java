@@ -4,12 +4,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,7 +25,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONObject;
+
+import cn.financial.model.BusinessData;
+import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.ChildrenObject;
@@ -30,9 +40,18 @@ import cn.financial.model.response.OrganizaHason;
 import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.OrganizaResult;
 import cn.financial.model.response.ResultUtils;
+import cn.financial.quartz.AccountQuartzListener;
+import cn.financial.quartz.QuartzBudget;
+import cn.financial.service.BusinessDataInfoService;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.BusinessDataServiceImpl;
+import cn.financial.service.impl.DataModuleServiceImpl;
+import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.SiteConst;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -48,7 +67,22 @@ public class OrganizationController {
 
     @Autowired
     private OrganizationService organizationService;
-
+    
+	@Autowired
+	private BusinessDataService businessDataService;
+	
+	@Autowired
+	private BusinessDataInfoService businessDataInfoService;
+	
+	@Autowired
+	private DataModuleServiceImpl dataModuleServiceImpl;
+	
+	private BusinessDataInfoServiceImpl businessDataInfoServices;
+	
+	private OrganizationServiceImpl organizationServices;
+	
+	private BusinessDataServiceImpl businessDataServices;
+	
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
     /**
@@ -83,6 +117,7 @@ public class OrganizationController {
             }
             if (null != orgType && !"".equals(orgType)) {
                 organization.setOrgType(Integer.parseInt(orgType.toString().trim()));// 类别（汇总，公司，部门）
+               
             }
             User user = (User) request.getAttribute("user");
             organization.setuId(user.getId());// 提交人id
@@ -91,7 +126,33 @@ public class OrganizationController {
                 i = organizationService.saveOrganization(organization,parentOrgId);
             }
             if (Integer.valueOf(1).equals(i)) {
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+            	 if(orgType==3){
+                  	String reportType = DataModule.REPORT_TYPE_BUDGET;
+                  	List<Organization> orgDep = organizationService.getDep();// 获取所有部门
+              		int year = Calendar.getInstance().get(Calendar.YEAR);
+              		int month = Calendar.getInstance().get(Calendar.MONTH)+1;
+              		organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
+              		businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
+            		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
+              		for (int j = 0; j < orgDep.size(); j++) { // 获取所有部门
+              			DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(i).getOrgPlateId());
+              			if (dm != null) {
+              				Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
+              				if (org != null) {
+              					Organization getOrgDep=orgDep.get(i);
+              					businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+              					
+              				}
+              			}
+              			
+              		}
+              		
+              		ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+                  }
+            	 else{
+            		 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+            	 }
+            	
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
@@ -328,11 +389,45 @@ public class OrganizationController {
                 parentOrgId =parentId;
             }
             User user = (User) request.getAttribute("user");
+            Calendar cal = Calendar.getInstance();
+		    int day = cal.get(Calendar.DATE);
+            int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
+            int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
+            if(day<start_time||day>stop_time){
+            	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
+            }
+            else{
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
+                String businessId=UuidUtil.getUUID();
+    			BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
+    			BusinessData businessData = new BusinessData();
+    			businessData.setId(businessId); // id自动生成
+    			businessData.setoId(selectBusinessDataById.getoId());
+    			businessData.setTypeId(selectBusinessDataById.getTypeId());
+    			businessData.setuId(selectBusinessDataById.getuId());
+    			businessData.setYear(selectBusinessDataById.getYear());
+    			businessData.setMonth(selectBusinessDataById.getMonth());
+    			businessData.setStatus(1);
+    			businessData.setDelStatus(selectBusinessDataById.getDelStatus());
+    			businessData.setsId(selectBusinessDataById.getsId());
+    			businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
+    			businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+    			businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
+    			selectBusinessDataById.setDelStatus(0);
+    			businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
+    			BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
+    			BusinessDataInfo businfo=new BusinessDataInfo();
+    			String busId=UuidUtil.getUUID();
+    			businfo.setId(busId);
+    			businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
+    			businfo.setInfo(businessInfo.getInfo());
+    			businfo.setuId(businessInfo.getuId());
+    		   businessDataInfoService.insertBusinessDataInfo(businfo);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+            }
             }
         } catch (Exception e) {
         	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
