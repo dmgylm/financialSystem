@@ -227,4 +227,12 @@
         <code>289</code>
         <description>业务id输入不正确</description>
     </Result>
+     <Result name="MOBILE_ORGANIZATION_FAIL">
+        <code>291</code>
+        <description>请在规定时间内进行移动</description>
+    </Result>
+     <Result name="BUDGET_GENERATE">
+        <code>292</code>
+        <description>对应部门预算表已生成</description>
+    </Result>
 </StateCode>
