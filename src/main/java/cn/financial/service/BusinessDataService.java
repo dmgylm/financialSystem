@@ -90,4 +90,10 @@ public interface BusinessDataService {
 	 * @param organizationService
 	 */
 	void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) ;
+    /**
+     * 根据组织查询业务表数据
+     * @param id
+     * @return
+     */
+	BusinessData selectBusinessDataByType(String id);
 }
