@@ -2,6 +2,7 @@ package cn.financial.dao;
 
 import java.util.List;
 import java.util.Map;
+
 import cn.financial.model.BusinessData;
 
 /**
@@ -70,6 +71,12 @@ public interface BusinessDataDao {
      * @param map
      * @return
      */
-    List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);     
+    List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);
+    /**
+     * 根据组织id查询业务表数据
+     * @param id
+     * @return
+     */
+	BusinessData selectBusinessDataByType(String id);     
                
 }
