@@ -101,6 +101,7 @@ public class QuartzJob implements Job{
 								statement.setStatus(3);// 提交状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
 								statement.setDelStatus(1);
 								statement.setsId(bunType);// 1表示损益表 2表示预算表
+								statement.setVersion(1);
 								statement.setDataModuleId(dm.getId());// 数据模板id
 								Integer flag = businessDataService.insertBusinessData(statement);
 								sum++;
