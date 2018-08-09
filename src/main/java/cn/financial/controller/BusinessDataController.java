@@ -139,14 +139,16 @@ public class BusinessDataController {
                // if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)||role==true) { //公司及其公司以下级别才有权限进行录入中心
                     if(keyword!=null&&!keyword.equals("")){
                         Organization CompanyName = organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));// 查询所属的公司名
-                        if(CompanyName.getOrgName().contains(keyword)){
-                            listOrganization.add(userOrganization.get(i));
+                        if(CompanyName!=null){
+                            if(CompanyName.getOrgName().contains(keyword)){
+                                listOrganization.add(userOrganization.get(i));
+                            } 
                         }
                         List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                         JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                         for (int j = 0; j < jsonArr.size(); j++) {
                             JSONObject json = jsonArr.getJSONObject(j);
-                            if(json.getString("orgName").contains(keyword)&&Integer.parseInt(json.getString("orgType"))!=BusinessData.ORGNUM){
+                            if(json.getString("orgName").contains(keyword)){
                               listTree.add(jsonArr.getJSONObject(j)); 
                             }
                         }                    
@@ -155,7 +157,7 @@ public class BusinessDataController {
                             JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                             for (int j = 0; j < jsonArr.size(); j++) {
                                 JSONObject json = jsonArr.getJSONObject(j);
-                                if(Integer.parseInt(json.getString("orgType"))!=BusinessData.ORGNUM){
+                                if(Integer.parseInt(json.getString("orgType"))==BusinessData.DEPNUM||json.getString("orgName").contains(BusinessData.NAME)){
                                     listTree.add(jsonArr.getJSONObject(j)); 
                                 }
                             }
