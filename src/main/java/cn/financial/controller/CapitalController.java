@@ -691,7 +691,7 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 if(keyword!=null&&!keyword.equals("")){
-                    //keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                     //获取输入的关键词查询其级别    如果orgType级别在权限数据级别以上  那么是查看不到数据的
                       List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                       JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
@@ -769,11 +769,11 @@ public class CapitalController {
                                   int m=listOrganization.size();
                                   oId[m+i]=id;
                               }
-                              map.put("accountBank",accountBank);//开户行
-                              map.put("accountNature",accountNature);//账户性质
+                              map.put("accountBank",new String(accountBank.getBytes("iso8859-1"),"utf-8"));//开户行
+                              map.put("accountNature",new String(accountNature.getBytes("iso8859-1"),"utf-8"));//账户性质
                               map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                               map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                              map.put("classify",classify);//项目分类
+                              map.put("classify",new String(classify.getBytes("iso8859-1"),"utf-8"));//项目分类
                               List<String> oIds = Arrays.asList(oId);
                               List<String> companyNames = Arrays.asList(companyName);
                               map.put("oId", oIds);//根据权限的typeId查询相对应的数据
@@ -885,11 +885,11 @@ public class CapitalController {
                         int m=listOrganization.size();
                         oId[m+i]=id;
                     }
-                    map.put("accountBank",accountBank);//开户行
-                    map.put("accountNature",accountNature);//账户性质
+                    map.put("accountBank",new String(accountBank.getBytes("iso8859-1"),"utf-8"));//开户行
+                    map.put("accountNature",new String(accountNature.getBytes("iso8859-1"),"utf-8"));//账户性质
                     map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
                     map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
-                    map.put("classify",classify);//项目分类
+                    map.put("classify",new String(classify.getBytes("iso8859-1"),"utf-8"));//项目分类
                     List<String> oIds = Arrays.asList(oId);
                     map.put("oId", oIds);//根据权限的typeId查询相对应的数据
                     map.put("company",keyword);//关键字获取的公司名称查询
