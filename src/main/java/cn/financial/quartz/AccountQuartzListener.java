@@ -33,13 +33,15 @@ public class AccountQuartzListener implements ServletContextListener {
 		springContext = WebApplicationContextUtils
 				.getWebApplicationContext(sce.getServletContext());
 		if ( springContext != null ) {
-						
+			
+						String dayTime1 = SiteConst.DAY_TIME.substring(0,SiteConst.DAY_TIME.indexOf("-")).trim();
+						Integer dayTime = Integer.valueOf(dayTime1) - 1;
 						try {
 								QuartzManager.addJob(QuartzManager.getsched(), "预算表生成消息提醒任务定时器", QuartzBudget.class, "* * * 1 1 ?",null);//每年一月份一号生成预算表
 								QuartzManager.addJob(QuartzManager.getsched(), "损益表生成消息提醒任务定时器", QuartzJob.class, "0 0 0 "+SiteConst.DAY_TIME+" * ?",null);//每个月20-25号每天零点生成损益表
-								QuartzManager.addJob(QuartzManager.getsched(), "系统停止录入数据截止日期提醒任务定时器", QuartzStatement.class, "0 0 0 5 * ?",null);//每个月5号生成系统关账提醒
-						        QuartzManager.addJob(QuartzManager.getsched(), "密码有效时间到期提醒任务定时器", QuartzPwdTime.class, "0 0 9 * * ?" , null );
-						        QuartzManager.addJob(QuartzManager.getsched(), "损益生成记录表任务定时器", QuartzBusinessData.class, "30 15 9 * * ?" , null );
+								QuartzManager.addJob(QuartzManager.getsched(), "系统停止录入数据截止日期提醒任务定时器", QuartzStatement.class, "0 0 2 5 * ?",null);//每个月5号凌晨2点生成系统关账提醒
+						        QuartzManager.addJob(QuartzManager.getsched(), "密码有效时间到期提醒任务定时器", QuartzPwdTime.class, "0 0 1 * * ?" , null );//每天凌晨1点验证密码有效时间是否到期
+						        QuartzManager.addJob(QuartzManager.getsched(), "损益生成记录表任务定时器", QuartzBusinessData.class, "0 0 3 "+dayTime+" * ?" , null );//每月19号凌晨3点生成损益生成记录表
 						} catch (SchedulerException e) {
 							e.printStackTrace();
 						}
