@@ -380,7 +380,7 @@ public class BusinessDataController {
 				}
 			} else if (status == 2 && id != null && !id.equals("")) { // 如果html为空，则是直接提交（此时状态是提交 2）只需要把损益表的状态修改下
 			    BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
-			    if(businessDataById.getStatus()==status){
+			    if(businessDataById.getStatus()==status&&businessDataById.getsId()==1){
 			        result.setResultDesc("此数据已经提交！不能重复提交");  
 			    }else{
 			        BusinessData businessData = new BusinessData();
