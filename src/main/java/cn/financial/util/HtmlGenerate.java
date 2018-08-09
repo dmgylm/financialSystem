@@ -24,7 +24,9 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HtmlGenerate {
 	
-	public HtmlGenerate(){}
+	public HtmlGenerate(){
+		rowMap.clear();
+	}
 	
 	/**
 	 * 显示页面是否需要在td中添加id属性
@@ -32,6 +34,7 @@ public class HtmlGenerate {
 	 */
 	public HtmlGenerate(boolean isPreviewNeedId){
 		this.isPreviewNeedId = isPreviewNeedId;
+		rowMap.clear();
 	}
 	
 	
