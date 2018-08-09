@@ -115,9 +115,10 @@ public class QuartzJob implements Job{
 									JSONObject newBudgetHtml=new JSONObject();//与预算合并后生成的损益原始模板
 									
 									for (Iterator<String> iterIncome = dataMjo.keySet().iterator();iterIncome.hasNext();) {//获得损益模板最外层key
-										
 										String keyIncome = iterIncome.next();//损益模板key
-										if(null!=keyIncome&& keyIncome.equals("")) {//判断预算有没有相同的模板key
+										
+										
+										if(null!=keyIncome&& !keyIncome.equals("")) {//判断预算有没有相同的模板key
 											JSONObject keyBudget=(JSONObject) joAllBudget.get(keyIncome);//预算表模板key
 											Object objIncome = dataMjo.get(keyIncome);//获取损益模板key的值
 											JSONArray jsonIncome=JSONArray.parseArray(objIncome.toString());//获取损益模板科目
@@ -131,11 +132,11 @@ public class QuartzJob implements Job{
 												 
 												if(Integer.parseInt(jo.getString("type"))==4) {
 													String keyG=jo.getString("key").replace("benyueyusuan", month+"yue");
-													
-													if(keyBudget.containsKey(keyG)) {//判断是否有预算科目值
-															
-														int  joBudgetOne=keyBudget.getIntValue(keyG);//获取预算科目key的值
-														jo.put("value", joBudgetOne);	
+													if(keyBudget!=null ) {
+														if(keyBudget.containsKey(keyG)) {//判断是否有预算科目值
+															int  joBudgetOne=keyBudget.getIntValue(keyG);//获取预算科目key的值
+															jo.put("value", joBudgetOne);	
+														}
 													}
 													
 												}
