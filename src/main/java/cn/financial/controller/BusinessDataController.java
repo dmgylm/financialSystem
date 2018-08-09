@@ -6,19 +6,13 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
-import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -50,7 +43,6 @@ import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
 import cn.financial.util.JsonConvertProcess;
-import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,11 +50,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.mail.imap.protocol.Item;
 
 /**
  * 损益表Controller
@@ -345,7 +334,7 @@ public class BusinessDataController {
 					 * doc.select("input");// 获取HTML所有input属性
 					 */ /* System.out.println(inputHtml); */
 					BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
-					if(status == 2 && businessDataById.getStatus()==status){
+					if(status == 2 && businessDataById.getStatus()==status&&businessDataById.getsId()==1){
 					    result.setResultDesc("此数据已经提交！不能重复提交"); 
 					}else{
 					    JSONArray jsonArr = JSONArray.parseArray(strJson);
@@ -423,7 +412,7 @@ public class BusinessDataController {
 	 * @param request
 	 * @return
 	 */
-
+	@Transactional(rollbackFor = Exception.class)
 	@RequiresPermissions("businessData:update")
 	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
 	@ApiOperation(value = "修改退回的损益/预算的数据", notes = "根据天剑修改退回损益/预算数据", response = ResultUtils.class)
