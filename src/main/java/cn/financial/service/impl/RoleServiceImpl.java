@@ -61,13 +61,18 @@ public class RoleServiceImpl implements RoleService{
         return roleDao.deleteRole(roleId);
     }
     
-    public static void addRoleType(JSONObject json, HashSet<Object> twoList){
-        //System.out.println("--------"+twoList);
+    public static void addRole(List<JSONObject> json, HashSet<Object> twoList){
         //循环匹配
-        json.put("mathc", false);
-        if(twoList.contains(json.getString("pid"))){
-            json.put("mathc", true);
+        for(JSONObject item : json){
+            /*item.put("mathc", false);
+            if(twoList.contains(item.getString("pid"))){
+                item.put("mathc", true);
+            }*/
+            addRoleType(item, twoList);
         }
+    }
+    
+    public static void addRoleType(JSONObject json, HashSet<Object> twoList){
         if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
             for (Object item : json.getJSONArray("children")) {
                 JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
