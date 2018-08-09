@@ -22,22 +22,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.model.Resource;
 import cn.financial.model.Role;
 import cn.financial.model.RoleResource;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
 import cn.financial.model.response.ResultUtils;
-import cn.financial.model.response.RoleInfo;
 import cn.financial.model.response.RoleResourceResult;
 import cn.financial.model.response.RoleResult;
-import cn.financial.service.ResourceService;
 import cn.financial.service.UserRoleService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.service.impl.RoleServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -55,8 +51,6 @@ import io.swagger.annotations.ApiOperation;
 public class RoleController {
     @Autowired
     private RoleServiceImpl roleService;
-    @Autowired
-    private ResourceService resourceService;
     @Autowired
     private RoleResourceServiceImpl roleResourceService;
     @Autowired
@@ -114,7 +108,7 @@ public class RoleController {
      * @param roleId
      * @return
      */
-    @RequiresPermissions("role:view")
+    /*@RequiresPermissions("role:view")
     @RequestMapping(value = "/roleById", method = RequestMethod.POST)
     @ApiOperation(value="根据角色id查询角色信息",notes="根据角色id查询角色信息", response = RoleInfo.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query", required = true)})
@@ -136,7 +130,7 @@ public class RoleController {
             e.printStackTrace();
         }
         return dataMapList;
-    }
+    }*/
     /**
      * 新增角色
      * @param request
@@ -279,35 +273,24 @@ public class RoleController {
     }*/
     
     /**
-     * 根据角色id查对应的功能权限(角色功能权限关联表)/查询全部功能权限信息
+     * 根据当前登录用户查询关联角色id查对应的功能权限(角色功能权限关联表)/查询全部功能权限信息(根据当前登录用户查询关联角色id及对应的功能权限信息)
      * @param request
      * @param response
      */
     @RequiresPermissions("role:view")
     @RequestMapping(value = "/roleResourceIndex", method = RequestMethod.POST)
-    @ApiOperation(value="不传角色id查询全部功能权限信息/根据角色id查对应的功能权限信息",notes="根据角色id查对应的功能权限(角色功能权限关联表)", response = RoleResourceResult.class)
+    @ApiOperation(value="不传角色id查询全部功能权限信息/根据角色id查对应的功能权限信息",notes="全部功能权限信息指(根据当前登录用户查询关联角色id及对应的功能权限信息)", response = RoleResourceResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="roleId",value="角色id",dataType="string", paramType = "query")})
     @ResponseBody
-    public Map<String, Object> listRoleResource(String roleId){
+    public Map<String, Object> listRoleResource(HttpServletRequest request, String roleId){
         Map<String, Object> dataMapList = new HashMap<String, Object>();
         Map<String, Object> dataMap = new HashMap<String, Object>();
         try {
-            //查询全部功能权限信息
-            List<Resource> resource = resourceService.listResource();
-            List<TreeNode<Resource>> resourceNodes = new ArrayList<>();
-            JSONObject resourceObject = new JSONObject();
-            if(!CollectionUtils.isEmpty(resource)){
-                for (Resource rss : resource) {
-                    TreeNode<Resource> node = new TreeNode<>();
-                    node.setId(rss.getCode().toString());//当前code
-                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                    node.setParentId(b);//父节点
-                    node.setName(rss.getName());//权限名称
-                    node.setPid(rss.getId());//当前权限id
-                   // node.setNodeData(rss);
-                    resourceNodes.add(node);
-                }
-                resourceObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(resourceNodes));
+            User currentUser = (User) request.getAttribute("user");
+            List<JSONObject> resourceObject = new ArrayList<>();
+            if(currentUser.getName()!=null && !currentUser.getName().equals("")){
+                //根据当前登录用户名查询对应角色功能权限信息
+                resourceObject = roleResourceService.roleResourceList(currentUser.getName());
             }
             if(roleId == null || roleId.equals("")){
                 dataMap.put("roleResourceList", resourceObject);
@@ -321,7 +304,7 @@ public class RoleController {
                     for(RoleResource roleRes : roleResource){
                         twoList.add(roleRes.getsId());
                     }
-                    roleService.addRoleType(resourceObject, twoList);
+                    roleService.addRole(resourceObject, twoList);
                 }
                 dataMap.put("roleResourceList", resourceObject);
                 dataMapList.put("data", dataMap);
