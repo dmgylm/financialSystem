@@ -24,9 +24,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class HtmlGenerate {
 	
-	public HtmlGenerate(){
-		rowMap.clear();
-	}
+	public HtmlGenerate(){}
 	
 	/**
 	 * 显示页面是否需要在td中添加id属性
@@ -34,7 +32,6 @@ public class HtmlGenerate {
 	 */
 	public HtmlGenerate(boolean isPreviewNeedId){
 		this.isPreviewNeedId = isPreviewNeedId;
-		rowMap.clear();
 	}
 	
 	
@@ -118,7 +115,7 @@ public class HtmlGenerate {
 	public static String CLASS_FORMULA = "formula";// 公式所带Class
 	public static String CLASS_BUDGET = "budget";// 公式所带Class
 
-	private static Map<Integer, Map<Integer, JSONObject>> rowMap = new HashMap<Integer, Map<Integer,JSONObject>>();
+	private Map<Integer, Map<Integer, JSONObject>> rowMap = new HashMap<Integer, Map<Integer,JSONObject>>();
 
 	public static void main(String[] args) {
 		String path = "C:/Users/Admin/Desktop/解析后文件.txt";
