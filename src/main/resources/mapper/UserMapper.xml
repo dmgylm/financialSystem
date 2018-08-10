@@ -97,14 +97,14 @@
         INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
-        <if test="oId!=null and oId!=''">
+        <if test="oId!=null and oId.size()>0">
             and m.oId in 
             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
                 #{oId}
             </foreach>
         </if>
         <!--超级管理员uId-->
-        <if test="uId!=null and uId!=''">
+        <if test="uId!=null and uId.size()>0">
             and u.id not in
             <foreach collection="uId" item="uId" index="index" open="(" separator="," close=")" >
                 #{uId}
@@ -123,14 +123,14 @@
         INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
-        <if test="oId!=null and oId!=''">
+        <if test="oId!=null and oId.size()>0">
             and m.oId in 
             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
                 #{oId}
             </foreach>
         </if>
         <!--超级管理员uId-->
-        <if test="uId!=null and uId!=''">
+        <if test="uId!=null and uId.size()>0">
             and u.id not in
             <foreach collection="uId" item="uId" index="index" open="(" separator="," close=")" >
                 #{uId}
