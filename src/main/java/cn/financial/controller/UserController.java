@@ -287,7 +287,6 @@ public class UserController{
     @ApiImplicitParams({
         @ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="realName",value="真实姓名",dataType="string", paramType = "query"),
-        //@ApiImplicitParam(name="userId",value="用户id",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="jobNumber",value="工号",dataType="string", paramType = "query"),
         @ApiImplicitParam(name="status",value="状态0表示离职1表示在职",dataType="int", paramType = "query"),
         @ApiImplicitParam(name="createTime",value="创建时间（如2018-07-10 13:21:10）",dataType="string", paramType = "query"),
@@ -308,7 +307,6 @@ public class UserController{
     	    Map<Object, Object> map = new HashMap<>();
 	        map.put("name", name);//用户名
             map.put("realName", realName);//真实姓名
-    	    //map.put("id", userId);//用户id
     	    map.put("jobNumber", jobNumber);//工号
     	    map.put("status", status);//状态
     	    map.put("createTime", createTime);//创建时间
@@ -327,7 +325,7 @@ public class UserController{
             List<UserOrganization> userOrgPermission = new ArrayList<>();
             List<Role> role = new ArrayList<>();
             List<UserRole> userRoleId = new ArrayList<>();
-            List<String> uId = null;//超级管理员用户id
+            List<String> uId = new ArrayList<>();//超级管理员用户id
             List<String> rIdList = new ArrayList<>();//超级管理员角色id
             boolean superAdmin = true;//当前登录用户是否是超级管理员
             Integer userList = 0;
@@ -366,7 +364,6 @@ public class UserController{
                         userRoleId.addAll(userRoleService.listUserRole(null, r));
                     }
                     if(!CollectionUtils.isEmpty(userRoleId)){
-                        uId = new ArrayList<>();
                         for(int i=0;i<userRoleId.size();i++){
                             //把超级管理员的uId作为条件查询
                             uId.add(userRoleId.get(i).getuId());
@@ -376,7 +373,6 @@ public class UserController{
             }
             List<Organization> userOrg = new ArrayList<>();
             List<Organization> userOrganization = new ArrayList<>();
-            //Map<String, Organization> removalOrg = new HashMap<>();
             if(!CollectionUtils.isEmpty(userOrgPermission)){
                 for(UserOrganization userOrgId : userOrgPermission){
                     //根据当前节点id查询子节点信息
@@ -396,18 +392,7 @@ public class UserController{
                     }else{
                         userOrganization.add(orgId);
                     }
-                    //removalOrg.put(orgId.getId(), orgId);
                 }
-                //判断去重之后的orgName
-                /*for(Organization orgRemoval : removalOrg.values()){
-                    if(orgName!=null && !orgName.equals("")){
-                        if(orgRemoval.getOrgName().contains(orgName.toUpperCase())){
-                            userOrganization.add(orgRemoval);
-                        }
-                    }else{
-                        userOrganization.add(orgRemoval);
-                    }
-                }*/
                 if(!CollectionUtils.isEmpty(userOrganization)){
                     for(Organization orgId : userOrganization){
                         org.add(orgId.getId());//添加筛选之后的oId
@@ -421,7 +406,6 @@ public class UserController{
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
                     List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
-                    //List<JSONObject> jsonRole = roleResourceService.roleResourceList(item.getName());//查询角色功能权限关联信息
                     List<RoleResource> jsonRole = new ArrayList<>();
                     //根据用户名查询用户角色关联信息是否存在
                     List<UserRole> userRole = userRoleService.listUserRole(name, null);
