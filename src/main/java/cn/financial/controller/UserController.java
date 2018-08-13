@@ -223,6 +223,22 @@ public class UserController{
     	ResultUtils result = new ResultUtils();
     	
     	try {
+    	    if(name!=null && !name.equals("")){
+    	        //判断用户名是否存在
+                Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
+                if(flag > 0){
+                    ElementXMLUtils.returnValue(ElementConfig.USERNAME_EXISTENCE, result);
+                    return result;
+                }
+    	    }
+    	    if(jobNumber!=null && !jobNumber.equals("")){
+    	        //判断工号是否存在
+                Integer jobNumberFlag = userService.countUserName("", jobNumber);//查询工号是否存在
+                if(jobNumberFlag > 0){
+                    ElementXMLUtils.returnValue(ElementConfig.JOBNUMBER_EXISTENCE, result);
+                    return result;
+                }
+    	    }
             //修改用户
     		User user = new User();
             user.setId(userId);
