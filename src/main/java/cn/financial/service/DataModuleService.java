@@ -53,6 +53,14 @@ public interface DataModuleService {
 	 * @return
 	 */
 	DataModule getDataModule(String reportType, String businessType);
+	
+	/**
+	 * 根据报表类型及业务板块获取数据模板
+	 * @param reportType 报表类型
+	 * @param businessType 业务板块
+	 * @return
+	 */
+	DataModule getDataModule(String reportType, String businessType,Integer status);
 
 	/**
 	 * 编辑数据模板
@@ -65,7 +73,7 @@ public interface DataModuleService {
 	 * @param secondColNum
 	 * @throws FormulaAnalysisException
 	 */
-	void editDataModule(String reportType, String businessType, String html) throws FormulaAnalysisException;
+	void editDataModule(String reportType, String businessType, String html,Integer status) throws FormulaAnalysisException;
 	
 	String getDataModuleName(String reportType, String businessType);
 

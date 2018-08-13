@@ -115,12 +115,9 @@ public class DataModuleController {
 		  @ApiImplicitParam(name="businessType",required=true,value="业务板块（即 组织架构的orgkey）",dataType="string", paramType = "query")})
 	@ResponseBody
 	public DataResult getNewestDataModule(String reportType,String businessType){
-//		Map<String, Object> dataMap = new HashMap<String, Object>();
-		DataResult dataResult=new DataResult();
+		DataResult dataResult = new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
-			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-			dataMap.put("data", bean);*/
 			dataResult.setData(bean);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
@@ -147,14 +144,15 @@ public class DataModuleController {
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="reportType",required=true,value="报表类型(PROFIT_LOSS:损益;BUDGET:预算;ASSESSMENT:考核;TAX:税金;SUMMARY_BUDGET:预算简易汇总;SUMMARY_PROFIT_LOSS:损益简易汇总)",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="businessType",required=true,value="业务板块(从[汇总中心-查询业务板块信息]接口中获取)",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query")
+		  @ApiImplicitParam(name="html",required=true,value="模板html",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="status",required=true,value="模板状态(0:保存;1:提交)",dataType="string", paramType = "query")
 		  })
 	@ResponseBody
-	public ResultUtils editDataModule(String reportType,String businessType,String html) {
+	public ResultUtils editDataModule(String reportType,String businessType,String html,Integer status) {
 //		Map<String, Object> dataMap = new HashMap<String, Object>();
 		ResultUtils result=new ResultUtils();
 		try {
-			dataModuleService.editDataModule(reportType,businessType,html);
+			dataModuleService.editDataModule(reportType,businessType,html,status);
 			/*dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));*/
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
 		} catch (Exception e) {

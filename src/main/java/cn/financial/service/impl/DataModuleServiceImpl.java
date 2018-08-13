@@ -176,12 +176,21 @@ public class DataModuleServiceImpl implements DataModuleService{
 	/**
 	 * 根据报表类型及业务类型获取最新模板数据
 	 */
-	@Cacheable(value="dataModule",key="'newestDataModule_'+#reportType+#businessType")
-	public DataModule getDataModule(String reportType, String businessType) {
+	@Cacheable(value="dataModule",key="'newestDataModule_'+#reportType+#businessType+$status")
+	public DataModule getDataModule(String reportType, String businessType,Integer status) {
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("reportType", reportType);
 		params.put("businessType", businessType);
+		params.put("statue", status);
 		return dataModuleDao.getDataModule(params);
+	}
+	
+	/**
+	 * 根据报表类型及业务类型获取最新有效模板数据
+	 */
+	@Cacheable(value="dataModule",key="'newestValidDataModule_'+#reportType+#businessType")
+	public DataModule getDataModule(String reportType, String businessType) {
+		return getDataModule(reportType, businessType, DataModule.STATUS_CONSUMED);
 	}
 
 	/**
@@ -190,25 +199,29 @@ public class DataModuleServiceImpl implements DataModuleService{
 	@Transactional(rollbackFor = Exception.class)
 //	@CacheEvict(value="'newestDataModule_'+#reportType+#businessType", beforeInvocation=true)
 	public void editDataModule(String reportType,
-			String businessType, String html)
+			String businessType, String html,Integer status)
 			throws FormulaAnalysisException {
 		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(html);
 		String json = htmlAnalysis.analysis();
-		DataModule dataModule = getDataModule(reportType,businessType);
-		Integer versionNumber = 1;
-		if(dataModule != null) {
+		DataModule dataModule = getDataModule(reportType,businessType,null);
+		Integer versionNumber = 0;
+		if(dataModule != null ) {
 			versionNumber = Integer.parseInt(dataModule.getVersionNumber());
-			dataModule.setStatue(DataModule.STATUS_NOVALID);
-			dataModuleDao.updateDataModuleState(dataModule.getId());
-			versionNumber++;
+			if(status == DataModule.STATUS_CONSUMED) {
+				dataModuleDao.updateStateByReportTypeAndBusinessType(reportType,businessType);
+			}
 		}
+		versionNumber++;
 		
 		DataModule bean = new DataModule();
 		bean.setId(UuidUtil.getUUID());
 		bean.setVersionNumber(String.valueOf(versionNumber));
 		bean.setReportType(reportType);
 		bean.setBusinessType(businessType);
-		bean.setStatue(DataModule.STATUS_CONSUMED);
+		if(status == null) {
+			status = DataModule.STATUS_NOVALID;
+		}
+		bean.setStatue(status);
 		bean.setModuleName(getDataModuleName(reportType,businessType));
 		
 		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)) {
