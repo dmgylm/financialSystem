@@ -67,7 +67,7 @@
     </update>
     
     <update id="updateStateByReportTypeAndBusinessType">
-        UPDATE dataModule SET statue=0,updateTime = curdate() WHERE reportType=#{reportType} AND businessType=${businessType}
+        UPDATE dataModule SET statue=0,updateTime = curdate() WHERE reportType=#{reportType} AND businessType=#{businessType}
     </update>
     
     <!--定义一个sql片段 -->
