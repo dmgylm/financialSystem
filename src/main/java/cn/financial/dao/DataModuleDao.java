@@ -44,8 +44,7 @@ public interface DataModuleDao {
      */
 	DataModule getDataModule(Map<String,Object> params);
 
-	void updateStateByReportTypeAndBusinessType(String reportType,
-			String businessType);
+	void updateStateByReportTypeAndBusinessType(Map<String,Object> params);
     
     
 }

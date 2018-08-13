@@ -51,7 +51,7 @@ public class DataModule {
 	private String moduleName;
 	
     @ApiModelProperty(value="模板版本号",name="versionNumber",example="")
-	private String versionNumber;
+	private Integer versionNumber;
 	
     @ApiModelProperty(value="报表类型(PROFIT_LOSS:损益 ；TAX：税金 ；ASSESSMENT：考核 ；  BUDGET：预算 ； SUMMARY_PROFIT_LOSS：损益简易汇总)",name="reportType",example="")
 	private String reportType;//报表类型
@@ -126,11 +126,11 @@ public class DataModule {
 		this.moduleKey = moduleKey;
 	}
 
-	public String getVersionNumber() {
+	public Integer getVersionNumber() {
 		return versionNumber;
 	}
 
-	public void setVersionNumber(String versionNumber) {
+	public void setVersionNumber(Integer versionNumber) {
 		this.versionNumber = versionNumber;
 	}
 

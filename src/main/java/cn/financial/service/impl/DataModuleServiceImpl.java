@@ -181,7 +181,9 @@ public class DataModuleServiceImpl implements DataModuleService{
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("reportType", reportType);
 		params.put("businessType", businessType);
-		params.put("statue", status);
+		if(status != null) {
+			params.put("statue", status);
+		}
 		return dataModuleDao.getDataModule(params);
 	}
 	
@@ -206,16 +208,19 @@ public class DataModuleServiceImpl implements DataModuleService{
 		DataModule dataModule = getDataModule(reportType,businessType,null);
 		Integer versionNumber = 0;
 		if(dataModule != null ) {
-			versionNumber = Integer.parseInt(dataModule.getVersionNumber());
+			versionNumber = dataModule.getVersionNumber();
 			if(status == DataModule.STATUS_CONSUMED) {
-				dataModuleDao.updateStateByReportTypeAndBusinessType(reportType,businessType);
+				Map<String,Object> params = new HashMap<String, Object>();
+				params.put("reportType", reportType);
+				params.put("businessType", businessType);
+				dataModuleDao.updateStateByReportTypeAndBusinessType(params);
 			}
 		}
 		versionNumber++;
 		
 		DataModule bean = new DataModule();
 		bean.setId(UuidUtil.getUUID());
-		bean.setVersionNumber(String.valueOf(versionNumber));
+		bean.setVersionNumber(versionNumber);
 		bean.setReportType(reportType);
 		bean.setBusinessType(businessType);
 		if(status == null) {

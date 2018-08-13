@@ -13,7 +13,7 @@ public class ModuleList {
 	private String moduleName;
 	
     @ApiModelProperty(value="模板版本号",name="versionNumber",example="")
-	private String versionNumber;
+	private Integer versionNumber;
     
     @ApiModelProperty(value="模板状态（0：无效；1：有效）",name="statue",example="")
 	private Integer statue;
@@ -41,11 +41,11 @@ public class ModuleList {
 		this.moduleName = moduleName;
 	}
 
-	public String getVersionNumber() {
+	public Integer getVersionNumber() {
 		return versionNumber;
 	}
 
-	public void setVersionNumber(String versionNumber) {
+	public void setVersionNumber(Integer versionNumber) {
 		this.versionNumber = versionNumber;
 	}
 
