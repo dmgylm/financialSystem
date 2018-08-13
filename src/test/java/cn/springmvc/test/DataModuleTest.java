@@ -123,7 +123,7 @@ public class DataModuleTest {
 	public void insertDataModules(){
 		DataModule bean = new DataModule();
 		bean.setId(UuidUtil.getUUID());
-		bean.setVersionNumber("1");
+		bean.setVersionNumber(1);
 		bean.setReportType(DataModule.REPORT_TYPE_PROFIT_LOSS);
 		//bean.setBusinessType("3acea0c85d584448b37b0ca05cc34b6f");  //保险
 		//bean.setBusinessType("b1503ff8da124fa3bce0bf07f16f56f6");//车管家
