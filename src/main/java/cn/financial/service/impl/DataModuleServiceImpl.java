@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -227,6 +228,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 			status = DataModule.STATUS_NOVALID;
 		}
 		bean.setStatue(status);
+		bean.setFounder((String)SecurityUtils.getSubject().getPrincipal());
 		bean.setModuleName(getDataModuleName(reportType,businessType));
 		
 		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)) {
