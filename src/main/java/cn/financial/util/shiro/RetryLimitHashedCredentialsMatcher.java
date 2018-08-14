@@ -43,7 +43,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
         }*/
         int count = 0;
         Object obj=redis.opsForValue().get(username);//获取错误次数
-        Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+username+"_status");//获取是否锁定
+        Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+username.toLowerCase()+"_status");//获取是否锁定
         if(locking!=null){
             //抛出用户锁定异常
             throw new ExcessiveAttemptsException();
