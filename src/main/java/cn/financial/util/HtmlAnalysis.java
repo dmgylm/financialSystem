@@ -28,11 +28,12 @@ public class HtmlAnalysis {
 	private Document doc;
 	private static String CLASS_NONE_DISPLAY_NAME = "display_none";
 	
-	private static String modelRowKey = "";
-	private static String prefixCelKey = "";
-	public static String Separate_Modular = "_";//模块和科目间的字符间隔
-	private static String Separate_X_Y = "";//科目和横向标题间(本月实际)的字符间隔
-	
+	private String modelRowKey = "";
+	private String prefixCelKey = "";
+	private Map<Integer, String> prefixCellMap = new HashMap<Integer, String>();
+	public static String Separate_Modular = "_";// 模块和科目间的字符间隔
+	private String Separate_X_Y = "";// 科目和横向标题间(本月实际)的字符间隔
+
 	private Map<String,String> rowKeyMap = new HashMap<String, String>();
 	private Map<String,String> colKeyMap = new HashMap<String, String>();
 	
@@ -299,10 +300,13 @@ public class HtmlAnalysis {
 			rowKeyMap.put(rowNum+"", key);
 		}
 		if(classSet.contains(HtmlGenerate.CLASS_MAINTITLE)) {
-			prefixCelKey = cellValue;
+			if(StringUtils.isValid(cellValue)) {
+				prefixCelKey = cellValue;
+			}
+			prefixCellMap.put(colNum, prefixCelKey);
 		}
 		if(classSet.contains(HtmlGenerate.CLASS_SUBTITLE)) {
-			String key = prefixCelKey + cellValue;
+			String key = prefixCellMap.get(colNum) + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
 	}
