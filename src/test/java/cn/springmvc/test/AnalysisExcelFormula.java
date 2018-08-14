@@ -52,6 +52,8 @@ public class AnalysisExcelFormula {
 	private static String firstRowKey = "";//行标题前缀
 	private static String firstCelKey = "";//列标题前缀
 	
+	private static Map<Integer,String> firstCellMap = new HashMap<Integer, String>();
+	
 	private Integer budgetCell = 4;//预算列
 	private Integer maintitleRowNum;//横向标题前缀
 	private Integer subtitleRowNum ;//横向标题后缀
@@ -391,11 +393,15 @@ public class AnalysisExcelFormula {
 		}
 		if(maintitleRowNum!=null && rowNum==maintitleRowNum) {
 			type = HtmlGenerate.BOX_TYPE_MAINTITLE;
-			firstCelKey = cellValue;
+//			firstCellMap
+			if(StringUtils.isValid(cellValue)) {
+				firstCelKey = cellValue;
+			}
+			firstCellMap.put(colNum, firstCelKey);
 		}
 		if(rowNum==subtitleRowNum) {
 			type = HtmlGenerate.BOX_TYPE_SUBTITLE;
-			String key = firstCelKey + cellValue;
+			String key = firstCellMap.get(colNum) + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
 		return type;
