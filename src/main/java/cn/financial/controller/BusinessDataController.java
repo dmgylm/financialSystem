@@ -222,7 +222,7 @@ public class BusinessDataController {
                   businessResult.setData(businessList); // 返回的资金流水数据
                   businessResult.setTotal(total.size());// 返回的总条数  
             } else {
-                businessResult.setResultDesc("您没有权限操作损益表！");
+                businessResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
             }             
         } catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, businessResult);
@@ -287,7 +287,7 @@ public class BusinessDataController {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
                     htmlResult.setData(html); 
 			    }else{
-			        htmlResult.setResultDesc("您不可以编辑录入中心数据！"); 
+			        htmlResult.setResultDesc("您当前所属的组织架构没有此操作权限！"); 
 			    }
 			} else {
 				htmlResult.setResultDesc("id或者htmlType为空！");

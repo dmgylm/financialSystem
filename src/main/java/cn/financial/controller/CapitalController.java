@@ -236,7 +236,7 @@ public class CapitalController {
                              capitalResult.setData(list);
                              capitalResult.setTotal(total.size());
                             }else{
-                                capitalResult.setResultDesc("您没有权限操作资金流水数据！");
+                                capitalResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
                             }
                              
                          }else{
@@ -326,7 +326,7 @@ public class CapitalController {
                    capitalResult.setData(list);
                    capitalResult.setTotal(total.size());
                   }else{
-                      capitalResult.setResultDesc("您没有权限操作资金流水数据！");
+                      capitalResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
                   } 
                  }
             } catch (Exception e) {
@@ -640,7 +640,7 @@ public class CapitalController {
                              } 
                           }
                      }else{
-                         result.setResultDesc("您没有权限上传资金数据");
+                         result.setResultDesc("您当前所属的组织架构没有此操作权限！");
                      }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -948,7 +948,7 @@ public class CapitalController {
                       ExcelUtil.export(strList, os);
                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                    }else{
-                       result.setResultDesc("您没有权限导出资金流水数据！");
+                       result.setResultDesc("您当前所属的组织架构没有此操作权限！");
                    } 
                  }
             } catch (IOException e) {
