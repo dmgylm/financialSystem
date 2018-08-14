@@ -76,7 +76,7 @@
             and id = #{id,jdbcType=VARCHAR}
         </if>
         <if test="moduleName!=null and moduleName!=''">
-            and moduleName = #{moduleName,jdbcType=VARCHAR}
+            and moduleName like #{moduleName,jdbcType=VARCHAR}
         </if>
         <if test="versionNumber!=null and versionNumber!=''">
             and versionNumber = #{versionNumber,jdbcType=VARCHAR}
