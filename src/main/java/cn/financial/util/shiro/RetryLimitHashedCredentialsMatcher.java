@@ -62,7 +62,7 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             redis.delete(username);//登陆成功清除key
         }else{//判断是否登录成功
             if(count>=3){//判断登陆失败次数
-                redis.opsForValue().set("financialSystem"+"_cache_"+username+"_status", "N");//锁定账户
+                redis.opsForValue().set("financialSystem"+"_cache_"+username.toLowerCase()+"_status", "N");//锁定账户
                 throw new ExcessiveAttemptsException();
             }
         }
