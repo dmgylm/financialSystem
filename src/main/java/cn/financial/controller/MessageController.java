@@ -307,7 +307,7 @@ public class MessageController {
      */
     @RequiresPermissions("message:sign")
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
-    @ApiOperation(value="修改消息",notes="根据id修改消息",response = ResultUtils.class)
+    @ApiOperation(value="修改消息",notes="根据id修改消息",response = UnreadInfo.class)
     @ApiImplicitParams({
     	 @ApiImplicitParam(name="status",value="消息状态(0:未读,1:已读)",dataType="int", paramType = "query"),
          @ApiImplicitParam(name="isTag",value="是否标注(0:未标注,1:已标注)",dataType="int", paramType = "query"),
@@ -315,8 +315,8 @@ public class MessageController {
     @ApiResponses({@ApiResponse(code = 200, message = "成功"),@ApiResponse(code = 400, message = "失败"),
         @ApiResponse(code = 500, message = "系统错误"),@ApiResponse(code = 251, message = "消息id为空")})
     @ResponseBody
-    public ResultUtils updateMessageById(HttpServletRequest request, HttpServletResponse response, String id) {
-        ResultUtils result = new ResultUtils();
+    public UnreadInfo updateMessageById(HttpServletRequest request, HttpServletResponse response, String id) {
+    	UnreadInfo result = new UnreadInfo();
         
         try {
            
@@ -331,6 +331,20 @@ public class MessageController {
                 return result;
         	}
             if (Integer.valueOf(1).equals(i)) {
+            	
+            	User user = (User) request.getAttribute("user");
+        		Map<Object, Object> map1 = new HashMap<Object, Object>();
+        		map1.put("pageSize", Message.PAGESIZE);
+        		map1.put("start", 0);
+                List<Message> list = messageService.quartMessageByPower(user,map1);
+                int unreadMessage = 0;
+                for(int j=0;j<list.size();j++) {
+                    if(list.get(j).getStatus() == 0) {
+                    	unreadMessage++;
+                    }
+                }
+                
+                result.setData(unreadMessage);
             	ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
             	ElementXMLUtils.returnValue((ElementConfig.RUN_ERROR),result);
