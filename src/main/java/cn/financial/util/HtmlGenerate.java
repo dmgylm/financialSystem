@@ -3,9 +3,13 @@ package cn.financial.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -115,7 +119,7 @@ public class HtmlGenerate {
 	public static String CLASS_FORMULA = "formula";// 公式所带Class
 	public static String CLASS_BUDGET = "budget";// 公式所带Class
 
-	private Map<Integer, Map<Integer, JSONObject>> rowMap = new HashMap<Integer, Map<Integer,JSONObject>>();
+	private Map<Integer, Map<Integer, JSONObject>> rowMap = new LinkedHashMap<Integer, Map<Integer,JSONObject>>();
 
 	public static void main(String[] args) {
 		String path = "C:/Users/Admin/Desktop/解析后文件.txt";
@@ -161,6 +165,12 @@ public class HtmlGenerate {
 	public String generateHtml(JSONObject jsonObj,Integer htmlType){
 		Map<Integer,Map<Integer,JSONObject>> trMap = assembleData(jsonObj);
 		trMap = sortTableRowMap(trMap);
+		for(Iterator<Integer> iter = trMap.keySet().iterator();iter.hasNext();) {
+			Integer row = iter.next();
+			Map<Integer, JSONObject> colMap = trMap.get(row);
+			colMap = sortMapByKey(colMap);
+			trMap.put(row, colMap);
+		}
 		Document doc = Jsoup.parse("<html> <head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style> <body></body></html>");
 		doc.outputSettings().charset(CharEncoding.UTF_8).prettyPrint(false);
 		Element table = createTable(doc);
@@ -173,12 +183,26 @@ public class HtmlGenerate {
 	 * @param map
 	 * @return
 	 */
-	private Map<Integer, Map<Integer, JSONObject>> sortTableRowMap(
-			Map<Integer, Map<Integer, JSONObject>> map) {
-		Map<Integer, Map<Integer, JSONObject>> sortMap = new TreeMap<Integer, Map<Integer, JSONObject>>(
+	private Map<Integer, Map<Integer,JSONObject>> sortTableRowMap(
+			Map<Integer, Map<Integer,JSONObject>> map) {
+		Map<Integer, Map<Integer,JSONObject>> sortMap = new TreeMap<Integer, Map<Integer,JSONObject>>(
 				new MapKeyComparator());
 
 		sortMap.putAll(map);
+		return sortMap;
+	}
+	
+	/**
+	 * 将该Map通过Key进行排序
+	 * @param colMap
+	 * @return
+	 */
+	private Map<Integer, JSONObject> sortMapByKey(
+			Map<Integer, JSONObject> colMap) {
+		Map<Integer, JSONObject> sortMap = new TreeMap<Integer, JSONObject>(
+				new MapKeyComparator());
+		
+		sortMap.putAll(colMap);
 		return sortMap;
 	}
 
