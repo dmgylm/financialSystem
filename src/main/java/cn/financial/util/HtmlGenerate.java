@@ -401,7 +401,6 @@ public class HtmlGenerate {
 		} else {//显示类单元格
 			input.attr("name",name);
 			input.attr("value",name);
-			input.addClass(CLASS_LABEL);
 			
 			if(inputType == BOX_TYPE_LABEL) {
 				input.addClass(CLASS_LABEL);
@@ -413,6 +412,8 @@ public class HtmlGenerate {
 				input.addClass(CLASS_MAINTITLE);
 			} else if(inputType == BOX_TYPE_SUBTITLE) {
 				input.addClass(CLASS_SUBTITLE);
+			} else {
+				input.addClass(CLASS_LABEL);
 			}
 		}
 	}
