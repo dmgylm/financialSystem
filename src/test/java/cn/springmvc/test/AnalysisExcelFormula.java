@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jxl.Workbook;
 
@@ -75,37 +77,83 @@ public class AnalysisExcelFormula {
 			e.printStackTrace();
 		}
 	}
-
-	public static void main(String[] args) {
-		String filepath = "D:/Project/fmss/管理报表模板-文字公式版/xxxxxx.xls";
-		 Integer prefixCelNum = null;//横向标题前缀
-		 Integer suffixCelNum = 3;//横向标题后缀
-		 Integer modelColNum = 1;//纵向标题前缀
-		 Integer itemColNum = 2;//纵向标题后缀
-		 Integer BUDGET_CELL = 4;
-		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixCelNum, suffixCelNum, BUDGET_CELL);
-		String json = aef.analysisExcel();
-		System.out.println(json);
-		
+	
+	public static String[] findCelAndRow(String value) {
+		String[] strs = new String[2];
+		String pattern = "[0-9]";
+		Pattern r = Pattern.compile(pattern);
+		Matcher matcher = r.matcher(value);
+		Integer start = null;
+		if (matcher.find()) {
+			start = matcher.start();
+		}
+		strs[0] = value.substring(0, start);
+		strs[1] = value.substring(start);
+		return strs;
 	}
+	
+	public static void main(String[] args) {
+		String value = "AA112";
+		String[] findCelAndRow = AnalysisExcelFormula.findCelAndRow(value);
+		System.out.println(findCelAndRow[0]);
+		System.out.println(findCelAndRow[1]);
+		
+		System.out.println(stringToAscii("AA"));
+
+		System.out.println(excelColStrToNum("AB"));
+
+		System.out.println(Math.pow(26, 0));
+	}
+	
+
+//	public static void main(String[] args) {
+//		String filepath = "D:/Project/fmss/管理报表模板-文字公式版/xxxxxx.xls";
+//		 Integer prefixCelNum = null;//横向标题前缀
+//		 Integer suffixCelNum = 3;//横向标题后缀
+//		 Integer modelColNum = 1;//纵向标题前缀
+//		 Integer itemColNum = 2;//纵向标题后缀
+//		 Integer BUDGET_CELL = 4;
+//		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixCelNum, suffixCelNum, BUDGET_CELL);
+//		String json = aef.analysisExcel();
+//		System.out.println(json);
+//		
+//	}
 	
 	/**
 	 * 将字符串转为Ascii码,以逗号分隔,主要用于将Excel中的如D5转化为3_4
 	 * @param value
 	 * @return
 	 */
-	public static String stringToAscii(String value) {
-		StringBuffer sbu = new StringBuffer();
+	public static Integer[] stringToAscii(String value) {
+//		StringBuffer sbu = new StringBuffer();
 		char[] chars = value.toCharArray();
+		Integer[] asciis = new Integer[chars.length];
+		Integer s = 0;
 		for (int i = 0; i < chars.length; i++) {
-			if (i != chars.length - 1) {
-				sbu.append((int) chars[i]).append(",");
-			} else {
-				sbu.append((int) chars[i]);
-			}
+			asciis[i] = (int)chars[i];
+			s += (int)chars[i];
+//			if (i != chars.length - 1) {
+//				sbu.append((int) chars[i]).append(",");
+//			} else {
+//				sbu.append((int) chars[i]);
+//			}
 		}
-		return sbu.toString();
+		
+		return asciis;
 	}
+	
+	public static int excelColStrToNum(String column) {  
+        int num = 0;  
+        int result = 0;  
+        int length =column.length();   
+        for(int i = 0; i < length; i++) {  
+            char ch = column.charAt(length - i - 1);  
+            num = (int)(ch - 'A' + 1) ;  
+            num *= Math.pow(26, i);  
+            result += num;  
+        }  
+        return result;  
+    } 
 	
 	/**
 	 * 解析该Excel
@@ -289,9 +337,11 @@ public class AnalysisExcelFormula {
 			if (attr.equals("SUM")) {
 				continue;
 			}
-			String colId = attr.substring(0,1);
-			String rowId = attr.substring(1);
-			Integer tmpColId = Integer.parseInt(stringToAscii(colId))-65;
+			String[] strs = findCelAndRow(attr);
+			String rowId = strs[1];
+			String colId = strs[0];
+//			stringToAscii(colId)
+			Integer tmpColId = excelColStrToNum(colId);
 			Integer tmpRowId = null;
 			try {
 				tmpRowId = Integer.parseInt(rowId)-1;
