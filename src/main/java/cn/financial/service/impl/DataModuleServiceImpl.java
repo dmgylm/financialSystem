@@ -89,7 +89,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 		DataModuleResult result=new DataModuleResult();
 		List<ModuleList> moduleLists=new ArrayList<ModuleList>();
 		Map<Object,Object> map=new HashMap<Object,Object>();
-		map.put("moduleName", moduleName);
+		map.put("moduleName", "%"+moduleName+"%");
 		map.put("versionNumber", versionNumber);
 		map.put("businessType", businessType);
 		map.put("reportType", reportType);
