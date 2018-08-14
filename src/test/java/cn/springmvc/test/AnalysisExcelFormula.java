@@ -87,6 +87,9 @@ public class AnalysisExcelFormula {
 		if (matcher.find()) {
 			start = matcher.start();
 		}
+		if(start == null) {
+			return null;
+		}
 		strs[0] = value.substring(0, start);
 		strs[1] = value.substring(start);
 		return strs;
@@ -166,7 +169,7 @@ public class AnalysisExcelFormula {
 		
 		mergedMap = getMergedMap(sheet);
 		
-		for(int i=0;i<lastRowNum;i++) {
+		for(int i=0;i<=lastRowNum;i++) {
 			HSSFRow row = sheet.getRow(i);
 			if(row==null) {
 				continue;
@@ -337,11 +340,17 @@ public class AnalysisExcelFormula {
 			if (attr.equals("SUM")) {
 				continue;
 			}
+			if("AA120".equals(attr)) {
+				System.out.println(attr);
+			}
 			String[] strs = findCelAndRow(attr);
+			if(strs == null) {
+				continue;
+			}
 			String rowId = strs[1];
 			String colId = strs[0];
 //			stringToAscii(colId)
-			Integer tmpColId = excelColStrToNum(colId);
+			Integer tmpColId = excelColStrToNum(colId)-1;
 			Integer tmpRowId = null;
 			try {
 				tmpRowId = Integer.parseInt(rowId)-1;
