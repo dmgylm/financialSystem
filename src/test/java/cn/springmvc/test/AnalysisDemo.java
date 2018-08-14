@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.util.HtmlAnalysis;
 import cn.financial.util.HtmlGenerate;
@@ -17,12 +19,12 @@ public class AnalysisDemo {
 	//1: 解析Excel,得到Json, 用于Html生成
 	
 //	public static void main(String[] args) {
-//		String filepath = "D:/Project/fmss/Excel报表/2018年管理报表模板（20180319）-最新/2018年管理报表模板（20180319）-最新/维修业务损益.xls";
+//		String filepath = "D:/Project/fmss/Excel报表/2018年管理报表模板（20180319）-最新/2018年管理报表模板（20180319）-最新/保险预算.xls";
 //		Integer modelColNum = 1;
 //		Integer itemColNum = 2;
 //		Integer prefixRowNum = null;
-//		Integer suffixRowNum = 3;
-//		Integer BUDGET_CELL = 4;
+//		Integer suffixRowNum = 2;
+//		Integer BUDGET_CELL = 0;
 //		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixRowNum, suffixRowNum, BUDGET_CELL);
 //		String html = aef.analysisExcel();
 //		System.out.println(html);
@@ -40,10 +42,12 @@ public class AnalysisDemo {
 	//3: 用(2)生成的Html进行解析,得到一个Json模板数据
 	
 	public static void main(String[] args) {
-		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/wxsy.html"));
+		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/Html budget.html"));
 		try {
 			String json = ha.analysis();
-			System.out.println(json);
+			JsonConvertProcess jcp = new JsonConvertProcess();
+			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);
+			System.out.println(budgetJson);
 		} catch (FormulaAnalysisException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
