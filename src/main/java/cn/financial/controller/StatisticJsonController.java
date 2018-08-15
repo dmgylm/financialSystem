@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.OganizationNode;
@@ -109,11 +110,13 @@ public class StatisticJsonController {
     	StaticJson sj = new StaticJson();
         try {
 			User user = (User) request.getAttribute("user");
-        	if(reportType == null || reportType.equals("")){
+        	if(!StringUtils.isValid(reportType)){
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_REPORTTYPE_NULL, sj);
                 return sj;
             }
-        	if(businessType == null || businessType.equals("")){
+			if (!DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)
+					&& !DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)
+					&& !StringUtils.isValid(businessType)) {
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_BUSINESSTYPE_NULL, sj);
                 return sj;
             }
