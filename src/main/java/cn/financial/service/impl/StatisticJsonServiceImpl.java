@@ -123,14 +123,14 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
             	List<String> companyListValve = new ArrayList<String>();
             	//重新组装底层id到相应公司下
             	Organization company = organizationService.getCompanyNameBySon(codeSonList.get(i).getId());
-            	if(company == null){
-            		return null;
+            	if(company != null){
+                	if(companyList.containsKey(company.getOrgName())){
+        				companyListValve = companyList.get(company.getOrgName());
+        			}
+        			companyListValve.add(codeSonList.get(i).getId());
+            		companyList.put(company.getOrgName(), companyListValve);
             	}
-            	if(companyList.containsKey(company.getOrgName())){
-    				companyListValve = companyList.get(company.getOrgName());
-    			}
-    			companyListValve.add(codeSonList.get(i).getId());
-        		companyList.put(company.getOrgName(), companyListValve);
+
         	}
 		}
 		return companyList;
