@@ -179,7 +179,7 @@ public class RoleResourceServiceImpl implements RoleResourceService{
          }
         List<String>  nodeList = new ArrayList<>();
         List<TreeNode<RoleResource>>  roles = new ArrayList<TreeNode<RoleResource>>();
-        TreeNode<RoleResource> roleItem=new TreeNode<RoleResource>();
+        TreeNode<RoleResource> roleItem = new TreeNode<RoleResource>();
         //去除多个角色重复功能权限数据
         if(!CollectionUtils.isEmpty(nodes)){
             for (TreeNode<RoleResource> item : nodes) {
@@ -199,8 +199,10 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                 }
             }
         }
-        roles.add(roleItem);
-        nodeList.add(roleItem.getPid());
+        if(roleItem.getPid()!=null && !roleItem.getPid().equals("")){
+            roles.add(roleItem);
+            nodeList.add(roleItem.getPid()); 
+        }
         jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roles)));
         return jsonObject;
      }
