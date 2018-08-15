@@ -401,7 +401,11 @@ public class AnalysisExcelFormula {
 		}
 		if(rowNum==subtitleRowNum) {
 			type = HtmlGenerate.BOX_TYPE_SUBTITLE;
-			String key = firstCellMap.get(colNum) + cellValue;
+			String maintitle = firstCellMap.get(colNum);
+			if(!StringUtils.isValid(maintitle)) {
+				maintitle = "";
+			}
+			String key = maintitle + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
 		return type;
