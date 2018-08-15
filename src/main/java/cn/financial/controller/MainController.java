@@ -186,8 +186,9 @@ public class MainController {
                 }
                 dataMap.put("roleResource", arrays);
                 dataMapList.put("data", dataMap);
-                dataMapList.put("resultCode","200");
-                dataMapList.put("resultDesc","请重置您的密码");
+                //dataMapList.put("resultCode","200");
+                //dataMapList.put("resultDesc","请重置您的密码");
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
             }else{
                 dataMap.put("roleResource", jsonArray);
                 dataMapList.put("data", dataMap);
