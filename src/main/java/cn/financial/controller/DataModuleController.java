@@ -19,6 +19,7 @@ import cn.financial.model.response.ResultUtils;
 import cn.financial.service.DataModuleService;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.HtmlGenerate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -118,6 +119,10 @@ public class DataModuleController {
 		DataResult dataResult = new DataResult();
 		try {
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
+			HtmlGenerate hg = new HtmlGenerate();
+			String html = hg.generateHtml(bean.getModuleData(),HtmlGenerate.HTML_TYPE_TEMPLATE);
+			bean.setDataHtml(html);
+			bean.setModuleData("");
 			dataResult.setData(bean);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,dataResult);
 		} catch (Exception e) {
