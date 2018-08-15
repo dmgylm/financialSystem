@@ -461,7 +461,8 @@ public class CapitalController {
                      for (int i = 0; i < userOrganization.size(); i++) {
                          JSONObject obu = (JSONObject) userOrganization.get(i);
                          Integer num=Integer.parseInt(obu.get("orgType").toString());
-                         if(num!=Capital.DEPNUM && num!=Capital.ORGNUM){
+                         String emm=obu.getString("name").toString();   
+                         if(num!=Capital.DEPNUM && num!=Capital.ORGNUM &&!emm.contains(Capital.NAME)){
                              isImport=false;
                         }
                      }
