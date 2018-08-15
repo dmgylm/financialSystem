@@ -171,6 +171,8 @@ public class JsonConvertExcel {
 						}else{
 							cell.setCellValue(0);
 						}
+					}else {
+						cell.setCellValue(col.get("name").toString());
 					}
 				}
 				cell.setCellStyle(ztStyle);
