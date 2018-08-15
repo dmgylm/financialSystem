@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -134,11 +136,7 @@ public class MainController {
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken token = new UsernamePasswordToken(username,password);   
             subject.login(token);
-            if(password.equals(User.INITIALCIPHER)){//判断密码是否为Welcome1
-                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
-                return dataMapList;
-            }
-            User user = userService.getUserByName(username);
+            User user = userService.getUserByName(username);//查询用户信息
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             //等于，则返回值 0；之前，则返回小于 0 的值；之后，则返回大于 0 的值。
             if(user.getExpreTime()!=null && sf.format(new Date()).compareTo(user.getExpreTime())>=0){
@@ -153,23 +151,47 @@ public class MainController {
                     roleName.add(list.getRoleName());
                 }
             }
-            JSONArray  jsonArray = new JSONArray();
+            JSONArray jsonArray = new JSONArray();
             List<JSONObject> jsonObject = roleResourceService.roleResourceList(username);
-            for(JSONObject obj : jsonObject){
-                 if(obj.getString("id").equals("-1")){
-                     jsonArray = obj.getJSONArray("children");
-                 }else{
-                     jsonArray.add(obj);
-                 }
-            }
+            if(!CollectionUtils.isEmpty(jsonObject)){
+                for(JSONObject obj : jsonObject){
+                    if(obj.getString("id").equals("-1")){
+                        jsonArray = obj.getJSONArray("children");
+                    }else{
+                        jsonArray.add(obj);
+                    }
+               }
+            }     
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
             dataMap.put("userName", username);
             dataMap.put("roleName", roleName);
-            dataMap.put("roleResource", jsonArray);
             dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
-            dataMapList.put("data", dataMap);
-            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            //判断密码是否为Welcome1
+            if(password.equals(User.INITIALCIPHER)){
+                JSONArray jsonArrays = new JSONArray();
+                List<JSONObject> arrays = new ArrayList<>();
+                for(int i = 0;i < jsonArray.size(); i++){
+                    JSONObject array = jsonArray.getJSONObject(i);
+                    if(array.getString("name").equals("系统设置")){
+                        for(Object item : array.getJSONArray("children")){
+                            JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
+                            if(itemChildren.getString("name").equals("修改密码")){
+                                jsonArrays.add(itemChildren);
+                                array.put("children", jsonArrays);
+                            }
+                        }
+                        arrays.add(array);
+                    }
+                }
+                dataMap.put("roleResource", arrays);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
+            }else{
+                dataMap.put("roleResource", jsonArray);
+                dataMapList.put("data", dataMap);
+                dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+            }
         }catch (UnknownAccountException e) {
             System.out.println( "该用户不存在");
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
