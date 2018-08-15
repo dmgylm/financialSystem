@@ -122,7 +122,7 @@ public class BusinessDataController {
             List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
            // List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
-            keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+            //keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
             for (int i = 0; i < userOrganization.size(); i++) {
                 //Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
                // String name=userOrganization.get(i).getString("name"); 
