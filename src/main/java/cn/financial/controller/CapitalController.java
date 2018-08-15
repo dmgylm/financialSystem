@@ -145,7 +145,7 @@ public class CapitalController {
                              List<Capital> list =new ArrayList<>();
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                              capitalResult.setData(list);
-                             capitalResult.setTotal(0);
+                             capitalResult.setTotal(list.size());
                          }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType||u==4){
                              //获取搜索关键字的公司名称
                              //查询该节点下的所有子节点集合 获取公司的级别
@@ -236,17 +236,22 @@ public class CapitalController {
                              capitalResult.setData(list);
                              capitalResult.setTotal(total.size());
                             }else{
-                                capitalResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
+                                List<Capital> list =new ArrayList<>();
+                                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                                capitalResult.setData(list);
+                                capitalResult.setTotal(list.size());
                             }
-                             
                          }else{
                              List<Capital> list =new ArrayList<>();
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                              capitalResult.setData(list);
-                             capitalResult.setTotal(0);
+                             capitalResult.setTotal(list.size());
                          } 
                      }else{
-                         capitalResult.setResultDesc("您输入的不存在数据!请重新输入"); 
+                         List<Capital> list =new ArrayList<>();
+                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                         capitalResult.setData(list);
+                         capitalResult.setTotal(list.size()); 
                      }
                  }else{
                    List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
@@ -326,7 +331,10 @@ public class CapitalController {
                    capitalResult.setData(list);
                    capitalResult.setTotal(total.size());
                   }else{
-                      capitalResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
+                      List<Capital> list =new ArrayList<>();
+                      ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                      capitalResult.setData(list);
+                      capitalResult.setTotal(list.size());;
                   } 
                  }
             } catch (Exception e) {
@@ -833,19 +841,37 @@ public class CapitalController {
                               ExcelUtil.export(strList, os);
                               ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                              }else{
-                                 result.setResultDesc("您没有权限操作资金流水数据！");
+                                 List<String[]> strList=new ArrayList<>();
+                                 String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                                         "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                                 strList.add(ss);  
+                                 response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                                 response.setContentType("application/octet-stream");
+                                 os = response.getOutputStream();
+                                 ExcelUtil.export(strList, os);
+                                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                              }
-                              
                           }else{
-                              List<String[]> b=new ArrayList<>();
+                              List<String[]> strList=new ArrayList<>();
+                              String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                                      "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                              strList.add(ss);  
                               response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
                               response.setContentType("application/octet-stream");
                               os = response.getOutputStream();
-                              ExcelUtil.export(b, os);
+                              ExcelUtil.export(strList, os);
                               ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                           }
                       }else{
-                         result.setResultDesc("您输入的不存在数据!请重新输入");
+                          List<String[]> strList=new ArrayList<>();
+                          String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                                  "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                          strList.add(ss);  
+                          response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                          response.setContentType("application/octet-stream");
+                          os = response.getOutputStream();
+                          ExcelUtil.export(strList, os);
+                          ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                       }
                   }else{
                     List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
@@ -948,7 +974,15 @@ public class CapitalController {
                       ExcelUtil.export(strList, os);
                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                    }else{
-                       result.setResultDesc("您当前所属的组织架构没有此操作权限！");
+                       List<String[]> strList=new ArrayList<>();
+                       String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                               "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                       strList.add(ss);  
+                       response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                       response.setContentType("application/octet-stream");
+                       os = response.getOutputStream();
+                       ExcelUtil.export(strList, os);
+                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                    } 
                  }
             } catch (IOException e) {

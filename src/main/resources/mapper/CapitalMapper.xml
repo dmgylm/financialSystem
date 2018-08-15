@@ -50,10 +50,7 @@
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
          SELECT * FROM 
          capital c,organization o
-         WHERE c.status=1 and o.id=c.oId and c.oId in 
-         <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
-               #{oId}
-           </foreach>
+         WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
          ORDER BY c.createTime DESC
          LIMIT #{start},#{pageSize}
@@ -63,10 +60,7 @@
        <select id="capitalExport" parameterType="map" resultType="Capital">
          SELECT * FROM 
          capital c,organization o
-         WHERE c.status=1 and o.id=c.oId and c.oId in 
-         <foreach collection="oId" item="id" index="index" open="(" separator="," close=")" >
-               #{id}
-           </foreach>
+         WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
          ORDER BY c.createTime DESC
        </select>
@@ -146,6 +140,13 @@
              and  c.accountName =#{accountName}
         </if>
          -->
+         
+          <if test="oId!=null and oId!=''">
+            and c.oId in 
+             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
+               #{oId}
+           </foreach>
+         </if> 
           <if test=" company!=null and company!=''">
             and c.company in 
           <foreach collection="company" item="company" index="index" open="(" separator="," close=")" >

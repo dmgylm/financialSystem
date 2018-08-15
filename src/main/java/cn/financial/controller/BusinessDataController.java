@@ -122,6 +122,7 @@ public class BusinessDataController {
             List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
            // List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
+            keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
             for (int i = 0; i < userOrganization.size(); i++) {
                 //Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
                // String name=userOrganization.get(i).getString("name"); 
@@ -173,6 +174,7 @@ public class BusinessDataController {
                       oId[m + i] = id;
                   }
                   List<String> oIds = Arrays.asList(oId);
+                  map.put("typeId", oIds); 
                   map.put("year", year); // 年份
                   map.put("month", month); // 月份
                   if (sId == null || sId < 1 || sId > 2) {
@@ -180,9 +182,7 @@ public class BusinessDataController {
                   } else {
                       map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
                   }
-                  map.put("typeId", oIds); 
-                  /*map.put("orgName", keyword); //查询的关键词
-  */                
+                  /*map.put("orgName", keyword); //查询的关键词*/                
                   List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
                   if (pageSize == null || pageSize == 0) {
                       map.put("pageSize", 10);
@@ -221,9 +221,12 @@ public class BusinessDataController {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
                   businessResult.setData(businessList); // 返回的资金流水数据
                   businessResult.setTotal(total.size());// 返回的总条数  
-            } else {
-                businessResult.setResultDesc("您当前所属的组织架构没有此操作权限！");
-            }             
+               }else{
+                   List<Business> businessList = new ArrayList<>();
+                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
+                   businessResult.setData(businessList); // 返回的资金流水数据
+                   businessResult.setTotal(businessList.size());// 返回的总条数  
+               }
         } catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, businessResult);
 			this.logger.error(e.getMessage(), e);
