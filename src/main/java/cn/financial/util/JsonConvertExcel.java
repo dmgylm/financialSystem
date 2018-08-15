@@ -148,7 +148,7 @@ public class JsonConvertExcel {
 				lc.add(cellr);
 				Cell cell = row1.createCell(colNum);
 				boolean display = (boolean) col.get("display");
-				if (col.get("name").equals("") && col.containsKey("value") && display == true) {
+			/*	if (col.get("name").equals("") && col.containsKey("value") && display == true) {
 					if (Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_LABEL
 							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_MODULE
 							|| Integer.parseInt(col.get("type").toString()) == HtmlGenerate.BOX_TYPE_ITEM
@@ -160,6 +160,18 @@ public class JsonConvertExcel {
 					}
 				} else {
 					cell.setCellValue(col.get("name").toString());
+				}*/
+				
+				if(display==true) {
+					if(Integer.parseInt(col.get("type").toString())==HtmlGenerate.BOX_TYPE_INPUT
+							||Integer.parseInt(col.get("type").toString())==HtmlGenerate.BOX_TYPE_FORMULA
+							||Integer.parseInt(col.get("type").toString())==HtmlGenerate.BOX_TYPE_BUDGET) {
+						if(col.containsKey("value")) {
+							cell.setCellValue(col.get("value").toString());
+						}else{
+							cell.setCellValue(0);
+						}
+					}
 				}
 				cell.setCellStyle(ztStyle);
 				if (Integer.parseInt(col.get("type").toString()) == 3) {
