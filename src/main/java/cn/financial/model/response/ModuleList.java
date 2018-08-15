@@ -18,6 +18,12 @@ public class ModuleList {
     @ApiModelProperty(value="模板状态（0：无效；1：有效）",name="statue",example="")
 	private Integer statue;
     
+    @ApiModelProperty(value="报表类型(PROFIT_LOSS:损益 ；TAX：税金 ；ASSESSMENT：考核 ； BUDGET：预算 ； SUMMARY_PROFIT_LOSS：损益简易汇总) ",name="reportType",example="")
+    private String reportType;
+    
+    @ApiModelProperty(value="业务板块",name="businessType",example="")
+    private String businessType;
+    
     @ApiModelProperty(value="创建时间",name="createTime",example="")
 	private String createTime; // 创建时间
     
@@ -71,6 +77,22 @@ public class ModuleList {
 
 	public void setFounder(String founder) {
 		this.founder = founder;
+	}
+
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
 	}
     
     

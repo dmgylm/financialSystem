@@ -306,7 +306,11 @@ public class HtmlAnalysis {
 			prefixCellMap.put(colNum, prefixCelKey);
 		}
 		if(classSet.contains(HtmlGenerate.CLASS_SUBTITLE)) {
-			String key = prefixCellMap.get(colNum) + cellValue;
+			String maintitle = prefixCellMap.get(colNum);
+			if(!StringUtils.isValid(maintitle)) {
+				maintitle = "";
+			}
+			String key = maintitle + cellValue;
 			colKeyMap.put(colNum+"", key);
 		}
 	}

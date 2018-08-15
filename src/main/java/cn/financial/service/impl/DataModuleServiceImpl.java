@@ -116,6 +116,8 @@ public class DataModuleServiceImpl implements DataModuleService{
 			moduleList.setModuleName(dataModule.getModuleName());
 			moduleList.setStatue(dataModule.getStatue());
 			moduleList.setVersionNumber(dataModule.getVersionNumber());
+			moduleList.setReportType(dataModule.getReportType());
+			moduleList.setBusinessType(dataModule.getBusinessType());
 			
 			moduleLists.add(moduleList);
 			
