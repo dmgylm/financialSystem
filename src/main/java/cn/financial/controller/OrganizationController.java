@@ -397,6 +397,23 @@ public class OrganizationController {
             	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
             }
             else{
+                List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+                int orgType=list.get(0).getOrgType();
+                int sum=0;
+                if(orgType==3){
+                	List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
+               	     for(int i=0;i<lists.size();i++){
+                		  int num=lists.get(i).getOrgType();
+                		  if(num==2){
+                			 sum++;
+                		  }
+                	  }
+               	     if(sum==0){
+               	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+               	        return result;
+               	     }
+
+                }
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
                 String businessId=UuidUtil.getUUID();
