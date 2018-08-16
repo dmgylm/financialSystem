@@ -171,7 +171,8 @@ public class StatisticJsonController {
 			wb.write(fos);
 			fos.close();
 			
-			messageservice.saveMessageByUser(user, saveName);
+			String sessionId = request.getSession().getId();
+			messageservice.saveMessageByUser(user, saveName, sessionId);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
 //            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 //            dataMap.put("caCheId", caCheUuid);
