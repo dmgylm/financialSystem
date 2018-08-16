@@ -242,5 +242,9 @@ public class ElementConfig {
      * 对应部门预算表已生成
      */
     public static final String BUDGET_GENERATE="BUDGET_GENERATE";
+    /**
+     * 部门必须移动公司下面
+     */
+    public static final String DEPER_COMPANY="DEPER_COMPANY";
   
 }
