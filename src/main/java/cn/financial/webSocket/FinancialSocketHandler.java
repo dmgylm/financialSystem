@@ -72,13 +72,15 @@ public class FinancialSocketHandler implements WebSocketHandler {
 					if(user.isOpen()) {
 						String sess = map.get("session").toString();
 						String sessionId = sess.substring(sess.lastIndexOf("=")+1).substring(0, sess.substring(sess.lastIndexOf("=")+1).indexOf("]"));
-						System.out.println(sessionId);
-						System.out.println(sess);
-						System.out.println(user.toString());
-						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
-						synchronized (user) {
-							user.sendMessage(message);
-							System.out.println("发送消息成功"+message);
+//						System.out.println(sessionId);
+//						System.out.println(sess);
+//						System.out.println(user.toString());
+//						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
+						if(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")).equals(sessionId)) {
+							synchronized (user) {
+								user.sendMessage(message);
+								System.out.println("发送消息成功"+message);
+							}
 						}
 					}
 				}catch (IOException e) {
