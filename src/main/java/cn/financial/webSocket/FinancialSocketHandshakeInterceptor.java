@@ -26,8 +26,8 @@ public class FinancialSocketHandshakeInterceptor implements HandshakeInterceptor
 			HttpSession session = servletRequest.getServletRequest().getSession(false);
 			if(session != null) {
 				//使用userName区分WebSocketHandler，以便定向发送消息
-                //String userName = (String)session.getAttribute("SESSION_USERNAME");
-                //attributes.put("WEBSOCKET_USERNAME",userName);
+//                String userName = (String)session.getAttribute("SESSION_USERNAME");
+//                attributes.put("WEBSOCKET_USERNAME",userName);
 			}
 		}
 		return true;
