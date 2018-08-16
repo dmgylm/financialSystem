@@ -19,24 +19,20 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	
 	private static final ArrayList<WebSocketSession> users;
 	
+	private static final Map<Object, Object> map;
+	
 	static {
         users = new ArrayList<WebSocketSession>();
+        map = new HashMap<Object, Object>();
         logger = Logger.getLogger(FinancialSocketHandler.class);
     }
-	
-	private Map<Object, Object> map;
 	
 	/**
 	 * 链接成功时触发
 	 */
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info("connect to the websocket success......");
-		
-		String ss = session.toString().substring(session.toString().lastIndexOf("=")+1);
-		String sessionId = ss.substring(0,ss.indexOf("]"));
-		map = new HashMap<Object, Object>();
-		map.put("sessionId", sessionId);
-		
+		map.put("session", session);
 		users.add(session);
 	}
 	
@@ -74,13 +70,15 @@ public class FinancialSocketHandler implements WebSocketHandler {
 			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)) {
 				try {
 					if(user.isOpen()) {
+						String sess = map.get("session").toString();
+						String sessionId = sess.substring(sess.lastIndexOf("=")+1).substring(0, sess.substring(sess.lastIndexOf("=")+1).indexOf("]"));
+						System.out.println(sessionId);
+						System.out.println(sess);
 						System.out.println(user.toString());
 						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
-						if(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")).equals(map.get("sessionId"))) {
-							synchronized (user) {
-								user.sendMessage(message);
-								System.out.println("发送消息成功"+message);
-							}
+						synchronized (user) {
+							user.sendMessage(message);
+							System.out.println("发送消息成功"+message);
 						}
 					}
 				}catch (IOException e) {
