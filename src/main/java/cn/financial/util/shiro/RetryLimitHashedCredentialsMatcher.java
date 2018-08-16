@@ -47,12 +47,13 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
         if(locking!=null){
             //抛出用户锁定异常
             throw new ExcessiveAttemptsException();
-        }
-        if(obj==null){
-            redis.opsForValue().set(username.toLowerCase(), 1, 24, TimeUnit.HOURS);//设置错误次数的缓存key，时间24小时，默认次数第一次
         }else{
-            count=(int)obj+1;//错误次数加1 
-            redis.opsForValue().set(username.toLowerCase(), count, 24, TimeUnit.HOURS);//错误次数加1
+            if(obj==null){
+                redis.opsForValue().set(username.toLowerCase(), 1, 24, TimeUnit.HOURS);//设置错误次数的缓存key，时间24小时，默认次数第一次
+            }else{
+                count=(int)obj+1;//错误次数加1 
+                redis.opsForValue().set(username.toLowerCase(), count, 24, TimeUnit.HOURS);//错误次数加1
+            }
         }
         boolean matches = super.doCredentialsMatch(token, info);//密码验证
         System.out.println(matches+"*****************************************");
