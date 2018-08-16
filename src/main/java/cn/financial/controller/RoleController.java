@@ -216,6 +216,11 @@ public class RoleController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
                 return result;
             }
+            List<Role> roleNameList = roleService.listRole(roleName,null);//根据roleName查询角色信息
+            if(roleNameList.size()>0){//roleName不能重复
+                ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
+                return result;
+            }
             Role role = new Role();
             role.setId(roleId);
             role.setRoleName(roleName);
