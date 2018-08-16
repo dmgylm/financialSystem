@@ -2,8 +2,6 @@ package cn.financial.webSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.socket.CloseStatus;
@@ -19,11 +17,8 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	
 	private static final ArrayList<WebSocketSession> users;
 	
-	private static final Map<Object, Object> map;
-	
 	static {
         users = new ArrayList<WebSocketSession>();
-        map = new HashMap<Object, Object>();
         logger = Logger.getLogger(FinancialSocketHandler.class);
     }
 	
@@ -32,7 +27,6 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 */
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info("connect to the websocket success......");
-		map.put("session", session);
 		users.add(session);
 	}
 	
@@ -67,20 +61,15 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 */
 	public void sendMessageToUser(String userName,TextMessage message) {
 		for(WebSocketSession user : users) {
-			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)) {
+			if(user.toString().substring(user.toString().lastIndexOf("/")+1).equals(userName)) {
 				try {
 					if(user.isOpen()) {
-						String sess = map.get("session").toString();
-						String sessionId = sess.substring(sess.lastIndexOf("=")+1).substring(0, sess.substring(sess.lastIndexOf("=")+1).indexOf("]"));
-//						System.out.println(sessionId);
-//						System.out.println(sess);
+//						user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)
 //						System.out.println(user.toString());
 //						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
-						if(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")).equals(sessionId)) {
-							synchronized (user) {
-								user.sendMessage(message);
-								System.out.println("发送消息成功"+message);
-							}
+						synchronized (user) {
+							user.sendMessage(message);
+							System.out.println("发送消息成功"+message);
 						}
 					}
 				}catch (IOException e) {
