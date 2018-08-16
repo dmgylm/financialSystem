@@ -20,6 +20,8 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,6 +61,9 @@ public class MainController {
     private UserOrganizationService userOrganizationService;
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    @Qualifier("apiRedisTemplate")
+    private RedisTemplate redis;
     /**
      * swagger插件默认接口
      * @param request
@@ -198,8 +203,12 @@ public class MainController {
             System.out.println( "该用户不存在");
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_NO_USER));
         }catch (IncorrectCredentialsException e) { 
-            System.out.println( "密码或账户错误，请重新输入");
-            dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
+            Object obj = redis.opsForValue().get(username.toLowerCase());//获取错误次数
+            int count = 3 - (int)obj;
+            System.out.println( "密码或账户错误，当前还可以输入"+count+"次,连续输错3次账户将被锁定");
+            dataMapList.put("resultCode","202");
+            dataMapList.put("resultDesc","密码或账户错误，当前还可以输入"+count+"次,连续输错3次账户将被锁定");
+            //dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
             dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USER_LOCKOUT));
