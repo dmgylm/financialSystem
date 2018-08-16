@@ -640,7 +640,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions("user:update")
+    //@RequiresPermissions("user:update")
     @RequestMapping(value = "/passWord", method = RequestMethod.POST)
     @ApiOperation(value="修改密码",notes="修改当前登录用户密码", response = ResultUtils.class)
     @ApiImplicitParams({

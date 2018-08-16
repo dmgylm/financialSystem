@@ -174,25 +174,23 @@ public class MainController {
             dataMap.put("sessionId", subject.getSession().getId());
             //判断密码是否为Welcome1
             if(password.equals(User.INITIALCIPHER)){
-                //JSONArray jsonArrays = new JSONArray();
                 List<JSONObject> arrays = new ArrayList<>();
+                /*JSONArray jsonArrays = new JSONArray();
                 for(int i = 0;i < jsonArray.size(); i++){
                     JSONObject array = jsonArray.getJSONObject(i);
                     if(array.getString("name").equals("修改密码")){
-                        /*for(Object item : array.getJSONArray("children")){
+                        for(Object item : array.getJSONArray("children")){
                             JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
                             if(itemChildren.getString("name").equals("修改密码")){
                                 jsonArrays.add(itemChildren);
                                 array.put("children", jsonArrays);
                             }
-                        }*/
+                        }
                         arrays.add(array);
                     }
-                }
+                }*/
                 dataMap.put("roleResource", arrays);
                 dataMapList.put("data", dataMap);
-                //dataMapList.put("resultCode","200");
-                //dataMapList.put("resultDesc","请重置您的密码");
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.RESET_PWD));
             }else{
                 dataMap.put("roleResource", jsonArray);
