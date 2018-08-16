@@ -115,63 +115,59 @@ public class BusinessDataController {
 			Integer sId, Integer page, Integer pageSize) {
 		BusinessResult businessResult = new BusinessResult();
 		try {
+		    /*if(keyword!=null&&!keyword.equals("")){
+                keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+            }*/
             Map<Object, Object> map = new HashMap<>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
-            List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
+            //List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
-           // List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
-            //keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-            for (int i = 0; i < userOrganization.size(); i++) {
-                //Integer org=Integer.parseInt(userOrganization.get(i).getString("orgType"));
-               // String name=userOrganization.get(i).getString("name"); 
-               // if (org==BusinessData.ORGNUM || org==BusinessData.DEPNUM || name.contains(BusinessData.NAME)||role==true) { //公司及其公司以下级别才有权限进行录入中心
-                    if(keyword!=null&&!keyword.equals("")){
-                        Organization CompanyName = organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));// 查询所属的公司名
-                        if(CompanyName!=null){
-                            if(CompanyName.getOrgName().contains(keyword)){
-                                listOrganization.add(userOrganization.get(i));
-                            } 
-                        }
+            for (int i = 0; i < userOrganization.size(); i++){
+                  if(keyword!=null&&!keyword.equals("")){
                         List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                         JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                         for (int j = 0; j < jsonArr.size(); j++) {
                             JSONObject json = jsonArr.getJSONObject(j);
-                            if(json.getString("orgName").contains(keyword)){
-                              listTree.add(jsonArr.getJSONObject(j)); 
+                            Integer orgType=Integer.parseInt(json.getString("orgType"));
+                            String orgName=json.getString("orgName");
+                            if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
+                              Organization companyName = organizationService.getCompanyNameBySon(json.getString("id"));// 查询部门所属的公司名
+                              if(companyName!=null){
+                                if(orgName.contains(keyword)||companyName.getOrgName().contains(keyword)){//如果部门或者部门所属的公司包含关键词
+                                   listTree.add(jsonArr.getJSONObject(j));   
+                                 }          
+                              }else if(orgName.contains(keyword)){
+                                  listTree.add(jsonArr.getJSONObject(j));  
+                              }
                             }
                         }                    
                     }else{//查询orgName以下所有级别数据
-                            List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                          List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                             JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                             for (int j = 0; j < jsonArr.size(); j++) {
                                 JSONObject json = jsonArr.getJSONObject(j);
-                                if(Integer.parseInt(json.getString("orgType"))==BusinessData.DEPNUM||json.getString("orgName").contains(BusinessData.NAME)){
+                                Integer orgType=Integer.parseInt(json.getString("orgType"));
+                                String orgName=json.getString("orgName");
+                                if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){
                                     listTree.add(jsonArr.getJSONObject(j)); 
                                 }
                             }
-                        }  
+                       }  
                 //}
             }
-              if(listOrganization.size()>0 && listOrganization!=null||listTree.size()>0 && listTree!=null){
+              if(listTree.size()>0 && listTree!=null){
                // //查询所有符合搜索条件的表数据
-                  String[] oId = new String[listOrganization.size() + listTree.size()];// 获取权限的typeId
-                  for (int i = 0; i < listOrganization.size(); i++){ // 循环权限全部数据
+                  String[] oId = new String[listTree.size()];// 获取权限的typeId
+                  /*for (int i = 0; i < listOrganization.size(); i++){ // 循环权限全部数据
                       JSONObject pidJosn = listOrganization.get(i);
                       String pid = pidJosn.getString("pid"); // 找到权限数据里面的组织id
                       oId[i] = pid;
-                      // 找权限的pid和损益表的typeId进行筛选
-                      /*
-                       * for (int j = 0; j < list.size(); j++) { String
-                       * typeId=list.get(j).getTypeId();//找损益表里面的typeId if(pid.equals(typeId)){
-                       * //判断权限pid 和全部数据的typeId是否相同 businessData.add(list.get(j)); // 可以显示的损益数据 } }
-                       */
-                  }
+                  }*/
                   for (int i = 0; i < listTree.size(); i++) {
                       String id = listTree.get(i).getString("id");
-                      int m = listOrganization.size();
-                      oId[m + i] = id;
+                      oId[i] = id;
                   }
                   List<String> oIds = Arrays.asList(oId);
                   map.put("typeId", oIds); 
@@ -182,7 +178,7 @@ public class BusinessDataController {
                   } else {
                       map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
                   }
-                  /*map.put("orgName", keyword); //查询的关键词*/                
+                  //map.put("orgName", keyword); //查询的关键词*/                
                   List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
                   if (pageSize == null || pageSize == 0) {
                       map.put("pageSize", 10);
@@ -290,7 +286,7 @@ public class BusinessDataController {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
                     htmlResult.setData(html); 
 			    }else{
-			        htmlResult.setResultDesc("您当前所属的组织架构没有此操作权限！"); 
+			        htmlResult.setResultDesc("您当前没有权限进行此操作！"); 
 			    }
 			} else {
 				htmlResult.setResultDesc("id或者htmlType为空！");

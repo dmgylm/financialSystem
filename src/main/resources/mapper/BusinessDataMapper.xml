@@ -53,7 +53,7 @@
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
          SELECT *
          FROM businessData b,organization o,businessDataInfo info
-         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.oId
+         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.typeId
          <include refid="query_businessData_where"></include>  
          ORDER BY b.updateTime DESC
          LIMIT #{start},#{pageSize}
@@ -70,7 +70,7 @@
        <select id="businessDataExport" parameterType="map" resultType="businessData">
          SELECT *
          FROM businessData b,organization o,businessDataInfo info
-         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.oId 
+         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.typeId 
          <include refid="query_businessData_where"></include>  
          ORDER BY b.updateTime DESC
        </select>
@@ -118,6 +118,9 @@
                #{typeId}
            </foreach>
         </if>
+         <!-- <if test="orgName!=null and orgName!=''">
+             and o.orgName LIKE CONCAT('%',#{orgName},'%')
+         </if> -->
        <!--  <if test="oId!=null and oId!=''">
          and o.id=b.oId and b.oId in 
          <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
