@@ -131,7 +131,7 @@ public class MessageServiceImpl implements MessageService {
      * @param fileUrl	汇总表文件的路径
      */
     @Override
-    public Integer saveMessageByUser(User user, String fileUrl, String sessionId) {
+    public Integer saveMessageByUser(User user, String fileUrl, String url) {
     	
     	Integer n = 0;
     	MessageController mc = new MessageController();
@@ -159,7 +159,9 @@ public class MessageServiceImpl implements MessageService {
 		            }
 		        }
             
-	            String unread = String.valueOf(unreadMessage);//获取未读消息条数
+	            String sessionId = url.substring(url.lastIndexOf("=")+1);
+	            System.out.println(sessionId);
+		        String unread = String.valueOf(unreadMessage);//获取未读消息条数
 	            mc.sendSocketInfo(unread, sessionId);
             
         } catch (Exception e) {
