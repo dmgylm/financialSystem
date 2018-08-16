@@ -59,7 +59,7 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 * @param userName
 	 * @param message
 	 */
-	public void sendMessageToUser(String userName,TextMessage message) {
+	public void sendMessageToUser(String userName,TextMessage message,String unread) {
 		for(WebSocketSession user : users) {
 			if(user.toString().substring(user.toString().lastIndexOf("/")+1).equals(userName)) {
 				try {
@@ -69,7 +69,7 @@ public class FinancialSocketHandler implements WebSocketHandler {
 //						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
 						synchronized (user) {
 							user.sendMessage(message);
-							System.out.println("发送消息成功"+message);
+							System.out.println("发送消息成功"+message+unread);
 						}
 					}
 				}catch (IOException e) {
