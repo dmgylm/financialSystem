@@ -64,6 +64,7 @@ public class FinancialSocketHandler implements WebSocketHandler {
 			if(user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)) {
 				try {
 					if(user.isOpen()) {
+						System.out.println(user.toString());
 						synchronized (user) {
 							user.sendMessage(message);
 							System.out.println("发送消息成功"+message);
