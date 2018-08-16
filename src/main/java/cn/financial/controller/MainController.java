@@ -169,18 +169,18 @@ public class MainController {
             dataMap.put("sessionId", subject.getSession().getId());
             //判断密码是否为Welcome1
             if(password.equals(User.INITIALCIPHER)){
-                JSONArray jsonArrays = new JSONArray();
+                //JSONArray jsonArrays = new JSONArray();
                 List<JSONObject> arrays = new ArrayList<>();
                 for(int i = 0;i < jsonArray.size(); i++){
                     JSONObject array = jsonArray.getJSONObject(i);
-                    if(array.getString("name").equals("系统设置")){
-                        for(Object item : array.getJSONArray("children")){
+                    if(array.getString("name").equals("修改密码")){
+                        /*for(Object item : array.getJSONArray("children")){
                             JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
                             if(itemChildren.getString("name").equals("修改密码")){
                                 jsonArrays.add(itemChildren);
                                 array.put("children", jsonArrays);
                             }
-                        }
+                        }*/
                         arrays.add(array);
                     }
                 }
