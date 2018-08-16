@@ -42,25 +42,24 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
             throw new ExcessiveAttemptsException();
         }*/
         int count = 0;
-        Object obj=redis.opsForValue().get(username.toLowerCase());//获取错误次数
+        Object obj=redis.opsForValue().get("financialSystem"+"_cache_"+username.toLowerCase()+"_count");//获取错误次数
         Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+username.toLowerCase()+"_status");//获取是否锁定
         if(locking!=null){
             //抛出用户锁定异常
             throw new ExcessiveAttemptsException();
+        }
+        if(obj==null){
+            redis.opsForValue().set("financialSystem"+"_cache_"+username.toLowerCase()+"_count", 1, 24, TimeUnit.HOURS);//设置错误次数的缓存key，时间24小时，默认次数第一次
         }else{
-            if(obj==null){
-                redis.opsForValue().set(username.toLowerCase(), 1, 24, TimeUnit.HOURS);//设置错误次数的缓存key，时间24小时，默认次数第一次
-            }else{
-                count=(int)obj+1;//错误次数加1 
-                redis.opsForValue().set(username.toLowerCase(), count, 24, TimeUnit.HOURS);//错误次数加1
-            }
+            count=(int)obj+1;//错误次数加1 
+            redis.opsForValue().set("financialSystem"+"_cache_"+username.toLowerCase()+"_count", count, 24, TimeUnit.HOURS);//错误次数加1
         }
         boolean matches = super.doCredentialsMatch(token, info);//密码验证
         System.out.println(matches+"*****************************************");
         if(matches) {
             //clear retry count
             //passwordRetryCache.remove(username);
-            redis.delete(username.toLowerCase());//登陆成功清除key
+            redis.delete("financialSystem"+"_cache_"+username.toLowerCase()+"_count");//登陆成功清除key
         }else{//判断是否登录成功
             if(count>=3){//判断登陆失败次数
                 redis.opsForValue().set("financialSystem"+"_cache_"+username.toLowerCase()+"_status", "N");//锁定账户
