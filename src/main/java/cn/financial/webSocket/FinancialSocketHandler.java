@@ -2,6 +2,8 @@ package cn.financial.webSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.socket.CloseStatus;
@@ -22,11 +24,19 @@ public class FinancialSocketHandler implements WebSocketHandler {
         logger = Logger.getLogger(FinancialSocketHandler.class);
     }
 	
+	private Map<Object, Object> map;
+	
 	/**
 	 * 链接成功时触发
 	 */
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info("connect to the websocket success......");
+		
+		String ss = session.toString().substring(session.toString().lastIndexOf("=")+1);
+		String sessionId = ss.substring(0,ss.indexOf("]"));
+		map = new HashMap<Object, Object>();
+		map.put("sessionId", sessionId);
+		
 		users.add(session);
 	}
 	
@@ -65,9 +75,12 @@ public class FinancialSocketHandler implements WebSocketHandler {
 				try {
 					if(user.isOpen()) {
 						System.out.println(user.toString());
-						synchronized (user) {
-							user.sendMessage(message);
-							System.out.println("发送消息成功"+message);
+						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
+						if(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")).equals(map.get("sessionId"))) {
+							synchronized (user) {
+								user.sendMessage(message);
+								System.out.println("发送消息成功"+message);
+							}
 						}
 					}
 				}catch (IOException e) {
