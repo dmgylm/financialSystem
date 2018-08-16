@@ -727,7 +727,7 @@ public class UserController{
             if(users.getName()!=null && !users.getName().equals("")){
                 Object locking=redis.opsForValue().get("financialSystem"+"_cache_"+users.getName().toLowerCase()+"_status");//获取是否锁定
                 if(locking != null){
-                    redis.delete(users.getName().toLowerCase());
+                    redis.delete("financialSystem"+"_cache_"+users.getName().toLowerCase()+"_count");
                     redis.delete("financialSystem"+"_cache_"+users.getName().toLowerCase()+"_status");//清除key
                 }
             }
