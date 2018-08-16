@@ -63,11 +63,11 @@ public class MessageController {
 		
 	}
     
-    public void sendSocketInfo(String unread) {
+    public void sendSocketInfo(String unread, String sessionId) {
     	
     	JSONObject jsonObject = new JSONObject();
         jsonObject.put("unread",unread);
-        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo", new TextMessage(jsonObject.toString()));
+        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo;JSESSIONID="+sessionId+"]", new TextMessage(jsonObject.toString()));
     	
     }
     
