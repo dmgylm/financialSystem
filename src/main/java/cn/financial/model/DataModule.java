@@ -49,6 +49,9 @@ public class DataModule {
 	
     @ApiModelProperty(value="模板名称",name="moduleName",example="")
 	private String moduleName;
+    
+    @ApiModelProperty(value="模板标识",name="moduleLogo",example="")
+    private String moduleLogo;
 	
     @ApiModelProperty(value="模板版本号",name="versionNumber",example="")
 	private Integer versionNumber;
@@ -204,6 +207,14 @@ public class DataModule {
 
 	public void setDataHtml(String dataHtml) {
 		this.dataHtml = dataHtml;
+	}
+
+	public String getModuleLogo() {
+		return moduleLogo;
+	}
+
+	public void setModuleLogo(String moduleLogo) {
+		this.moduleLogo = moduleLogo;
 	}
     
     
