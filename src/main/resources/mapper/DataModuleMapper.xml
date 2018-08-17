@@ -13,6 +13,7 @@
 	   <result column="statue" property="statue" jdbcType="INTEGER" />
 	   <result column="createTime" property="createTime" jdbcType="DATE" />
 	   <result column="updateTime" property="updateTime" jdbcType="DATE" />
+	   <result column="moduleLogo" property="moduleLogo" jdbcType="VARCHAR" />
 	</resultMap>    
 	<!--查询全部模板/多条件查询模板列表-->
     <select id="listDataModule" parameterType="map" resultType="dataModule">
@@ -20,7 +21,18 @@
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC 
     </select>
-    
+       <!-- 根据模板id查询模板标识 -->
+    <select id="dataModuleById" resultType="dataModule">
+     select id,moduleLogo from dataModule where 
+     <include refid="query_organization_find"></include>
+    </select>
+    <sql id="query_organization_find">
+		 id in
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+	</sql>
     <!--查询全部模板/多条件查询模板列表（简单列表）-->
     <select id="queryDataModule" resultType="dataModule">
         SELECT id,moduleName,versionNumber,statue,createTime FROM dataModule WHERE 1 = 1 
@@ -35,7 +47,7 @@
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC 
     </select>
-    
+ 
     <!--根据条件查看单个模板-->
     <select id="getDataModule" parameterType="map" resultType="dataModule">
         SELECT id,moduleKey,moduleName,moduleData,reportType,businessType,versionNumber,founder,statue,createTime,updateTime FROM dataModule WHERE 1 = 1
