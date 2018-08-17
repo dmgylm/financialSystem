@@ -13,10 +13,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.OrganizaParnode;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
+import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HttpClient3;
 import cn.financial.util.JsonToHtmlUtil;
@@ -31,10 +35,12 @@ public class OrganizationTest {
 
     @Autowired
     private OrganizationServiceImpl service;
+    @Autowired
+    private DataModuleServiceImpl datamodel;
     
     private HttpClient3 http = new HttpClient3();
 
-
+    private OrganizationService organizationService;
     /**
      * 测试获取xml的状态节点
      */
@@ -44,6 +50,37 @@ public class OrganizationTest {
         System.out.println(returnValue.toString());
     }
 
+    @Test
+    public void ss(){
+	   List<String> ids = new ArrayList<String>();
+	   ids.add("1712521a09044bc1a946ad500a5da514");
+	   ids.add("c556bb39bfbb45968e780d6fbed62194");
+	   Map<String, String> map = datamodel.dataModuleById(ids);
+	   System.out.println(map);
+    }
+    @Test
+    public void part(){
+    	 List<Organization> list = null;
+    	 String id="0a374526c54c410e8ebd449fddc5c75c";
+    	  list = service.listTreeByIdForParent(id);
+    	  int sa=0;
+    	  for(int i=0;i<list.size();i++){
+     		 int z=list.get(i).getOrgType();
+     		 if(z==2){
+     			 sa++;
+     		 }
+     	  }
+         System.out.println(sa);
+    	 
+    	  
+    	 
+    }
+    @Test
+    public void ssa(){
+    	String id="34be1433b4be4be3978e9910fca56106";
+    	 List<Organization> list = service.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+    	System.out.println(list.get(0).getOrgType());
+    }
     /**
      * 新增组织结构
      * @throws UnsupportedEncodingException 
@@ -183,7 +220,7 @@ public class OrganizationTest {
         System.out.println(result);
         System.out.println("花费时间:" + (end - start));
     }
-
+ 
     /**
      * 查询该节点以及节点以下的
      */
