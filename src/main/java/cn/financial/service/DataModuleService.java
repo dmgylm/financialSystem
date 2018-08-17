@@ -1,6 +1,9 @@
 package cn.financial.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
@@ -76,5 +79,7 @@ public interface DataModuleService {
 	void editDataModule(String reportType, String businessType, String html,Integer status) throws FormulaAnalysisException;
 	
 	String getDataModuleName(String reportType, String businessType);
+	
+	Map<String, String> dataModuleById(@Param("list") List<String> list);
 
 }
