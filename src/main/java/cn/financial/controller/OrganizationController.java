@@ -399,8 +399,8 @@ public class OrganizationController {
             else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();
-                int sum=0;
-                if(orgType==3){
+                int sum=0;//父id上面有公司级别的个数
+                if(orgType==3){//判断该组织是否是部门级别
                 	List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
                	     for(int i=0;i<lists.size();i++){
                 		  int num=lists.get(i).getOrgType();
