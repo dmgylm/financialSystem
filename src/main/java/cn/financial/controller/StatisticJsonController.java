@@ -78,7 +78,7 @@ public class StatisticJsonController {
     private MessageService messageservice;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
-     
+    
     /**
      * 统计数据相关
      * 
@@ -146,6 +146,8 @@ public class StatisticJsonController {
      		}
     		//获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
+    		//分组处理对应数据集合
+    		
         	//获取传递到页面的数据集合
         	JSONObject ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);
         	if(ja==null){
