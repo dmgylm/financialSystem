@@ -78,7 +78,7 @@ public class StatisticJsonController {
     private MessageService messageservice;
 
     protected Logger logger = LoggerFactory.getLogger(StatisticJsonController.class);
-    
+     
     /**
      * 统计数据相关
      * 
