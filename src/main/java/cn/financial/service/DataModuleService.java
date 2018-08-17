@@ -80,6 +80,6 @@ public interface DataModuleService {
 	
 	String getDataModuleName(String reportType, String businessType);
 	
-	Map<String, String> dataModuleById(@Param("list") List<String> list);
+	Map<String, String> dataModuleById(List<String> list);
 
 }
