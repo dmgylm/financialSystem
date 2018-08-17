@@ -231,4 +231,17 @@ public class MainController {
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
+    
+    /**
+     * 空接口,用于前端某些情况下检测用户是否登录
+     * @return
+     */
+    @RequestMapping(value = "/nullApi")
+    @ApiOperation(value="空接口,用于前端某些情况下检测用户是否登录",notes="", response = ResultUtils.class)
+    @ResponseBody
+    public ResultUtils nullApi(){
+    	ResultUtils result = new ResultUtils();
+    	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+    	return result;
+    }
 }
