@@ -203,9 +203,9 @@ public class MainController {
         }catch (IncorrectCredentialsException e) { 
             Object obj = redis.opsForValue().get("financialSystem"+"_cache_"+username.toLowerCase()+"_count");//获取错误次数
             int count = 3 - (int)obj;
-            System.out.println( "密码或账户错误,剩余"+count+"次输入机会");
+            System.out.println( "密码或账户错误,今日再输错"+count+"次,账户将锁定");
             dataMapList.put("resultCode","202");
-            dataMapList.put("resultDesc","密码或账户错误,剩余"+count+"次输入机会");
+            dataMapList.put("resultDesc","密码或账户错误,今日再输错"+count+"次,账户将锁定");
             //dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.LOGIN_USERNAME_ERROR));
         } catch (ExcessiveAttemptsException e) {  
             System.out.println("账户已锁，请联系管理员");
