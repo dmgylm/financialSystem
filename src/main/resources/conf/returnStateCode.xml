@@ -239,4 +239,8 @@
         <code>293</code>
         <description>部门必须移动公司下面</description>
     </Result>
+    <Result name="MODULE_FAIL">
+        <code>294</code>
+        <description>模板有误或对应数据计算错误</description>
+    </Result>
 </StateCode>

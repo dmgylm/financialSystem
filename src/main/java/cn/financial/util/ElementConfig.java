@@ -246,5 +246,9 @@ public class ElementConfig {
      * 部门必须移动公司下面
      */
     public static final String DEPER_COMPANY="DEPER_COMPANY";
+    /**
+     * 模板或对应数据计算错误
+     */
+    public static final String MODULE_FAIL="MODULE_FAIL";
   
 }

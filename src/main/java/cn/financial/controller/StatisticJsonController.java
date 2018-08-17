@@ -149,9 +149,14 @@ public class StatisticJsonController {
     		//分组处理对应数据集合
     		
         	//获取传递到页面的数据集合
-        	JSONObject ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);
+    		JSONObject ja = null;
+    		try {
+    			ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);	
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
         	if(ja==null){
-            	ElementXMLUtils.returnValue(ElementConfig.STATIC_REPORTTYPE_FAIL,sj);
+            	ElementXMLUtils.returnValue(ElementConfig.MODULE_FAIL,sj);
             	return sj;
         	}
         	//存入缓存
