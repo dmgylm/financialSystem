@@ -72,4 +72,12 @@ public interface StatisticJsonService {
 	JSONObject jsonCalculation(String reportType, String businessType,
 			List<BusinessData> businessDataList);
 
+	
+	/**
+	 * 底层数据分组整合
+	 * @param businessDataList
+	 * @return
+	 */
+	Map<String, Object> groupDataSum(List<BusinessData> businessDataList);
+
 }

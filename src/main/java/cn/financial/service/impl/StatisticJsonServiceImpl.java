@@ -251,6 +251,58 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		
 	}
 	
+	/**
+	 * 将底层数据分组统计保存
+	 * @param businessDataList
+	 * @return
+	 */
+	@Override
+	public Map<String,Object> groupDataSum(List<BusinessData> businessDataList){
+		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
+		//取出id来进行查询
+		List<String> dataId = new ArrayList<String>();
+		for (int i = 0; i < businessDataList.size(); i++) {
+			dataId.add(businessDataList.get(i).getId());
+		}
+		Map<String,String> kal = dataModuleService.dataModuleById(dataId);//获取分组对应标识
+		//分组保存不同模板对应数据集
+		for (int i = 0; i < businessDataList.size(); i++) {
+			String bid = businessDataList.get(i).getId();
+			if(kal.containsKey(bid)){
+				String dm = kal.get(bid);
+				List<BusinessData> bd = new ArrayList<BusinessData>();
+				if(groupdata.containsKey(dm)){
+					bd = groupdata.get(dm);
+				}
+				bd.add(businessDataList.get(i));
+				groupdata.put(dm, bd);
+			}
+		}
+		
+		Map<String,Map<String,Object>> groupmap = new HashMap<String, Map<String,Object>>();
+		
+		//计算对应数据集，重新整合
+		Iterator<String> it = groupdata.keySet().iterator();
+		while (it.hasNext()) {
+			String groupname = it.next();
+			List<BusinessData> sumdata= groupdata.get(groupname);
+			//获取数据
+			List<JSONObject> valueList = new ArrayList<JSONObject>();
+	    	//将查询得来的数据整合添加
+	    	for (int j = 0; j < sumdata.size(); j++) {
+	    		valueList.add(JSONObject.parseObject(sumdata.get(j).getInfo()));
+			}
+			//开始数据计算
+			Map<String,Object> groupsum = valueListSum(valueList);
+			groupmap.put(groupname, groupsum);
+		}
+
+		
+		System.out.println(groupmap);
+		
+		return null;
+	}
+	
 	//进行分段的计算方法
 	public Map<String,Object> valueListSum(List<JSONObject> valueList){
 		

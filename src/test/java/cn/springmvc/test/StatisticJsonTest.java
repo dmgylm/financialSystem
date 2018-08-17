@@ -177,5 +177,35 @@ public class StatisticJsonTest {
     	
     	
     }
+    
+    @Test
+    public void OrgDataTest() {
+    	String orgId = "['22ee8c554c2a4f5383038c3f11ae02ed']";
+    	//获取所选机构
+ 		List<Organization> codeSonList = service.companyList(JSONArray.parseArray(orgId));
+		//获取最底层数据
+		List<String> typeIdList = service.typeIdList(codeSonList);
+   		//获取对应公司列表
+// 		Map<String,List<String>> companyList =  service.companyCacheList(codeSonList);
+ 		
+// 		System.out.println(companyList);
+    }
+    
+    @Test
+    public void StatisticGroupTest() {
+       	String orgId = "['22ee8c554c2a4f5383038c3f11ae02ed']";
+    	//获取所选机构
+ 		List<Organization> codeSonList = service.companyList(JSONArray.parseArray(orgId));
+		//获取最底层数据
+		List<String> typeIdList = service.typeIdList(codeSonList);
+		//获取底层对应数据的集合
+		List<BusinessData> businessDataList = service.valueList("2018/1","2019/12",typeIdList);
+//		for (int i = 0; i < businessDataList.size(); i++) {
+//			System.out.println(businessDataList.get(i).getDataModuleId());
+//		}
+		
+		service.groupDataSum(businessDataList);
+    	
+    }
 	
 }
