@@ -78,6 +78,15 @@ public class FormulaUtil {
 		params.put("c", 2);
 		Double value = calculationByFormula(params, "c+(a+b)");
 		System.out.println(value);
+		
+		
+		
+		
+		String str = "shiji/zhuanchefuwu_shourubenyueshiji";
+		 str = replaceFirst(str, "shiji", "f");
+		 str = replaceFirst(str, "zhuanchefuwu_shourubenyueshiji", "s");
+		System.out.println(str);
+		
 	}
 	
 	/**
@@ -114,6 +123,10 @@ public class FormulaUtil {
 		}
 		value = sb.toString();
 		return sb.toString();
+	}
+	
+	public static String reallyFormula(JSONArray array,String formula) throws FormulaAnalysisException {
+		return replaceFormula(array, formula);
 	}
 	
 	/**

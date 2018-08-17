@@ -119,8 +119,6 @@ public class HtmlGenerate {
 	public static String CLASS_FORMULA = "formula";// 公式所带Class
 	public static String CLASS_BUDGET = "budget";// 公式所带Class
 
-	private Map<Integer, Map<Integer, JSONObject>> rowMap = new LinkedHashMap<Integer, Map<Integer,JSONObject>>();
-
 	public static void main(String[] args) {
 		String path = "C:/Users/Admin/Desktop/解析后文件.txt";
 		File file = new File(path );
@@ -163,49 +161,15 @@ public class HtmlGenerate {
 	 * @return
 	 */
 	public String generateHtml(JSONObject jsonObj,Integer htmlType){
-		Map<Integer,Map<Integer,JSONObject>> trMap = assembleData(jsonObj);
-		trMap = sortTableRowMap(trMap);
-		for(Iterator<Integer> iter = trMap.keySet().iterator();iter.hasNext();) {
-			Integer row = iter.next();
-			Map<Integer, JSONObject> colMap = trMap.get(row);
-			colMap = sortMapByKey(colMap);
-			trMap.put(row, colMap);
-		}
+		JsonConvertProcess jcp = new JsonConvertProcess();
+		Map<Integer,Map<Integer,JSONObject>> trMap = jcp.assembleData(jsonObj);
+		trMap = jcp.sortTableRowMap(trMap);
 		Document doc = Jsoup.parse("<html> <head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style> <body></body></html>");
 		doc.outputSettings().charset(CharEncoding.UTF_8).prettyPrint(false);
 		Element table = createTable(doc);
 		assembleTable(trMap,table,htmlType);
 		return doc.html();
 	}
-
-	/**
-	 * 将该Map通过Key进行排序
-	 * @param map
-	 * @return
-	 */
-	private Map<Integer, Map<Integer,JSONObject>> sortTableRowMap(
-			Map<Integer, Map<Integer,JSONObject>> map) {
-		Map<Integer, Map<Integer,JSONObject>> sortMap = new TreeMap<Integer, Map<Integer,JSONObject>>(
-				new MapKeyComparator());
-
-		sortMap.putAll(map);
-		return sortMap;
-	}
-	
-	/**
-	 * 将该Map通过Key进行排序
-	 * @param colMap
-	 * @return
-	 */
-	private Map<Integer, JSONObject> sortMapByKey(
-			Map<Integer, JSONObject> colMap) {
-		Map<Integer, JSONObject> sortMap = new TreeMap<Integer, JSONObject>(
-				new MapKeyComparator());
-		
-		sortMap.putAll(colMap);
-		return sortMap;
-	}
-
 
 	/**
 	 * 组装Table
@@ -418,50 +382,6 @@ public class HtmlGenerate {
 		}
 	}
 
-	/**
-	 * 生成行数据
-	 * @param array
-	 * @return
-	 */
-	private Map<Integer, Map<Integer, JSONObject>> assembleData(
-			JSONObject array) {
-		for(Iterator<String> iter = array.keySet().iterator();iter.hasNext();) {
-			String key = iter.next();
-			Object obj = array.get(key);
-			if(obj instanceof JSONArray) {
-				JSONArray ja = (JSONArray)obj;
-				for(int i=0;i<ja.size();i++) {
-					putRowToMap(rowMap,ja.getJSONObject(i));
-				}
-			} else if(obj instanceof JSONObject) {
-				assembleData((JSONObject) obj);
-			}
-		}
-		
-		return rowMap;
-	}
-
-
-	/**
-	 * 
-	 * @param trMap
-	 * @param obj
-	 */
-	private void putRowToMap(Map<Integer, Map<Integer, JSONObject>> trMap,
-			JSONObject obj) {
-		if(!obj.containsKey("row")) {
-			return;
-		}
-		Integer rowNum = obj.getInteger("row");
-		Integer colNum = obj.getInteger("col");
-		Map<Integer, JSONObject> row = trMap.get(rowNum);
-		if(row==null) {
-			row = new HashMap<Integer, JSONObject>();
-			trMap.put(rowNum, row);
-		}
-		row.put(colNum, obj);
-	}
-	
 	/**
 	 * 创建表格
 	 * @param doc

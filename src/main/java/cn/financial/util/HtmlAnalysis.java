@@ -37,7 +37,7 @@ public class HtmlAnalysis {
 	private Map<String,String> rowKeyMap = new HashMap<String, String>();
 	private Map<String,String> colKeyMap = new HashMap<String, String>();
 	
-	private String REPLACE_REGX = "[：\\%/]";
+	private String REPLACE_REGX = "[：:\\%]";//中文和英文状态的冒号,百分比符号
 	
 	/**
 	 * 构造方法
@@ -72,14 +72,8 @@ public class HtmlAnalysis {
 //		String filename = "C:/Users/Admin/Desktop/test.html";
 		File file = new File(filename);
 		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(file);
-		String html = null;
-		try {
-			html = htmlAnalysis.analysis();
-		} catch (FormulaAnalysisException e) {
-			e.printStackTrace();
-		}
-		System.out.println(html);
-		
+		String str = htmlAnalysis.removeSpecialChar("=专车服务_其中:车辆折旧本/月实际+专车服务_其他本月实际)");
+		System.out.println(str);
 	}
 	
 	/**
@@ -91,45 +85,10 @@ public class HtmlAnalysis {
 		Elements tables = doc.getElementsByTag("table");
 		Element table = tables.get(0);
 		JSONArray list = analysisTable(table);
-		Map<String,List<JSONObject>> dataMap = assembleTableData(list);
+		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
 		return JSONObject.toJSON(dataMap).toString();
 	}
 	
-	/**
-	 * 根据JsonArray转换成模块化的Json格式
-	 * 并在此步骤替换其真实公式
-	 * @param array 要组装的Json数组
-	 * @return
-	 * @throws FormulaAnalysisException 
-	 */
-	private Map<String,List<JSONObject>> assembleTableData(JSONArray array) throws FormulaAnalysisException {
-		Map<String,List<JSONObject>> dataMap = new HashMap<String, List<JSONObject>>();
-		for(int i=0;i<array.size();i++) {
-			JSONObject json = array.getJSONObject(i);
-			String key = json.getString("key");
-			String reallyFormula = FormulaUtil.getReallyFormulaByKey(array,key);
-			json.put("reallyFormula", reallyFormula);
-			if(StringUtils.isValid(key) && key.indexOf(Separate_Modular)>0) {
-				String modelName = key.split(Separate_Modular)[0];
-				List<JSONObject> subjectlst = dataMap.get(modelName);
-				if(subjectlst == null) {
-					subjectlst = new ArrayList<JSONObject>();
-					dataMap.put(modelName, subjectlst);
-				}
-				subjectlst.add(json);
-			} else {//将标题加入
-				List<JSONObject> subjectlst = dataMap.get("title");
-				if(subjectlst == null) {
-					subjectlst = new ArrayList<JSONObject>();
-					dataMap.put("title", subjectlst);
-				}
-				subjectlst.add(json);
-			}
-		}
-		
-		return dataMap;
-	}
-
 	/**
 	 * 解析前端Table中的数据
 	 * @param table 要解析的Table

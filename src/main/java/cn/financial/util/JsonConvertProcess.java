@@ -3,14 +3,25 @@ package cn.financial.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.financial.exception.FormulaAnalysisException;
+import cn.financial.util.HtmlGenerate.MapKeyComparator;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class JsonConvertProcess {
+	
+	private Map<Integer, Map<Integer, JSONObject>> rowMap = new LinkedHashMap<Integer, Map<Integer,JSONObject>>();
 	
 	//预算表中的Label单元格字段
 	private JSONArray bugdetLabelArr = new JSONArray();
@@ -237,5 +248,119 @@ public class JsonConvertProcess {
 			 month = value.substring(matcher.start());
 		 }
 		return month.replace("yue", "");
+	}
+	
+	/**
+	 * 根据JsonArray转换成模块化的Json格式
+	 * 并在此步骤替换其真实公式
+	 * @param array 要组装的Json数组
+	 * @return
+	 * @throws FormulaAnalysisException 
+	 */
+	public static Map<String,List<JSONObject>> assembleTableData(JSONArray array) throws FormulaAnalysisException {
+		Map<String,List<JSONObject>> dataMap = new HashMap<String, List<JSONObject>>();
+		for(int i=0;i<array.size();i++) {
+			JSONObject json = array.getJSONObject(i);
+			String key = json.getString("key");
+			String formula = json.getString("formula");
+//			String reallyFormula = FormulaUtil.replaceFormula(array,formula);
+//			String reallyFormula = FormulaUtil.getReallyFormulaByKey(array,key);
+//			json.put("reallyFormula", reallyFormula);
+			if(StringUtils.isValid(key) && key.indexOf(HtmlAnalysis.Separate_Modular)>0) {
+				String modelName = key.split(HtmlAnalysis.Separate_Modular)[0];
+				List<JSONObject> subjectlst = dataMap.get(modelName);
+				if(subjectlst == null) {
+					subjectlst = new ArrayList<JSONObject>();
+					dataMap.put(modelName, subjectlst);
+				}
+				subjectlst.add(json);
+			} else {//将标题加入
+				List<JSONObject> subjectlst = dataMap.get("title");
+				if(subjectlst == null) {
+					subjectlst = new ArrayList<JSONObject>();
+					dataMap.put("title", subjectlst);
+				}
+				subjectlst.add(json);
+			}
+		}
+		
+		return dataMap;
+	}
+	
+	/**
+	 * 生成行数据
+	 * @param json
+	 * @return
+	 */
+	public Map<Integer, Map<Integer, JSONObject>> assembleData(
+			JSONObject json) {
+		for(Iterator<String> iter = json.keySet().iterator();iter.hasNext();) {
+			String key = iter.next();
+			Object obj = json.get(key);
+			if(obj instanceof JSONArray) {
+				JSONArray ja = (JSONArray)obj;
+				for(int i=0;i<ja.size();i++) {
+					putRowToMap(rowMap,ja.getJSONObject(i));
+				}
+			} else if(obj instanceof JSONObject) {
+				assembleData((JSONObject) obj);
+			}
+		}
+		
+		return rowMap;
+	}
+	
+	/**
+	 * 
+	 * @param trMap
+	 * @param obj
+	 */
+	private void putRowToMap(Map<Integer, Map<Integer, JSONObject>> trMap,
+			JSONObject obj) {
+		if(!obj.containsKey("row")) {
+			return;
+		}
+		Integer rowNum = obj.getInteger("row");
+		Integer colNum = obj.getInteger("col");
+		Map<Integer, JSONObject> row = trMap.get(rowNum);
+		if(row==null) {
+			row = new HashMap<Integer, JSONObject>();
+			trMap.put(rowNum, row);
+		}
+		row.put(colNum, obj);
+	}
+	
+	/**
+	 * 将该Map通过Key进行排序
+	 * @param map
+	 * @return
+	 */
+	public Map<Integer, Map<Integer,JSONObject>> sortTableRowMap(
+			Map<Integer, Map<Integer,JSONObject>> map) {
+		Map<Integer, Map<Integer,JSONObject>> sortMap = new TreeMap<Integer, Map<Integer,JSONObject>>(
+				new MapKeyComparator());
+		
+		sortMap.putAll(map);
+		for(Iterator<Integer> iter = sortMap.keySet().iterator();iter.hasNext();) {
+			Integer row = iter.next();
+			Map<Integer, JSONObject> colMap = sortMap.get(row);
+			colMap = sortMapByKey(colMap);
+			sortMap.put(row, colMap);
+		}
+		return sortMap;
+	}
+	
+	/**
+	 * 将该Map通过Key进行排序
+	 * @param colMap
+	 * @return
+	 */
+	private Map<Integer, JSONObject> sortMapByKey(
+			Map<Integer, JSONObject> colMap) {
+		Map<Integer, JSONObject> sortMap = new TreeMap<Integer, JSONObject>(
+				new MapKeyComparator());
+		
+		sortMap.putAll(colMap);
+		return sortMap;
 	}
 }

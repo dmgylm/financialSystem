@@ -8,7 +8,6 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 
 public class HanyuToPingyinUtils {
 	
-	
 	public static String hanyuToPinyin(String value){
 		if(value==null) {
 			return null;
