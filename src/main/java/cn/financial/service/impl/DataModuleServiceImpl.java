@@ -260,6 +260,21 @@ public class DataModuleServiceImpl implements DataModuleService{
 		String reportTypeName = DataModule.getReprtTypeName(reportType);
 		return orgName + reportTypeName;
 	}
+	/**
+	 *   根据模板id查询模板标识 
+	 */
+	
+	@Override
+	public Map<String, String> dataModuleById(List<String> list) {
+		List<DataModule> lists=dataModuleDao.dataModuleById(list);
+		Map<String,String> map=new HashMap<String, String>();
+		for(DataModule dataModule:lists){
+			 String id = dataModule.getId();
+			 String moduleLogo=dataModule.getModuleLogo();
+			 map.put(id, moduleLogo);
+		}
+		return map;
+	}
 	
 	
 	
