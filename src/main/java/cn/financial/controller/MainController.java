@@ -236,7 +236,7 @@ public class MainController {
      * 空接口,用于前端某些情况下检测用户是否登录
      * @return
      */
-    @RequestMapping(value = "/nullApi")
+    @RequestMapping(value = "/nullApi",method=RequestMethod.POST)
     @ApiOperation(value="空接口,用于前端某些情况下检测用户是否登录",notes="", response = ResultUtils.class)
     @ResponseBody
     public ResultUtils nullApi(){
