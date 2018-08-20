@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
+import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.BusinessData;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
@@ -23,7 +25,9 @@ import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.StatisticJsonService;
+import cn.financial.util.ExcelReckonUtils;
 import cn.financial.util.FormulaUtil;
+import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.StringUtils;
 
 /**
@@ -256,6 +260,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 * @param businessDataList
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String,Object> groupDataSum(List<BusinessData> businessDataList){
 		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
@@ -264,7 +269,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		for (int i = 0; i < businessDataList.size(); i++) {
 			dataId.add(businessDataList.get(i).getId());
 		}
-		Map<String,String> kal = dataModuleService.dataModuleById(dataId);//获取分组对应标识
+		JSONArray dataJar = dataModuleService.dataModuleById(dataId);//获取分组对应标识
+		Map<String,String> kal = (Map<String, String>) dataJar.get(0);//获取分组数据
+		Map<String,String> mol = (Map<String, String>) dataJar.get(1);//获取模板数据
 		//分组保存不同模板对应数据集
 		for (int i = 0; i < businessDataList.size(); i++) {
 			String bid = businessDataList.get(i).getId();
@@ -278,9 +285,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				groupdata.put(dm, bd);
 			}
 		}
-		
-		Map<String,Map<String,Object>> groupmap = new HashMap<String, Map<String,Object>>();
-		
+		JSONObject groupmap = new JSONObject();
 		//计算对应数据集，重新整合
 		Iterator<String> it = groupdata.keySet().iterator();
 		while (it.hasNext()) {
@@ -293,12 +298,37 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	    		valueList.add(JSONObject.parseObject(sumdata.get(j).getInfo()));
 			}
 			//开始数据计算
-			Map<String,Object> groupsum = valueListSum(valueList);
+			JSONObject groupsum = valueListNewSum(valueList);
 			groupmap.put(groupname, groupsum);
 		}
-
 		
-		System.out.println(groupmap);
+		//将数据集填入模板
+		Map<String,JSONObject> modelDataStatic = new HashMap<String, JSONObject>();
+		
+		//填入模板数据,返回模板对应数据集
+		Iterator<String> mod = mol.keySet().iterator();
+		while (mod.hasNext()) {
+			//获取模板
+			String modelLogoName = mod.next();
+			JSONObject modelData =JSONObject.parseObject(mol.get(modelLogoName));
+			//获取模板对应数据集
+			JSONObject trueMap = new JSONObject();
+			if(groupmap.containsKey(modelLogoName)){
+				trueMap = groupmap.getJSONObject(modelLogoName);
+			}
+			//模板公式计算
+			ExcelReckonUtils eru = new ExcelReckonUtils();
+			String reward =null;
+			try {
+				reward = eru.computeByExcel(JsonConvertProcess.mergeJson(modelData,trueMap).toString());
+			} catch (FormulaAnalysisException e) {
+				e.printStackTrace();
+			}
+			
+			//模板添加
+			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));
+		}
+System.out.println(modelDataStatic);
 		
 		return null;
 	}
@@ -340,6 +370,49 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		}
 		
 		return item;
+	}
+	
+	//新分段的计算方法
+	public JSONObject valueListNewSum(List<JSONObject> valueList){
+		JSONObject group = new JSONObject();
+		for (int k = 0; k < valueList.size(); k++) {
+			JSONObject valueJson = valueList.get(k);
+			Iterator<String> it = valueJson.keySet().iterator();
+			while (it.hasNext()) {
+				String Jsonkey = it.next();//分组开始名
+				JSONObject item = new JSONObject();
+				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
+				Iterator<String> vt = jsonValve.keySet().iterator();
+				while (vt.hasNext()) {
+					String itemKey = vt.next();
+					//判断是否为JSONObject
+					if(jsonValve.get(itemKey) instanceof JSONObject){
+						JSONObject downValve = jsonValve.getJSONObject(itemKey);
+						Iterator<String> dt = downValve.keySet().iterator();
+						while (dt.hasNext()) {
+							String downKey = dt.next();
+							Double valve = downValve.getDouble(downKey);
+							if(item.containsKey(downKey)){
+								valve +=(Double)item.get(downKey);
+							}
+							item.put(downKey, valve);
+						}
+					}else{
+						Double valve = jsonValve.getDouble(itemKey);
+						if(item.containsKey(itemKey)){
+							valve +=(Double)item.get(itemKey);
+						}
+						item.put(itemKey, valve);
+					}
+				}
+				group.put(Jsonkey, item);
+			}
+		}
+		
+		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
+		String bytes = JSON.toJSONString(group,feature);  
+		return (JSONObject) JSONObject.parse(bytes);
+
 	}
 
 }
