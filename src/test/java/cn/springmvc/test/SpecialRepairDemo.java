@@ -11,15 +11,15 @@ public class SpecialRepairDemo {
 	
 	//1: 解析Excel,得到Json, 用于Html生成
 	
-	/*public static void main(String[] args) {
-		String filepath="C:/Users/ellen/Downloads/2018年管理报表模板（20180319）-最新/2018年管理报表模板（20180319）-最新/专车业务预算.xls";
+/*	public static void main(String[] args) {
+		String filepath="C:/Users/ellen/Downloads/数据模板/专车预算.xls";
 		Integer modelColNum = 1;
 		Integer itemColNum = 2;
 		Integer prefixRowNum = null;
-		Integer suffixRowNum = 3;
+		Integer suffixRowNum = 1;
 		Integer BUDGET_CELL = 0; //预算
 		//Integer BUDGET_CELL = 4;//损益
-		AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixRowNum, suffixRowNum, BUDGET_CELL);
+    	AnalysisExcelFormula aef = new AnalysisExcelFormula(filepath, modelColNum, itemColNum, prefixRowNum, suffixRowNum, BUDGET_CELL);
 		String html = aef.analysisExcel();
 		System.out.println(html);
 	}*/
@@ -28,7 +28,7 @@ public class SpecialRepairDemo {
 	
 	/*public static void main(String[] args) {
 		HtmlGenerate gh = new HtmlGenerate();
-		String jsonStr = JsonConvertProcess.readFileContent("C:/Users/ellen/Downloads/2018年管理报表模板（20180319）-最新/2018年管理报表模板（20180319）-最新/zhuancheyusuan.txt");
+		String jsonStr = JsonConvertProcess.readFileContent("C:/Users/ellen/Downloads/数据模板/专车预算的json.txt");
 		String html = gh.generateHtml(jsonStr, HtmlGenerate.HTML_TYPE_TEMPLATE);
 		System.out.println(html);
 	}*/
@@ -36,7 +36,7 @@ public class SpecialRepairDemo {
 	//3: 用(2)生成的Html进行解析,得到一个Json模板数据
 	
 	public static void main(String[] args) {
-		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/ellen/Downloads/2018年管理报表模板（20180319）-最新/2018年管理报表模板（20180319）-最新/zhuancheyusuan.html"));
+		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/ellen/Downloads/数据模板/专车预算.html"));
 		try {
 			String json = ha.analysis();
 			System.out.println(json);
