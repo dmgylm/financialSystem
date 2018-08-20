@@ -28,12 +28,16 @@
        </insert>
       
     
-        <!-- 查询所有的损益数据 -->
-       <!-- <select id="getAll" resultMap="businessData">  
-        select id,oId,info,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId
+        <!-- 查询年份输入框 -->
+       <select id="businessDataYear" resultMap="businessData">  
+        select year,sId
         from  businessData 
         where delStatus=1 
-       </select> -->
+         <if test="sId!=null and sId!=''">
+            and sId = #{sId}
+        </if>
+        GROUP BY year DESC  
+       </select> 
        
       <!--  根据id查询损益数据 -->
        <select id="selectBusinessDataById" parameterType="String" resultMap="businessData" >
