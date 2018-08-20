@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.BusinessData;
 import cn.financial.model.Capital;
 import cn.financial.model.CapitalNatrue;
@@ -39,7 +38,6 @@ import cn.financial.model.response.CapitalByIdResult;
 import cn.financial.model.response.CapitalNatrueResult;
 import cn.financial.model.response.CapitalResult;
 import cn.financial.model.response.ResultUtils;
-import cn.financial.service.BusinessDataService;
 import cn.financial.service.CapitalNatrueService;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
@@ -473,7 +471,7 @@ public class CapitalController {
                              capital.setId(UuidUtil.getUUID());
                              if(!str[0].equals("")){
                                  String orgName=str[0];
-                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", uId, "",null,null); //查询公司的信息
+                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
                                  if(listOrganization.size()>0){
                                      capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id
                                  }else{
@@ -489,28 +487,28 @@ public class CapitalController {
                              if(!str[0].equals("")){
                                  capital.setCompany(str[0]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第一个单元格公司名字不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第一个单元格公司名字不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[1].equals("")){
                                  capital.setAccountName(str[1]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第二个单元格户名不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第二个单元格户名不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[2].equals("")){
                                  capital.setAccountBank(str[2]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第三个单元格开户行不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第三个单元格开户行不能为空");
                                  insertFlag=false;
                                  break;
                              }
                              if(!str[3].equals("")){
                                  capital.setAccount(str[3]);
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第四个单元格账户不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第四个单元格账户不能为空");
                                  insertFlag=false;
                                  break;
                              }
@@ -518,12 +516,12 @@ public class CapitalController {
                                 if(fauCodeList.contains(str[4])){
                                     capital.setAccountNature(str[4]);
                                 }else{
-                                    result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格此账户性质不存在,请重新修改");
+                                    result.setResultDesc("Excel表格第"+(i+2)+"行第五个单元格此账户性质不存在,请重新修改");
                                     insertFlag=false;
                                     break;  
                                 }
                              }else{
-                                 result.setResultCode("Excel表格第"+(i+2)+"行第五个单元格账户性质不能为空");
+                                 result.setResultDesc("Excel表格第"+(i+2)+"行第五个单元格账户性质不能为空");
                                  insertFlag=false;
                                  break;
                              }
