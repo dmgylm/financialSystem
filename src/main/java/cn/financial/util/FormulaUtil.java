@@ -19,7 +19,7 @@ import cn.financial.exception.FormulaAnalysisException;
 public class FormulaUtil {
 	
 	//+-*/()分隔正则
-	private static final String OPERATOR_REGEX = "[\\+\\-\\*\\/():]";
+	private static final String OPERATOR_REGEX = "[\\+\\-\\*\\/()]";
 	
 	// Json中的KEY字符串
 	private static final String FIELD_KEY = "key";
