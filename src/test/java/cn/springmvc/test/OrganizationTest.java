@@ -53,8 +53,8 @@ public class OrganizationTest {
     @Test
     public void ss(){
 	   List<String> ids = new ArrayList<String>();
-	   ids.add("1712521a09044bc1a946ad500a5da514");
-	   ids.add("c556bb39bfbb45968e780d6fbed62194");
+	   ids.add("000791b90fc448ae9a2da761c5e281ef");
+	   ids.add("000e2e05c8f145578055cb5715c7c605");
 	   Map<String, String> map = datamodel.dataModuleById(ids);
 	   System.out.println(map);
     }
