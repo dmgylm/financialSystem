@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -265,15 +266,25 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 */
 	
 	@Override
-	public Map<String, String> dataModuleById(List<String> list) {
+	public JSONArray dataModuleById(List<String> list) {
 		List<DataModule> lists=dataModuleDao.dataModuleById(list);
-		Map<String,String> map=new HashMap<String, String>();
+		Map<String,String> map1=new HashMap<String, String>();
 		for(DataModule dataModule:lists){
 			 String id = dataModule.getId();
 			 String moduleLogo=dataModule.getModuleLogo();
-			 map.put(id, moduleLogo);
+			 map1.put(id, moduleLogo);
 		}
-		return map;
+		Map<String,String> map2=new HashMap<String, String>();
+		for (DataModule dataModule:lists) {
+			 String moduleLogo=dataModule.getModuleLogo();
+			 String modelData = dataModule.getModuleData();
+			 map2.put(moduleLogo, modelData);
+		}
+		
+		JSONArray ja = new JSONArray();
+		ja.add(map1);
+		ja.add(map2);
+		return ja;
 	}
 	
 	

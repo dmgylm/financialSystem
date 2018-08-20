@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.alibaba.fastjson.JSONArray;
+
 import cn.financial.exception.FormulaAnalysisException;
 import cn.financial.model.DataModule;
 import cn.financial.model.response.DataModuleResult;
@@ -80,6 +82,6 @@ public interface DataModuleService {
 	
 	String getDataModuleName(String reportType, String businessType);
 	
-	Map<String, String> dataModuleById(List<String> list);
+	JSONArray dataModuleById(List<String> list);
 
 }
