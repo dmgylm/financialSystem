@@ -27,6 +27,12 @@ public class ExcelReckonUtils {
 	
 	private Map<String,String> keyMap ;
 	
+	/**
+	 * 通过Excel计算公式的值
+	 * @param json 需要计算的Json数据(模板+数据格式)
+	 * @return 计算完成的Json
+	 * @throws FormulaAnalysisException 异常:公式找不到对应值
+	 */
 	public String computeByExcel(String json) throws FormulaAnalysisException{
 		JSONObject jsonObj = JSONObject.parseObject(json);
 		ExcelReckonUtils ert = new ExcelReckonUtils();
