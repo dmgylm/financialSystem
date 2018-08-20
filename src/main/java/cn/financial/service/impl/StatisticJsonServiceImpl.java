@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -262,7 +261,12 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String,Object> groupDataSum(List<BusinessData> businessDataList){
+	public String groupDataSum(String reportType, String businessType,List<BusinessData> businessDataList){
+		//获取模板
+		JSONObject model = findModel(reportType,businessType);
+		if(model==null){
+			return null;
+		}
 		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
 		//取出id来进行查询
 		List<String> dataId = new ArrayList<String>();
@@ -316,23 +320,139 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			if(groupmap.containsKey(modelLogoName)){
 				trueMap = groupmap.getJSONObject(modelLogoName);
 			}
-			//模板公式计算
+			String modelJson = JsonConvertProcess.mergeJson(modelData,trueMap).toString();
+/*			//模板公式计算
 			ExcelReckonUtils eru = new ExcelReckonUtils();
 			String reward =null;
 			try {
-				reward = eru.computeByExcel(JsonConvertProcess.mergeJson(modelData,trueMap).toString());
+				reward = eru.computeByExcel(modelJson);
 			} catch (FormulaAnalysisException e) {
 				e.printStackTrace();
 			}
-			
 			//模板添加
-			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));
+			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));*/
+			modelDataStatic.put(modelLogoName,JSONObject.parseObject(modelJson));
 		}
-System.out.println(modelDataStatic);
+		//重构模板及对应标识，取出需要的结果
+		Iterator<String> returnData = modelDataStatic.keySet().iterator();
+		while (returnData.hasNext()) {
+			//获取模板
+			String modelLogoName = returnData.next();
+			JSONObject jsonValve = modelDataStatic.get(modelLogoName);
+
+			//分解模板取值
+			JSONObject modelDataSum = new JSONObject();
+			Iterator<String> jd = jsonValve.keySet().iterator();
+			while (jd.hasNext()) {
+				String modelKeyJD = jd.next();
+				if(jsonValve.get(modelKeyJD) instanceof JSONObject){
+					JSONObject downValve = jsonValve.getJSONObject(modelKeyJD);
+					Iterator<String> dt = downValve.keySet().iterator();
+					while (dt.hasNext()) {
+						String downKey = dt.next();
+						JSONArray modelArr = downValve.getJSONArray(downKey);
+						for (int i = 0; i < modelArr.size(); i++) {
+							JSONObject rowjar = modelArr.getJSONObject(i);
+							//判断输入是否是需要整合的
+							String itemKey = rowjar.getString("key");
+							Double value = rowjar.getDouble("value");
+							if(value==null){
+								value = 0.0;
+							}
+							modelDataSum.put(itemKey, value);
+						}
+					}
+				}else{
+					JSONArray modelArr = jsonValve.getJSONArray(modelKeyJD);
+					for (int i = 0; i < modelArr.size(); i++) {
+						JSONObject rowjar = modelArr.getJSONObject(i);
+						//判断输入是否是需要整合的
+						Double value = rowjar.getDouble("value");
+						String itemKey = rowjar.getString("key");
+						modelDataSum.put(itemKey, value);
+					}
+				}
+			}
+			modelDataStatic.put(modelLogoName, modelDataSum);
+		}
+		System.out.println(modelDataStatic);
+		//最后进行的汇总模板填写
+		Iterator<String> staticModel = model.keySet().iterator();
+		while (staticModel.hasNext()) {
+			JSONArray json = new JSONArray();
+			String modelKey = staticModel.next();
+			if(model.get(modelKey) instanceof JSONObject){
+				JSONObject downValve = model.getJSONObject(modelKey);
+				Iterator<String> dt = downValve.keySet().iterator();
+				while (dt.hasNext()) {
+					String downKey = dt.next();
+					downValve = completeStaticMap(downValve,downKey,modelDataStatic,json);
+				}
+				model.put(modelKey, downValve);
+			}else{
+				model = completeStaticMap(model,modelKey,modelDataStatic,json);
+			}
+		}
 		
-		return null;
+		//汇总模板公式计算
+		ExcelReckonUtils eru = new ExcelReckonUtils();
+		String staticMD =null;
+		try {
+			staticMD = eru.computeByExcel(model.toString());
+		} catch (FormulaAnalysisException e) {
+			e.printStackTrace();
+		}
+		
+		return staticMD;
 	}
 	
+	//进行汇总整合数据
+	private JSONObject completeStaticMap(JSONObject downValve, String downKey,
+			Map<String, JSONObject> modelDataStatic, JSONArray json) {
+		
+		JSONArray modelArr = downValve.getJSONArray(downKey);
+		for (int i = 0; i < modelArr.size(); i++) {
+			JSONObject rowjar = modelArr.getJSONObject(i);
+			//判断输入是否是需要整合的
+			Integer type = rowjar.getInteger("type");
+			String itemKey = rowjar.getString("key");
+			if (type ==2 ||type == 4){
+				String[] setDown = itemKey.split("★");
+				String logoKey = setDown[0];
+				String logoValue = setDown[1];
+				if(modelDataStatic.containsKey(logoKey)){
+					JSONObject staticData = modelDataStatic.get(logoKey);
+					if(staticData.containsKey(logoValue)){
+						//将数据添加到新json里
+						rowjar.put("value", staticData.get(logoValue));
+					}
+				}
+			}
+			json.add(rowjar);
+		}
+		downValve.put(downKey, json);
+		return downValve;
+	}
+	
+	//差分添加
+	public JSONObject addDataJson(String downKey,JSONObject downValve){
+		JSONObject modelDataSum = new JSONObject();
+		JSONArray modelArr = downValve.getJSONArray(downKey);
+		for (int i = 0; i < modelArr.size(); i++) {
+			JSONObject rowjar = modelArr.getJSONObject(i);
+			//判断输入是否是需要整合的
+			String itemKey = rowjar.getString("key");
+			Double value = rowjar.getDouble("value");
+			if(value==null){
+				value = 0.0;
+			}
+			modelDataSum.put(itemKey, value);
+		}
+		
+		return modelDataSum;
+	}
+	
+
 	//进行分段的计算方法
 	public Map<String,Object> valueListSum(List<JSONObject> valueList){
 		
@@ -372,7 +492,7 @@ System.out.println(modelDataStatic);
 		return item;
 	}
 	
-	//新分段的计算方法
+	//汇总分段的计算方法
 	public JSONObject valueListNewSum(List<JSONObject> valueList){
 		JSONObject group = new JSONObject();
 		for (int k = 0; k < valueList.size(); k++) {

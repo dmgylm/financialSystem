@@ -78,6 +78,7 @@ public interface StatisticJsonService {
 	 * @param businessDataList
 	 * @return
 	 */
-	Map<String, Object> groupDataSum(List<BusinessData> businessDataList);
+	String groupDataSum(String reportType, String businessType,
+			List<BusinessData> businessDataList);
 
 }
