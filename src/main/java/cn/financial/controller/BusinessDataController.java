@@ -28,6 +28,7 @@ import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserRole;
+import cn.financial.model.response.BusinessDataYearResult;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
 import cn.financial.model.response.ResultUtils;
@@ -541,8 +542,38 @@ public class BusinessDataController {
 			}
 		}
 		return result;
-
 	}
+	
+	/**
+     * 查询年份输入框
+     * @param request
+     * @return
+     */
+    @RequiresPermissions("businessData:view")
+    @RequestMapping(value = "/businessDataYear", method = RequestMethod.POST)
+    @ApiOperation(value = "查询损益/预算的年份输入框数据", notes = "年份输入框降序排列", response = BusinessDataYearResult.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sId", value = "表sId(1损益 2预算)", required = true, dataType = "Integer", paramType = "query") })
+    @ResponseBody
+    public BusinessDataYearResult updateStatus(HttpServletRequest request, Integer sId) {
+        BusinessDataYearResult result= new BusinessDataYearResult();
+        if(sId==1||sId==2){
+            Map<Object, Object> map = new HashMap<>();
+            map.put("sId", sId);
+            List<BusinessData> list=businessDataService.businessDataYear(map);
+            List<Integer> listYear =new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+               listYear.add(list.get(i).getYear());
+            }
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+            result.setYear(listYear);
+         }else{
+          result.setResultDesc("sId只能为1，或者为2");    
+         }
+        return result;
+    }
+	
+	
 
 	/**
 	 * 删除损益数据 （修改Status为0）

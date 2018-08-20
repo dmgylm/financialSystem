@@ -132,4 +132,10 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	public BusinessData selectBusinessDataByType(String id) {
 		return businessDataDao.selectBusinessDataByType(id);
 	}
+
+    @Override
+    public List<BusinessData> businessDataYear(Map<Object, Object> map) {
+        // TODO Auto-generated method stub
+        return businessDataDao.businessDataYear(map);
+    }
 }

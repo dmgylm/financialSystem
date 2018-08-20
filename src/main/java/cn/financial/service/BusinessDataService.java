@@ -96,4 +96,11 @@ public interface BusinessDataService {
      * @return
      */
 	BusinessData selectBusinessDataByType(String id);
+	
+	/**
+     * 查询月份输入框
+     * @param map
+     * @return
+     */
+    List<BusinessData> businessDataYear(Map<Object, Object> map);
 }
