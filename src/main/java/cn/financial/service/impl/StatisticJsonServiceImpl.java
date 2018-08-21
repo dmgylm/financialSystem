@@ -265,7 +265,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public String groupDataSum(String reportType, String businessType,List<BusinessData> businessDataList){
+	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
 		JSONObject model = findModel(reportType,businessType);
 		if(model==null){

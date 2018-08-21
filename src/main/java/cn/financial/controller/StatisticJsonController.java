@@ -146,15 +146,22 @@ public class StatisticJsonController {
      		}
     		//获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
-    		//分组处理对应数据集合
-    		
-        	//获取传递到页面的数据集合
+    		//获取传递到页面的数据集合
     		JSONObject ja = null;
-    		try {
-    			ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);	
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+    		//分组处理对应数据集合
+    		if(DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)||
+    				DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)){
+        		try {
+        			ja = JSONObject.parseObject(statisticService.jsonCalculationCollect(reportType,businessType,businessDataList));
+    			} catch (Exception e) {
+    		}
+    		}else{
+        		try {
+        			ja = statisticService.jsonCalculation(reportType,businessType,businessDataList);	
+    			} catch (Exception e) {
+    		}
+    		}
+
         	if(ja==null){
             	ElementXMLUtils.returnValue(ElementConfig.MODULE_FAIL,sj);
             	return sj;
