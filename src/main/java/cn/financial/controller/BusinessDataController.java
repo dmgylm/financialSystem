@@ -41,6 +41,7 @@ import cn.financial.service.UserRoleService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.ExcelReckonUtils;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
 import cn.financial.util.JsonConvertProcess;
@@ -353,7 +354,8 @@ public class BusinessDataController {
 	                     * inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
 	                     * mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val()); }
 	                     */
-	                    JSONObject newBudgetHtml = businessDataInfoServiceImpl.dgkey(dataMjo, mo);
+	                    ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
+	                    String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo)).toString());
 	                    BusinessData businessData = new BusinessData();
 	                    businessData.setId(id);
 	                    businessData.setStatus(status);
