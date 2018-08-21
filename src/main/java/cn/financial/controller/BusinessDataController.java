@@ -42,7 +42,6 @@ import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelReckonUtils;
-import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
 import cn.financial.util.JsonConvertProcess;
@@ -126,35 +125,31 @@ public class BusinessDataController {
             String uId = user.getId();
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
             //List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
-            List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据
+            List<Organization> listTree = new ArrayList<>(); // 筛选过后就的权限数据
             for (int i = 0; i < userOrganization.size(); i++){
                   if(keyword!=null&&!keyword.equals("")){
                         List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                        JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                        for (int j = 0; j < jsonArr.size(); j++) {
-                            JSONObject json = jsonArr.getJSONObject(j);
-                            Integer orgType=Integer.parseInt(json.getString("orgType"));
-                            String orgName=json.getString("orgName");
+                        for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                            Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
+                            String orgName=listTreeByIdForSon.get(j).getOrgName();
                             if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
-                              Organization companyName = organizationService.getCompanyNameBySon(json.getString("id"));// 查询部门所属的公司名
+                              Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
                               if(companyName!=null){
                                 if(orgName.contains(keyword)||companyName.getOrgName().contains(keyword)){//如果部门或者部门所属的公司包含关键词
-                                   listTree.add(jsonArr.getJSONObject(j));   
+                                   listTree.add(listTreeByIdForSon.get(j));   
                                  }          
                               }else if(orgName.contains(keyword)){
-                                  listTree.add(jsonArr.getJSONObject(j));  
+                                  listTree.add(listTreeByIdForSon.get(j));  
                               }
                             }
                         }                    
                     }else{//查询orgName以下所有级别数据
                           List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                            JSONArray jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon);
-                            for (int j = 0; j < jsonArr.size(); j++) {
-                                JSONObject json = jsonArr.getJSONObject(j);
-                                Integer orgType=Integer.parseInt(json.getString("orgType"));
-                                String orgName=json.getString("orgName");
+                            for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                                Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
+                                String orgName=listTreeByIdForSon.get(j).getOrgName();
                                 if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){
-                                    listTree.add(jsonArr.getJSONObject(j)); 
+                                    listTree.add(listTreeByIdForSon.get(j)); 
                                 }
                             }
                        }  
@@ -169,7 +164,7 @@ public class BusinessDataController {
                       oId[i] = pid;
                   }*/
                   for (int i = 0; i < listTree.size(); i++) {
-                      String id = listTree.get(i).getString("id");
+                      String id = listTree.get(i).getId();
                       oId[i] = id;
                   }
                   List<String> oIds = Arrays.asList(oId);
@@ -323,6 +318,8 @@ public class BusinessDataController {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         ResultUtils result = new ResultUtils();
         // File file = new File("C:/Users/ellen/Downloads/测试html.txt");
+        User user = (User) request.getAttribute("user");
+        String uId=user.getId();
         try {
             // 如果有html则是在编辑页面提交（可能是保存 或者提交）
             if (strJson != null && !strJson.equals("") && id != null && !id.equals("")) {
@@ -359,6 +356,7 @@ public class BusinessDataController {
                         String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo)).toString());
                         BusinessData businessData = new BusinessData();
                         businessData.setId(id);
+                        businessData.setuId(uId);
                         businessData.setStatus(status);
                         // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                         Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
@@ -393,6 +391,7 @@ public class BusinessDataController {
                 }else{
                     BusinessData businessData = new BusinessData();
                     businessData.setId(id);
+                    businessData.setuId(uId);
                     businessData.setStatus(status);
                     Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                     if (i == 1) {
