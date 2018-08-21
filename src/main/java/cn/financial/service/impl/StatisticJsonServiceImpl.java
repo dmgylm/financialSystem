@@ -206,25 +206,29 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
     	for (int j = 0; j < businessDataList.size(); j++) {
     		valueList.add(JSONObject.parseObject(businessDataList.get(j).getInfo()));
 		}
-		//开始数据计算
-		Map<String,Object> item = valueListSum(valueList);
-		//进行模板填写
-		Iterator<String> it = model.keySet().iterator();
-		while (it.hasNext()) {
-			JSONArray json = new JSONArray();
-			String modelKey = it.next();
-			if(model.get(modelKey) instanceof JSONObject){
-				JSONObject downValve = model.getJSONObject(modelKey);
-				Iterator<String> dt = downValve.keySet().iterator();
-				while (dt.hasNext()) {
-					String downKey = dt.next();
-					downValve = completeMap(downValve,downKey,item,json);
-				}
-				model.put(modelKey, downValve);
-			}else{
-				model = completeMap(model,modelKey,item,json);
-			}
-		}
+//		//开始数据计算
+//		Map<String,Object> item = valueListSum(valueList);
+//		//进行模板填写
+//		Iterator<String> it = model.keySet().iterator();
+//		while (it.hasNext()) {
+//			JSONArray json = new JSONArray();
+//			String modelKey = it.next();
+//			if(model.get(modelKey) instanceof JSONObject){
+//				JSONObject downValve = model.getJSONObject(modelKey);
+//				Iterator<String> dt = downValve.keySet().iterator();
+//				while (dt.hasNext()) {
+//					String downKey = dt.next();
+//					downValve = completeMap(downValve,downKey,item,json);
+//				}
+//				model.put(modelKey, downValve);
+//			}else{
+//				model = completeMap(model,modelKey,item,json);
+//			}
+//		}
+    	//开始数据计算
+    	JSONObject item = valueListNewSum(valueList);
+    	//进行模板填写
+    	model = JsonConvertProcess.mergeJson(model,item);
 		
 		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
 		String bytes = JSON.toJSONString(model,feature);  
@@ -375,7 +379,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 			modelDataStatic.put(modelLogoName, modelDataSum);
 		}
-		System.out.println(modelDataStatic);
 		//最后进行的汇总模板填写
 		Iterator<String> staticModel = model.keySet().iterator();
 		while (staticModel.hasNext()) {
