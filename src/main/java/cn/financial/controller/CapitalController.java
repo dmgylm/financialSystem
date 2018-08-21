@@ -122,7 +122,7 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                  String uId = user.getId();
                  if(keyword!=null&&!keyword.equals("")){
-                    //keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                    //获取输入的关键词查询其级别    如果orgType级别在权限数据级别以上  那么是查看不到数据的
                      List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                      JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
@@ -144,7 +144,7 @@ public class CapitalController {
                              ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                              capitalResult.setData(list);
                              capitalResult.setTotal(list.size());
-                         }else if(!n.contains(Capital.NAME)&& u<=keywordOrgType||u==4){
+                         }else if(!n.contains(Capital.NAME)&& u>=keywordOrgType||u==4){
                              //获取搜索关键字的公司名称
                              //查询该节点下的所有子节点集合 获取公司的级别
                             List<Organization> organization=new ArrayList<>();
@@ -475,7 +475,7 @@ public class CapitalController {
                                  if(listOrganization.size()>0){
                                      capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id
                                  }else{
-                                     result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司名字您没有权限导入");
+                                     result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不存在");
                                      insertFlag=false;
                                      break;  
                                  } 
