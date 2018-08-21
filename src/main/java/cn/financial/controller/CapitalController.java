@@ -400,20 +400,37 @@ public class CapitalController {
         public ResultUtils updateCapital(HttpServletRequest request,String id,String classify,String remarks) {
             ResultUtils result=new ResultUtils();
             try {
-                Capital capital =new Capital();
-                if(id!=null&&!id.equals("")){
-                    capital.setId(id);
-                    capital.setClassify(classify); //修改项目分类
-                    capital.setRemarks(remarks);  //备注
-                    Integer i = capitalService.updateCapital(capital);
-                    if (i == 1) {
-                       ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                    } else {
-                       ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                    }               
+                User user = (User) request.getAttribute("user");
+                String uId = user.getId();
+                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                boolean isImport = true;//是否可编辑
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    JSONObject obu = (JSONObject) userOrganization.get(i);
+                    Integer num=Integer.parseInt(obu.get("orgType").toString());
+                    String emm=obu.getString("name").toString();   
+                    if(num!=Capital.DEPNUM && num!=Capital.ORGNUM &&!emm.contains(Capital.NAME)){
+                        isImport=false;
+                   }
+                }
+                 if(isImport){
+                    if(id!=null&&!id.equals("")){
+                        Capital capital =new Capital();
+                        capital.setId(id);
+                        capital.setClassify(classify); //修改项目分类
+                        capital.setRemarks(remarks);  //备注
+                        Integer i = capitalService.updateCapital(capital);
+                        if (i == 1) {
+                           ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                        } else {
+                           ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        }               
+                    }else{
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("id不能为空！");
+                    }                   
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                    result.setResultDesc("修改失败！id不能为空！");
+                    result.setResultDesc("您当前所属的组织架构没有此操作权限！");
                 }
             } catch (Exception e) {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);

@@ -525,7 +525,7 @@ public class BusinessDataController {
                 if (businessData == null) {
                     ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_FAIL, result);
                 } else {
-                    //获取公司名字
+                  //获取公司名字
                     Organization companyName = organizationService.getCompanyNameBySon(businessData.getoId());// 查询部门所属的公司名
                     String company=companyName.getOrgName();
                     //获取业务方式
@@ -543,17 +543,17 @@ public class BusinessDataController {
                     response.setCharacterEncoding("utf-8");
                     // 对文件名进行处理。防止文件名乱码
                     String fileName =company+orgName+dm.getModuleName() + ".xlsx";
-                    //fileName = URLEncoder.encode(fileName, "UTF-8");
+                    fileName = URLEncoder.encode(fileName, "UTF-8");
                     System.out.println(fileName + "~~~");
-                    // Content-disposition属性设置成以附件方式进行下载
-                    response.setHeader("Content-Disposition", "attachment; filename="+fileName);
-                    response.setContentType("application/octet-stream");
+                    // 对文件名进行处理。防止文件名乱码
+                    response.setHeader("Content-disposition", "attachment;filename=" + fileName);
                     OutputStream os = response.getOutputStream();
                     wb.write(os);
                     os.flush();
                     os.close();
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
                 }
+              
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
             }
