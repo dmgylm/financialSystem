@@ -110,7 +110,7 @@
                 #{uId}
             </foreach>
         </if>
-        GROUP BY u.name
+        GROUP BY u.id
         ORDER BY u.createTime DESC
         <if test="pageSize!=null and pageSize!=''">
             LIMIT #{start},#{pageSize}
@@ -136,7 +136,7 @@
                 #{uId}
             </foreach>
         </if>
-        GROUP BY u.name) total
+        GROUP BY u.id) total
     </select>
     
     <!--定义一个sql片段 -->
