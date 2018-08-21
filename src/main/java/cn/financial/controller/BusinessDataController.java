@@ -42,6 +42,7 @@ import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelReckonUtils;
+import cn.financial.util.ExcelUtil;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertExcel;
 import cn.financial.util.JsonConvertProcess;
@@ -524,6 +525,12 @@ public class BusinessDataController {
                 if (businessData == null) {
                     ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_FAIL, result);
                 } else {
+                    //获取公司名字
+                    Organization companyName = organizationService.getCompanyNameBySon(businessData.getoId());// 查询部门所属的公司名
+                    String company=companyName.getOrgName();
+                    //获取业务方式
+                    List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",businessData.getTypeId(), "", "", "", null, null);
+                    String orgName=listOrganization.get(0).getOrgName();
                     DataModule dm = dataModuleService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(businId);
                     JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
@@ -535,11 +542,12 @@ public class BusinessDataController {
                     response.setContentType("application/x-download");
                     response.setCharacterEncoding("utf-8");
                     // 对文件名进行处理。防止文件名乱码
-                    String fileName = dm.getModuleName() + ".xlsx";
-                    fileName = URLEncoder.encode(fileName, "UTF-8");
+                    String fileName =company+orgName+dm.getModuleName() + ".xlsx";
+                    //fileName = URLEncoder.encode(fileName, "UTF-8");
                     System.out.println(fileName + "~~~");
                     // Content-disposition属性设置成以附件方式进行下载
-                    response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                    response.setHeader("Content-Disposition", "attachment; filename="+fileName);
+                    response.setContentType("application/octet-stream");
                     OutputStream os = response.getOutputStream();
                     wb.write(os);
                     os.flush();

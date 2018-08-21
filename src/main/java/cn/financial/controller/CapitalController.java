@@ -690,12 +690,12 @@ public class CapitalController {
             result.setResultDesc("文件大于5M不能上传！请传5M以下的数据");
         } 
       }else{
-          result.setResultDesc("您上传的不是Excel文档！");
           ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+          result.setResultDesc("您上传的不是Excel文档！");
       }
       }else{
-           result.setResultDesc("您上传的不是Excel文档！");
            ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+           result.setResultDesc("您上传的不是Excel文档！");
        }
           return result;
       }
