@@ -288,9 +288,11 @@ public class BusinessDataController {
                     htmlResult.setData(html); 
 			    }else{
 			        htmlResult.setResultDesc("您当前没有权限进行此操作！"); 
+			        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
 			    }
 			} else {
 				htmlResult.setResultDesc("id或者htmlType为空！");
+				 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
 			}
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, htmlResult);
@@ -336,6 +338,7 @@ public class BusinessDataController {
 					BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
 					if(status == 2 && businessDataById.getStatus()==status&&businessDataById.getsId()==1){
 					    result.setResultDesc("此数据已经提交！不能重复提交"); 
+					    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
 					}else{
 					    JSONArray jsonArr = JSONArray.parseArray(strJson);
 	                    Map<String, Object> mo = new HashMap<String, Object>();
@@ -377,11 +380,13 @@ public class BusinessDataController {
 					}
 				} else {
 					result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）");
+					ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
 				}
 			} else if (status == 2 && id != null && !id.equals("")) { // 如果html为空，则是直接提交（此时状态是提交 2）只需要把损益表的状态修改下
 			    BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
 			    if(businessDataById.getStatus()==status&&businessDataById.getsId()==1){
 			        result.setResultDesc("此数据已经提交！不能重复提交");  
+			        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
 			    }else{
 			        BusinessData businessData = new BusinessData();
 	                businessData.setId(id);
@@ -397,6 +402,7 @@ public class BusinessDataController {
 			    }
 			} else {
 				result.setResultDesc("id不能为空");
+				ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
 			}
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
@@ -482,6 +488,7 @@ public class BusinessDataController {
 				}
 			} else {
 				result.setResultDesc("该状态不是4退回状态");
+				ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
 			}
 		} catch (Exception e) {
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
@@ -568,7 +575,8 @@ public class BusinessDataController {
             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
             result.setYear(listYear);
          }else{
-          result.setResultDesc("sId只能为1，或者为2");    
+          result.setResultDesc("sId只能为1，或者为2");   
+          ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
          }
         return result;
     }
