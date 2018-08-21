@@ -63,11 +63,10 @@
          LIMIT #{start},#{pageSize}
        </select>
        
-
        <!--不分页，根据条件查询业务表  -->
        <select id="getBusinessAllBySomeOne" parameterType="map" resultType="businessData">
        select  * from businessData as b where 1=1
-       <include refid="query_businessData_where"></include> 
+       <include refid="query_businessDataBySomeOne_where"></include> 
        </select>
        
        <!-- 导出数据查询-->
@@ -169,4 +168,20 @@
              and  s.month &lt;= #{endMonth,jdbcType=INTEGER}
         </if>
     </sql>
+    
+     <sql id="query_businessDataBySomeOne_where">
+        <if test="year !=null and year!=''">
+            and b.year = #{year}
+        </if>
+        <if test="month!=null and month!=''">
+            and b.month = #{month}
+        </if>
+        <if test="sId!=null and sId!=''">
+            and b.sId = #{sId}
+        </if>
+         <if test="typeId!=null and typeId!=''">
+          and b.typeId =#{typeId}
+        </if>
+    </sql>
+    
 </mapper>
