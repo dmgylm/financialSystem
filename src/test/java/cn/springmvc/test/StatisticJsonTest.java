@@ -204,7 +204,7 @@ public class StatisticJsonTest {
 //			System.out.println(businessDataList.get(i).getDataModuleId());
 //		}
 		
-		service.groupDataSum(null,null,businessDataList);
+		service.jsonCalculationCollect(null,null,businessDataList);
     	
     }
 	
