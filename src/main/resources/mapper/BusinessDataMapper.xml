@@ -55,12 +55,15 @@
        
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
-         SELECT *
-         FROM businessData b,organization o,businessDataInfo info
-         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.typeId
-         <include refid="query_businessData_where"></include>  
-         ORDER BY b.updateTime DESC
-         LIMIT #{start},#{pageSize}
+        SELECT 
+        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,businessData.status
+        FROM businessData 
+        INNER JOIN organization ON businessData.typeId=organization.id
+        INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
+        WHERE businessData.delStatus=1 and organization.status=1 and businessDataInfo.delStatus=1
+        <include refid="query_businessData_where"></include>  
+        ORDER BY businessData.updateTime DESC
+        LIMIT #{start},#{pageSize}
        </select>
        
        <!--不分页，根据条件查询业务表  -->
@@ -71,11 +74,13 @@
        
        <!-- 导出数据查询-->
        <select id="businessDataExport" parameterType="map" resultType="businessData">
-         SELECT *
-         FROM businessData b,organization o,businessDataInfo info
-         WHERE b.delStatus=1 and o.status=1 and info.delStatus=1 and b.id=info.businessDataId and o.id=b.typeId 
-         <include refid="query_businessData_where"></include>  
-         ORDER BY b.updateTime DESC
+         SELECT 
+        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,businessData.status
+        FROM businessData 
+        INNER JOIN organization ON businessData.typeId=organization.id
+        INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
+        WHERE businessData.delStatus=1 and organization.status=1 and businessDataInfo.delStatus=1
+        <include refid="query_businessData_where"></include>  
        </select>
        
       <!-- 根据条件修改损益数据 -->
@@ -107,16 +112,16 @@
       <!--sql-->
      <sql id="query_businessData_where">
         <if test="year !=null and year!=''">
-            and b.year = #{year}
+            and businessData.year = #{year}
         </if>
         <if test="month!=null and month!=''">
-            and b.month = #{month}
+            and businessData.month = #{month}
         </if>
         <if test="sId!=null and sId!=''">
-            and b.sId = #{sId}
+            and businessData.sId = #{sId}
         </if>
          <if test="typeId!=null and typeId!=''">
-          and b.typeId in 
+          and businessData.typeId in 
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
                #{typeId}
            </foreach>
