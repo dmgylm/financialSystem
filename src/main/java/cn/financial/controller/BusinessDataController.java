@@ -38,6 +38,7 @@ import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserRoleService;
+import cn.financial.service.UserService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -86,6 +87,9 @@ public class BusinessDataController {
     
     @Autowired
     private UserRoleService userRoleService;
+    
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private BusinessDataInfoService businessDataInfoService;
@@ -193,24 +197,22 @@ public class BusinessDataController {
                   // 循环合格数据的oid 去查询他的所有部门
                   List<Business> businessList = new ArrayList<>();
                   for (int i = 0; i < businessData.size(); i++) {
-                      String id=businessData.get(i).getTypeId();
-                      List<Organization> listTreeByIdForSon = organizationService
-                              .listTreeByIdForSon(id); // 根据oId查出公司以下的部门
+                      //String id=businessData.get(i).getTypeId();
+                      //List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(id); // 根据oId查出公司以下的部门
                       Organization CompanyName = organizationService.getCompanyNameBySon(businessData.get(i).getoId());// 查询所属的公司名
-                      for (int j = 0; j < listTreeByIdForSon.size(); j++) {
-                          if (listTreeByIdForSon.get(j).getOrgType() == BusinessData.DEPNUM) { // 找到公司以下的节点业务
-                              Business business = new Business();
-                              business.setId(businessData.get(i).getId());// id
-                              business.setYear(businessData.get(i).getYear()); // 年份
-                              business.setMonth(businessData.get(i).getMonth()); // 月份
-                              business.setUserName(user.getName()); // 用户
-                              business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
-                              business.setStatus(businessData.get(i).getStatus());// 状态
-                              business.setCompany(CompanyName.getOrgName()); // 公司
-                              business.setStructures(listTreeByIdForSon.get(j).getOrgName()); // 业务方式
-                              businessList.add(business);
-                          }
+                      Business business = new Business();
+                      business.setId(businessData.get(i).getId());// id
+                      business.setYear(businessData.get(i).getYear()); // 年份
+                      business.setMonth(businessData.get(i).getMonth()); // 月份
+                      User userById=userService.getUserById(businessData.get(i).getuId());
+                      if(userById!=null){
+                        business.setUserName(userById.getName()); // 用户    
                       }
+                      business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
+                      business.setStatus(businessData.get(i).getStatus());// 状态
+                      business.setCompany(CompanyName.getOrgName()); // 公司
+                      business.setStructures(businessData.get(i).getOrgName()); // 业务方式
+                      businessList.add(business);
                   }
                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
                   businessResult.setData(businessList); // 返回的资金流水数据

@@ -56,7 +56,8 @@
        <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
         SELECT 
-        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,businessData.status
+        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,
+        businessData.status,organization.orgName,businessData.uId
         FROM businessData 
         INNER JOIN organization ON businessData.typeId=organization.id
         INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
@@ -75,7 +76,8 @@
        <!-- 导出数据查询-->
        <select id="businessDataExport" parameterType="map" resultType="businessData">
          SELECT 
-        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,businessData.status
+        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,
+        businessData.status,organization.orgName,businessData.uId
         FROM businessData 
         INNER JOIN organization ON businessData.typeId=organization.id
         INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId

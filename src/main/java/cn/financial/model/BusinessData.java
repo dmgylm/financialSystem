@@ -45,7 +45,17 @@ public class BusinessData {
         private Integer sId; //1表示损益表   2表示预算表
         
         private Integer version; //版本号，每当有退回时候 版本号自动加1
+        
+        private String  orgName; //组织架构
     
+        public String getOrgName() {
+            return orgName;
+        }
+
+        public void setOrgName(String orgName) {
+            this.orgName = orgName;
+        }
+
         public BusinessData() {
             super();
         }
