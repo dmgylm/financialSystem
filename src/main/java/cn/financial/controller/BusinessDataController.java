@@ -118,9 +118,9 @@ public class BusinessDataController {
             Integer sId, Integer page, Integer pageSize) {
         BusinessResult businessResult = new BusinessResult();
         try {
-            if(keyword!=null&&!keyword.equals("")){
+           /* if(keyword!=null&&!keyword.equals("")){
                 keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-            }
+            }*/
             Map<Object, Object> map = new HashMap<>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
