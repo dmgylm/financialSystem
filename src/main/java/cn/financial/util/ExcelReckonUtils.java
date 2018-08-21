@@ -27,6 +27,8 @@ public class ExcelReckonUtils {
 	
 	private Map<String,String> keyMap ;
 	
+	private String MODULE_KEY_SPLIT = "★";
+	
 	/**
 	 * 通过Excel计算公式的值
 	 * @param json 需要计算的Json数据(模板+数据格式)
@@ -102,13 +104,18 @@ public class ExcelReckonUtils {
 					}
 					cell.setCellValue(value);
 				} else if(type == HtmlGenerate.BOX_TYPE_FORMULA){
-					String formula = obj.getString("formula");
-					if(!StringUtils.isValid(formula)) {
-						continue;
-					}
-					String excelFormula = replaceFormulaToStr(formula);
-					cell.setCellType(Cell.CELL_TYPE_FORMULA);
-					cell.setCellFormula(excelFormula);
+						Double value = rowNum.doubleValue();
+						if(obj.containsKey("value")) {
+							obj.getDoubleValue("value");
+						}
+						cell.setCellValue(value);
+						String formula = obj.getString("formula");
+						if(!StringUtils.isValid(formula)) {
+							continue;
+						}
+						String excelFormula = replaceFormulaToStr(formula,value);
+						cell.setCellType(Cell.CELL_TYPE_FORMULA);
+						cell.setCellFormula(excelFormula);
 				} else {
 					cell.setCellValue(obj.getString("name"));//显示类直接展示Name属性值
 				}
@@ -119,13 +126,16 @@ public class ExcelReckonUtils {
 		return wb;
 	}
 
-	private String replaceFormulaToStr(String formula) {
+	private String replaceFormulaToStr(String formula,Double oldValue) {
 		String[] attrs = FormulaUtil.splitFormula(formula);
 		for(int i=0;attrs!=null && i<attrs.length;i++) {
 			String attr = attrs[i];
 			String excelFormula = keyMap.get(attr);
-			if(excelFormula==null) {
+			if(attr.indexOf(MODULE_KEY_SPLIT)<0 && excelFormula==null) {
 				System.out.println(111);
+			}
+			if(attr.indexOf(MODULE_KEY_SPLIT)>0) {
+				excelFormula = String.valueOf(oldValue);
 			}
 			formula = FormulaUtil.replaceFirst(formula,attr,excelFormula);
 		}
