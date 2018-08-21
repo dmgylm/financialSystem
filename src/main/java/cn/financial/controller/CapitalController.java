@@ -122,7 +122,7 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                  String uId = user.getId();
                  if(keyword!=null&&!keyword.equals("")){
-                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+                   // keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                    //获取输入的关键词查询其级别    如果orgType级别在权限数据级别以上  那么是查看不到数据的
                      List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                      JSONObject userOrganizationJson = (JSONObject) userOrganization.get(0);
