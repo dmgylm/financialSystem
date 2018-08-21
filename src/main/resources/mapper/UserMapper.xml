@@ -44,7 +44,7 @@
     </select>
     <!--根据name/jobNumber查询用户-->  
     <select id="countUserName" parameterType="STRING" resultType="INTEGER">
-         SELECT COUNT(name) FROM user WHERE status=1
+         SELECT COUNT(name) FROM user WHERE 1=1
          <if test="name!=null and name!=''">
             and name=#{name}
          </if>
