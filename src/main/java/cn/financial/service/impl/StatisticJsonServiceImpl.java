@@ -263,14 +263,18 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 * @param businessDataList
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+
 	@Override
+	@JSONField(serialize = true)
+	@SuppressWarnings("unchecked")
 	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
-		JSONObject model = findModel(reportType,businessType);
-		if(model==null){
-			return null;
-		}
+		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/budget.txt"));
+//		JSONObject model = findModel(reportType,businessType);
+//		if(model==null){
+//			return null;
+//		}
+		
 		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
 		//取出id来进行查询
 		List<String> dataId = new ArrayList<String>();
@@ -325,7 +329,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				trueMap = groupmap.getJSONObject(modelLogoName);
 			}
 			String modelJson = JsonConvertProcess.mergeJson(modelData,trueMap).toString();
-/*			//模板公式计算
+			//模板公式计算
 			ExcelReckonUtils eru = new ExcelReckonUtils();
 			String reward =null;
 			try {
@@ -334,8 +338,8 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				e.printStackTrace();
 			}
 			//模板添加
-			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));*/
-			modelDataStatic.put(modelLogoName,JSONObject.parseObject(modelJson));
+			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));
+//			modelDataStatic.put(modelLogoName,JSONObject.parseObject(modelJson));
 		}
 		//重构模板及对应标识，取出需要的结果
 		Iterator<String> returnData = modelDataStatic.keySet().iterator();
@@ -419,15 +423,18 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			//判断输入是否是需要整合的
 			Integer type = rowjar.getInteger("type");
 			String itemKey = rowjar.getString("key");
-			if (type ==2 ||type == 4){
-				String[] setDown = itemKey.split("★");
-				String logoKey = setDown[0];
-				String logoValue = setDown[1];
-				if(modelDataStatic.containsKey(logoKey)){
-					JSONObject staticData = modelDataStatic.get(logoKey);
-					if(staticData.containsKey(logoValue)){
-						//将数据添加到新json里
-						rowjar.put("value", staticData.get(logoValue));
+			String formula = rowjar.getString("formula"); 
+			if (type ==3){
+				if(formula.contains("★")){
+					String[] setDown = formula.split("★");
+					String logoKey = setDown[0];
+					String logoValue = setDown[1];
+					if(modelDataStatic.containsKey(logoKey)){
+						JSONObject staticData = modelDataStatic.get(logoKey);
+						if(staticData.containsKey(logoValue)){
+							//将数据添加到新json里
+							rowjar.put("value", staticData.get(logoValue));
+						}
 					}
 				}
 			}

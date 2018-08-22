@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -22,6 +23,7 @@ import cn.financial.model.response.ChildrenObject;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.StatisticJsonService;
 import cn.financial.service.impl.OrganizationServiceImpl;
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.HttpClient3;
 import cn.financial.util.UuidUtil;
 
@@ -203,8 +205,11 @@ public class StatisticJsonTest {
 //		for (int i = 0; i < businessDataList.size(); i++) {
 //			System.out.println(businessDataList.get(i).getDataModuleId());
 //		}
+		JSONObject ja =JSONObject.parseObject(service.jsonCalculationCollect("SUMMARY_PROFIT_LOSS",null,businessDataList));
+		HtmlGenerate hg = new HtmlGenerate(true);
+		String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
 		
-		service.jsonCalculationCollect(null,null,businessDataList);
+		System.out.println(html); 
     	
     }
 	
