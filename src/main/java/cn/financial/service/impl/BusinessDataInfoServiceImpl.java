@@ -58,19 +58,37 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService{
 	 * @param mo   前端传来的HTML
 	 * @return 返回合并后的模板
 	 */
-	public JSONObject dgkey(JSONObject dataMjo, Map<String,Object> mo) {
+	public JSONObject dgkey(JSONObject dataMjo, Map<String,Object> mo,String type) {
 		JSONObject newBudgetHtml=new JSONObject();
-		for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
-			String keyIncome = iterIncome.next();
-			Object objIncome = dataMjo.get(keyIncome);
-			if (objIncome instanceof JSONArray) {; 
-				newBudgetHtml=mergeHtml(dataMjo, mo);
-			} else {
-				JSONObject longData = (JSONObject) objIncome;
-				newBudgetHtml=mergeHtml(longData, mo);
+		JSONObject ja=new JSONObject();
+		if(type.equals("BUDGET")) {//预算
+			for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
+				String keyIncome = iterIncome.next();
+				Object objIncome = dataMjo.get(keyIncome);
+				if (objIncome instanceof JSONArray) {
+					newBudgetHtml=mergeHtml(dataMjo, mo);
+				} else {
+					JSONObject longData = (JSONObject) objIncome;
+					newBudgetHtml=mergeHtml(longData, mo);
+				}
+				ja.put(keyIncome, newBudgetHtml);
 			}
+			return ja;
+		}else if(type.equals("PROFIT_LOSS")) {//损益
+			for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
+				String keyIncome = iterIncome.next();
+				Object objIncome = dataMjo.get(keyIncome);
+				if (objIncome instanceof JSONArray) {
+					newBudgetHtml=mergeHtml(dataMjo, mo);
+				} else {
+					JSONObject longData = (JSONObject) objIncome;
+					newBudgetHtml=mergeHtml(longData, mo);
+				}
+			}
+			return newBudgetHtml;
 		}
-		return newBudgetHtml;
+	
+		return null;
 	}
 	/**
 	 * 根据前端传来的表格进行公式计算之后进行合并
