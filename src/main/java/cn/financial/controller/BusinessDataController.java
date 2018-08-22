@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,9 +118,9 @@ public class BusinessDataController {
             Integer sId, Integer page, Integer pageSize) {
         BusinessResult businessResult = new BusinessResult();
         try {
-           /* if(keyword!=null&&!keyword.equals("")){
+            if(keyword!=null&&!keyword.equals("")){
                 keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-            }*/
+            }
             Map<Object, Object> map = new HashMap<>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
@@ -607,14 +608,17 @@ public class BusinessDataController {
          * @return
          */
         private Boolean isImport(List<JSONObject> list) {
-            boolean isImport = false;//是否可编辑
+            boolean isImport = true;//是否可编辑
             for (int i = 0; i < list.size(); i++) {
                 JSONObject obu = (JSONObject) list.get(i);
                 Integer num=Integer.parseInt(obu.get("orgType").toString());
                 String emm=obu.getString("name").toString();
-                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
-                    isImport=true;  
-                }
+                if(!emm.contains(BusinessData.NAME)){
+                    if(num==4||num==1){
+                        isImport =false;
+                        break;
+                      }   
+               }
             }
           return isImport;
         }

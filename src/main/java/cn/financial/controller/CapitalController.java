@@ -1119,14 +1119,17 @@ public class CapitalController {
         * @return
         */
        private Boolean isImport(List<JSONObject> list) {
-           boolean isImport = false;//是否可编辑
+           boolean isImport = true;//是否可编辑
            for (int i = 0; i < list.size(); i++) {
                JSONObject obu = (JSONObject) list.get(i);
                Integer num=Integer.parseInt(obu.get("orgType").toString());
                String emm=obu.getString("name").toString();
-               if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
-                   isImport=true;  
-               }
+               if(!emm.contains(BusinessData.NAME)){
+                   if(num==4||num==1){
+                       isImport =false;
+                       break;
+                     }   
+              }
            }
          return isImport;
        }
