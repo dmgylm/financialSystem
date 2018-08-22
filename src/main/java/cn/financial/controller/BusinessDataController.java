@@ -128,8 +128,8 @@ public class BusinessDataController {
             //List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
             List<Organization> listTree = new ArrayList<>(); // 筛选过后就的权限数据
             for (int i = 0; i < userOrganization.size(); i++){
+                List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                   if(keyword!=null&&!keyword.equals("")){
-                      List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
                       for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                             Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                             String orgName=listTreeByIdForSon.get(j).getOrgName();
@@ -154,8 +154,7 @@ public class BusinessDataController {
                            }
                         }                    
                     }else{//查询orgName以下所有级别数据
-                          List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                          for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                                 Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                                 String orgName=listTreeByIdForSon.get(j).getOrgName();
                                 if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){
