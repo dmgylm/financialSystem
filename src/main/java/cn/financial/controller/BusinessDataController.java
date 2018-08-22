@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -85,8 +86,6 @@ public class BusinessDataController {
     @Autowired
     private DataModuleService dmService;
     
-    @Autowired
-    private UserRoleService userRoleService;
     
     @Autowired
     private UserService userService;
@@ -252,17 +251,19 @@ public class BusinessDataController {
         HtmlResult htmlResult = new HtmlResult();
         try {
             User user = (User) request.getAttribute("user");
-            List<UserRole> userRole = userRoleService.listUserRole(user.getName(), null);//根据用户名查询对应角色信息
-            Boolean role=false;
-            if(userRole.size()>0){
-                for(UserRole list : userRole){
-                 if(list.getRoleName().contains("制单员")){
-                     role=true;
-                 }
+            String uId = user.getId();
+            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport = false;//是否可编辑
+            for (int i = 0; i < userOrganization.size(); i++) {
+                JSONObject obu = (JSONObject) userOrganization.get(i);
+                Integer num=Integer.parseInt(obu.get("orgType").toString());
+                String emm=obu.getString("name").toString();
+                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
+                    isImport=true;  
                 }
             }
             if (id != null && !id.equals("") && htmlType != null) {
-                if(htmlType==2&&role==true){ //有权限编辑录入中心页面
+                if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
                     BusinessData businessData = businessDataService.selectBusinessDataById(id);
                     DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
@@ -319,94 +320,108 @@ public class BusinessDataController {
     public ResultUtils updateBusinessData(HttpServletRequest request, String strJson, Integer status, String id) {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         ResultUtils result = new ResultUtils();
-        // File file = new File("C:/Users/ellen/Downloads/测试html.txt");
         User user = (User) request.getAttribute("user");
         String uId=user.getId();
         try {
-            // 如果有html则是在编辑页面提交（可能是保存 或者提交）
-            if (strJson != null && !strJson.equals("") && id != null && !id.equals("")) {
-                if (status == 1 || status == 2) {
-                    if (status == 1) {// 如果状态是保存 数据库状态修改为 待提交 0 否者 改为已提交 2
-                        status = 0;
-                    } else {
-                        status = 2;// 否者 改为已提交 2
-                    }
-                    /*
-                     * Document doc = Jsoup.parse(html);// 得到html // Document doc =
-                     * Jsoup.parse(file, "UTF-8", "http://example.com/"); Elements inputHtml =
-                     * doc.select("input");// 获取HTML所有input属性
-                     */ /* System.out.println(inputHtml); */
-                    BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
-                    if(status == 2 && businessDataById.getStatus()==status&&businessDataById.getsId()==1){
-                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                        result.setResultDesc("此数据已经提交！不能重复提交"); 
-                    }else{
-                        JSONArray jsonArr = JSONArray.parseArray(strJson);
-                        Map<String, Object> mo = new HashMap<String, Object>();
-                        for (int i = 0; i < jsonArr.size(); i++) {
-                            JSONObject json = jsonArr.getJSONObject(i);
-                            mo.put(json.getString("name"), json.getString("value"));
+            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport = false;//是否可编辑
+            for (int i = 0; i < userOrganization.size(); i++) {
+                JSONObject obu = (JSONObject) userOrganization.get(i);
+                Integer num=Integer.parseInt(obu.get("orgType").toString());
+                String emm=obu.getString("name").toString();
+                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
+                    isImport=true;  
+                }
+            }
+            if(isImport){
+             // 如果有html则是在编辑页面提交（可能是保存 或者提交）
+                if (strJson != null && !strJson.equals("") && id != null && !id.equals("")) {
+                    if (status == 1 || status == 2) {
+                        if (status == 1) {// 如果状态是保存 数据库状态修改为 待提交 0 否者 改为已提交 2
+                            status = 0;
+                        } else {
+                            status = 2;// 否者 改为已提交 2
                         }
-                        DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
-                        JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
                         /*
-                         * Map<String, Object> mo = new HashMap<String, Object>(); for (int i = 0; i <
-                         * inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
-                         * mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val()); }
-                         */
-                        ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
-                        String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo)).toString());
+                         * Document doc = Jsoup.parse(html);// 得到html // Document doc =
+                         * Jsoup.parse(file, "UTF-8", "http://example.com/"); Elements inputHtml =
+                         * doc.select("input");// 获取HTML所有input属性
+                         */ /* System.out.println(inputHtml); */
+                        BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
+                        if(status == 2 && businessDataById.getStatus()==status&&businessDataById.getsId()==1){
+                            ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                            result.setResultDesc("此数据已经提交！不能重复提交"); 
+                        }else{
+                            JSONArray jsonArr = JSONArray.parseArray(strJson);
+                            Map<String, Object> mo = new HashMap<String, Object>();
+                            for (int i = 0; i < jsonArr.size(); i++) {
+                                JSONObject json = jsonArr.getJSONObject(i);
+                                mo.put(json.getString("name"), json.getString("value"));
+                            }
+                            DataModule dm = dataModuleService.getDataModule(businessDataById.getDataModuleId());// 获取原始模板
+                            JSONObject dataMjo = JSONObject.parseObject(dm.getModuleData());// 获取损益表数据模板
+                            /*
+                             * Map<String, Object> mo = new HashMap<String, Object>(); for (int i = 0; i <
+                             * inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
+                             * mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val()); }
+                             */
+                            ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
+                            String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo)).toString());
+                            BusinessData businessData = new BusinessData();
+                            businessData.setId(id);
+                            businessData.setuId(uId);
+                            businessData.setStatus(status);
+                            // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+                            Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
+                            if (i == 1) {
+                                // 修改从表的info
+                                BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
+                                BusinessDataInfo businessDataInfo = new BusinessDataInfo();
+                                businessDataInfo.setId(selectBusinessDataById.getId());
+                                businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
+                                Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
+                                if (infoId == 1) {
+                                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                                    result.setResultDesc("修改成功");
+                                } else {
+                                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                                    result.setResultDesc("修改失败");
+                                }
+                            } else {
+                                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                                result.setResultDesc("修改失败");
+                            } 
+                        }
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）");
+                    }
+                } else if (status == 2 && id != null && !id.equals("")) { // 如果html为空，则是直接提交（此时状态是提交 2）只需要把损益表的状态修改下
+                    BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
+                    if(businessDataById.getStatus()==status&&businessDataById.getsId()==1){
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("此数据已经提交！不能重复提交");  
+                    }else{
                         BusinessData businessData = new BusinessData();
                         businessData.setId(id);
                         businessData.setuId(uId);
                         businessData.setStatus(status);
-                        // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                         Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                         if (i == 1) {
-                            // 修改从表的info
-                            BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
-                            BusinessDataInfo businessDataInfo = new BusinessDataInfo();
-                            businessDataInfo.setId(selectBusinessDataById.getId());
-                            businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
-                            Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
-                            if (infoId == 1) {
-                                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                                result.setResultDesc("修改成功");
-                            } else {
-                                ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                                result.setResultDesc("修改失败");
-                            }
+                            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                            result.setResultDesc("修改成功");
                         } else {
                             ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
                             result.setResultDesc("修改失败");
-                        } 
+                        }  
                     }
                 } else {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                    result.setResultDesc("您所给的状态不对！状态（1保存 , 2提交   ）");
-                }
-            } else if (status == 2 && id != null && !id.equals("")) { // 如果html为空，则是直接提交（此时状态是提交 2）只需要把损益表的状态修改下
-                BusinessData businessDataById = businessDataService.selectBusinessDataById(id); // 查询出表的数据 得到模板id
-                if(businessDataById.getStatus()==status&&businessDataById.getsId()==1){
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                    result.setResultDesc("此数据已经提交！不能重复提交");  
-                }else{
-                    BusinessData businessData = new BusinessData();
-                    businessData.setId(id);
-                    businessData.setuId(uId);
-                    businessData.setStatus(status);
-                    Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
-                    if (i == 1) {
-                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                        result.setResultDesc("修改成功");
-                    } else {
-                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                        result.setResultDesc("修改失败");
-                    }  
-                }
-            } else {
+                    result.setResultDesc("id不能为空");
+                }   
+            }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                result.setResultDesc("id不能为空");
+                result.setResultDesc("您当前所属的组织架构没有此操作权限！"); 
             }
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
