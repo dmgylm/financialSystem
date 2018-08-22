@@ -148,7 +148,6 @@ public class BusinessDataController {
                         }                    
                     }else{//查询orgName以下所有级别数据
                           List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                          JSONArray arr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
                           for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                                 Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                                 String orgName=listTreeByIdForSon.get(j).getOrgName();
