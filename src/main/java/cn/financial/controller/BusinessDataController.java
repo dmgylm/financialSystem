@@ -356,6 +356,9 @@ public class BusinessDataController {
                              * inputHtml.size(); i++) {// 解析HTML获取所有input name和value值
                              * mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val()); }
                              */
+                            System.out.println("模板类型~"+dm.getReportType());
+                            System.out.println("shuchu"+businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()));
+                          
                             ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
                             String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType())).toString());
                             BusinessData businessData = new BusinessData();
