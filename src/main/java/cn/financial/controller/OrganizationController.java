@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.BusinessData;
@@ -135,9 +136,9 @@ public class OrganizationController {
               		businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
             		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
               		for (int j = 0; j < orgDep.size(); j++) { // 获取所有部门
-              			DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(i).getOrgPlateId());
+              			DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(j).getOrgPlateId());
               			if (dm != null) {
-              				Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
+              				Organization org = organizationService.getCompanyNameBySon(orgDep.get(j).getId());// 获取对应部门的公司
               				if (org != null) {
               					Organization getOrgDep=orgDep.get(i);
               					businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
@@ -396,6 +397,7 @@ public class OrganizationController {
             int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
             if(day<start_time||day>stop_time){
             	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
+            	return result;
             }
             else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
@@ -403,45 +405,48 @@ public class OrganizationController {
                 int sum=0;//父id上面有公司级别的个数
                 if(orgType==3){//判断该组织是否是部门级别
                 	List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
-               	     for(int i=0;i<lists.size();i++){
-                		  int num=lists.get(i).getOrgType();
-                		  if(num==2){
-                			 sum++;
-                		  }
-                	  }
-               	     if(sum==0){
+                	int type=lists.get(0).getOrgType();
+               	     if(type!=2){
                	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
                	        return result;
                	     }
-
                 }
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-                String businessId=UuidUtil.getUUID();
-    			BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
-    			BusinessData businessData = new BusinessData();
-    			businessData.setId(businessId); // id自动生成
-    			businessData.setoId(selectBusinessDataById.getoId());
-    			businessData.setTypeId(selectBusinessDataById.getTypeId());
-    			businessData.setuId(selectBusinessDataById.getuId());
-    			businessData.setYear(selectBusinessDataById.getYear());
-    			businessData.setMonth(selectBusinessDataById.getMonth());
-    			businessData.setStatus(1);
-    			businessData.setDelStatus(selectBusinessDataById.getDelStatus());
-    			businessData.setsId(selectBusinessDataById.getsId());
-    			businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
-    			businessData.setVersion(selectBusinessDataById.getVersion() + 1);
-    			businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
-    			selectBusinessDataById.setDelStatus(0);
-    			businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
-    			BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
-    			BusinessDataInfo businfo=new BusinessDataInfo();
-    			String busId=UuidUtil.getUUID();
-    			businfo.setId(busId);
-    			businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
-    			businfo.setInfo(businessInfo.getInfo());
-    			businfo.setuId(businessInfo.getuId());
-    		   businessDataInfoService.insertBusinessDataInfo(businfo);
+            	JSONObject jsonTree= organizationService.TreeByIdForSon(id);
+            	JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
+            	if(jsonarray.size()==0){
+               	   if(Integer.parseInt(jsonTree.get("orgType").toString())==3){
+               		saveid(jsonTree.get("pid").toString());
+				 	String reportType = DataModule.REPORT_TYPE_BUDGET;
+                  	List<Organization> orgDep = organizationService.getDep();// 获取所有部门
+              		int year = Calendar.getInstance().get(Calendar.YEAR);
+              		int month = Calendar.getInstance().get(Calendar.MONTH)+1;
+              		organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
+              		businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
+            		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
+              		for (int j = 0; j < orgDep.size(); j++) { // 获取所有部门
+              			DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(j).getOrgPlateId());
+              			if (dm != null) {
+              				Organization org = organizationService.getCompanyNameBySon(orgDep.get(j).getId());// 获取对应部门的公司
+              				if (org != null) {
+              					Organization getOrgDep=orgDep.get(j);
+              					businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+              				}
+              			}
+              		}
+               		ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+               		return result;
+               	   }
+                 }
+            	else{
+            		for(int z=0;i<jsonarray.size();z++){
+                   	  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(z).toString());
+                   	  if(Integer.parseInt(jsonss.get("orgType").toString())==3){
+                   	   saveid(jsonss.get("pid").toString());
+                   	  }
+                    }
+            	}
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
@@ -488,6 +493,34 @@ public class OrganizationController {
             this.logger.error(e.getMessage(), e);
         }
         return hason;
+    }
+    
+    public void saveid(String id){
+    	 String businessId=UuidUtil.getUUID();
+			BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
+			BusinessData businessData = new BusinessData();
+			businessData.setId(businessId); // id自动生成
+			businessData.setoId(selectBusinessDataById.getoId());
+			businessData.setTypeId(selectBusinessDataById.getTypeId());
+			businessData.setuId(selectBusinessDataById.getuId());
+			businessData.setYear(selectBusinessDataById.getYear());
+			businessData.setMonth(selectBusinessDataById.getMonth());
+			businessData.setStatus(1);
+			businessData.setDelStatus(selectBusinessDataById.getDelStatus());
+			businessData.setsId(selectBusinessDataById.getsId());
+			businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
+			businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+			businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
+			selectBusinessDataById.setDelStatus(0);
+			businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
+			BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
+			BusinessDataInfo businfo=new BusinessDataInfo();
+			String busId=UuidUtil.getUUID();
+			businfo.setId(busId);
+			businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
+			businfo.setInfo(businessInfo.getInfo());
+			businfo.setuId(businessInfo.getuId());
+		   businessDataInfoService.insertBusinessDataInfo(businfo);
     }
 
 }
