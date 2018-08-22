@@ -137,16 +137,19 @@ public class BusinessDataController {
                             String orgName=listTreeByIdForSon.get(j).getOrgName();
                             if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
                               Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
-                              if(companyName!=null&&companyName.getOrgName().contains(keyword)){
-                                listTree.add(listTreeByIdForSon.get(j)); 
+                              if(companyName!=null){
+                               if(companyName.getOrgName().contains(keyword)||orgName.contains(keyword)){
+                                 listTree.add(listTreeByIdForSon.get(j));   
+                               }
                               }else if(orgName.contains(keyword)){
-                                listTree.add(listTreeByIdForSon.get(j));  
+                                  listTree.add(listTreeByIdForSon.get(j));  
                               }
                            }
                         }                    
                     }else{//查询orgName以下所有级别数据
                           List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                            for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                          JSONArray arr=(JSONArray) JSONArray.toJSON(listTreeByIdForSon);
+                          for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                                 Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                                 String orgName=listTreeByIdForSon.get(j).getOrgName();
                                 if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){
