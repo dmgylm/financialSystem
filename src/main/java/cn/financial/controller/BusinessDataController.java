@@ -24,11 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
-import cn.financial.model.Capital;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.UserRole;
 import cn.financial.model.response.BusinessDataYearResult;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
@@ -38,7 +36,6 @@ import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
-import cn.financial.service.UserRoleService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -136,14 +133,23 @@ public class BusinessDataController {
                             Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                             String orgName=listTreeByIdForSon.get(j).getOrgName();
                             if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
-                              Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
+                             String parentId=listTreeByIdForSon.get(j).getParentId(); //对应部门所属的公司
+                             if(orgName.contains(keyword)){//判断部门是否包含关键词
+                                 listTree.add(listTreeByIdForSon.get(j));  
+                             }else{//如果部门不包含判断公司是否包含关键词
+                              Boolean isCompany=company(parentId, keyword, listTreeByIdForSon);
+                              if(isCompany){
+                                 listTree.add(listTreeByIdForSon.get(j));  
+                                }
+                              }
+                              /*Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
                               if(companyName!=null){
                                if(companyName.getOrgName().contains(keyword)||orgName.contains(keyword)){
                                  listTree.add(listTreeByIdForSon.get(j));   
                                }
                               }else if(orgName.contains(keyword)){
                                   listTree.add(listTreeByIdForSon.get(j));  
-                              }
+                              }*/
                            }
                         }                    
                     }else{//查询orgName以下所有级别数据
@@ -253,15 +259,7 @@ public class BusinessDataController {
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport = false;//是否可编辑
-            for (int i = 0; i < userOrganization.size(); i++) {
-                JSONObject obu = (JSONObject) userOrganization.get(i);
-                Integer num=Integer.parseInt(obu.get("orgType").toString());
-                String emm=obu.getString("name").toString();
-                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
-                    isImport=true;  
-                }
-            }
+            boolean isImport = isImport(userOrganization);//是否可编辑
             if (id != null && !id.equals("") && htmlType != null) {
                 if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
                     BusinessData businessData = businessDataService.selectBusinessDataById(id);
@@ -324,15 +322,7 @@ public class BusinessDataController {
         String uId=user.getId();
         try {
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport = false;//是否可编辑
-            for (int i = 0; i < userOrganization.size(); i++) {
-                JSONObject obu = (JSONObject) userOrganization.get(i);
-                Integer num=Integer.parseInt(obu.get("orgType").toString());
-                String emm=obu.getString("name").toString();
-                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
-                    isImport=true;  
-                }
-            }
+            boolean isImport = isImport(userOrganization);//是否可编辑
             if(isImport){
              // 如果有html则是在编辑页面提交（可能是保存 或者提交）
                 if (strJson != null && !strJson.equals("") && id != null && !id.equals("")) {
@@ -611,8 +601,45 @@ public class BusinessDataController {
         return result;
     }
     
-    
+        /**
+         * 判断权限数据
+         * @param list
+         * @return
+         */
+        private Boolean isImport(List<JSONObject> list) {
+            boolean isImport = false;//是否可编辑
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject obu = (JSONObject) list.get(i);
+                Integer num=Integer.parseInt(obu.get("orgType").toString());
+                String emm=obu.getString("name").toString();
+                if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
+                    isImport=true;  
+                }
+            }
+          return isImport;
+        }
 
+    
+        /**
+         * 判断部门所属的公司是否包含关键词
+         * @param parentId
+         * @param keyword
+         * @param list
+         * @return
+         */
+        private Boolean company(String parentId,String keyword,List<Organization> list) {
+          Boolean isCompany=false; //判断公司是否包含关键词
+          for (int k = 0; k < list.size(); k++) {
+              Integer num=Integer.parseInt(list.get(k).getOrgType().toString());
+              String name=list.get(k).getOrgName();
+              if(num==BusinessData.ORGNUM&&list.get(k).getCode().equals(parentId)){//是公司级别并且是这个部门的公司
+                if(name.contains(keyword)){
+                  isCompany=true;
+                }   
+              }
+            } 
+          return isCompany;
+        }
     /**
      * 删除损益数据 （修改Status为0）
      * 

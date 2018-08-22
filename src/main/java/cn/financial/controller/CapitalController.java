@@ -361,15 +361,7 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-                boolean isImport = false;//是否可编辑
-                for (int i = 0; i < userOrganization.size(); i++) {
-                    JSONObject obu = (JSONObject) userOrganization.get(i);
-                    Integer num=Integer.parseInt(obu.get("orgType").toString());
-                    String emm=obu.getString("name").toString();
-                    if(num==Capital.DEPNUM||num==Capital.ORGNUM||emm.contains(Capital.NAME)){
-                        isImport=true;  
-                    }
-                }
+                boolean isImport = isImport(userOrganization);//是否可编辑
                 if(isImport){
                     if(id!=null&&!id.equals("")){
                         Capital  capital=capitalService.selectCapitalById(id);
@@ -420,15 +412,7 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-                boolean isImport = false;//是否可编辑
-                for (int i = 0; i < userOrganization.size(); i++) {
-                    JSONObject obu = (JSONObject) userOrganization.get(i);
-                    Integer num=Integer.parseInt(obu.get("orgType").toString());
-                    String emm=obu.getString("name").toString();
-                    if(num==Capital.DEPNUM||num==Capital.ORGNUM||emm.contains(Capital.NAME)){
-                        isImport=true;  
-                    }
-                }
+                boolean isImport = isImport(userOrganization);//是否可编辑
                  if(isImport){
                     if(id!=null&&!id.equals("")){
                         Capital capital =new Capital();
@@ -471,6 +455,7 @@ public class CapitalController {
             String uId = user.getId();
             //判断 权限的数据 公司及其公司以下的级别才可以上传数据
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport = isImport(userOrganization);//是否可编辑
             boolean insertFlag = true;//上传数据是否有错
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
@@ -491,15 +476,6 @@ public class CapitalController {
                   List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);//读取excel表格数据
                   List<Capital> listCapital=new ArrayList<>();
                   try {
-                      boolean isImport = false;//是否可编辑
-                      for (int i = 0; i < userOrganization.size(); i++) {
-                          JSONObject obu = (JSONObject) userOrganization.get(i);
-                          Integer num=Integer.parseInt(obu.get("orgType").toString());
-                          String emm=obu.getString("name").toString();
-                          if(num==Capital.DEPNUM||num==Capital.ORGNUM||emm.contains(Capital.NAME)){
-                              isImport=true;  
-                          }
-                      }
                      if(isImport){
                          for (int i = 0; i < list.size(); i++){
                              String[] str=list.get(i);   //在excel得到第i条数据
@@ -1135,5 +1111,23 @@ public class CapitalController {
                this.logger.error(e.getMessage(), e);
            }
            return result;
+       }
+       
+       /**
+        * 判断权限数据
+        * @param list
+        * @return
+        */
+       private Boolean isImport(List<JSONObject> list) {
+           boolean isImport = false;//是否可编辑
+           for (int i = 0; i < list.size(); i++) {
+               JSONObject obu = (JSONObject) list.get(i);
+               Integer num=Integer.parseInt(obu.get("orgType").toString());
+               String emm=obu.getString("name").toString();
+               if(num==BusinessData.DEPNUM||num==BusinessData.ORGNUM||emm.contains(BusinessData.NAME)){
+                   isImport=true;  
+               }
+           }
+         return isImport;
        }
 }
