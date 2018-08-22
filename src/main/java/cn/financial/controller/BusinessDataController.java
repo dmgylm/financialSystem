@@ -131,20 +131,18 @@ public class BusinessDataController {
             List<Organization> listTree = new ArrayList<>(); // 筛选过后就的权限数据
             for (int i = 0; i < userOrganization.size(); i++){
                   if(keyword!=null&&!keyword.equals("")){
-                        List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                        for (int j = 0; j < listTreeByIdForSon.size(); j++) {
+                      List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
+                      for (int j = 0; j < listTreeByIdForSon.size(); j++) {
                             Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
                             String orgName=listTreeByIdForSon.get(j).getOrgName();
                             if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
                               Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
-                              if(companyName!=null){
-                                if(orgName.contains(keyword)||companyName.getOrgName().contains(keyword)){//如果部门或者部门所属的公司包含关键词
-                                   listTree.add(listTreeByIdForSon.get(j));   
-                                 }          
+                              if(companyName!=null&&companyName.getOrgName().contains(keyword)){
+                                listTree.add(listTreeByIdForSon.get(j)); 
                               }else if(orgName.contains(keyword)){
-                                  listTree.add(listTreeByIdForSon.get(j));  
+                                listTree.add(listTreeByIdForSon.get(j));  
                               }
-                            }
+                           }
                         }                    
                     }else{//查询orgName以下所有级别数据
                           List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
