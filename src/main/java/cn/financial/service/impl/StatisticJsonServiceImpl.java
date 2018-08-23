@@ -269,7 +269,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@SuppressWarnings("unchecked")
 	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
-		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/budget.txt"));
+		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/year.txt"));
 //		JSONObject model = findModel(reportType,businessType);
 //		if(model==null){
 //			return null;
@@ -280,7 +280,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		List<String> dataId = new ArrayList<String>();
 		for (int i = 0; i < businessDataList.size(); i++) {
 			dataId.add(businessDataList.get(i).getId());
-			System.out.println(businessDataList.get(i).getId());
 		}
 		JSONArray dataJar = dataModuleService.dataModuleById(dataId);//获取分组对应标识
 		Map<String,String> kal = (Map<String, String>) dataJar.get(0);//获取分组数据
@@ -430,7 +429,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				if(formula.contains("★")){
 					int wuSum = formula.length()-formula.replaceAll("★", "").length();
 					if(wuSum>1){
-						//当星号大于1时
+						//当★大于1时
 						String[] moreDown = formula.split("\\+|-");
 						Double formulaRS = 0.0;
 						for (int j = 0; j < moreDown.length; j++) {
@@ -450,7 +449,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 						}
 						rowjar.put("value",formulaRS);
 					}else{
-						//当星号为1时
+						//当★为1时
 						String[] setDown = formula.split("★");
 						String logoKey = setDown[0];
 						String logoValue = setDown[1];
@@ -459,7 +458,10 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 							if(staticData.containsKey(logoValue)){
 								//将数据添加到新json里
 								rowjar.put("value", staticData.get(logoValue));
+							}else{
+								rowjar.put("value", 0);
 							}
+							
 						}
 					}
 
