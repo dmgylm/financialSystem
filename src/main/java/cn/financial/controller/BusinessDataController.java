@@ -359,8 +359,9 @@ public class BusinessDataController {
                            // System.out.println("shuchu"+businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()));
                           
                             ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
-                            String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType())).toString());
-                           System.out.println("excelReckonUtils"+newBudgetHtml);
+                            String merjson=businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()).toString();
+                            String newBudgetHtml = excelReckonUtils.computeByExcelToBusin(merjson,dataMjo,dm.getReportType());
+                            System.out.println("excelReckonUtils"+newBudgetHtml);
                             BusinessData businessData = new BusinessData();
                             businessData.setId(id);
                             businessData.setuId(uId);
