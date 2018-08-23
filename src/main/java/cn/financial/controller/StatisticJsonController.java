@@ -128,7 +128,7 @@ public class StatisticJsonController {
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_ENDDATE_NULL, sj);
                 return sj;
             }
-        	if(orgId == null || orgId.equals("")){
+        	if(orgId == null || orgId.equals("")||orgId.equals("[]")){
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_ORGID_NULL, sj);
                 return sj;
             }
