@@ -432,7 +432,6 @@ public class OrganizationController {
                	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
                	        return result;
                	     }
-               	  
                 }
             JSONObject jsonobject= organizationService.TreeByIdForSon(id);
             JSONArray  jsonarry=JSONArray.parseArray(jsonobject.get("children").toString());
@@ -443,8 +442,8 @@ public class OrganizationController {
             	if(jsonarry.size()==0){
             		 String name=jsonobject.get("name").toString();
             		 for(int z=0;z<jsonarray.size();z++){
-                      	  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(z).toString());
-                      	  if(jsonss.get("name").equals(name)&&Integer.parseInt(jsonobject.get("orgType").toString())==3){
+                      	 JSONObject jsonss=JSONObject.parseObject(jsonarray.get(z).toString());
+                      	 if(jsonss.get("name").equals(name)&&Integer.parseInt(jsonobject.get("orgType").toString())==3){
                       	    String pid=jsonss.get("pid").toString();//移动后的id
                             String reportType = DataModule.REPORT_TYPE_BUDGET;
                			    List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
@@ -454,15 +453,15 @@ public class OrganizationController {
                        	    businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
                      		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
                      		Organization getOrgDep=orgDep.get(0);
-                     		 DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                     		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                      	      saveid(pid);
-                       		  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-                       		  return result;
+                     		DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
+                     		businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+                      	    saveid(pid);
                       	  }
                        }
+            		   ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+              		   return result;
             	}
-            	else{
+            	else {
             		 JSONObject arry=JSONObject.parseObject(jsonarray.get(0).toString());
             		 String sid=arry.get("pid").toString();
             		 JSONObject jscount= organizationService.TreeByIdForSon(sid);
@@ -482,12 +481,12 @@ public class OrganizationController {
                     		DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
                     		businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
                      	    saveid(pid);
-                     	    ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-                    		return result;
                      	  }
                       }
+            		  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+            		  return result;
             	}
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+            	
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
