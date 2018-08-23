@@ -2,6 +2,7 @@ package cn.springmvc.test;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 
 
+
+
+
+
+
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -23,7 +29,11 @@ import cn.financial.model.response.ChildrenObject;
 import cn.financial.model.response.OrangizaSubnode;
 import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.OrganizaResult;
+import cn.financial.quartz.AccountQuartzListener;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
@@ -58,9 +68,28 @@ public class OrganizationTest {
     }
     @Autowired
     private OrganizationServiceImpl oarimpl;
+    private  OrganizationServiceImpl imp; 
+    private OrganizationServiceImpl ors;
+    @Test
+    public void sarss(){
+    	String id="801e3565e8ce40ecba5c8944eacea33d";
+    	  List<Organization> orgDep = ors.getNowDep(id);// 获取当前部门
+    	  Map<String,String> map=new HashMap<String, String>();
+    	  List<Organization> result = service.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+    	  System.out.println(orgDep.get(0).getOrgPlateId());
+    }
+    @Test
+    public void ssss(){
+    	String id="56e653d6c8fe4314988919e9418ad920";
+    	 List<Organization> list = imp.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+    	  int orgType=list.get(0).getOrgType();
+    	  System.out.println(orgType);
+    }
+
+
     @Test
     public void getSubnode(){
-    	  String id="883c517d1353436a81f6df8bade37e32";
+    	  String id="7825dff0398841069ae41afd73f8677e";
           com.alibaba.fastjson.JSONObject  json=new com.alibaba.fastjson.JSONObject();
     	  json= oarimpl.TreeByIdForSon(id);
           com.alibaba.fastjson.JSONArray jsons=com.alibaba.fastjson.JSONArray.parseArray(json.get("children").toString());
