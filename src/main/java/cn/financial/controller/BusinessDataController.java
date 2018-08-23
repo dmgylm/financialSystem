@@ -356,10 +356,11 @@ public class BusinessDataController {
                              * mo.put(inputHtml.get(i).attr("name"), inputHtml.get(i).val()); }
                              */
                             System.out.println("模板类型~"+dm.getReportType());
-                            System.out.println("shuchu"+businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()));
+                           // System.out.println("shuchu"+businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()));
                           
                             ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
                             String newBudgetHtml = excelReckonUtils.computeByExcel((businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType())).toString());
+                           System.out.println("excelReckonUtils"+newBudgetHtml);
                             BusinessData businessData = new BusinessData();
                             businessData.setId(id);
                             businessData.setuId(uId);
@@ -371,6 +372,7 @@ public class BusinessDataController {
                                 BusinessDataInfo selectBusinessDataById = businessDataInfoService.selectBusinessDataById(id); // 查询出从表的数据
                                 BusinessDataInfo businessDataInfo = new BusinessDataInfo();
                                 businessDataInfo.setId(selectBusinessDataById.getId());
+                                System.out.println("simplifyJson"+JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                                 businessDataInfo.setInfo(JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                                 Integer infoId = businessDataInfoService.updateBusinessDataInfo(businessDataInfo);
                                 if (infoId == 1) {
