@@ -280,6 +280,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		List<String> dataId = new ArrayList<String>();
 		for (int i = 0; i < businessDataList.size(); i++) {
 			dataId.add(businessDataList.get(i).getId());
+			System.out.println(businessDataList.get(i).getId());
 		}
 		JSONArray dataJar = dataModuleService.dataModuleById(dataId);//获取分组对应标识
 		Map<String,String> kal = (Map<String, String>) dataJar.get(0);//获取分组数据
@@ -341,9 +342,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));
 //			modelDataStatic.put(modelLogoName,JSONObject.parseObject(modelJson));
 		}
-		
-		System.out.println(modelDataStatic);
-		
 		//重构模板及对应标识，取出需要的结果
 		Iterator<String> returnData = modelDataStatic.keySet().iterator();
 		while (returnData.hasNext()) {
@@ -386,6 +384,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 			modelDataStatic.put(modelLogoName, modelDataSum);
 		}
+		
 		//最后进行的汇总模板填写
 		Iterator<String> staticModel = model.keySet().iterator();
 		while (staticModel.hasNext()) {
