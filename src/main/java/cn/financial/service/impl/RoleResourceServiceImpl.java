@@ -142,7 +142,7 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                             node.setOrgType("Y");//是按钮
                             node.setIcon("iconfont icon-xitongshezhi");
                         }
-                        if(rss.getName().equals("权限设置")){
+                        if(rss.getName().equals("用户权限设置")){
                             node.setLink("/setting/permissions-settings");
                             node.setIcon("anticon anticon-appstore-o");
                             node.setOrgkeyName("permissions-settings");
