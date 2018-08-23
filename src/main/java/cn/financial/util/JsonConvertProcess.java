@@ -283,10 +283,31 @@ public class JsonConvertProcess {
 				subjectlst.add(json);
 			}
 		}
-		
+		//System.out.println("subjectlst~"+subjectlst);
 		return dataMap;
 	}
-	
+	//用Excel算好的json 和原始模板进行合并
+	public JSONObject merge(JSONObject dataMjo,Map<String,List<JSONObject>> assembleTableData) {
+		JSONObject newBudgetHtml=new JSONObject();
+		JSONObject ja=new JSONObject();
+			for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
+				String keyIncome = iterIncome.next();
+				Object objIncome = dataMjo.get(keyIncome);
+				if (keyIncome.equals("title")) {
+					ja.put(keyIncome, dataMjo.get(keyIncome));
+				} else {
+					if (objIncome instanceof JSONArray) {
+						newBudgetHtml = mergeHtml(dataMjo,assembleTableData);
+					} else {
+						JSONObject longData = (JSONObject) objIncome;
+						newBudgetHtml = mergeHtml(longData, assembleTableData);
+					}
+					ja.put(keyIncome, newBudgetHtml);
+				}
+			}
+			return ja;
+		
+	}
 	/**
 	 * 生成行数据
 	 * @param json
@@ -362,5 +383,48 @@ public class JsonConvertProcess {
 		
 		sortMap.putAll(colMap);
 		return sortMap;
+	}
+	
+	public JSONObject mergeHtml (JSONObject dataMjo,Map<String,List<JSONObject>> mo) {
+		
+		JSONObject newBudgetHtml=new JSONObject();
+		JSONObject obj = new JSONObject();
+		for (Iterator<String> iterIncome = dataMjo.keySet().iterator(); iterIncome.hasNext();) {// 获得损益模板最外层key
+			String keyIncome = iterIncome.next();
+			
+			if(mo.containsKey(keyIncome)) {
+				List<JSONObject> ljo=mo.get(keyIncome);
+			
+			Object objIncome = dataMjo.get(keyIncome);
+			JSONArray jsoA = new JSONArray();
+			if (objIncome instanceof JSONArray) {
+			JSONArray longLst = (JSONArray) objIncome;
+				for (int j = 0; j < longLst.size(); j++) {
+					 obj = new JSONObject();
+					JSONObject longJson = longLst.getJSONObject(j);
+					for (Iterator<String> iters = longJson.keySet().iterator(); iters.hasNext();) {
+						String keysIncomes = iters.next();
+						Object objsIncome = longJson.get(keysIncomes);
+						obj.put(keysIncomes, objsIncome);
+						double value= 0.0;
+						if(Integer.parseInt(longJson.get("type").toString())==HtmlGenerate.BOX_TYPE_FORMULA) {//判断当前类型是不是公式
+							
+							 for (int i = 0; i < ljo.size(); i++) {
+								 JSONObject jo=ljo.get(i);
+									if(jo.get("key").equals(longJson.get("key"))) {
+										 value= Double.parseDouble(jo.get("value").toString());
+										 break;
+									}
+								}
+						}
+						obj.put("value", value);
+					}
+					jsoA.add(obj);;
+				}
+			}
+		newBudgetHtml.put(keyIncome, jsoA);
+		}
+		}
+		return newBudgetHtml ;
 	}
 }
