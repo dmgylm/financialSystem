@@ -180,7 +180,8 @@ public class StatisticJsonController {
 			
             String fileName = "汇总数据表单.xlsx";
             String saveName = SiteConst.FILEURL + "\\" + fileName;
-			Workbook wb = JsonConvertExcel.getExcel(ja,fileName);
+            JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
+			Workbook wb = jsonConvertExcel.getExcel(ja,fileName);
 			FileOutputStream fos = new FileOutputStream(saveName);
 			wb.write(fos);
 			fos.close();
@@ -285,7 +286,8 @@ public class StatisticJsonController {
     		String reportType = json.getString("reportType");
     		String businessType = json.getString("businessType");
     		String dataModuleName = dataModuleService.getDataModuleName(reportType, businessType);
-			Workbook excel = JsonConvertExcel.getExcel(json.getJSONObject("json"), dataModuleName);
+    		JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
+			Workbook excel = jsonConvertExcel.getExcel(json.getJSONObject("json"), dataModuleName);
 			response.setContentType("application/vnd.ms-excel");
 			response.setCharacterEncoding("utf-8");
 			// 对文件名进行处理。防止文件名乱码
