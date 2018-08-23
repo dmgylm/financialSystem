@@ -361,7 +361,7 @@ public class BusinessDataController {
                             ExcelReckonUtils excelReckonUtils=new ExcelReckonUtils();
                             String merjson=businessDataInfoServiceImpl.dgkey(dataMjo, mo,dm.getReportType()).toString();
                             String newBudgetHtml = excelReckonUtils.computeByExcelToBusin(merjson,dataMjo,dm.getReportType());
-                            System.out.println("excelReckonUtils"+newBudgetHtml);
+                            //System.out.println("excelReckonUtils"+newBudgetHtml);
                             BusinessData businessData = new BusinessData();
                             businessData.setId(id);
                             businessData.setuId(uId);
