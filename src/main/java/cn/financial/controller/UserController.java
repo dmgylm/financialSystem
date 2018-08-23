@@ -421,7 +421,9 @@ public class UserController{
             }
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
-                    List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
+                    item.setOrgFlag(User.MATCH);
+                    item.setRoleFlag(User.SETUP);
+                    /*List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
                     List<RoleResource> jsonRole = new ArrayList<>();
                     //根据用户名查询用户角色关联信息是否存在
                     List<UserRole> userRole = userRoleService.listUserRole(name, null);
@@ -439,7 +441,7 @@ public class UserController{
                         item.setRoleFlag(User.SETUP);
                     }else{
                         item.setRoleFlag(User.NOTSET);
-                    }
+                    }*/
                 }
             }
             //long end = System.currentTimeMillis();
