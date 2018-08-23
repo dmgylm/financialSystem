@@ -93,6 +93,17 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	public List<BusinessData> getBusinessAllBySomeOne(Map<Object, Object> map) {
 		return businessDataDao.getBusinessAllBySomeOne(map);
 	}
+    /**
+	 * 
+	 * @param orgDep 部门对象
+	 * @param year  当前年份
+	 * @param month 当前月份
+	 * @param dm  数据模板对象
+	 * @param logger 异常类
+	 * @param businessDataService  
+	 * @param businessDataInfoService
+	 * @param organizationService
+	 */
     @Override
 	public void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) {
 		
