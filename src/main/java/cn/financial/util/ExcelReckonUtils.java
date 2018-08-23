@@ -48,7 +48,25 @@ public class ExcelReckonUtils {
 		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
 		return JSONObject.toJSON(dataMap).toString();
 	}
+	public String computeByExcelToBusin(String json,JSONObject datamodul,String reportType) throws FormulaAnalysisException{
+		JSONObject jsonObj = JSONObject.parseObject(json);
+		ExcelReckonUtils ert = new ExcelReckonUtils();
+		//生成Excel
+		JsonConvertProcess jcp = new JsonConvertProcess();
+		Map<Integer, Map<Integer, JSONObject>> trMap = jcp.assembleData(jsonObj);
+		trMap = jcp.sortTableRowMap(trMap);//排序行和列
+		HSSFWorkbook wb = ert.generateExcelByFormula(trMap);
+		
+		JSONArray list = ert.computeExcelToJson(trMap,wb);
+		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
+		if(reportType.equals("PROFIT_LOSS")) {//损益
+			return JSONObject.toJSON(dataMap).toString();
+		}else if(reportType.equals("BUDGET")) {//预算
+			return jcp.merge(datamodul,dataMap).toString();
+		}
+			return null;
 	
+	}
 	public JSONArray computeExcelToJson(Map<Integer, Map<Integer, JSONObject>> trMap, HSSFWorkbook wb) {
 		HSSFSheet sheet = wb.getSheetAt(0);
 		JSONArray array = new JSONArray();
@@ -217,5 +235,7 @@ public class ExcelReckonUtils {
 		System.out.println(evaluator.evaluate(incell3).getNumberValue());
 		
 	}
+
+	
 
 }
