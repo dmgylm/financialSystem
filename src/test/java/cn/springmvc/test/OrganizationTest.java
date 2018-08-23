@@ -13,10 +13,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+
+
+
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.ChildrenObject;
+import cn.financial.model.response.OrangizaSubnode;
 import cn.financial.model.response.OrganizaParnode;
+import cn.financial.model.response.OrganizaResult;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
@@ -26,6 +32,7 @@ import cn.financial.util.HttpClient3;
 import cn.financial.util.JsonToHtmlUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/spring.xml", "classpath:spring/spring-mvc.xml",
@@ -49,7 +56,32 @@ public class OrganizationTest {
         HashMap<String, String> returnValue = ElementXMLUtils.returnValue("RUN_SUCCESSFULLY");
         System.out.println(returnValue.toString());
     }
+    @Autowired
+    private OrganizationServiceImpl oarimpl;
+    @Test
+    public void getSubnode(){
+    	  String id="883c517d1353436a81f6df8bade37e32";
+          com.alibaba.fastjson.JSONObject  json=new com.alibaba.fastjson.JSONObject();
+    	  json= oarimpl.TreeByIdForSon(id);
+          com.alibaba.fastjson.JSONArray jsons=com.alibaba.fastjson.JSONArray.parseArray(json.get("children").toString());
+          if(jsons.size()==0){
+        	  if(Integer.parseInt(json.get("orgType").toString())==3){
+        		  System.out.println(json.get("pid"));
+        	  }
+          }
+          else{
+        	  for(int i=0;i<jsons.size();i++){
+        		  com.alibaba.fastjson.JSONObject jsonss=com.alibaba.fastjson.JSONObject.parseObject(jsons.get(i).toString());
+            	  if(Integer.parseInt(jsonss.get("orgType").toString())==3){
+            	  System.out.println(jsonss.get("pid"));
+            	  }
+              }
+          }
+         
 
+          
+          
+    }
     @Test
     public void ss(){
 	   List<String> ids = new ArrayList<String>();
