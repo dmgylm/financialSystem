@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,21 +27,20 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class JsonConvertExcel {
-
-	private static Map<Integer, Map<Integer, JSONObject>> rowMap = new HashMap<Integer, Map<Integer, JSONObject>>();
+	private Map<Integer, Map<Integer, JSONObject>> rowMap = new LinkedHashMap<Integer, Map<Integer,JSONObject>>();
 /**
  * 
  * @param 业务子表info数据和模板数据合并后的json 
  * @return Workbook (excel)
  * @throws IOException
  */
-	public  static Workbook getExcel(JSONObject Json,String sheetName) throws IOException {
+	public   Workbook getExcel(JSONObject Json,String sheetName) throws IOException {
 		Map<Integer, Map<Integer, JSONObject>> trMap = assembleData(Json);
 		trMap = sortTableRowMap(trMap);
 		return assembleTable(trMap, sheetName);
 	}
 
-	private static Map<Integer, Map<Integer, JSONObject>> assembleData(JSONObject array) {
+	private  Map<Integer, Map<Integer, JSONObject>> assembleData(JSONObject array) {
 		for (Iterator<String> iter = array.keySet().iterator(); iter.hasNext();) {
 			String key = iter.next();
 			Object obj = array.get(key);
@@ -63,7 +63,7 @@ public class JsonConvertExcel {
 	 * @param map
 	 * @return
 	 */
-	private static Map<Integer, Map<Integer, JSONObject>> sortTableRowMap(Map<Integer, Map<Integer, JSONObject>> map) {
+	private  Map<Integer, Map<Integer, JSONObject>> sortTableRowMap(Map<Integer, Map<Integer, JSONObject>> map) {
 		Map<Integer, Map<Integer, JSONObject>> sortMap = new TreeMap<Integer, Map<Integer, JSONObject>>(
 				new MapKeyComparator());
 
@@ -76,7 +76,7 @@ public class JsonConvertExcel {
 	 * @param trMap
 	 * @param obj
 	 */
-	private static void putRowToMap(Map<Integer, Map<Integer, JSONObject>> trMap, JSONObject obj) {
+	private  void putRowToMap(Map<Integer, Map<Integer, JSONObject>> trMap, JSONObject obj) {
 		if (!obj.containsKey("row")) {
 			return;
 		}
@@ -103,7 +103,7 @@ public class JsonConvertExcel {
 	 * @param table
 	 * @throws IOException
 	 */
-	private static Workbook assembleTable(Map<Integer, Map<Integer, JSONObject>> trMap,String sheetName) throws IOException {
+	private  Workbook assembleTable(Map<Integer, Map<Integer, JSONObject>> trMap,String sheetName) throws IOException {
 		Workbook wb = new XSSFWorkbook();
 		if(("").equals(sheetName)) {
 			sheetName="sheet1";
