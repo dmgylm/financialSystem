@@ -124,7 +124,16 @@ public class OrganizationController {
             organization.setuId(user.getId());// 提交人id
             if (null != parentOrgId && !"".equals(parentOrgId)) {
                 // 新增的时候这里保存的是此节点的code
-                i = organizationService.saveOrganization(organization,parentOrgId);
+            	 List<Organization> list = organizationService.listOrganizationBy(null,null,null,parentOrgId,null,null,null,null,null);
+                 int type=list.get(0).getOrgType();
+                 if(type!=2&&orgType==3){
+                	 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+            	       return result;
+                 }
+                 else{
+                	 i = organizationService.saveOrganization(organization,parentOrgId);
+                 }
+               
             }
             if (Integer.valueOf(1).equals(i)) {
             	 if(orgType==3){
@@ -140,7 +149,7 @@ public class OrganizationController {
               			if (dm != null) {
               				Organization org = organizationService.getCompanyNameBySon(orgDep.get(j).getId());// 获取对应部门的公司
               				if (org != null) {
-              					Organization getOrgDep=orgDep.get(i);
+              					Organization getOrgDep=orgDep.get(j);
               					businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
               					
               				}
@@ -402,7 +411,6 @@ public class OrganizationController {
             else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();
-                int sum=0;//父id上面有公司级别的个数
                 if(orgType==3){//判断该组织是否是部门级别
                 	List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
                 	int type=lists.get(0).getOrgType();
@@ -414,6 +422,10 @@ public class OrganizationController {
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
             	JSONObject jsonTree= organizationService.TreeByIdForSon(id);
+            	if(jsonTree==null){
+            		ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+            		return result;
+            	}
             	JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
             	if(jsonarray.size()==0){
                	   if(Integer.parseInt(jsonTree.get("orgType").toString())==3){
