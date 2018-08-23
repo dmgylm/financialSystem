@@ -71,8 +71,8 @@ public class QuartzJob implements Job{
 		List<Organization> orgCompany = organizationService.getCompany();// 获取所有公司
 		List<BusinessDataBuild> listCreateBd=buildService.listBusinessDataBuild(0);//获取未生成的损益
 		List<Map<String,Object>> saveOrg=new ArrayList<>();//保存同公司部门
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH)+1;
+		int year = 2016;//Calendar.getInstance().get(Calendar.YEAR);
+		int month = 12;//Calendar.getInstance().get(Calendar.MONTH)+1;
 		try {
 			
 			
@@ -119,7 +119,10 @@ public class QuartzJob implements Job{
 										
 										
 										if(null!=keyIncome&& !keyIncome.equals("")) {//判断预算有没有相同的模板key
-											JSONObject keyBudget=(JSONObject) joAllBudget.get(keyIncome);//预算表模板key
+											JSONObject keyBudget=null;
+											if(joAllBudget!=null) {
+												keyBudget=(JSONObject) joAllBudget.get(keyIncome);//预算表模板key
+											}
 											Object objIncome = dataMjo.get(keyIncome);//获取损益模板key的值
 											JSONArray jsonIncome=JSONArray.parseArray(objIncome.toString());//获取损益模板科目
 											JSONArray jsoA=new JSONArray();
