@@ -341,6 +341,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			modelDataStatic.put(modelLogoName,JSONObject.parseObject(reward));
 //			modelDataStatic.put(modelLogoName,JSONObject.parseObject(modelJson));
 		}
+		
+		System.out.println(modelDataStatic);
+		
 		//重构模板及对应标识，取出需要的结果
 		Iterator<String> returnData = modelDataStatic.keySet().iterator();
 		while (returnData.hasNext()) {
@@ -422,20 +425,45 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			JSONObject rowjar = modelArr.getJSONObject(i);
 			//判断输入是否是需要整合的
 			Integer type = rowjar.getInteger("type");
-			String itemKey = rowjar.getString("key");
 			String formula = rowjar.getString("formula"); 
+			
 			if (type ==3){
 				if(formula.contains("★")){
-					String[] setDown = formula.split("★");
-					String logoKey = setDown[0];
-					String logoValue = setDown[1];
-					if(modelDataStatic.containsKey(logoKey)){
-						JSONObject staticData = modelDataStatic.get(logoKey);
-						if(staticData.containsKey(logoValue)){
-							//将数据添加到新json里
-							rowjar.put("value", staticData.get(logoValue));
+					int wuSum = formula.length()-formula.replaceAll("★", "").length();
+					if(wuSum>1){
+						//当星号大于1时
+						String[] moreDown = formula.split("\\+|-");
+						Double formulaRS = 0.0;
+						for (int j = 0; j < moreDown.length; j++) {
+							String[] setDown = moreDown[j].split("★");
+							String logoKey = setDown[0];
+							String logoValue = setDown[1];
+							if(modelDataStatic.containsKey(logoKey)){
+								JSONObject staticData = modelDataStatic.get(logoKey);
+								if(staticData.containsKey(logoValue)){
+									Double amount = staticData.getDouble(logoValue);
+									if(amount==null){
+										amount =0.0;
+									}
+									formulaRS += amount;
+								}
+							}
+						}
+						rowjar.put("value",formulaRS);
+					}else{
+						//当星号为1时
+						String[] setDown = formula.split("★");
+						String logoKey = setDown[0];
+						String logoValue = setDown[1];
+						if(modelDataStatic.containsKey(logoKey)){
+							JSONObject staticData = modelDataStatic.get(logoKey);
+							if(staticData.containsKey(logoValue)){
+								//将数据添加到新json里
+								rowjar.put("value", staticData.get(logoValue));
+							}
 						}
 					}
+
 				}
 			}
 			json.add(rowjar);
