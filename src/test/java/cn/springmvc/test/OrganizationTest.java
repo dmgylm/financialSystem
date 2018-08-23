@@ -73,20 +73,10 @@ public class OrganizationTest {
     @Test
     public void sarss(){
     	String id="801e3565e8ce40ecba5c8944eacea33d";
-    	  List<Organization> orgDep = ors.getNowDep(id);// 获取当前部门
     	  Map<String,String> map=new HashMap<String, String>();
     	  List<Organization> result = service.listOrganizationBy(null,null,null,id,null,null,null,null,null);
-    	  System.out.println(orgDep.get(0).getOrgPlateId());
+    	  System.out.println(result.get(0).getOrgPlateId());
     }
-    @Test
-    public void ssss(){
-    	String id="56e653d6c8fe4314988919e9418ad920";
-    	 List<Organization> list = imp.listOrganizationBy(null,null,null,id,null,null,null,null,null);
-    	  int orgType=list.get(0).getOrgType();
-    	  System.out.println(orgType);
-    }
-
-
     @Test
     public void getSubnode(){
     	  String id="7825dff0398841069ae41afd73f8677e";
