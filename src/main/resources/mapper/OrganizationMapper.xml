@@ -106,7 +106,7 @@
 		from
 		organization
 		where
-		status = 1
+        1 = 1
 		<include refid="query_organization_where"></include>
 	</select>
 

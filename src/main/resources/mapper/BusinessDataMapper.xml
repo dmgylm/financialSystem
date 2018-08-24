@@ -61,7 +61,7 @@
         FROM businessData 
         INNER JOIN organization ON businessData.typeId=organization.id
         INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
-        WHERE businessData.delStatus=1 and organization.status=1 and businessDataInfo.delStatus=1
+        WHERE businessData.delStatus=1 and businessDataInfo.delStatus=1
         <include refid="query_businessData_where"></include>  
         ORDER BY businessData.updateTime DESC
         LIMIT #{start},#{pageSize}
@@ -81,7 +81,7 @@
         FROM businessData 
         INNER JOIN organization ON businessData.typeId=organization.id
         INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
-        WHERE businessData.delStatus=1 and organization.status=1 and businessDataInfo.delStatus=1
+        WHERE businessData.delStatus=1 and businessDataInfo.delStatus=1
         <include refid="query_businessData_where"></include>  
        </select>
        
