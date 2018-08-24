@@ -37,7 +37,7 @@ public class UuidUtil {
         List<Integer> code = new ArrayList<Integer>(listCode.size());
         for (String i : listCode) {
             String result = i.replaceFirst(parentCode, "");
-            code.add(Integer.parseInt(result));
+            code.add(Integer.parseInt(result.trim()));
         }
         Integer re = Collections.max(code) + 1;
         String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
