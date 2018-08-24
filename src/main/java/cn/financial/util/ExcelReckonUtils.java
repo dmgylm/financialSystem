@@ -30,8 +30,6 @@ public class ExcelReckonUtils {
 	
 	private String MODULE_KEY_SPLIT = "★";
 	
-	private HSSFWorkbook wb;
-	
 	private HSSFFormulaEvaluator evaluator ;
 	
 	private HSSFSheet sheet ;
@@ -48,7 +46,7 @@ public class ExcelReckonUtils {
 		JsonConvertProcess jcp = new JsonConvertProcess();
 		Map<Integer, Map<Integer, JSONObject>> trMap = jcp.assembleData(jsonObj);
 		trMap = jcp.sortTableRowMap(trMap);//排序行和列
-		wb = generateExcelByFormula(trMap);
+		HSSFWorkbook wb = generateExcelByFormula(trMap);
 		evaluator = wb.getCreationHelper().createFormulaEvaluator();
 		sheet = wb.getSheetAt(0);
 		jsonObj = computeExcelToJson(jsonObj);
@@ -57,23 +55,27 @@ public class ExcelReckonUtils {
 	}
 	
 	private JSONObject computeExcelToJson(JSONObject jsonObj) {
+		JSONObject json = new JSONObject();
 		for(Iterator<String> iter = jsonObj.keySet().iterator();iter.hasNext();) {
 			String key = iter.next();
 			Object obj = jsonObj.get(key);
 			if (obj instanceof JSONArray) {
 				JSONArray arr = (JSONArray) obj;
+				JSONArray array = new JSONArray();
 				for(int i=0;i<arr.size();i++) {
 					JSONObject jsonO = arr.getJSONObject(i);
 					jsonO = computeCellValue(jsonO);
+					array.add(jsonO);
 				}
+				json.put(key, arr);
 			} else {
 				JSONObject jsonO = (JSONObject) obj;
 				jsonO = computeCellValue(jsonO);
+				json.put(key, jsonO);
 			}
 		}
-		return jsonObj;
+		return json;
 	}
-	
 	
 	
 	private JSONObject computeCellValue(JSONObject jsonO) {
@@ -160,16 +162,16 @@ public class ExcelReckonUtils {
 					sheet.addMergedRegion(cellRangeAddress);
 				}
 				HSSFCell cell = row.createCell(celNum);
-				Double value = 0D;
-//				Double value = rowNum.doubleValue();
+//				Double value = 0D;
+				Double value = rowNum.doubleValue();
 				if(type == HtmlGenerate.BOX_TYPE_INPUT ||type == HtmlGenerate.BOX_TYPE_BUDGET) {
 					if(obj.containsKey("value")) {
-						obj.getDoubleValue("value");
+						value = obj.getDoubleValue("value");
 					}
 					cell.setCellValue(value);
 				} else if(type == HtmlGenerate.BOX_TYPE_FORMULA){
 						if(obj.containsKey("value")) {
-							obj.getDoubleValue("value");
+							value = obj.getDoubleValue("value");
 						}
 						cell.setCellValue(value);
 						String formula = obj.getString("formula");
