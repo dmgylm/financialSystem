@@ -237,10 +237,38 @@
     </Result>
     <Result name="DEPER_COMPANY">
         <code>293</code>
-        <description>部门必须移动公司下面</description>
+        <description>部门上级必须有公司级别</description>
     </Result>
     <Result name="MODULE_FAIL">
         <code>294</code>
         <description>模板有误或对应数据计算错误</description>
+    </Result>
+     <Result name="MOBILE_ORGANIZATION_DISABLE">
+        <code>295</code>
+        <description>请在规定时间内停用</description>
+    </Result>
+     <Result name="DEPER_MOBILE">
+        <code>296</code>
+        <description>部门不能移到部门下</description>
+    </Result>
+    <Result name="DEPER_REMOVE">
+        <code>297</code>
+        <description>部门下面不能添加节点</description>
+    </Result>
+    <Result name="DEPER_PLATE">
+        <code>298</code>
+        <description>公司上级必须有板块级别</description>
+    </Result>
+    <Result name="DEPER_PLATELEVEL">
+        <code>299</code>
+        <description>板块上级不能有公司级别</description>
+    </Result>
+     <Result name="COMPANY_COMPANY">
+        <code>300</code>
+        <description>公司下面不能添加公司</description>
+    </Result>
+     <Result name="PLATE_PLATELEVEL">
+        <code>301</code>
+        <description>板块下面不能添加板块</description>
     </Result>
 </StateCode>
