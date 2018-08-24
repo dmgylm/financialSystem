@@ -35,4 +35,5 @@ public interface UserOrganizationDAO {
      * @return
      */
     Integer updateUserOrganization(UserOrganization userOrganization);
+	List<UserOrganization> listUserOrganizations(@Param("sId") String sId);
 }
