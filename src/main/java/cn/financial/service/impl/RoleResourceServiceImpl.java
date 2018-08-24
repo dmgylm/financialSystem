@@ -147,7 +147,7 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                             node.setIcon("anticon anticon-appstore-o");
                             node.setOrgkeyName("permissions-settings");
                         }
-                        if(rss.getName().equals("组织机构管理")){
+                        if(rss.getName().equals("组织架构管理")){
                             node.setLink("/setting/organization-management");
                             node.setIcon("anticon anticon-rocket");
                             node.setOrgkeyName("organization-management");
