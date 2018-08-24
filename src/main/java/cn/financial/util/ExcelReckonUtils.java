@@ -19,6 +19,7 @@ import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.Cell;
 
 import cn.financial.exception.FormulaAnalysisException;
+import cn.financial.model.DataModule;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -59,9 +60,9 @@ public class ExcelReckonUtils {
 		
 		JSONArray list = ert.computeExcelToJson(trMap,wb);
 		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
-		if(reportType.equals("PROFIT_LOSS")) {//损益
+		if(reportType.equals(DataModule.REPORT_TYPE_PROFIT_LOSS)) {//损益
 			return JSONObject.toJSON(dataMap).toString();
-		}else if(reportType.equals("BUDGET")) {//预算
+		}else if(reportType.equals(DataModule.REPORT_TYPE_BUDGET)) {//预算
 			return jcp.merge(datamodul,dataMap).toString();
 		}
 			return null;
