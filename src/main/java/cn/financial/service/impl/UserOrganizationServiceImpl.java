@@ -163,5 +163,8 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
         }
         return jsonObject;
     }*/
+	public List<UserOrganization> listUserOrganizations(String sid) {
+		 return userOrganizationDao.listUserOrganizations(sid);
+	}
 }
  

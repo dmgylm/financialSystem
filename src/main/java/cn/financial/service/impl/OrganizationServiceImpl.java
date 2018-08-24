@@ -450,7 +450,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         
         icMap.put(code, new_id);//新节点的code和id
         
-        List<UserOrganization> listsize= userorganization.listUserOrganization(user.getId());
+        //List<UserOrganization> listsizes= userorganization.listUserOrganization(user.getId());
+        List<UserOrganization> listsize= userorganization.listUserOrganizations(id);
         if(listsize.size()>0){
         	userorganization.deleteUserOrganization(user.getId());
         	UserOrganization lists=new UserOrganization();
