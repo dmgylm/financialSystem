@@ -30,6 +30,12 @@ public class ExcelReckonUtils {
 	
 	private String MODULE_KEY_SPLIT = "★";
 	
+	private HSSFWorkbook wb;
+	
+	private HSSFFormulaEvaluator evaluator ;
+	
+	private HSSFSheet sheet ;
+	
 	/**
 	 * 通过Excel计算公式的值
 	 * @param json 需要计算的Json数据(模板+数据格式)
@@ -38,17 +44,55 @@ public class ExcelReckonUtils {
 	 */
 	public String computeByExcel(String json) throws FormulaAnalysisException{
 		JSONObject jsonObj = JSONObject.parseObject(json);
-		ExcelReckonUtils ert = new ExcelReckonUtils();
 		//生成Excel
 		JsonConvertProcess jcp = new JsonConvertProcess();
 		Map<Integer, Map<Integer, JSONObject>> trMap = jcp.assembleData(jsonObj);
 		trMap = jcp.sortTableRowMap(trMap);//排序行和列
-		HSSFWorkbook wb = ert.generateExcelByFormula(trMap);
-		
-		JSONArray list = ert.computeExcelToJson(trMap,wb);
-		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
-		return JSONObject.toJSON(dataMap).toString();
+		wb = generateExcelByFormula(trMap);
+		evaluator = wb.getCreationHelper().createFormulaEvaluator();
+		sheet = wb.getSheetAt(0);
+		jsonObj = computeExcelToJson(jsonObj);
+//		Map<String,List<JSONObject>> dataMap = JsonConvertProcess.assembleTableData(list);
+		return jsonObj.toString();
 	}
+	
+	private JSONObject computeExcelToJson(JSONObject jsonObj) {
+		for(Iterator<String> iter = jsonObj.keySet().iterator();iter.hasNext();) {
+			String key = iter.next();
+			Object obj = jsonObj.get(key);
+			if (obj instanceof JSONArray) {
+				JSONArray arr = (JSONArray) obj;
+				for(int i=0;i<arr.size();i++) {
+					JSONObject jsonO = arr.getJSONObject(i);
+					jsonO = computeCellValue(jsonO);
+				}
+			} else {
+				JSONObject jsonO = (JSONObject) obj;
+				jsonO = computeCellValue(jsonO);
+			}
+		}
+		return jsonObj;
+	}
+	
+	
+	
+	private JSONObject computeCellValue(JSONObject jsonO) {
+		if(jsonO.containsKey("row") && jsonO.containsKey("col") && jsonO.containsKey("type")) {
+			Integer rowNum = jsonO.getInteger("row");
+			Integer celNum = jsonO.getInteger("col");
+			Integer type = jsonO.getInteger("type");
+			if(type == HtmlGenerate.BOX_TYPE_FORMULA) {
+				HSSFRow row = sheet.getRow(rowNum);
+				HSSFCell cell = row.getCell(celNum);
+				Double value = evaluator.evaluate(cell).getNumberValue();
+				jsonO.put("value", value);
+			}
+		} else {
+			jsonO = computeExcelToJson(jsonO);
+		}
+		return jsonO;
+	}
+
 	public String computeByExcelToBusin(String json,JSONObject datamodul,String reportType) throws FormulaAnalysisException{
 		JSONObject jsonObj = JSONObject.parseObject(json);
 		ExcelReckonUtils ert = new ExcelReckonUtils();
@@ -116,14 +160,14 @@ public class ExcelReckonUtils {
 					sheet.addMergedRegion(cellRangeAddress);
 				}
 				HSSFCell cell = row.createCell(celNum);
+				Double value = 0D;
+//				Double value = rowNum.doubleValue();
 				if(type == HtmlGenerate.BOX_TYPE_INPUT ||type == HtmlGenerate.BOX_TYPE_BUDGET) {
-					Double value = rowNum.doubleValue();
 					if(obj.containsKey("value")) {
 						obj.getDoubleValue("value");
 					}
 					cell.setCellValue(value);
 				} else if(type == HtmlGenerate.BOX_TYPE_FORMULA){
-						Double value = rowNum.doubleValue();
 						if(obj.containsKey("value")) {
 							obj.getDoubleValue("value");
 						}

@@ -262,7 +262,7 @@ public class JsonConvertProcess {
 		for(int i=0;i<array.size();i++) {
 			JSONObject json = array.getJSONObject(i);
 			String key = json.getString("key");
-			String formula = json.getString("formula");
+//			String formula = json.getString("formula");
 //			String reallyFormula = FormulaUtil.replaceFormula(array,formula);
 //			String reallyFormula = FormulaUtil.getReallyFormulaByKey(array,key);
 //			json.put("reallyFormula", reallyFormula);
