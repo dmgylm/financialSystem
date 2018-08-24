@@ -258,23 +258,29 @@ public class BusinessDataController {
         try {
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
+            BusinessData businessData = businessDataService.selectBusinessDataById(id);//查询id的数据
+            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",businessData.getTypeId(), "", "", "", null, null);
+            Integer status=listOrganization.get(0).getStatus();
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
             if (id != null && !id.equals("") && htmlType != null) {
                 if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
-                    BusinessData businessData = businessDataService.selectBusinessDataById(id);
-                    DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
-                    BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
-                    JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
-                    JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
-                    //JsonConvertProcess.mergeJson(joTemp, joInfo);
-                    HtmlGenerate htmlGenerate = new HtmlGenerate();
-                    htmlGenerate.disableBudgetInput();
-                    String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
-                    htmlResult.setData(html);  
+                   if(status==0){
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
+                        htmlResult.setResultDesc("当前组织架构数据已被停用！不能进行编辑！"); 
+                    }else{
+                        DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
+                        BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
+                        JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
+                        JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
+                        //JsonConvertProcess.mergeJson(joTemp, joInfo);
+                        HtmlGenerate htmlGenerate = new HtmlGenerate();
+                        htmlGenerate.disableBudgetInput();
+                        String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
+                        htmlResult.setData(html);     
+                    }
                 }else if(htmlType==3){//查看详情
-                    BusinessData businessData = businessDataService.selectBusinessDataById(id);
                     DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
                     JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
@@ -321,9 +327,16 @@ public class BusinessDataController {
         User user = (User) request.getAttribute("user");
         String uId=user.getId();
         try {
+            BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
+            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
+            Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
             if(isImport){
+             if(isStatus==0){
+                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                 result.setResultDesc("当前组织架构数据已被停用！不能进行编辑！");      
+             }else{
              // 如果有html则是在编辑页面提交（可能是保存 或者提交）
                 if (strJson != null && !strJson.equals("") && id != null && !id.equals("")) {
                     if (status == 1 || status == 2) {
@@ -414,7 +427,8 @@ public class BusinessDataController {
                 } else {
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                     result.setResultDesc("id不能为空");
-                }   
+                } 
+             }
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                 result.setResultDesc("您当前所属的组织架构没有此操作权限！"); 
@@ -446,64 +460,72 @@ public class BusinessDataController {
         // Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result = new ResultUtils();
         try {
-            if (id!=null&&!id.equals("")&&status == 4) {
-                // 如果是退回状态的话 1,2个表里面都增加一条一模一样的数据 2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改
-                // 版本号状态加1
-                String businessId=UuidUtil.getUUID();
-                BusinessData selectBusinessDataById = businessDataService.selectBusinessDataById(id);// 查询对应id的数据
-                BusinessData businessData = new BusinessData();
-                businessData.setId(businessId); // id自动生成
-                businessData.setoId(selectBusinessDataById.getoId());
-                businessData.setTypeId(selectBusinessDataById.getTypeId());
-                businessData.setuId(selectBusinessDataById.getuId());
-                businessData.setYear(selectBusinessDataById.getYear());
-                businessData.setMonth(selectBusinessDataById.getMonth());
-                businessData.setStatus(1);
-                businessData.setDelStatus(selectBusinessDataById.getDelStatus());
-                businessData.setsId(selectBusinessDataById.getsId());
-                businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
-                businessData.setVersion(selectBusinessDataById.getVersion() + 1);
-                Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
-                if (insertBusinessData == 1) {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                    result.setResultDesc("修改成功");
-                } else {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                    result.setResultDesc("修改失败");
-                }
-                Integer deleteBusinessData = businessDataService.deleteBusinessData(id);// 旧数据的删除状态为0
-                if (deleteBusinessData == 1) {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                    result.setResultDesc("修改成功");
-                } else {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                    result.setResultDesc("修改失败");
-                }
-                BusinessDataInfo selectBusiness = businessDataInfoService.selectBusinessDataById(id);
-                BusinessDataInfo businessDataInfo = new BusinessDataInfo();
-                businessDataInfo.setId(UuidUtil.getUUID()); // id自动生成
-                businessDataInfo.setBusinessDataId(businessId);
-                businessDataInfo.setInfo(selectBusiness.getInfo());
-                businessDataInfo.setuId(selectBusiness.getuId());
-                Integer insertBusinessDataInfo = businessDataInfoService.insertBusinessDataInfo(businessDataInfo);
-                if (insertBusinessDataInfo == 1) {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                    result.setResultDesc("修改成功");
-                } else {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                    result.setResultDesc("修改失败");
-                }
-                Integer deleteBusinessDataInfo = businessDataInfoService.deleteBusinessDataInfo(selectBusiness.getId());
-                if (deleteBusinessDataInfo == 1) {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
-                    result.setResultDesc("修改成功");
-                } else {
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-                    result.setResultDesc("修改失败");
-                }
-            } else {
+            BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
+            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
+            Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
+            if(isStatus==0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                result.setResultDesc("该状态不是4退回状态");
+                result.setResultDesc("当前组织架构数据已被停用！不能进行编辑！");    
+            }else{
+                if (id!=null&&!id.equals("")&&status == 4) {
+                    // 如果是退回状态的话 1,2个表里面都增加一条一模一样的数据 2,旧数据的删除状态为0 已经删除不能显示 在新增时候修改新数据的status状态为1 待修改
+                    // 版本号状态加1
+                    String businessId=UuidUtil.getUUID();
+                    BusinessData selectBusinessDataById = businessDataService.selectBusinessDataById(id);// 查询对应id的数据
+                    BusinessData businessData = new BusinessData();
+                    businessData.setId(businessId); // id自动生成
+                    businessData.setoId(selectBusinessDataById.getoId());
+                    businessData.setTypeId(selectBusinessDataById.getTypeId());
+                    businessData.setuId(selectBusinessDataById.getuId());
+                    businessData.setYear(selectBusinessDataById.getYear());
+                    businessData.setMonth(selectBusinessDataById.getMonth());
+                    businessData.setStatus(1);
+                    businessData.setDelStatus(selectBusinessDataById.getDelStatus());
+                    businessData.setsId(selectBusinessDataById.getsId());
+                    businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
+                    businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+                    Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
+                    if (insertBusinessData == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                        result.setResultDesc("修改成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                        result.setResultDesc("修改失败");
+                    }
+                    Integer deleteBusinessData = businessDataService.deleteBusinessData(id);// 旧数据的删除状态为0
+                    if (deleteBusinessData == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                        result.setResultDesc("修改成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                        result.setResultDesc("修改失败");
+                    }
+                    BusinessDataInfo selectBusiness = businessDataInfoService.selectBusinessDataById(id);
+                    BusinessDataInfo businessDataInfo = new BusinessDataInfo();
+                    businessDataInfo.setId(UuidUtil.getUUID()); // id自动生成
+                    businessDataInfo.setBusinessDataId(businessId);
+                    businessDataInfo.setInfo(selectBusiness.getInfo());
+                    businessDataInfo.setuId(selectBusiness.getuId());
+                    Integer insertBusinessDataInfo = businessDataInfoService.insertBusinessDataInfo(businessDataInfo);
+                    if (insertBusinessDataInfo == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                        result.setResultDesc("修改成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                        result.setResultDesc("修改失败");
+                    }
+                    Integer deleteBusinessDataInfo = businessDataInfoService.deleteBusinessDataInfo(selectBusiness.getId());
+                    if (deleteBusinessDataInfo == 1) {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                        result.setResultDesc("修改成功");
+                    } else {
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+                        result.setResultDesc("修改失败");
+                    }
+                } else {
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                    result.setResultDesc("该状态不是4退回状态");
+                }   
             }
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);

@@ -363,9 +363,15 @@ public class CapitalController {
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
+                Capital  capital=capitalService.selectCapitalById(id);//查询id的数据
+                List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",capital.getoId(), "", "", "", null, null);
+                Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                 if(isImport){
+                  if(isStatus==0){
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
+                    capitalByIdResult.setResultDesc("当前组织架构数据已被停用！不能进行编辑！");    
+                  }else{
                     if(id!=null&&!id.equals("")){
-                        Capital  capital=capitalService.selectCapitalById(id);
                         Date  newTime=new Date();
                         Date begTime=capital.getCreateTime(); //得到开始时间
                         Date endTime=capital.getUpdateTime(); //得到更新时间
@@ -380,7 +386,8 @@ public class CapitalController {
                     }else{
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
                         capitalByIdResult.setResultDesc("id不能为空！");
-                    }     
+                    } 
+                  }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
                     capitalByIdResult.setResultDesc("您当前所属的组织架构没有此操作权限！");  
@@ -414,7 +421,14 @@ public class CapitalController {
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
-                 if(isImport){
+                Capital  selectCapitalById=capitalService.selectCapitalById(id);//查询id的数据
+                List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",selectCapitalById.getoId(), "", "", "", null, null);
+                Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
+                if(isImport){
+                  if(isStatus==0){
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                    result.setResultDesc("当前组织架构数据已被停用！不能进行此操作！");    
+                  }else{
                     if(id!=null&&!id.equals("")){
                         Capital capital =new Capital();
                         capital.setId(id);
@@ -429,7 +443,8 @@ public class CapitalController {
                     }else{
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                         result.setResultDesc("id不能为空！");
-                    }                   
+                    } 
+                  }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                     result.setResultDesc("您当前所属的组织架构没有此操作权限！");
@@ -485,8 +500,16 @@ public class CapitalController {
                              if(!str[0].equals("")){
                                  String orgName=str[0];
                                  List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
+                                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                                  if(listOrganization.size()>0){
-                                     capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id
+                                   if(isStatus==0){
+                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                                      result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
+                                      insertFlag=false;
+                                      break; 
+                                   }else{
+                                     capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id   
+                                   }
                                  }else{
                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                      result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不存在");
