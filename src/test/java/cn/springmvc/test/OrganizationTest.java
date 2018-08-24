@@ -22,9 +22,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 
 
+
+
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.model.response.ChildrenObject;
 import cn.financial.model.response.OrangizaSubnode;
 import cn.financial.model.response.OrganizaParnode;
@@ -36,6 +39,7 @@ import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.DataModuleServiceImpl;
 import cn.financial.service.impl.OrganizationServiceImpl;
+import cn.financial.service.impl.UserOrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.HttpClient3;
@@ -58,6 +62,7 @@ public class OrganizationTest {
     private HttpClient3 http = new HttpClient3();
 
     private OrganizationService organizationService;
+    private OrganizationServiceImpl organizationServicess;
     /**
      * 测试获取xml的状态节点
      */
@@ -68,8 +73,14 @@ public class OrganizationTest {
     }
     @Autowired
     private OrganizationServiceImpl oarimpl;
-    private  OrganizationServiceImpl imp; 
-    private OrganizationServiceImpl ors;
+    private UserOrganizationServiceImpl userorganization;
+    @Test
+    public void orag(){
+    	String id="801e3565e8ce40ecba5c8944eacea33d";
+        List<Organization> lists =organizationServicess.listTreeByIdForParent(id);
+        int parentOrgType=lists.get(1).getOrgType();
+        System.out.println(lists.get(1).getOrgName());
+    }
     @Test
     public void sarss(){
     	String id="801e3565e8ce40ecba5c8944eacea33d";
