@@ -243,12 +243,40 @@ public class ElementConfig {
      */
     public static final String BUDGET_GENERATE="BUDGET_GENERATE";
     /**
-     * 部门必须移动公司下面
+     * 部门上级必须有公司级别
      */
     public static final String DEPER_COMPANY="DEPER_COMPANY";
     /**
      * 模板或对应数据计算错误
      */
     public static final String MODULE_FAIL="MODULE_FAIL";
+    /**
+     * 规定停用节点时间
+     */
+    public static final String MOBILE_ORGANIZATION_DISABLE="MOBILE_ORGANIZATION_DISABLE";
+    /**
+     * 部门不能移到部门下
+     */
+    public static final String DEPER_MOBILE="DEPER_MOBILE";
+    /**
+     * 部门下面不能添加节点
+     */
+    public static final String DEPER_REMOVE="DEPER_REMOVE";
+    /**
+     * 公司上级必须有板块级别
+     */
+    public static final String DEPER_PLATE="DEPER_PLATE";
+    /**
+     * 板块上级不能有公司级别
+     */
+    public static final String DEPER_PLATELEVEL="DEPER_PLATELEVEL";
+    /**
+     * 公司下面不能添加公司
+     */
+    public static final String COMPANY_COMPANY="COMPANY_COMPANY";
+    /**
+     * 板块下面不能添加板块
+     */
+    public static final String PLATE_PLATELEVEL="PLATE_PLATELEVEL";
   
 }
