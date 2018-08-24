@@ -186,7 +186,7 @@ public class StatisticJsonController {
 			wb.write(fos);
 			fos.close();
 			
-            URLEncoder.encode(saveName,"UTF-8");  
+			saveName = URLEncoder.encode(saveName,"UTF-8");  
 			String url = request.getRequestURI();
 			messageservice.saveMessageByUser(user, saveName, url);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
