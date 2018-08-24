@@ -42,16 +42,27 @@ public class AnalysisDemo {
 	//3: 用(2)生成的Html进行解析,得到一个Json模板数据
 	
 	public static void main(String[] args) {
+//		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/butten.html"));
 		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/Html budget.html"));
 		try {
 			String json = ha.analysis();
 			JsonConvertProcess jcp = new JsonConvertProcess();
 			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);
 			System.out.println(budgetJson);
+//			System.out.println(json);
 		} catch (FormulaAnalysisException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+//	public static void main(String[] args) {
+//		HtmlGenerate hg = new HtmlGenerate();
+//		String jsonStr = JsonConvertProcess.readFileContent("D:/Project/fmss/数据模板/车险预算Json数据.txt");
+//		String html = hg.generateHtml(jsonStr, HtmlGenerate.HTML_TYPE_TEMPLATE);
+//		System.out.println(html);
+//	}
+	
+	
 
 }
