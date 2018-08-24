@@ -144,12 +144,26 @@ public class ExcelReckonUtils {
 		}
 		return wb;
 	}
+	
+	private boolean isDouble(String value){
+		try {
+			Double.parseDouble(value);
+			return true;
+		} catch (NumberFormatException  e) {
+			return false;
+		}
+	}
 
 	private String replaceFormulaToStr(String formula,Double oldValue) {
 		String[] attrs = FormulaUtil.splitFormula(formula);
 		for(int i=0;attrs!=null && i<attrs.length;i++) {
 			String attr = attrs[i];
-			String excelFormula = keyMap.get(attr);
+			String excelFormula = null;
+			if(isDouble(attr)) {
+				excelFormula = attr;
+			} else {
+				excelFormula = keyMap.get(attr);
+			}
 			if(attr.indexOf(MODULE_KEY_SPLIT)<0 && excelFormula==null) {
 				System.out.println(111);
 			}
