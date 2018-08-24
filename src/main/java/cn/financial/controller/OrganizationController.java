@@ -4,18 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -25,10 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
@@ -42,7 +35,6 @@ import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.OrganizaResult;
 import cn.financial.model.response.ResultUtils;
 import cn.financial.quartz.AccountQuartzListener;
-import cn.financial.quartz.QuartzBudget;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
@@ -84,7 +76,6 @@ public class OrganizationController {
 	
 	private BusinessDataServiceImpl businessDataServices;
 	
-	private OrganizationServiceImpl organimpl;
 	
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
@@ -124,18 +115,62 @@ public class OrganizationController {
             }
             User user = (User) request.getAttribute("user");
             organization.setuId(user.getId());// 提交人id
-            if (null != parentOrgId && !"".equals(parentOrgId)) {
+            if (null != parentOrgId && !"".equals(parentOrgId)) {                     
+            List<Organization> lists =organizationService.listTreeByIdForParent(parentOrgId);
+            int parentOrgType=lists.get(0).getOrgType();
                 // 新增的时候这里保存的是此节点的code
-            	 List<Organization> list = organizationService.listOrganizationBy(null,null,null,parentOrgId,null,null,null,null,null);
-                 int type=list.get(0).getOrgType();
-                 if(type!=2&&orgType==3){
-                	 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-            	       return result;
-                 }
-                 else{
-                	 i = organizationService.saveOrganization(organization,parentOrgId);
-                 }
-               
+                if(parentOrgType==3){
+               	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
+            	      return result;
+              	} 
+                if(parentOrgType==2&&parentOrgType==orgType){
+                	 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+           	         return result;
+                }
+                if(parentOrgType==4&&parentOrgType==orgType){
+               	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+          	         return result;
+                }
+            	 if(orgType==3){//部门级别
+            		int sum=0;
+               	    for(int z=0;z<lists.size();z++){
+                		   int num=lists.get(z).getOrgType();
+                		     if(num==2){//公司级别
+                			  sum++;
+                		     }
+                       }
+               	          if(sum==0){
+          	    	         ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+          	                 return result;
+          	               }
+            	     }
+            	  if(orgType==4){
+                 	   int sum=0;
+                 	    for(int z=0;z<lists.size();z++){
+                		     int num=lists.get(z).getOrgType();
+                		      if(num==2){//判断父级是公司的数量
+                			    sum++;
+                		       }
+                  	      }
+                 	           if(sum>0){
+                 		          ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
+                	              return result;
+                                 }
+                       }
+            	  if(orgType==2){
+            		   int sum=0;
+                 	   for(int z=0;z<lists.size();z++){
+               		     int num=lists.get(z).getOrgType();
+               		       if(num==4){//判断父级是板块的数量
+               			     sum++;
+               		       }
+                 	 }
+                 	 if(sum==0){
+               	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
+               	        return result;
+               	     }
+            	  }
+               	 i = organizationService.saveOrganization(organization,parentOrgId);
             }
             if (Integer.valueOf(1).equals(i)) {
              	JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
@@ -234,9 +269,62 @@ public class OrganizationController {
         ResultUtils result=new ResultUtils();
         try {
             User user = (User) request.getAttribute("user");
+            List<Organization> lists =organizationService.listTreeByIdForParent(id);
+            int parentOrgType=lists.get(1).getOrgType();
+           if(parentOrgType==3){
+         	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
+      	          return result;
+        	} 
+            if(parentOrgType==2&&parentOrgType==orgType){
+          	     ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+     	         return result;
+            }
+            if(parentOrgType==4&&parentOrgType==orgType){
+         	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+    	         return result;
+             }
+            if(orgType==3){//部门
+            	 int sum=0;
+         		 for(int i=0;i<lists.size();i++){
+           		    int num=lists.get(i).getOrgType();
+           		     if(num==2){//代表有公司
+           			  sum++;
+           		    }
+         		  }
+         		   if(sum==0){
+              	       ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+              	       return result;
+              	     }
+                }
+              if(orgType==2){//公司
+            	    int sum=0;
+             	    for(int i=0;i<lists.size();i++){
+           		     int num=lists.get(i).getOrgType();
+           		        if(num==4){//判断父级是板块的数量
+           			      sum++;
+           		         }
+             	       }
+             	      if(sum==0){
+           	    	    ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
+           	            return result;
+           	          }
+              }  
+              if(orgType==4){
+                 	int sum=0;
+           	        for(int i=0;i<lists.size();i++){
+          		      int num=lists.get(i).getOrgType();
+          		       if(num==2){//判断父级是公司的数量
+          			     sum++;
+          		        }
+            	     }
+           	          if(sum>0){
+           		           ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
+          	               return result;
+           	           }
+                }
             Integer i = organizationService.updateOrganizationById(orgName,id,orgType,user.getId());
             if (Integer.valueOf(1).equals(i)) {
-            	 if(orgType==3){
+            	 if(orgType==3){         		
             		  String reportType = DataModule.REPORT_TYPE_BUDGET;
                  	  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,id,null,null,null,3,null);
                 	  int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -257,7 +345,7 @@ public class OrganizationController {
         	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
         }
-        return result;
+        return null;
     }
 
     /**
@@ -282,6 +370,14 @@ public class OrganizationController {
                 // 这里判断此节点下是否存在没有被停用的节点。
                 HashMap<Object, Object> mmp = new HashMap<Object, Object>();
                 mmp.put("id", request.getParameter("id"));
+                Calendar cal = Calendar.getInstance();
+    		    int day = cal.get(Calendar.DATE);
+                int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
+                int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
+                if(day<start_time||day>stop_time){
+                	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_DISABLE,result);
+                	return result;
+                }
                 Boolean boolean1 = organizationService.hasOrganizationSon(mmp);
                 if (!boolean1) {
                     i = organizationService.deleteOrganizationById(request.getParameter("id"), user);
@@ -424,15 +520,65 @@ public class OrganizationController {
             }
             else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
-                int orgType=list.get(0).getOrgType();
-                if(orgType==3){//判断该组织是否是部门级别
-                	List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
-                	int type=lists.get(0).getOrgType();
-               	     if(type!=2){
-               	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-               	        return result;
-               	     }
+                int orgType=list.get(0).getOrgType();//当前级别
+                List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
+                int parentOrgType=lists.get(0).getOrgType();
+                if(parentOrgType==3){
+             	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
+          	          return result;
+            	} 
+                if(parentOrgType==2&&parentOrgType==orgType){
+              	     ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+         	         return result;
                 }
+                if(parentOrgType==4&&parentOrgType==orgType){
+             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+        	         return result;
+                 }
+                if(orgType==4){
+                	int sum=0;
+                	 for(int i=0;i<lists.size();i++){
+               		    int num=lists.get(i).getOrgType();
+               		    if(num==2){//判断父级是公司的数量
+               			 sum++;
+               		    }
+                 	 }
+                	 if(sum>0){
+                		 ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
+               	         return result;
+                	 }
+                }
+                if(orgType==2){
+                	 int sum=0;
+                	 for(int i=0;i<lists.size();i++){
+              		    int num=lists.get(i).getOrgType();
+              		    if(num==4){//判断父级是板块的数量
+              			 sum++;
+              		    }
+                	 }
+                	 if(sum==0){
+              	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
+              	        return result;
+              	     }
+                }
+                if(orgType==3){//判断该组织是否是部门级别
+                	  int sum=0;
+                	  for(int i=0;i<lists.size();i++){
+                 		    int num=lists.get(i).getOrgType();
+                 		    if(num==2){
+                 			 sum++;
+                 		    }
+                          }
+                	  if(sum==0){
+                 	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+                 	        return result;
+                 	     }
+                 	     
+                       if(lists.get(0).getOrgType()==3){
+                      	 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+                  	     return result;
+                       }
+           	  }
             JSONObject jsonobject= organizationService.TreeByIdForSon(id);
             JSONArray  jsonarry=JSONArray.parseArray(jsonobject.get("children").toString());
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
