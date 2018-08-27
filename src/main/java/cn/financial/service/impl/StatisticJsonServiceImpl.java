@@ -269,21 +269,22 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@SuppressWarnings("unchecked")
 	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
-		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/year.txt"));
-//		JSONObject model = findModel(reportType,businessType);
-//		if(model==null){
-//			return null;
-//		}
+//		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/year.txt"));
+		JSONObject model = findModel(reportType,businessType);
+		if(model==null){
+			return null;
+		}
 		
 		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
 		//取出id来进行查询
-		List<String> dataId = new ArrayList<String>();
-		for (int i = 0; i < businessDataList.size(); i++) {
-			dataId.add(businessDataList.get(i).getId());
-		}
-		JSONArray dataJar = dataModuleService.dataModuleById(dataId);//获取分组对应标识
+//		List<String> dataId = new ArrayList<String>();
+//		for (int i = 0; i < businessDataList.size(); i++) {
+//			dataId.add(businessDataList.get(i).getId());
+//		}
+		JSONArray dataJar = dataModuleService.dataModuleById(reportType,businessDataList);//获取分组对应标识
 		Map<String,String> kal = (Map<String, String>) dataJar.get(0);//获取分组数据
 		Map<String,String> mol = (Map<String, String>) dataJar.get(1);//获取模板数据
+		System.out.println(dataJar);
 		//分组保存不同模板对应数据集
 		for (int i = 0; i < businessDataList.size(); i++) {
 			String bid = businessDataList.get(i).getId();
@@ -313,10 +314,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			JSONObject groupsum = valueListNewSum(valueList);
 			groupmap.put(groupname, groupsum);
 		}
-		
+
 		//将数据集填入模板
 		Map<String,JSONObject> modelDataStatic = new HashMap<String, JSONObject>();
-		
 		//填入模板数据,返回模板对应数据集
 		Iterator<String> mod = mol.keySet().iterator();
 		while (mod.hasNext()) {
@@ -383,7 +383,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 			modelDataStatic.put(modelLogoName, modelDataSum);
 		}
-		
 		//最后进行的汇总模板填写
 		Iterator<String> staticModel = model.keySet().iterator();
 		while (staticModel.hasNext()) {

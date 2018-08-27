@@ -20,10 +20,10 @@ import com.github.pagehelper.PageInfo;
 
 import cn.financial.dao.DataModuleDao;
 import cn.financial.exception.FormulaAnalysisException;
+import cn.financial.model.BusinessData;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.response.DataModuleResult;
-import cn.financial.model.response.DataModulesResult;
 import cn.financial.model.response.ModuleList;
 import cn.financial.service.DataModuleService;
 import cn.financial.service.OrganizationService;
@@ -262,25 +262,53 @@ public class DataModuleServiceImpl implements DataModuleService{
 		return orgName + reportTypeName;
 	}
 	/**
-	 *   根据模板id查询模板标识 
+	 *   查询所有模板返回信息
 	 */
-	
 	@Override
-	public JSONArray dataModuleById(List<String> list) {
-		List<DataModule> lists=dataModuleDao.dataModuleById(list);
-		Map<String,String> map1=new HashMap<String, String>();
-		for(DataModule dataModule:lists){
-			 String id = dataModule.getId();
-			 String moduleLogo=dataModule.getModuleLogo();
-			 map1.put(id, moduleLogo);
-		}
-		Map<String,String> map2=new HashMap<String, String>();
-		for (DataModule dataModule:lists) {
-			 String moduleLogo=dataModule.getModuleLogo();
-			 String modelData = dataModule.getModuleData();
-			 map2.put(moduleLogo, modelData);
+	public JSONArray dataModuleById(String reportType,List<BusinessData> businessDataList) {
+		List<DataModule> source = dataModuleDao.dataModuleById();
+		List<DataModule> models= new ArrayList<DataModule>();
+		for (int i = 0; i < businessDataList.size(); i++) {
+			String bid = businessDataList.get(i).getDataModuleId();
+			for (int j = 0; j < source.size(); j++) {
+				String sid = source.get(j).getId();
+				if(sid.equals(bid)){
+					DataModule dm = new DataModule();
+					dm.setId(businessDataList.get(i).getId());
+					dm.setModuleData(source.get(j).getModuleData());
+					dm.setModuleLogo(source.get(j).getModuleLogo());
+					dm.setReportType(source.get(j).getReportType());
+					models.add(dm);
+				}
+			}
 		}
 		
+		Map<String,String> map1=new HashMap<String, String>();
+		Map<String,String> map2=new HashMap<String, String>();
+		if(reportType==DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY){
+			for(DataModule dataModule:models){
+				if(dataModule.getReportType().equals(DataModule.REPORT_TYPE_PROFIT_LOSS)){
+					 String id = dataModule.getId();
+					 String moduleLogo=dataModule.getModuleLogo();
+					 String modelData = dataModule.getModuleData();
+					 map1.put(id, moduleLogo);
+					 map2.put(moduleLogo, modelData);
+				}
+			}
+		}else if(reportType==DataModule.REPORT_TYPE_BUDGET_SUMMARY){
+			for(DataModule dataModule:models){
+				if(dataModule.getReportType().equals(DataModule.REPORT_TYPE_BUDGET)){
+					 String id = dataModule.getId();
+					 String moduleLogo=dataModule.getModuleLogo();
+					 String modelData = dataModule.getModuleData();
+					 map1.put(id, moduleLogo);
+					 map2.put(moduleLogo, modelData);
+				}
+			}
+		}
+		
+
+
 		JSONArray ja = new JSONArray();
 		ja.add(map1);
 		ja.add(map2);
