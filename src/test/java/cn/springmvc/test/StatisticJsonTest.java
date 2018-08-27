@@ -202,10 +202,7 @@ public class StatisticJsonTest {
 		List<String> typeIdList = service.typeIdList(codeSonList);
 		//获取底层对应数据的集合
 		List<BusinessData> businessDataList = service.valueList("2018/1","2019/12",typeIdList);
-//		for (int i = 0; i < businessDataList.size(); i++) {
-//			System.out.println(businessDataList.get(i).getDataModuleId());
-//		}
-		JSONObject ja =JSONObject.parseObject(service.jsonCalculationCollect("SUMMARY_PROFIT_LOSS",null,businessDataList));
+		JSONObject ja =JSONObject.parseObject(service.jsonCalculationCollect("SUMMARY_BUDGET",null,businessDataList));
 		HtmlGenerate hg = new HtmlGenerate(true);
 		String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
 		
