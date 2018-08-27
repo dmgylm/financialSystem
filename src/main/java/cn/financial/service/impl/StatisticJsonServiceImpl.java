@@ -284,7 +284,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		JSONArray dataJar = dataModuleService.dataModuleById(reportType,businessDataList);//获取分组对应标识
 		Map<String,String> kal = (Map<String, String>) dataJar.get(0);//获取分组数据
 		Map<String,String> mol = (Map<String, String>) dataJar.get(1);//获取模板数据
-		System.out.println(dataJar);
 		//分组保存不同模板对应数据集
 		for (int i = 0; i < businessDataList.size(); i++) {
 			String bid = businessDataList.get(i).getId();
@@ -429,8 +428,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 					int wuSum = formula.length()-formula.replaceAll("★", "").length();
 					if(wuSum>1){
 						//当★大于1时
-						String[] moreDown = formula.split("\\+|-");
-						Double formulaRS = 0.0;
+						String[] moreDown = formula.split("[\\+\\-\\*\\/()]");
+						Map<String,Object> item = new HashMap<String, Object>();
+//						Double formulaRS = 0.0;
 						for (int j = 0; j < moreDown.length; j++) {
 							String[] setDown = moreDown[j].split("★");
 							String logoKey = setDown[0];
@@ -439,14 +439,17 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 								JSONObject staticData = modelDataStatic.get(logoKey);
 								if(staticData.containsKey(logoValue)){
 									Double amount = staticData.getDouble(logoValue);
-									if(amount==null){
-										amount =0.0;
-									}
-									formulaRS += amount;
+									moreDown[j] = moreDown[j].replaceAll("★", "_");
+									item.put(moreDown[j], amount);
+//									if(amount==null){
+//										amount =0.0;
+//									}
+//									formulaRS += amount;
 								}
 							}
 						}
-						rowjar.put("value",formulaRS);
+						formula = formula.replaceAll("★", "_");
+						rowjar.put("value",FormulaUtil.calculationByFormula(item,formula));
 					}else{
 						//当★为1时
 						String[] setDown = formula.split("★");
