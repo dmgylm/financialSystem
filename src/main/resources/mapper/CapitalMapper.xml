@@ -52,7 +52,7 @@
          capital c,organization o
          WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
-         ORDER BY c.createTime DESC
+         ORDER BY c.tradeTime DESC
          LIMIT #{start},#{pageSize}
        </select>
        
@@ -62,7 +62,7 @@
          capital c,organization o
          WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
-         ORDER BY c.createTime DESC
+         ORDER BY c.tradeTime DESC
        </select>
       
        
