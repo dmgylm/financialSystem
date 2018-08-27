@@ -117,8 +117,8 @@ public class OrganizationTest {
 	   List<String> ids = new ArrayList<String>();
 	   ids.add("000791b90fc448ae9a2da761c5e281ef");
 	   ids.add("000e2e05c8f145578055cb5715c7c605");
-	   Map<String, String> map = (Map<String, String>) datamodel.dataModuleById(ids);
-	   System.out.println(map);
+//	   Map<String, String> map = (Map<String, String>) datamodel.dataModuleById(null,ids);
+//	   System.out.println(map);
     }
     @Test
     public void part(){
