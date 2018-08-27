@@ -21,18 +21,10 @@
         <include refid="query_dataModule_where"></include>
         ORDER BY createTime DESC 
     </select>
-       <!-- 根据模板id查询模板标识 -->
+    <!-- 查询所有模板-->
     <select id="dataModuleById" resultType="dataModule">
-     select a.id,b.moduleLogo,b.moduleData from businessData a INNER JOIN dataModule b on a.dataModuleId=b.id where
-     <include refid="query_organization_find"></include>
+     select moduleLogo,moduleData,reportType,id from dataModule WHERE 1 = 1 
     </select>
-    <sql id="query_organization_find">
-		 a.id in
-		<foreach item="item" collection="list" open="(" separator=","
-			close=")">
-			#{item,jdbcType=VARCHAR}
-		</foreach>
-	</sql>
     <!--查询全部模板/多条件查询模板列表（简单列表）-->
     <select id="queryDataModule" resultType="dataModule">
         SELECT id,moduleName,versionNumber,statue,createTime FROM dataModule WHERE 1 = 1 

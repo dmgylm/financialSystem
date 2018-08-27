@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.alibaba.fastjson.JSONArray;
 
 import cn.financial.exception.FormulaAnalysisException;
+import cn.financial.model.BusinessData;
 import cn.financial.model.DataModule;
 import cn.financial.model.response.DataModuleResult;
 import cn.financial.model.response.ModuleList;
@@ -82,6 +83,6 @@ public interface DataModuleService {
 	
 	String getDataModuleName(String reportType, String businessType);
 	
-	JSONArray dataModuleById(List<String> list);
+	JSONArray dataModuleById(String reportType, List<BusinessData> businessDataList);
 
 }

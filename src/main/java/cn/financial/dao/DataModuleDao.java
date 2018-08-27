@@ -47,8 +47,8 @@ public interface DataModuleDao {
 	void updateStateByReportTypeAndBusinessType(Map<String,Object> params);
     /**
      * 
-     * @param 根据模板id查询模板标识 
+     * @param 查询所有模板
      * @return
      */
-	List<DataModule> dataModuleById(@Param("list") List<String> list);
+	List<DataModule> dataModuleById();
 }
