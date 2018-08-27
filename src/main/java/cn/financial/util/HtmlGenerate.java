@@ -305,7 +305,12 @@ public class HtmlGenerate {
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
 			td.text(value);
 		} else if(inputType==BOX_TYPE_BUDGET) {//预算
-			td.text(value);
+			Element input = td.appendElement("input");
+			input.attr("name",key);
+			input.attr("value",value);
+			input.attr("id",key);
+			input.attr("readonly", "true");
+//			td.text(value);
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
