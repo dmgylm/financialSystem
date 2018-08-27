@@ -336,14 +336,17 @@ public class OrganizationController {
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
               		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
                  	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                 	  return result;
             	 }
        			
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+            	return result;
             }
         } catch (Exception e) {
         	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
             this.logger.error(e.getMessage(), e);
+            return result;
         }
         return null;
     }
