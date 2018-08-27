@@ -186,6 +186,9 @@
         <if test="sId!=null and sId!=''">
             and b.sId = #{sId}
         </if>
+        <if test="status!=null and status!=''">
+            and b.status = #{status}
+        </if>
          <if test="typeId!=null and typeId!=''">
           and b.typeId =#{typeId}
         </if>
