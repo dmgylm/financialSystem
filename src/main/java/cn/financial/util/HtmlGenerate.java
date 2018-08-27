@@ -267,17 +267,9 @@ public class HtmlGenerate {
 	 * @param value
 	 */
 	private void generatePreviewContent(Element td,int inputType,String key,String name, String value) {
-		if (inputType == BOX_TYPE_INPUT) {// input
-			td.text(value);
-			if(isPreviewNeedId) {
-				td.attr("id",key);
-			}
-		} else if (inputType == BOX_TYPE_FORMULA) {// formula
-			td.text(value);
-			if(isPreviewNeedId) {
-				td.attr("id",key);
-			}
-		} else if (inputType == BOX_TYPE_BUDGET) {// 预算
+		if (inputType == BOX_TYPE_INPUT || inputType == BOX_TYPE_FORMULA
+				|| inputType == BOX_TYPE_BUDGET) {// input / 预算 /公式
+			value = StringUtils.formatNumber(value);//格式化数据
 			td.text(value);
 			if(isPreviewNeedId) {
 				td.attr("id",key);

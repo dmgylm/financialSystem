@@ -112,7 +112,7 @@ public class StringUtils {
      */
     public static String formatFloatNumber(double value) {
         if(value != 0.00){
-            java.text.DecimalFormat df = new java.text.DecimalFormat("########.00");
+            DecimalFormat df = new DecimalFormat("########.00");
             return df.format(value);
         }else{
             return "0.00";
@@ -122,10 +122,34 @@ public class StringUtils {
     public static String formatFloatNumber(Double value) {
         if(value != null){
             if(value.doubleValue() != 0.00){
-                java.text.DecimalFormat df = new java.text.DecimalFormat("#");
+                DecimalFormat df = new DecimalFormat("#");
                 return df.format(value.doubleValue());
             }
         }
         return "0";
     }
+    
+    public static String formatNumber(Double value,String format){
+    	if(value == null) {
+    		return "";
+    	}
+    	DecimalFormat df = new DecimalFormat(format);
+    	return df.format(value);
+    }
+    
+    public static String formatNumber(Double value){
+    	return formatNumber(value, "#.00");
+    }
+
+    public static String formatNumber(String value){
+    	try {
+    		if(!isValid(value)) {
+        		return "";
+        	}
+        	return formatNumber(Double.parseDouble(value), "#.00");			
+		} catch (Exception e) {
+			return "";
+		}
+    }
+    
 }
