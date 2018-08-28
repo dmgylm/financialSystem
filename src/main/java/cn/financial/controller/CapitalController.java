@@ -500,8 +500,8 @@ public class CapitalController {
                              if(!str[0].equals("")){
                                  String orgName=str[0];
                                  List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
-                                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                                  if(listOrganization.size()>0){
+                                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                                    if(isStatus==0){
                                       ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                       result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
