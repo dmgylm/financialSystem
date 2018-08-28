@@ -118,7 +118,7 @@ public class DataModuleController {
 	public DataResult getNewestDataModule(String reportType,String businessType){
 		DataResult dataResult = new DataResult();
 		try {
-			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
+			DataModule bean = dataModuleService.getDataModule(reportType,businessType,null);
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(bean.getModuleData(),HtmlGenerate.HTML_TYPE_TEMPLATE);
 			bean.setDataHtml(html);
