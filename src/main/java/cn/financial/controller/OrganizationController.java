@@ -4,13 +4,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
@@ -38,6 +43,7 @@ import cn.financial.quartz.AccountQuartzListener;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.UserOrganizationService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.DataModuleServiceImpl;
@@ -75,6 +81,8 @@ public class OrganizationController {
 	private OrganizationServiceImpl organizationServices;
 	
 	private BusinessDataServiceImpl businessDataServices;
+	
+	private UserOrganizationService userOrganizationService;
 	
 	
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
@@ -234,8 +242,9 @@ public class OrganizationController {
     		String id,String code,String uId, String parentId,Integer orgType,HttpServletRequest request, HttpServletResponse response) {
         OganizationNode organiza=new OganizationNode();
         try {
-            List<Organization> list = organizationService.
-            	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType,null);
+        	 User user = (User) request.getAttribute("user");
+             List<Organization> list = organizationService.
+            	listOrganizationBy(orgName,createTime,updateTime,id,code,user.getId(),parentId,orgType,null);
            // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
@@ -522,6 +531,9 @@ public class OrganizationController {
             	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
             	return result;
             }
+            
+            
+            
             else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();//当前级别
