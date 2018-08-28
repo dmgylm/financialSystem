@@ -8,16 +8,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.controller.MessageController;
 import cn.financial.dao.MessageDAO;
-import cn.financial.dao.UserRoleDAO;
 import cn.financial.model.Message;
-import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.UserRole;
 import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
 
@@ -33,17 +29,17 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageDAO messageDao;
 
-    @Autowired
-    private UserRoleDAO userRoleDao;
+//    @Autowired
+//    private UserRoleDAO userRoleDao;
     
-    @Autowired
-	private RoleResourceServiceImpl roleResourceServiceImpl;
+//    @Autowired
+//	private RoleResourceServiceImpl roleResourceServiceImpl;
 	
 	@Autowired
 	private UserOrganizationServiceImpl userOrganizationServiceImpl;
 	
-	@Autowired
-	private OrganizationServiceImpl organizationService;
+//	@Autowired
+//	private OrganizationServiceImpl organizationService;
 
 
     /**
@@ -180,8 +176,8 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public List<Message> quartMessageByPower(User user,Map<Object, Object> pagingMap) {
 		
-		final Integer TWO = 2;
-		final Integer THREE = 3;
+//		final Integer TWO = 2;
+//		final Integer THREE = 3;
 		// 默认一页显示的数据
 		Integer pageSize = 10;
         if (null != pagingMap.get("pageSize") && !"".equals(pagingMap.get("pageSize"))) {
@@ -193,54 +189,64 @@ public class MessageServiceImpl implements MessageService {
             start = pageSize * (Integer.parseInt(pagingMap.get("page").toString()) - 1);
         }
 		
-		List<UserRole> lur = userRoleDao.listUserRole(user.getName(), null);
+//		List<UserRole> lur = userRoleDao.listUserRole(user.getName(), null);
 		List<Message> lm = new ArrayList<Message>();
-		List<Organization> lo = new ArrayList<Organization>();
-		List<String> oIdList = new ArrayList<String>();
+//		List<Organization> lo = new ArrayList<Organization>();
+//		List<String> oIdList = new ArrayList<String>();
 		Map<Object, Object> filter = new HashMap<Object, Object>();
 		
-		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
-			List<JSONObject> uResource = roleResourceServiceImpl.roleResourceList(lur.get(i).getName());
-			for (int n = 0; n < uResource.size(); n++) {
-				JSONArray ja = JSONArray.parseArray(uResource.get(n).getString("children"));
-			
-				for (int j = 0; j < ja.size(); j++) {
-					JSONObject ob = (JSONObject) ja.get(j);
-					if (("0dd6008c6e7f4bce8e1d2ada94341ecf").equals(ob.get("pid"))) {// 是制单员
-						List<JSONObject> userOrganization = userOrganizationServiceImpl.userOrganizationList(user.getId()); // 判断
-																															// 权限的数据
-						for (int k = 0; k < userOrganization.size(); k++) {
-							JSONObject obu = (JSONObject) userOrganization.get(k);
-							int num=Integer.parseInt(obu.get("orgType").toString());
-							if (TWO == num) {// 是公司
-								Organization org=new Organization();
-								org.setId(obu.get("pid").toString());
-								if(!lo.contains(org)) {
-									oIdList.add((String) obu.get("pid"));
-									lo.add(org);
-								}
-							}else if(THREE == num) {
-								Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
-								Organization orgt=new Organization();
-								if(org != null) {
-									orgt.setId(org.getId());
-									if(!lo.contains(orgt)) {
-										oIdList.add(org.getId());
-										lo.add(org);
-									}
-								}else {
-									continue;
-								}
-							}
-						}
-					}
-				}
-			}
+		String uId = user.getId();
+		
+		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);
+		
+		String code[] = new String[list.size()];
+		for(int i=0; i<list.size(); i++) {
+			code[i] = list.get(i).getString("id");
 		}
+ 		
+//		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
+//			List<JSONObject> uResource = roleResourceServiceImpl.roleResourceList(lur.get(i).getName());
+//			for (int n = 0; n < uResource.size(); n++) {
+//				JSONArray ja = JSONArray.parseArray(uResource.get(n).getString("children"));
+//			
+//				for (int j = 0; j < ja.size(); j++) {
+//					JSONObject ob = (JSONObject) ja.get(j);
+//					if (("0dd6008c6e7f4bce8e1d2ada94341ecf").equals(ob.get("pid"))) {// 是制单员
+//						List<JSONObject> userOrganization = userOrganizationServiceImpl.userOrganizationList(user.getId()); // 判断
+//																															// 权限的数据
+//						for (int k = 0; k < userOrganization.size(); k++) {
+//							JSONObject obu = (JSONObject) userOrganization.get(k);
+//							int num=Integer.parseInt(obu.get("orgType").toString());
+//							if (TWO == num) {// 是公司
+//								Organization org=new Organization();
+//								org.setId(obu.get("pid").toString());
+//								if(!lo.contains(org)) {
+//									oIdList.add((String) obu.get("pid"));
+//									lo.add(org);
+//								}
+//							}else if(THREE == num) {
+//								Organization org = organizationService.getCompanyNameBySon(obu.get("pid").toString());// 获取对应部门的公司
+//								Organization orgt=new Organization();
+//								if(org != null) {
+//									orgt.setId(org.getId());
+//									if(!lo.contains(orgt)) {
+//										oIdList.add(org.getId());
+//										lo.add(org);
+//									}
+//								}else {
+//									continue;
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		if(pagingMap.get("status")!=null && !"".equals(pagingMap.get("status"))) {
-			if(oIdList.size()>0) {
-				filter.put("oId", oIdList);
-			}
+//			if(oIdList.size()>0) {
+//				filter.put("oId", oIdList);
+//			}
+			filter.put("code", code);
 			filter.put("uId", user.getId());
 			filter.put("pageSize", pageSize);
 			filter.put("start", start);
@@ -249,11 +255,12 @@ public class MessageServiceImpl implements MessageService {
 			}else {
 				filter.put("status", pagingMap.get("status"));
 			}
-			lm = messageDao.listMessage(filter);
+			lm = messageDao.listMessageBy(filter);
 		}else {
-			if(oIdList.size()>0) {
-				filter.put("oId", oIdList);
-			}
+//			if(oIdList.size()>0) {
+//				filter.put("oId", oIdList);
+//			}
+			filter.put("code", code);
 			filter.put("uId", user.getId());
 			filter.put("pageSize", pageSize);
 			filter.put("start", start);
