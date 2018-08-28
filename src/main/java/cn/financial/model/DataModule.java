@@ -98,7 +98,13 @@ public class DataModule {
     	case REPORT_TYPE_BUDGET:
     		reportTypeName = "预算";
     		break;
-
+    	case REPORT_TYPE_PROFIT_LOSS_SUMMARY:
+    		reportTypeName = "损益简易汇总";
+    		break;
+    	case REPORT_TYPE_BUDGET_SUMMARY:
+    		reportTypeName = "预算简易汇总";
+    		break;
+    		
 		default:
 			break;
 		}
