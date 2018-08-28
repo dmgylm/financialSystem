@@ -19,6 +19,8 @@ public class BusinessData {
         private String id;   //损益表id
             	 
         private String oId; //组织id
+        
+        private String info; //模板json
             	 
         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
         private Date createTime; //创建时间
@@ -177,6 +179,13 @@ public class BusinessData {
         public void setVersion(Integer version) {
             this.version = version;
         }
-        
+
+        public String getInfo() {
+            return info;
+        }
+
+        public void setInfo(String info) {
+            this.info = info;
+        }
 
 }
