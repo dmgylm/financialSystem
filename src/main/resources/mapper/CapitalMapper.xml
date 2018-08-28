@@ -48,7 +48,7 @@
        
        <!-- 根据条件查询资金数据-->
        <select id="listCapitalBy" parameterType="map" resultType="Capital">
-         SELECT * FROM 
+         SELECT c.* FROM 
          capital c,organization o
          WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
@@ -58,7 +58,7 @@
        
        <!-- 根据条件导出资金数据-->
        <select id="capitalExport" parameterType="map" resultType="Capital">
-         SELECT * FROM 
+         SELECT c.* FROM 
          capital c,organization o
          WHERE c.status=1 and o.id=c.oId 
          <include refid="query_capital_where"></include>
