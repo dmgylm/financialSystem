@@ -75,14 +75,15 @@ public class OrganizationController {
 	
 	@Autowired
 	private DataModuleServiceImpl dataModuleServiceImpl;
+	@Autowired
+	private UserOrganizationService userOrganizationService;
 	
 	private BusinessDataInfoServiceImpl businessDataInfoServices;
 	
 	private OrganizationServiceImpl organizationServices;
 	
 	private BusinessDataServiceImpl businessDataServices;
-	
-	private UserOrganizationService userOrganizationService;
+
 	
 	
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
@@ -243,8 +244,11 @@ public class OrganizationController {
         OganizationNode organiza=new OganizationNode();
         try {
         	 User user = (User) request.getAttribute("user");
-             List<Organization> list = organizationService.
-            	listOrganizationBy(orgName,createTime,updateTime,id,code,user.getId(),parentId,orgType,null);
+        	 List<Organization> list=userOrganizationService.userOrganizationLists(user.getId());
+        	 JSONObject json=new JSONObject();
+        	 json.put("data", list);
+            // List<Organization> list = organizationService.
+            	//listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType,null);
            // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
