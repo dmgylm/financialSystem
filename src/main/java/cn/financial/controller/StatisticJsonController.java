@@ -179,7 +179,9 @@ public class StatisticJsonController {
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);
 			
-            String fileName = "汇总数据表单.xlsx";
+			
+			JSONObject bean = statisticService.findModel(reportType, businessType);
+            String fileName =bean.getString("moduleName") + ".xlsx";
             String saveName = SiteConst.FILEURL +  File.separator + fileName;
             JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
 			Workbook wb = jsonConvertExcel.getExcel(ja,fileName);
