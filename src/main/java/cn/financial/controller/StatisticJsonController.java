@@ -179,7 +179,6 @@ public class StatisticJsonController {
 			sj.setCaCheId(caCheUuid);
 			sj.setData(html);
 			
-			
 			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
             String fileName =bean.getModuleName() + ".xlsx";
             String saveName = SiteConst.FILEURL +  File.separator + fileName;
