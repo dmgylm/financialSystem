@@ -5,8 +5,6 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,109 +123,54 @@ public class BusinessDataController {
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
-            //List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
-            List<Organization> listTree = new ArrayList<>(); // 筛选过后就的权限数据
-            for (int i = 0; i < userOrganization.size(); i++){
-                List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(userOrganization.get(i).getString("pid"));
-                  if(keyword!=null&&!keyword.equals("")){
-                      for (int j = 0; j < listTreeByIdForSon.size(); j++) {
-                            Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
-                            String orgName=listTreeByIdForSon.get(j).getOrgName();
-                            if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){//如果是部门级别
-                             String parentId=listTreeByIdForSon.get(j).getParentId(); //对应部门所属的公司
-                             if(orgName.contains(keyword)){//判断部门是否包含关键词
-                                 listTree.add(listTreeByIdForSon.get(j));  
-                             }else{//如果部门不包含判断公司是否包含关键词
-                              Boolean isCompany=company(parentId, keyword, listTreeByIdForSon);
-                              if(isCompany){
-                                 listTree.add(listTreeByIdForSon.get(j));  
-                                }
-                              }
-                              /*Organization companyName = organizationService.getCompanyNameBySon(listTreeByIdForSon.get(j).getId());// 查询部门所属的公司名
-                              if(companyName!=null){
-                               if(companyName.getOrgName().contains(keyword)||orgName.contains(keyword)){
-                                 listTree.add(listTreeByIdForSon.get(j));   
-                               }
-                              }else if(orgName.contains(keyword)){
-                                  listTree.add(listTreeByIdForSon.get(j));  
-                              }*/
-                           }
-                        }                    
-                    }else{//查询orgName以下所有级别数据
-                         for (int j = 0; j < listTreeByIdForSon.size(); j++) {
-                                Integer orgType=Integer.parseInt(listTreeByIdForSon.get(j).getOrgType().toString());
-                                String orgName=listTreeByIdForSon.get(j).getOrgName();
-                                if(orgType==BusinessData.DEPNUM||orgName.contains(BusinessData.NAME)){
-                                    listTree.add(listTreeByIdForSon.get(j)); 
-                                }
-                            }
-                       }  
-                //}
+            String[] code = new String[userOrganization.size()];
+            for (int i = 0; i < userOrganization.size(); i++) {
+                code[i]=userOrganization.get(i).getString("id");
             }
-              if(listTree.size()>0 && listTree!=null){
-               // //查询所有符合搜索条件的表数据
-                  String[] oId = new String[listTree.size()];// 获取权限的typeId
-                  /*for (int i = 0; i < listOrganization.size(); i++){ // 循环权限全部数据
-                      JSONObject pidJosn = listOrganization.get(i);
-                      String pid = pidJosn.getString("pid"); // 找到权限数据里面的组织id
-                      oId[i] = pid;
-                  }*/
-                  for (int i = 0; i < listTree.size(); i++) {
-                      String id = listTree.get(i).getId();
-                      oId[i] = id;
-                  }
-                  List<String> oIds = Arrays.asList(oId);
-                  map.put("typeId", oIds); 
-                  map.put("year", year); // 年份
-                  map.put("month", month); // 月份
-                  if (sId == null || sId < 1 || sId > 2) {
-                      map.put("sId", ""); // 判断是损益还是预算表 1损益 2 预算
-                  } else {
-                      map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
-                  }
-                  //map.put("orgName", keyword); //查询的关键词*/                
-                  List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
-                  if (pageSize == null || pageSize == 0) {
-                      map.put("pageSize", 10);
-                  } else {
-                      map.put("pageSize", pageSize);
-                  }
-                  if (page == null) {
-                      map.put("start", 0);
-                  } else {
-                      map.put("start", pageSize * (page - 1));
-                  }
-                  List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
-                  // 根据oId查询部门信息
-                  // 循环合格数据的oid 去查询他的所有部门
-                  List<Business> businessList = new ArrayList<>();
-                  for (int i = 0; i < businessData.size(); i++) {
-                      //String id=businessData.get(i).getTypeId();
-                      //List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(id); // 根据oId查出公司以下的部门
-                      Organization CompanyName = organizationService.getCompanyNameBySon(businessData.get(i).getoId());// 查询所属的公司名
-                      Business business = new Business();
-                      business.setId(businessData.get(i).getId());// id
-                      business.setYear(businessData.get(i).getYear()); // 年份
-                      business.setMonth(businessData.get(i).getMonth()); // 月份
-                      User userById=userService.getUserById(businessData.get(i).getuId());
-                      if(userById!=null){
-                        business.setUserName(userById.getName()); // 用户    
-                      }
-                      business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
-                      business.setStatus(businessData.get(i).getStatus());// 状态
-                      business.setCompany(CompanyName.getOrgName()); // 公司
-                      business.setStructures(businessData.get(i).getOrgName()); // 业务方式
-                      businessList.add(business);
-                  }
-                  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
-                  businessResult.setData(businessList); // 返回的资金流水数据
-                  businessResult.setTotal(total.size());// 返回的总条数  
-               }else{
-                   List<Business> businessList = new ArrayList<>();
-                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
-                   businessResult.setData(businessList); // 返回的资金流水数据
-                   businessResult.setTotal(businessList.size());// 返回的总条数  
-               }
+            map.put("code", code);
+            map.put("codee", code);
+            map.put("orgName", keyword); 
+            map.put("year", year); // 年份
+            map.put("month", month); // 月份
+            if (sId == null || sId < 1 || sId > 2) {
+                map.put("sId", ""); // 判断是损益还是预算表 1损益 2 预算
+            } else {
+                map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
+            }
+            List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
+            if (pageSize == null || pageSize == 0) {
+                map.put("pageSize", 10);
+            } else {
+                map.put("pageSize", pageSize);
+            }
+            if (page == null) {
+                map.put("start", 0);
+            } else {
+                map.put("start", pageSize * (page - 1));
+            }
+            List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
+            List<Business> businessList = new ArrayList<>();
+            for (int i = 0; i < businessData.size(); i++) {
+                //String id=businessData.get(i).getTypeId();
+                //List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(id); // 根据oId查出公司以下的部门
+                Organization CompanyName = organizationService.getCompanyNameBySon(businessData.get(i).getoId());// 查询所属的公司名
+                Business business = new Business();
+                business.setId(businessData.get(i).getId());// id
+                business.setYear(businessData.get(i).getYear()); // 年份
+                business.setMonth(businessData.get(i).getMonth()); // 月份
+                User userById=userService.getUserById(businessData.get(i).getuId());
+                if(userById!=null){
+                  business.setUserName(userById.getName()); // 用户    
+                }
+                business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
+                business.setStatus(businessData.get(i).getStatus());// 状态
+                business.setCompany(CompanyName.getOrgName()); // 公司
+                business.setStructures(businessData.get(i).getOrgName()); // 业务方式
+                businessList.add(business);
+              }
+            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
+            businessResult.setData(businessList); // 返回的资金流水数据
+            businessResult.setTotal(total.size());// 返回的总条数  
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, businessResult);
             this.logger.error(e.getMessage(), e);
@@ -624,7 +567,7 @@ public class BusinessDataController {
           result.setResultDesc("sId只能为1，或者为2");   
          }
         return result;
-    }
+       }
     
         /**
          * 判断权限数据
@@ -646,158 +589,5 @@ public class BusinessDataController {
             }
           return isImport;
         }
-
-    
-        /**
-         * 判断部门所属的公司是否包含关键词
-         * @param parentId
-         * @param keyword
-         * @param list
-         * @return
-         */
-        private Boolean company(String parentId,String keyword,List<Organization> list) {
-          Boolean isCompany=false; //判断公司是否包含关键词
-          for (int k = 0; k < list.size(); k++) {
-              Integer num=Integer.parseInt(list.get(k).getOrgType().toString());
-              String name=list.get(k).getOrgName();
-              if(num==BusinessData.ORGNUM&&list.get(k).getCode().equals(parentId)){//是公司级别并且是这个部门的公司
-                if(name.contains(keyword)){
-                  isCompany=true;
-                }   
-              }
-            } 
-          return isCompany;
-        }
-    /**
-     * 删除损益数据 （修改Status为0）
-     * 
-     * @param request
-     * @return
-     *//*
-         * @RequiresPermissions("businessData:update")
-         * 
-         * @RequestMapping(value="/delete", method = RequestMethod.POST) public
-         * Map<Object, Object> deleteOrganization(HttpServletRequest request) {
-         * Map<Object, Object> dataMap = new HashMap<Object, Object>(); String id =
-         * request.getParameter("id"); try { Integer i
-         * =businessDataService.deleteBusinessData(id); if (i == 1) {
-         * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-         * 
-         * } else {
-         * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-         * 
-         * } } catch (Exception e) {
-         * dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
-         * this.logger.error(e.getMessage(), e); } return dataMap; }
-         */
-
-    /***
-     * 导出下载
-     * 
-     * @param response
-     * @throws Exception
-     *//*
-         * @RequiresPermissions("businessData:download")
-         * 
-         * @RequestMapping(value = "/export", method = RequestMethod.POST)
-         * 
-         * @ApiOperation(value = "导出损益/预算数据", notes = "根据条件导出所有的数据", response =
-         * ResultUtils.class)
-         * 
-         * @ApiImplicitParams({
-         * 
-         * @ApiImplicitParam(name = "year", value = "年份", required = false, dataType =
-         * "String", paramType = "query"),
-         * 
-         * @ApiImplicitParam(name = "month", value = "月份", required = false, dataType =
-         * "String", paramType = "query"),
-         * 
-         * @ApiImplicitParam(name = "sId", value = "判断是损益还是预算表  1损益  2 预算", required =
-         * true, dataType = "String", paramType = "query"), })
-         * 
-         * @ResponseBody public void export(HttpServletRequest request,
-         * HttpServletResponse response, String year, String month, Integer sId) throws
-         * Exception { OutputStream os = null; // Map<String, Object> dataMap = new
-         * HashMap<String, Object>(); ResultUtils result = new ResultUtils(); try {
-         * Map<Object, Object> map = new HashMap<>(); User user = (User)
-         * request.getAttribute("user"); String uId = user.getId(); map.put("year",
-         * year); // 年份 map.put("month", month); // 月份 map.put("sId", sId); //
-         * 判断是损益还是预算表 1损益 2 预算 List<JSONObject> userOrganization =
-         * userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
-         * List<JSONObject> listOrganization = new ArrayList<>(); // 筛选过后就的权限数据
-         * List<JSONObject> listTree = new ArrayList<>(); // 筛选过后就的权限数据 for (int i = 0;
-         * i < userOrganization.size(); i++) { JSONObject obu = (JSONObject)
-         * userOrganization.get(i); Integer num =
-         * Integer.parseInt(obu.get("orgType").toString()); if (num ==
-         * BusinessData.DEPNUM) {// 部门级别 listOrganization.add(userOrganization.get(i));
-         * } else {// 查询以下级别的部门 List<Organization> listTreeByIdForSon =
-         * organizationService
-         * .listTreeByIdForSon(userOrganization.get(i).getString("pid")); JSONArray
-         * jsonArr = (JSONArray) JSONArray.toJSON(listTreeByIdForSon); for (int j = 0; j
-         * < jsonArr.size(); j++) { JSONObject json = jsonArr.getJSONObject(j); if
-         * (Integer.parseInt(json.getString("orgType")) == BusinessData.DEPNUM &&
-         * !json.getString("orgName").contains(BusinessData.NAME)) {// 部门级别
-         * listTree.add(jsonArr.getJSONObject(j)); } } } } if (listOrganization.size() >
-         * 0 || listTree.size() > 0) { // List<BusinessData> list =
-         * businessDataService.listBusinessDataBy(map); // //查询所有符合搜索条件的表数据 String[]
-         * typeId = new String[listOrganization.size() + listTree.size()];// 获取权限的typeId
-         * // List<BusinessData> businessData=new ArrayList<>(); //所有符合权限的数据 for (int i
-         * = 0; i < listOrganization.size(); i++) { // 循环权限全部数据 JSONObject pidJosn =
-         * userOrganization.get(i); String pid = pidJosn.getString("pid"); //
-         * 找到权限数据里面的组织id typeId[i] = pid; // 找权限的pid和损益表的typeId进行筛选
-         * 
-         * for (int j = 0; j < list.size(); j++) { String
-         * typeId=list.get(j).getTypeId();//找损益表里面的typeId if(pid.equals(typeId)){
-         * //判断权限pid 和全部数据的typeId是否相同 businessData.add(list.get(j)); // 可以显示的损益数据 } }
-         * 
-         * } for (int i = 0; i < listTree.size(); i++) { String id =
-         * listTree.get(i).getString("id"); int m = listOrganization.size(); typeId[m +
-         * i] = id; } List<String> typeIds = Arrays.asList(typeId); map.put("typeId",
-         * typeIds);// 根据权限的typeId查询相对应的数据 List<BusinessData> businessData =
-         * businessDataService.businessDataExport(map); // 查询权限下的所有数据 // 根据oId查询部门信息 //
-         * 循环合格数据的oid 去查询他的所有部门 List<Business> businessList = new ArrayList<>();//
-         * 页面列表排列数据 for (int i = 0; i < businessData.size(); i++) { List<Organization>
-         * listTreeByIdForSon = organizationService
-         * .listTreeByIdForSon(businessData.get(i).getTypeId()); // 根据oId查出公司以下的部门
-         * Organization CompanyName =
-         * organizationService.getCompanyNameBySon(businessData.get(i).getoId());//
-         * 查询所属的公司名 for (int j = 0; j < listTreeByIdForSon.size(); j++) { if
-         * (listTreeByIdForSon.get(j).getOrgType() == BusinessData.DEPNUM) { //
-         * 找到公司以下的节点业务 Business business = new Business();
-         * business.setYear(businessData.get(i).getYear()); // 年份
-         * business.setMonth(businessData.get(i).getMonth()); // 月份
-         * business.setUserName(user.getName()); // 用户
-         * business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
-         * business.setStatus(businessData.get(i).getStatus());// 状态
-         * business.setCompany(CompanyName.getOrgName()); // 公司
-         * business.setStructures(listTreeByIdForSon.get(j).getOrgName()); // 业务方式
-         * businessList.add(business); } } } List<String[]> strList = new ArrayList<>();
-         * String[] ss = { "年份", "月份", "公司名称", "业务方式", "创建用户", "操作时间", "状态" };
-         * strList.add(ss); for (int i = 0; i < businessList.size(); i++) { String[] str
-         * = new String[7]; Business business = businessList.get(i); if
-         * (business.getYear() != null && !business.getYear().equals("")) { str[0] =
-         * business.getYear().toString(); } if (business.getMonth() != null &&
-         * !business.getMonth().equals("")) { str[1] = business.getMonth().toString(); }
-         * if (business.getCompany() != null && !business.getCompany().equals("")) {
-         * str[2] = business.getCompany(); } if (business.getStructures() != null &&
-         * !business.getStructures().equals("")) { str[3] = business.getStructures(); }
-         * if (business.getUserName() != null && !business.getUserName().equals("")) {
-         * str[4] = business.getUserName(); } if (business.getUpdateTime() != null &&
-         * !business.getUpdateTime().equals("")) { str[5] =
-         * sdf.format(business.getUpdateTime()); } if (business.getStatus() != null &&
-         * !business.getStatus().equals("")) { if (business.getStatus() == 0) { str[6] =
-         * "待提交"; } else if (business.getStatus() == 1) { str[6] = "待修改"; } else if
-         * (business.getStatus() == 2) { str[6] = "已提交"; } else if (business.getStatus()
-         * == 3) { str[6] = "新增"; } else if (business.getStatus() == 4) { str[6] = "退回";
-         * } } strList.add(str); } response.setHeader("Content-Disposition",
-         * "attachment; filename=" + URLEncoder.encode("管理损益表", "UTF-8") + ".xls");
-         * response.setContentType("application/octet-stream"); os =
-         * response.getOutputStream(); ExcelUtil.export(strList, os);
-         * ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result); } else {
-         * result.setResultDesc("您没有权限操作损益数据"); } } catch (IOException e) {
-         * ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
-         * e.printStackTrace(); } finally { if (os != null) try { os.close(); } catch
-         * (IOException e) { e.printStackTrace(); } } }
-         */
 
 }

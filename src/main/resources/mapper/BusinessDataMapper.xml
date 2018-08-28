@@ -53,8 +53,23 @@
            WHERE typeId=#{id} AND delStatus=1 LIMIT 1
        </select>
        
-       <!-- 根据条件查询损益数据 -->
+       
+      <!-- 根据条件查询损益数据 -->
        <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
+       select * from businessData
+       INNER JOIN organization ON businessData.typeId=organization.id
+       INNER JOIN organization org ON businessData.oid=org.id
+       INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
+       WHERE businessData.delStatus=1 and businessDataInfo.delStatus=1 
+       <include refid="query_businessData_where"></include>  
+       ORDER BY businessData.updateTime DESC
+       LIMIT #{start},#{pageSize}
+       </select>  
+       
+       
+       
+       <!-- 根据条件查询损益数据 -->
+     <!--   <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
         SELECT 
         businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,
         businessData.status,organization.orgName,businessData.uId
@@ -65,7 +80,7 @@
         <include refid="query_businessData_where"></include>  
         ORDER BY businessData.updateTime DESC
         LIMIT #{start},#{pageSize}
-       </select>
+       </select>  -->
        
        <!--不分页，根据条件查询业务表  -->
        <select id="getBusinessAllBySomeOne" parameterType="map" resultType="businessData">
@@ -75,14 +90,13 @@
        
        <!-- 导出数据查询-->
        <select id="businessDataExport" parameterType="map" resultType="businessData">
-         SELECT 
-        businessData.id,businessData.oId,businessData.year,businessData.month,businessData.updateTime,businessData.typeId,
-        businessData.status,organization.orgName,businessData.uId
-        FROM businessData 
-        INNER JOIN organization ON businessData.typeId=organization.id
-        INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
-        WHERE businessData.delStatus=1 and businessDataInfo.delStatus=1
-        <include refid="query_businessData_where"></include>  
+       select * from businessData
+       INNER JOIN organization ON businessData.typeId=organization.id
+       INNER JOIN organization org ON businessData.oid=org.id
+       INNER JOIN businessDataInfo ON businessData.id=businessDataInfo.businessDataId
+       WHERE businessData.delStatus=1 and businessDataInfo.delStatus=1 
+       <include refid="query_businessData_where"></include>  
+       ORDER BY businessData.updateTime DESC
        </select>
        
       <!-- 根据条件修改损益数据 -->
@@ -122,12 +136,32 @@
         <if test="sId!=null and sId!=''">
             and businessData.sId = #{sId}
         </if>
-         <if test="typeId!=null and typeId!=''">
+         <!-- <if test="typeId!=null and typeId!=''">
           and businessData.typeId in 
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
                #{typeId}
            </foreach>
+        </if> -->
+        
+         <if test="code!=null and code!=''">
+          and businessData.oId in (SELECT id from organization WHERE 1=1 and
+           <foreach collection="code" item="code" index="index"  separator="OR">
+             code LIKE CONCAT(#{code},'%')
+           </foreach>
+           )
+          <if test="orgName!=null and orgName!=''">
+          and org.orgName LIKE CONCAT('%',#{orgName},'%') 
+          </if>
+          OR businessData.typeId  in (SELECT id from organization WHERE 1=1 and
+          <foreach collection="codee" item="codee" index="index"  separator="OR">
+             code LIKE CONCAT(#{codee},'%')
+          </foreach>
+          )
+          <if test="orgName!=null and orgName!=''">
+          and organization.orgName LIKE CONCAT('%',#{orgName},'%') 
+          </if>
         </if>
+        
          <!-- <if test="orgName!=null and orgName!=''">
              and o.orgName LIKE CONCAT('%',#{orgName},'%')
          </if> -->

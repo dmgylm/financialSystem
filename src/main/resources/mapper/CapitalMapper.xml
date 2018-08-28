@@ -141,17 +141,15 @@
         </if>
          -->
          
-          <if test="oId!=null and oId!=''">
-            and c.oId in 
-             <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
-               #{oId}
+          <if test="code!=null and code!=''">
+            and c.oId in (SELECT id from organization WHERE 1=1 and
+           <foreach collection="code" item="code" index="index"  separator="OR">
+             code LIKE CONCAT(#{code},'%')
            </foreach>
+           )
          </if> 
-          <if test=" company!=null and company!=''">
-            and c.company in 
-          <foreach collection="company" item="company" index="index" open="(" separator="," close=")" >
-               #{company}
-           </foreach>
+         <if test=" company!=null and company!=''">
+            and c.company LIKE CONCAT('%',#{company},'%')
         </if>        
         <if test="accountBank!=null and accountBank!=''">
              and c.accountBank LIKE CONCAT('%',#{accountBank},'%')

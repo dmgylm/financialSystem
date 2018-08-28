@@ -20,8 +20,6 @@ public class BusinessData {
             	 
         private String oId; //组织id
             	 
-        private String info;  //内容
-            	 
         @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
         private Date createTime; //创建时间
             	 
@@ -46,8 +44,8 @@ public class BusinessData {
         
         private Integer version; //版本号，每当有退回时候 版本号自动加1
         
-        private String  orgName; //组织架构
-    
+        private String orgName ; //版本号，每当有退回时候 版本号自动加1
+        
         public String getOrgName() {
             return orgName;
         }
@@ -64,7 +62,6 @@ public class BusinessData {
                 String typeId,String uId,Integer year,Integer month,Integer status, Integer delStatus,Integer sId,Integer version){
             this.id=id;
             this.oId=oId;
-            this.info=info;
             this.createTime=createTime;
             this.updateTime=updateTime;
             this.typeId=typeId;
@@ -92,16 +89,6 @@ public class BusinessData {
     	public void setoId(String oId) {
     		this.oId = oId;
     	}
-    
-    	public String getInfo() {
-    		return info;
-    	}
-    
-    	public void setInfo(String info) {
-    		this.info = info;
-    	}
-    
-    
 
         public String getTypeId() {
     		return typeId;
