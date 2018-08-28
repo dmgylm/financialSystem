@@ -135,6 +135,8 @@ public interface OrganizationService {
 
     List<Organization> listOrganization(List<String> ids);
 
+    List<Organization>  TreeByIdForSons(String getoId);
+
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     
 

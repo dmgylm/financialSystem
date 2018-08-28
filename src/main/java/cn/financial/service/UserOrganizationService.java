@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.Organization;
 import cn.financial.model.UserOrganization;
 
 
@@ -37,4 +38,6 @@ public interface UserOrganizationService {
      * @return
      */
     List<JSONObject> userOrganizationList(String uId);
+    
+	List<Organization> userOrganizationLists(String id);
 }
