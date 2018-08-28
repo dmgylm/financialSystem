@@ -387,61 +387,24 @@ public class UserController{
                     }
                 } 
             }
-            List<Organization> userOrg = new ArrayList<>();
-            List<Organization> userOrganization = new ArrayList<>();
+            List<String> org = new ArrayList<>();
             if(!CollectionUtils.isEmpty(userOrgPermission)){
-                for(UserOrganization userOrgId : userOrgPermission){
-                    //根据当前节点id查询子节点信息
-                    userOrg.addAll(organizationService.listTreeByIdForSon(userOrgId.getoId()));
+                for(UserOrganization orgId : userOrgPermission){
+                    org.add(orgId.getCode());//关联的code
                 }
+                map.put("orgName", orgName);//组织架构名称
+                map.put("uId", uId);//用户id
+                map.put("code", org);//组织架构code
+                user.addAll(userService.listUserOrgOId(map));//查询全部map为空
+                userList = userService.listUserOrgNameCount(map);
             }else{
                 dataMapList.putAll(ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION));
                 return dataMapList;
-            }
-            List<String> org = new ArrayList<>();
-            if(!CollectionUtils.isEmpty(userOrg)){
-                for(Organization orgId : userOrg){
-                    if(orgName!=null && !orgName.equals("")){
-                        if(orgId.getOrgName().contains(orgName.toUpperCase())){
-                            userOrganization.add(orgId);
-                        }
-                    }else{
-                        userOrganization.add(orgId);
-                    }
-                }
-                if(!CollectionUtils.isEmpty(userOrganization)){
-                    for(Organization orgId : userOrganization){
-                        org.add(orgId.getId());//添加筛选之后的oId
-                    }
-                    map.put("uId", uId);
-                    map.put("oId", org);
-                    user.addAll(userService.listUserOrgOId(map));//查询全部map为空
-                    userList = userService.listUserOrgNameCount(map);
-                }     
-            }
+            }     
             if(!CollectionUtils.isEmpty(user)){
                 for(User item : user){
                     item.setOrgFlag(User.MATCH);
                     item.setRoleFlag(User.SETUP);
-                    /*List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(item.getId());
-                    List<RoleResource> jsonRole = new ArrayList<>();
-                    //根据用户名查询用户角色关联信息是否存在
-                    List<UserRole> userRole = userRoleService.listUserRole(name, null);
-                    if(!CollectionUtils.isEmpty(userRole)){
-                        for(UserRole uRole : userRole){
-                            jsonRole = roleResourceService.listRoleResource(uRole.getrId()); 
-                        }
-                    }
-                    if(!CollectionUtils.isEmpty(jsonOrg)){
-                        item.setOrgFlag(User.MATCH);
-                    }else{
-                        item.setOrgFlag(User.UNMATCHED);
-                    }
-                    if(!CollectionUtils.isEmpty(jsonRole)){
-                        item.setRoleFlag(User.SETUP);
-                    }else{
-                        item.setRoleFlag(User.NOTSET);
-                    }*/
                 }
             }
             //long end = System.currentTimeMillis();
