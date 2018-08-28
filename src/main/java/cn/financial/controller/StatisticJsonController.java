@@ -180,8 +180,8 @@ public class StatisticJsonController {
 			sj.setData(html);
 			
 			
-			JSONObject bean = statisticService.findModel(reportType, businessType);
-            String fileName =bean.getString("moduleName") + ".xlsx";
+			DataModule bean = dataModuleService.getDataModule(reportType,businessType);
+            String fileName =bean.getModuleName() + ".xlsx";
             String saveName = SiteConst.FILEURL +  File.separator + fileName;
             JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
 			Workbook wb = jsonConvertExcel.getExcel(ja,fileName);
