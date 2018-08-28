@@ -167,7 +167,7 @@ public class JsonConvertExcel {
 							||Integer.parseInt(col.get("type").toString())==HtmlGenerate.BOX_TYPE_FORMULA
 							||Integer.parseInt(col.get("type").toString())==HtmlGenerate.BOX_TYPE_BUDGET) {
 						if(col.containsKey("value")) {
-							cell.setCellValue(col.get("value").toString());
+							cell.setCellValue(StringUtils.formatNumber(col.get("value").toString()));
 						}else{
 							cell.setCellValue(0);
 						}
