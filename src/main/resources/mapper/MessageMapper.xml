@@ -57,13 +57,16 @@
 	<!-- 根据用户权限展示相应的消息 -->
 	<select id="listMessageBy" parameterType="map" resultMap="messageResultMap">
         select * from message
-        where uId = #{uId,jdbcType=VARCHAR}
-        <if test="oId!=null and oId!=''">
-        	or	oId in 
-	        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
-	        	#{item}
-	        </foreach>
-        </if>
+        where( uId = #{uId,jdbcType=VARCHAR}
+        <if test="code!=null and code!=''">
+        	or oId in (select id from organization where 1=1 
+        	and 
+        	<foreach collection="code" item="codee" index="index" separator="OR">
+        		code LIKE CONCAT (#{codee},"%")
+        	</foreach>
+        	)
+        </if> )
+        <include refid="query_message_where"></include>
         order by createTime desc
         limit #{start},#{pageSize}
 	</select>
@@ -107,7 +110,7 @@
 			<if test="oId!=null and oId!=''">
 				,oId = #{oId,jdbcType=VARCHAR}
 			</if>
-			<if test="soId!=null and soId!=''">
+			<if test="sName!=null and sName!=''">
 				,sName = #{sName,jdbcType=VARCHAR}
 			</if>
 			<if test="isTag!=null and isTag!=''">
@@ -126,7 +129,7 @@
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
 	<!-- 根据消息状态展示消息列表  -->
-	<select id="listMessage" parameterType="map" resultMap="messageResultMap">
+	<!-- <select id="listMessage" parameterType="map" resultMap="messageResultMap">
 		select * from message
         where (uId = #{uId,jdbcType=VARCHAR}
         <if test="oId!=null and oId!=''">
@@ -138,7 +141,7 @@
 		<include refid="query_message_where"></include>
 		order by createTime desc
 		limit #{start},#{pageSize}
-	</select>
+	</select> -->
 	
 
 	<!--定义一个sql片段 -->
