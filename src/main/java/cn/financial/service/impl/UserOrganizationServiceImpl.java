@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.UserOrganizationDAO;
+import cn.financial.model.Organization;
 import cn.financial.model.UserOrganization;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
@@ -165,6 +166,20 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
     }*/
 	public List<UserOrganization> listUserOrganizations(String sid) {
 		 return userOrganizationDao.listUserOrganizations(sid);
+	}
+	@Override
+	public List<Organization> userOrganizationLists(String id) {
+	       List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(id);
+	       List<Organization> jsonUserOrg = new ArrayList<Organization>();
+	       if(!CollectionUtils.isEmpty(userOrganization)){
+	            for (UserOrganization rss : userOrganization) {
+	                //根据id查询该节点下的所有子节点,构建成树
+	            	List<Organization> json=  organizationService.TreeByIdForSons(rss.getoId());
+	                jsonUserOrg.addAll(json);
+	            }
+	        }
+	        return jsonUserOrg;
+	        
 	}
 }
  

@@ -660,6 +660,30 @@ public class OrganizationServiceImpl implements OrganizationService {
 		}
 		return null;
 	}
+	 /**
+     * 根据id查询该节点极其下的所有子节点集合
+     */
+    @Override
+    //@Cacheable(value = "organizationValue", key = "'orga_key_listson_'+#id")
+	public List<Organization> TreeByIdForSons(String id) {
+    	 List<Organization> list = new ArrayList<>();
+         // 根据id查询到该节点信息
+         Map<Object, Object> map = new HashMap<>();
+         map.put("id", id);
+         // 所有的组织结构
+         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+         // 当前节点
+         List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+         if (!CollectionUtils.isEmpty(organizationByIds)) {
+             list.add(organizationByIds.get(0));
+             if (!CollectionUtils.isEmpty(departList)) {
+
+                 getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+             }
+         }
+        return list;
+		
+	}
 
 
 	
