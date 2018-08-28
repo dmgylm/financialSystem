@@ -179,14 +179,14 @@ public class StatisticJsonController {
 			sj.setData(html);
 			
             String fileName = "汇总数据表单.xlsx";
-            String saveName = SiteConst.FILEURL + "\\" + fileName;
+            String saveName = SiteConst.FILEURL + "/" + fileName;
             JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
 			Workbook wb = jsonConvertExcel.getExcel(ja,fileName);
 			FileOutputStream fos = new FileOutputStream(saveName);
 			wb.write(fos);
 			fos.close();
 			
-			saveName = URLEncoder.encode(saveName,"UTF-8");  
+			URLEncoder.encode(saveName,"UTF-8");  
 			String url = request.getRequestURI();
 			messageservice.saveMessageByUser(user, saveName, url);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
