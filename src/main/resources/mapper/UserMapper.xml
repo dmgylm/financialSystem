@@ -97,11 +97,16 @@
         INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
-        <if test="oId!=null and oId.size()>0">
-            and m.oId in 
-            <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
-                #{oId}
+        <!-- 根据code查询oId -->
+        <if test="code!=null and code.size()>0">
+            and m.oId in (SELECT id FROM organization WHERE 1=1 and
+            <foreach collection="code" item="code" index="index" separator="OR">
+                code LIKE CONCAT(#{code},'%')
             </foreach>
+            <if test="orgName!=null and orgName!=''">
+                and orgName LIKE CONCAT('%',#{orgName},'%')
+            </if>
+            )
         </if>
         <!--超级管理员uId-->
         <if test="uId!=null and uId.size()>0">
@@ -123,11 +128,15 @@
         INNER JOIN user_role_mapping l on u.id=l.uId INNER JOIN role r on r.id=l.rId
         WHERE 1=1
         <include refid="query_userOrganization_where"></include>
-        <if test="oId!=null and oId.size()>0">
-            and m.oId in 
-            <foreach collection="oId" item="oId" index="index" open="(" separator="," close=")" >
-                #{oId}
+        <if test="code!=null and code.size()>0">
+            and m.oId in (SELECT id FROM organization WHERE 1=1 and
+            <foreach collection="code" item="code" index="index" separator="OR">
+                code LIKE CONCAT(#{code},'%')
             </foreach>
+            <if test="orgName!=null and orgName!=''">
+                and orgName LIKE CONCAT('%',#{orgName},'%')
+            </if>
+            )
         </if>
         <!--超级管理员uId-->
         <if test="uId!=null and uId.size()>0">
