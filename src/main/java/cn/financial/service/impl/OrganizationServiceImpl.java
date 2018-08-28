@@ -448,10 +448,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setOrgPlateId(orgParent.get(0).getOrgPlateId());
         Integer saveInteger = organizationDAO.saveOrganization(organization);
         
-        icMap.put(code, new_id);//新节点的code和id
-        
-        List<UserOrganization> listsize= userorganization.listUserOrganization(user.getId());
-        //List<UserOrganization> listsize= userorganization.listUserOrganizations(id);
+        icMap.put(code, new_id);//新节点的code和id        
+        List<UserOrganization> listsize= userorganization.listUserOrganizations(id);
         if(listsize.size()>0){
         	userorganization.deleteUserOrganization(user.getId());
         	UserOrganization lists=new UserOrganization();
@@ -459,14 +457,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
             organizationDAO.saveUserOrganization(lists);
-        }else{
-        	UserOrganization lists=new UserOrganization();
-    		lists.setoId(new_id);
-    		lists.setuId(user.getId());//用户id
-    		lists.setId(UuidUtil.getUUID());
-    		organizationDAO.saveUserOrganization(lists);
         }
-        
         // 父节点新增成功后，在organization_move表中记录
         if (Integer.valueOf(1).equals(saveInteger)) {
             OrganizationMove organizationMove = new OrganizationMove();
