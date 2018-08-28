@@ -144,22 +144,24 @@
         </if> -->
         
          <if test="code!=null and code!=''">
-          and businessData.oId in (SELECT id from organization WHERE 1=1 and
+          and businessData.oid in (SELECT id from organization WHERE 1=1 and
            <foreach collection="code" item="code" index="index"  separator="OR">
              code LIKE CONCAT(#{code},'%')
            </foreach>
            )
-          <if test="orgName!=null and orgName!=''">
-          and org.orgName LIKE CONCAT('%',#{orgName},'%') 
-          </if>
           OR businessData.typeId  in (SELECT id from organization WHERE 1=1 and
           <foreach collection="codee" item="codee" index="index"  separator="OR">
              code LIKE CONCAT(#{codee},'%')
           </foreach>
           )
-          <if test="orgName!=null and orgName!=''">
-          and organization.orgName LIKE CONCAT('%',#{orgName},'%') 
+        </if>
+        
+         <if test="orgName!=null and orgName!=''">
+          and org.orgName LIKE CONCAT('%',#{orgName},'%') 
           </if>
+          
+        <if test="orgName!=null and orgName!=''">
+          and organization.orgName LIKE CONCAT('%',#{orgName},'%') 
         </if>
         
          <!-- <if test="orgName!=null and orgName!=''">
