@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -179,7 +180,7 @@ public class StatisticJsonController {
 			sj.setData(html);
 			
             String fileName = "汇总数据表单.xlsx";
-            String saveName = SiteConst.FILEURL + "/" + fileName;
+            String saveName = SiteConst.FILEURL +  File.separator + fileName;
             JsonConvertExcel  jsonConvertExcel=new JsonConvertExcel();
 			Workbook wb = jsonConvertExcel.getExcel(ja,fileName);
 			FileOutputStream fos = new FileOutputStream(saveName);
