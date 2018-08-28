@@ -289,6 +289,7 @@ public class HtmlGenerate {
 	 */
 	private void generateInputContent(Element td, int inputType,String key,
 			String name, String formula,String value,Boolean display) {
+		value = StringUtils.formatNumber(value);
 		if(inputType==BOX_TYPE_INPUT && display) {//input
 			Element input = td.appendElement("input");
 			input.attr("name",key);

@@ -138,7 +138,7 @@ public class StringUtils {
     }
     
     public static String formatNumber(Double value){
-    	return formatNumber(value, "#.00");
+    	return formatNumber(value, "0.##");
     }
 
     public static String formatNumber(String value){
@@ -146,10 +146,14 @@ public class StringUtils {
     		if(!isValid(value)) {
         		return "";
         	}
-        	return formatNumber(Double.parseDouble(value), "#.00");			
+        	return formatNumber(Double.parseDouble(value), "0.##");			
 		} catch (Exception e) {
 			return "";
 		}
     }
+    
+    public static void main(String[] args) {
+		System.out.println(formatNumber("4444.33333"));
+	}
     
 }
