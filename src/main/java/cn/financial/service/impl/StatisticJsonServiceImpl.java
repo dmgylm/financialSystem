@@ -269,12 +269,11 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@SuppressWarnings("unchecked")
 	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
-//		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/year.txt"));
+//		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/budget_new.txt"));
 		JSONObject model = findModel(reportType,businessType);
 		if(model==null){
 			return null;
 		}
-		
 		Map<String,List<BusinessData>> groupdata = new HashMap<String, List<BusinessData>>();
 		//取出id来进行查询
 //		List<String> dataId = new ArrayList<String>();
@@ -433,6 +432,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 //						Double formulaRS = 0.0;
 						for (int j = 0; j < moreDown.length; j++) {
 							String[] setDown = moreDown[j].split("★");
+//							if(setDown.length==1){
+//								System.out.println(formula);
+//							}
 							String logoKey = setDown[0];
 							String logoValue = setDown[1];
 							if(modelDataStatic.containsKey(logoKey)){
