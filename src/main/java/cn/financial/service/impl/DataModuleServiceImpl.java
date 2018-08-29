@@ -180,7 +180,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 	/**
 	 * 根据报表类型及业务类型获取最新模板数据
 	 */
-	@Cacheable(value="dataModule",key="'newestDataModule_'+#reportType+#businessType+$status")
+	@Cacheable(value="dataModule",key="'newestDataModule_'+#reportType+#businessType+#status")
 	public DataModule getDataModule(String reportType, String businessType,Integer status) {
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("reportType", reportType);
