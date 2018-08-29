@@ -147,10 +147,10 @@
              code LIKE CONCAT(#{code},'%')
            </foreach>
            )
-         </if> 
-         <if test=" company!=null and company!=''">
+           <if test=" company!=null and company!=''">
             and c.company LIKE CONCAT('%',#{company},'%')
-        </if>        
+           </if> 
+         </if> 
         <if test="accountBank!=null and accountBank!=''">
              and c.accountBank LIKE CONCAT('%',#{accountBank},'%')
          </if>

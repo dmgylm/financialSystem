@@ -117,6 +117,9 @@ public class CapitalController {
                 String tradeTimeBeg,String tradeTimeEnd,String classify,Integer page,Integer pageSize) {
             CapitalResult capitalResult=new CapitalResult();
             try {
+                if(keyword!=null&&!keyword.equals("")){
+                    keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+                }
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
@@ -291,9 +294,22 @@ public class CapitalController {
             ResultUtils result=new ResultUtils();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
+            Map<Object, Object> map = new HashMap<>();
             //判断 权限的数据 公司及其公司以下的级别才可以上传数据
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport = isImport(userOrganization);//是否可编辑
+            String[] code = new String[userOrganization.size()];
+            for (int i = 0; i < userOrganization.size(); i++) {
+                code[i]=userOrganization.get(i).getString("id");
+            }
+            map.put("code", code);//根据权限的typeId查询相对应的数据
+            List<Capital> totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
+            String[] company=new String[totalCapital.size()]; //获取所有的权限公司名字
+            for (int i = 0; i < totalCapital.size(); i++) {
+                company[i]=totalCapital.get(i).getCompany();
+            }
+            List<String> companyList = new ArrayList<String>();
+            companyList=Arrays.asList(company); 
+            boolean isImport = isImport(userOrganization);//是否可上传
             boolean insertFlag = true;//上传数据是否有错
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
@@ -320,24 +336,31 @@ public class CapitalController {
                              Capital capital=new Capital();
                              capital.setId(UuidUtil.getUUID());
                              if(!str[0].equals("")){
-                                 String orgName=str[0];
-                                 List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
-                                 if(listOrganization.size()>0){
-                                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
-                                   if(isStatus==0){
-                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                                      result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
-                                      insertFlag=false;
-                                      break; 
-                                   }else{
-                                     capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id   
-                                   }
-                                 }else{
-                                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                                     result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不存在");
-                                     insertFlag=false;
-                                     break;  
-                                 } 
+                                String orgName=str[0];
+                                if(!companyList.contains(orgName)){
+                                    ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                                    result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不在您的权限数据之内不能上传！");
+                                    insertFlag=false;
+                                    break;    
+                                }else{
+                                    List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
+                                    if(listOrganization.size()>0){
+                                    Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
+                                      if(isStatus==0){
+                                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                                         result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
+                                         insertFlag=false;
+                                         break; 
+                                      }else{
+                                        capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id   
+                                      }
+                                    }else{
+                                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                                        result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不存在");
+                                        insertFlag=false;
+                                        break;  
+                                    }                     
+                                } 
                              }else{
                                  ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                  result.setResultDesc("Excel表格第"+(i+2)+"行第一个单元格公司名字不能为空");
