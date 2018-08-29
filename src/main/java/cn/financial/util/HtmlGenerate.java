@@ -300,7 +300,9 @@ public class HtmlGenerate {
 			boolean disableInput = isDisable(key);
 			
 			if(disableInput) {
-				input.attr("readonly", "true");
+//				input.attr("readonly", "true");
+				input.attr("type", "hidden");
+				td.appendText(value);
 			}
 			input.addClass(CLASS_INPUT);
 		} else if(inputType==BOX_TYPE_FORMULA){//formula
@@ -310,7 +312,8 @@ public class HtmlGenerate {
 			input.attr("name",key);
 			input.attr("value",value);
 			input.attr("id",key);
-			input.attr("readonly", "true");
+			input.attr("type", "hidden");
+			td.appendText(value);
 //			td.text(value);
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
