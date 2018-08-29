@@ -216,11 +216,7 @@ public class RoleController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
                 return result;
             }
-            //根据角色id查询角色名是否修改
-            Role roleNameId = roleService.getRoleById(roleId);
-            if(roleNameId.getRoleName().equals(roleName)){//没修改
-                roleName = null;
-            }else{//修改了
+            if(roleName!=null && !roleName.equals("")){
                 List<Role> roleNameList = roleService.listRole(roleName,null);//根据roleName查询角色信息
                 if(roleNameList.size()>0){//roleName不能重复
                     ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
