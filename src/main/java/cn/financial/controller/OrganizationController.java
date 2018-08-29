@@ -243,13 +243,9 @@ public class OrganizationController {
     		String id,String code,String uId, String parentId,Integer orgType,HttpServletRequest request, HttpServletResponse response) {
         OganizationNode organiza=new OganizationNode();
         try {
-        	 User user = (User) request.getAttribute("user");
-        	 List<Organization> list=userOrganizationService.userOrganizationLists(user.getId());
-        	 JSONObject json=new JSONObject();
-        	 json.put("data", list);
-            // List<Organization> list = organizationService.
-            	//listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType,null);
-           // if (!CollectionUtils.isEmpty(list)) {
+             List<Organization> list = organizationService.
+            	listOrganizationBy(orgName,createTime,updateTime,id,code,uId,parentId,orgType,null);
+          // if (!CollectionUtils.isEmpty(list)) {
             	organiza.setData(list);
             	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,organiza);
            /* } else {
@@ -351,6 +347,11 @@ public class OrganizationController {
                  	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
             	 }
+            	 else{
+            	     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+               	     return result;
+            	 }
+            	
        			
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
@@ -361,7 +362,6 @@ public class OrganizationController {
             this.logger.error(e.getMessage(), e);
             return result;
         }
-        return null;
     }
 
     /**
@@ -440,11 +440,16 @@ public class OrganizationController {
         OrganizaResult loginResult = new OrganizaResult();
         List<OrganizaResult> loginResultList = new ArrayList<>();
         try {
+        	
+       	 User user = (User) request.getAttribute("user");
+       	 List<JSONObject> list=userOrganizationService.userOrganizationList(user.getId());
+       	// JSONObject json=new JSONObject();
+       	// json.put("data", list);
             JSONObject jsonTree = new JSONObject();
             if (null !=id && !"".equals(id)) {
                 id =id;
             }
-            jsonTree= organizationService.TreeByIdForSon(id);
+           // jsonTree= organizationService.TreeByIdForSon(id);
             List<ChildrenObject> ChildrenObject = new ArrayList<>();
             //OrganizaList.organiza(jsonTree, ChildrenObject);
             loginResult.setChildren(ChildrenObject);
@@ -452,7 +457,7 @@ public class OrganizationController {
             orgin.setData(loginResultList);
           //  if (jsonTree != null) {
                 dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", jsonTree);
+                dataMap.put("data", list);
           /*  } else {
                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
             }*/
