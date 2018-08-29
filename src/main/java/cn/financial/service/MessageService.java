@@ -75,7 +75,7 @@ public interface MessageService {
      * @param user		登陆的用户
      * @param fileUrl	汇总表文件的路径
      */
-    Integer saveMessageByUser(User user, String fileUrl, String url);
+    Integer saveMessageByUser(User user, String fileUrl, String url, String reportType);
     
     /**
      * 根据用户权限检索对应的消息
