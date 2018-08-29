@@ -449,7 +449,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Integer saveInteger = organizationDAO.saveOrganization(organization);
         
         icMap.put(code, new_id);//新节点的code和id        
-        List<UserOrganization> listsize= userorganization.listUserOrganizations(id);
+ /*       List<UserOrganization> listsize= userorganization.listUserOrganizations(id);
         if(listsize.size()>0){
         	userorganization.deleteUserOrganization(user.getId());
         	UserOrganization lists=new UserOrganization();
@@ -457,7 +457,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     		lists.setuId(user.getId());//用户id
     		lists.setId(UuidUtil.getUUID());
             organizationDAO.saveUserOrganization(lists);
-        }
+        }*/
         // 父节点新增成功后，在organization_move表中记录
         if (Integer.valueOf(1).equals(saveInteger)) {
             OrganizationMove organizationMove = new OrganizationMove();
@@ -468,15 +468,34 @@ public class OrganizationServiceImpl implements OrganizationService {
             organizationMove.setNewParent_Id(parentOrgId);
             moveDao.saveOrganizationMove(organizationMove);
         }
-
+        Map<String,String> mapq=new HashMap<String, String>();
+        //mapq.put(newid, new_id);
         /*
          * 停用要移动的节点及其所有的子节点
          */
         Iterator<Organization> iterator = list.iterator();
+        int sum=0;
+        List<Organization> listset = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+        String codes=listset.get(0).getCode();
+        List<Organization> listcode=organizationDAO.listCode(codes);
         while (iterator.hasNext()) {
             Organization orga = iterator.next();
             // 停用
             Integer intde = organizationDAO.deleteOrganizationByStatus(orga.getId());
+            if(sum==0){
+            	for(Organization ls:listcode){
+            		if(ls.getoId().equals(orga.getId())){
+            			userorganization.deleteUserOrganization(ls.getuId());
+                    	UserOrganization lists=new UserOrganization();
+                		lists.setoId(new_id);
+                		lists.setuId(ls.getuId());//用户id
+                		lists.setId(UuidUtil.getUUID());
+                        organizationDAO.saveUserOrganization(lists);
+            		}
+            	}
+            	sum++;
+            }
+          
             if (Integer.valueOf(1).equals(intde)) {
                 /*
                  * 添加子节点
@@ -497,9 +516,18 @@ public class OrganizationServiceImpl implements OrganizationService {
                     organization1.setOrgType(orga.getOrgType());
                     organization1.setOrgPlateId(orgParent.get(0).getOrgPlateId());
                     Integer saveOrganization1 = organizationDAO.saveOrganization(organization1);
-                    
                     icMap.put(code1, new_id1);
-                    
+                    for(Organization ls:listcode){
+                		if(ls.getoId().equals(orga.getId())){
+                			userorganization.deleteUserOrganization(ls.getuId());
+                        	UserOrganization lists=new UserOrganization();
+                    		lists.setoId(new_id1);
+                    		lists.setuId(ls.getuId());//用户id
+                    		lists.setId(UuidUtil.getUUID());
+                            organizationDAO.saveUserOrganization(lists);
+                		}
+                		
+                	}
                     // 子节点新增成功后，在organization_move表中记录
                     if (Integer.valueOf(1).equals(saveOrganization1)) {
                         OrganizationMove organizationMove = new OrganizationMove();
@@ -512,7 +540,20 @@ public class OrganizationServiceImpl implements OrganizationService {
                     }
                 }
             }
+        }  
+        while (iterator.hasNext()) {
+        	 Organization orga = iterator.next();
+            List<UserOrganization> listsize= userorganization.listUserOrganizations(orga.getId());
+            if(listsize.size()>0){
+            	userorganization.deleteUserOrganization(user.getId());
+            	UserOrganization lists=new UserOrganization();
+        		lists.setoId(new_id);
+        		lists.setuId(user.getId());//用户id
+        		lists.setId(UuidUtil.getUUID());
+                organizationDAO.saveUserOrganization(lists);
+            }
         }
+        
         return Integer.valueOf(1);
     }
 
