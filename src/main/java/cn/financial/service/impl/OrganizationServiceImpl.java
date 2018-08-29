@@ -256,7 +256,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 node.setName(organization.getOrgName());
                 node.setOrgkeyName(organizationList.getOrgName());
                 node.setOrgType(organization.getOrgType().toString());
-                // node.setNodeData(organization);
+                node.setHis_permission(organization.getHis_permission());
                 node.setPid(organization.getId());
                 node.setOrgPlateId(organization.getOrgPlateId());
                 nodes.add(node);
