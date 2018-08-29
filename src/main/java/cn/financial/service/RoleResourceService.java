@@ -12,6 +12,12 @@ public interface RoleResourceService {
      */
     List<RoleResource> listRoleResource(String rId);
     /**
+     * 根据sort排序
+     * @param rId
+     * @return
+     */
+    List<RoleResource> listRoleResourceSort(List<String> rId);
+    /**
      * 新增
      * @param roleResource
      * @return
