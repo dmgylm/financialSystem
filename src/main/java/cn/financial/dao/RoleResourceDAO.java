@@ -18,6 +18,12 @@ public interface RoleResourceDAO {
      */
     List<RoleResource> listRoleResource(@Param("rId") String rId);
     /**
+     * 根据sort排序
+     * @param rId
+     * @return
+     */
+    List<RoleResource> listRoleResourceSort(@Param("rId") List<String> rId);
+    /**
      * 新增
      * @param roleResource
      * @return
