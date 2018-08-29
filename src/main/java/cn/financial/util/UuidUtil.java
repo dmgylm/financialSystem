@@ -35,18 +35,37 @@ public class UuidUtil {
      */
     public static String getCodeByBrother(String parentCode, List<String> listCode) {
         //List<Integer> code = new ArrayList<Integer>(listCode.size());
-    	List<Long> code = new ArrayList<Long>(listCode.size());
+    	List<String> code = new ArrayList<String>(listCode.size());
         for (String i : listCode) {
             String result = i.replaceFirst(parentCode, "");
-            long l=Long.parseLong(result);
-           // code.add(Integer.parseInt(result.trim()));
-            code.add(l);
+            //code.add(Integer.parseInt(result.trim()));
+            code.add(result);
         }
-       // Integer re = Collections.max(code) + 1;
-        Long re = Collections.max(code) + 1;
-        String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
+        String sa=Collections.max(code);
+        String begin=sa.subSequence(0, 1).toString();  
+    	String re="";
+        if(begin.equals("0")){
+    		int a=Integer.valueOf(sa.substring(1))+1;
+    	    re="0"+String.valueOf(a);
+  
+    	}
+        else{
+        	int a=Integer.valueOf(sa)+1;
+        	re=String.valueOf(a);
+        }
+        String resultCode = parentCode + (Integer.valueOf(re) < 10 ? "0" + re : re + "");
         return resultCode;
+
     }
+/*    
+    public static void main(String[] args) {
+		List<String> list = new ArrayList<String>();
+		list.add("0101");
+		list.add("010101");
+		list.add("010102");
+		list.add("0101010101");
+		System.out.println(getCodeByBrother("01", list));
+	}*/
     
     /**
      * 获取验证过的随机密码  
