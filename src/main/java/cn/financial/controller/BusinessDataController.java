@@ -126,7 +126,11 @@ public class BusinessDataController {
             if(userOrganization.size()>0){//有权限数据
                 List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
-                    code.add(userOrganization.get(i).getString("his_permission"));
+                    String str=userOrganization.get(i).getString("his_permission");
+                    String[] his_permission=str.split(","); 
+                    for (int j = 0; j < his_permission.length; j++) {
+                      code.add(his_permission[i]); 
+                    }
                 }
                 map.put("code", code);
                 map.put("codee", code);
