@@ -46,8 +46,19 @@ public class BusinessData {
         
         private Integer version; //版本号，每当有退回时候 版本号自动加1
         
-        private String orgName ; //版本号，每当有退回时候 版本号自动加1
+        private String orgName ; //部门名字
         
+        private String companyName ; //公司名字
+        
+        
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
+
         public String getOrgName() {
             return orgName;
         }

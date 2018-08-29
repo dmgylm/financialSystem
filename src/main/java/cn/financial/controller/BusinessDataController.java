@@ -151,9 +151,6 @@ public class BusinessDataController {
             List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
             List<Business> businessList = new ArrayList<>();
             for (int i = 0; i < businessData.size(); i++) {
-                //String id=businessData.get(i).getTypeId();
-                //List<Organization> listTreeByIdForSon = organizationService.listTreeByIdForSon(id); // 根据oId查出公司以下的部门
-                Organization CompanyName = organizationService.getCompanyNameBySon(businessData.get(i).getoId());// 查询所属的公司名
                 Business business = new Business();
                 business.setId(businessData.get(i).getId());// id
                 business.setYear(businessData.get(i).getYear()); // 年份
@@ -164,7 +161,7 @@ public class BusinessDataController {
                 }
                 business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
                 business.setStatus(businessData.get(i).getStatus());// 状态
-                business.setCompany(CompanyName.getOrgName()); // 公司
+                business.setCompany(businessData.get(i).getCompanyName()); // 公司
                 business.setStructures(businessData.get(i).getOrgName()); // 业务方式
                 businessList.add(business);
               }
