@@ -42,20 +42,12 @@ public class UuidUtil {
             code.add(result);
         }
         String sa=Collections.max(code);
-        String begin=sa.subSequence(0, 1).toString();  
-    	String re="";
-        if(begin.equals("0")){
-    		int a=Integer.valueOf(sa.substring(1))+1;
-    	    re="0"+String.valueOf(a);
-  
-    	}
-        else{
-        	int a=Integer.valueOf(sa)+1;
-        	re=String.valueOf(a);
-        }
-        String resultCode = parentCode + (Integer.valueOf(re) < 10 ? "0" + re : re + "");
+        String begin=sa.substring(0,sa.length()-1);
+        String end=sa.substring(sa.length()-1,sa.length());
+    	String re=begin+String.valueOf(Integer.valueOf(end)+1);
+    	String resultCode=parentCode+re;
+        //String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
         return resultCode;
-
     }
 /*    
     public static void main(String[] args) {
