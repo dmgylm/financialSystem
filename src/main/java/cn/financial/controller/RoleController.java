@@ -216,10 +216,16 @@ public class RoleController {
                 ElementXMLUtils.returnValue(ElementConfig.USER_ROLEID_NULL, result);
                 return result;
             }
-            List<Role> roleNameList = roleService.listRole(roleName,null);//根据roleName查询角色信息
-            if(roleNameList.size()>0){//roleName不能重复
-                ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
-                return result;
+            //根据角色id查询角色名是否修改
+            Role roleNameId = roleService.getRoleById(roleId);
+            if(roleNameId.getRoleName().equals(roleName)){//没修改
+                roleName = null;
+            }else{//修改了
+                List<Role> roleNameList = roleService.listRole(roleName,null);//根据roleName查询角色信息
+                if(roleNameList.size()>0){//roleName不能重复
+                    ElementXMLUtils.returnValue(ElementConfig.ROLENAME_EXISTENCE, result);
+                    return result;
+                }
             }
             Role role = new Role();
             role.setId(roleId);
@@ -293,9 +299,28 @@ public class RoleController {
         try {
             User currentUser = (User) request.getAttribute("user");
             List<JSONObject> resourceObject = new ArrayList<>();
+            //List<JSONObject> resources = new ArrayList<>();
             if(currentUser.getName()!=null && !currentUser.getName().equals("")){
                 //根据当前登录用户名查询对应角色功能权限信息
                 resourceObject = roleResourceService.roleResourceList(currentUser.getName());
+                /*if(!CollectionUtils.isEmpty(resourceObject)){
+                    for(JSONObject json : resourceObject){
+                        if(json.containsKey("children") && CollectionUtils.isNotEmpty(json.getJSONArray("children"))){
+                            for (Object item : json.getJSONArray("children")) {
+                                JSONObject  itemChildren = (JSONObject)JSONObject.toJSON(item);
+                                if(itemChildren.getString("name").equals("系统设置")){
+                                    for(Object obj : itemChildren.getJSONArray("children")){
+                                        JSONObject  itemChildrens = (JSONObject)JSONObject.toJSON(obj);
+                                        if(!(itemChildrens.getString("name").equals("组织机构管理") || itemChildrens.getString("name").equals("数据模板配置"))){
+                                            resources.add(itemChildrens);
+                                        }
+                                    }
+                                    itemChildren.put("children", resources);
+                                }
+                            }
+                        }
+                    }
+                }*/
             }
             if(roleId == null || roleId.equals("")){
                 dataMap.put("roleResourceList", resourceObject);
