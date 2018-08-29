@@ -23,8 +23,8 @@
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,createTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version)
-            values (#{id},#{oId},now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version})
+            insert into businessData(id,oId,createTime,createTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version)
+            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version})
        </insert>
       
     
