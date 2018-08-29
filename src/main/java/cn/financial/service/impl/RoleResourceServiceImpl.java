@@ -1,9 +1,7 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,14 @@ public class RoleResourceServiceImpl implements RoleResourceService{
     @Override
     public List<RoleResource> listRoleResource(String rId) {
         return roleResourceDao.listRoleResource(rId);
+    }
+    /**
+     * 根据sort排序
+     * @return
+     */
+    @Override
+    public List<RoleResource> listRoleResourceSort(List<String> rId) {
+        return roleResourceDao.listRoleResourceSort(rId);
     }
     /**
      * 新增
@@ -112,84 +118,81 @@ public class RoleResourceServiceImpl implements RoleResourceService{
         List<TreeNode<RoleResource>> nodes = new ArrayList<>();
         List<UserRole> userRole = userRoleService.listUserRole(userName, null);//根据用户名查询对应角色信息
         if(userRole.size()>0){//用户可能拥有多个角色
+            List<String>  resourceSort = new ArrayList<>();
             for(UserRole list:userRole){
-              //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
-                List<RoleResource> roleResource = roleResourceDao.listRoleResource(list.getrId());
-                if(!CollectionUtils.isEmpty(roleResource)){
-                    for (RoleResource rss : roleResource) {
-                        TreeNode<RoleResource> node = new TreeNode<>();
-                        if(rss.getName().equals("录入中心")){
-                            node.setLink("/recodercenter/index");
-                            node.setIcon("iconfont icon-luruzhongxin");
-                            node.setOrgkeyName("recodercenter");
-                        }
-                        if(rss.getName().equals("资金流水")){
-                            node.setLink("/financeflow/index");
-                            node.setIcon("iconfont icon-zijinliushui");
-                            node.setOrgkeyName("financeflow");
-                        }
-                        if(rss.getName().equals("汇总中心")){
-                            node.setLink("/summarycenter/index");
-                            node.setIcon("iconfont icon-huizongzhongxin");
-                            node.setOrgkeyName("summarycenter");
-                        }
-                        if(rss.getName().equals("消息中心")){
-                            node.setLink("/infocenter/index");
-                            node.setIcon("iconfont icon-xiaoxizhongxin");
-                            node.setOrgkeyName("infocenter");
-                        }
-                        if(rss.getName().equals("系统设置")){
-                            node.setOrgType("Y");//是按钮
-                            node.setIcon("iconfont icon-xitongshezhi");
-                        }
-                        if(rss.getName().equals("用户权限设置")){
-                            node.setLink("/setting/permissions-settings");
-                            node.setIcon("anticon anticon-appstore-o");
-                            node.setOrgkeyName("permissions-settings");
-                        }
-                        if(rss.getName().equals("组织架构管理")){
-                            node.setLink("/setting/organization-management");
-                            node.setIcon("anticon anticon-rocket");
-                            node.setOrgkeyName("organization-management");
-                        }
-                        if(rss.getName().equals("数据模板配置")){
-                            node.setLink("/setting/data-configure/index");
-                            node.setIcon("anticon anticon-rocket");
-                            node.setOrgkeyName("data-configure");
-                        }
-                        if(rss.getName().equals("角色设置")){
-                            node.setLink("/setting/role-setting");
-                            node.setIcon("anticon anticon-rocket");
-                            node.setOrgkeyName("role-setting");
-                        }
-                        if(rss.getName().equals("修改密码")){
-                            node.setLink("/setting/change-pw");
-                            node.setIcon("anticon anticon-rocket");
-                            node.setOrgkeyName("change-pw");
-                        }
-                        node.setId(rss.getCode().toString());//当前code
-                        String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
-                        node.setParentId(b);//父id
-                        node.setName(rss.getName());//功能权限名称
-                        node.setPid(rss.getsId());//当前权限id
-                        nodes.add(node);
+                resourceSort.add(list.getrId()); 
+            }
+            //根据角色id查询对应功能权限关联信息（必须勾选父节点，父节点相当于查看权限）
+            List<RoleResource> roleResource = roleResourceDao.listRoleResourceSort(resourceSort);
+            if(!CollectionUtils.isEmpty(roleResource)){
+                for (RoleResource rss : roleResource) {
+                    TreeNode<RoleResource> node = new TreeNode<>();
+                    if(rss.getName().equals("录入中心")){
+                        node.setLink("/recodercenter/index");
+                        node.setIcon("iconfont icon-luruzhongxin");
+                        node.setOrgkeyName("recodercenter");
                     }
+                    if(rss.getName().equals("资金流水")){
+                        node.setLink("/financeflow/index");
+                        node.setIcon("iconfont icon-zijinliushui");
+                        node.setOrgkeyName("financeflow");
+                    }
+                    if(rss.getName().equals("汇总中心")){
+                        node.setLink("/summarycenter/index");
+                        node.setIcon("iconfont icon-huizongzhongxin");
+                        node.setOrgkeyName("summarycenter");
+                    }
+                    if(rss.getName().equals("消息中心")){
+                        node.setLink("/infocenter/index");
+                        node.setIcon("iconfont icon-xiaoxizhongxin");
+                        node.setOrgkeyName("infocenter");
+                    }
+                    if(rss.getName().equals("系统设置")){
+                        node.setOrgType("Y");//是按钮
+                        node.setIcon("iconfont icon-xitongshezhi");
+                    }
+                    if(rss.getName().equals("用户权限设置")){
+                        node.setLink("/setting/permissions-settings");
+                        node.setIcon("anticon anticon-appstore-o");
+                        node.setOrgkeyName("permissions-settings");
+                    }
+                    if(rss.getName().equals("组织架构管理")){
+                        node.setLink("/setting/organization-management");
+                        node.setIcon("anticon anticon-rocket");
+                        node.setOrgkeyName("organization-management");
+                    }
+                    if(rss.getName().equals("数据模板配置")){
+                        node.setLink("/setting/data-configure/index");
+                        node.setIcon("anticon anticon-rocket");
+                        node.setOrgkeyName("data-configure");
+                    }
+                    if(rss.getName().equals("角色设置")){
+                        node.setLink("/setting/role-setting");
+                        node.setIcon("anticon anticon-rocket");
+                        node.setOrgkeyName("role-setting");
+                    }
+                    if(rss.getName().equals("修改密码")){
+                        node.setLink("/setting/change-pw");
+                        node.setIcon("anticon anticon-rocket");
+                        node.setOrgkeyName("change-pw");
+                    }
+                    node.setId(rss.getCode().toString());//当前code
+                    String b=rss.getParentId().substring(rss.getParentId().lastIndexOf("/")+1);
+                    node.setParentId(b);//父id
+                    node.setName(rss.getName());//功能权限名称
+                    node.setPid(rss.getsId());//当前权限id
+                    nodes.add(node);
                 }
             }
          }
         List<String>  nodeList = new ArrayList<>();
         List<TreeNode<RoleResource>>  roles = new ArrayList<TreeNode<RoleResource>>();
-        TreeNode<RoleResource> roleItem = new TreeNode<RoleResource>();
         //去除多个角色重复功能权限数据
         if(!CollectionUtils.isEmpty(nodes)){
             for (TreeNode<RoleResource> item : nodes) {
                 if(!nodeList.contains(item.getPid())){
-                    if(!item.getName().equals("系统设置")){
                         roles.add(item);
                         nodeList.add(item.getPid());
-                    }else{
-                        roleItem=item;
-                    }
                 }
                 for (TreeNode<RoleResource> items : item.getChildren()) {
                     if(!nodeList.contains(items.getPid())){
@@ -198,10 +201,6 @@ public class RoleResourceServiceImpl implements RoleResourceService{
                     }
                 }
             }
-        }
-        if(roleItem.getPid()!=null && !roleItem.getPid().equals("")){
-            roles.add(roleItem);
-            nodeList.add(roleItem.getPid()); 
         }
         jsonObject.add((JSONObject) JSONObject.toJSON(TreeNode.buildTree(roles)));
         return jsonObject;
