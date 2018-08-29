@@ -116,58 +116,65 @@ public class BusinessDataController {
             Integer sId, Integer page, Integer pageSize) {
         BusinessResult businessResult = new BusinessResult();
         try {
-           /* if(keyword!=null&&!keyword.equals("")){
+            if(keyword!=null&&!keyword.equals("")){
                 keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-            }*/
+            }
             Map<Object, Object> map = new HashMap<>();
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             List<JSONObject> userOrganization = userOrganizationService.userOrganizationList(uId); // 判断 权限的数据
-            String[] code = new String[userOrganization.size()];
-            for (int i = 0; i < userOrganization.size(); i++) {
-                code[i]=userOrganization.get(i).getString("id");
-            }
-            map.put("code", code);
-            map.put("codee", code);
-            map.put("orgName", keyword); 
-            map.put("year", year); // 年份
-            map.put("month", month); // 月份
-            if (sId == null || sId < 1 || sId > 2) {
-                map.put("sId", ""); // 判断是损益还是预算表 1损益 2 预算
-            } else {
-                map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
-            }
-            List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
-            if (pageSize == null || pageSize == 0) {
-                map.put("pageSize", 10);
-            } else {
-                map.put("pageSize", pageSize);
-            }
-            if (page == null) {
-                map.put("start", 0);
-            } else {
-                map.put("start", pageSize * (page - 1));
-            }
-            List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
-            List<Business> businessList = new ArrayList<>();
-            for (int i = 0; i < businessData.size(); i++) {
-                Business business = new Business();
-                business.setId(businessData.get(i).getId());// id
-                business.setYear(businessData.get(i).getYear()); // 年份
-                business.setMonth(businessData.get(i).getMonth()); // 月份
-                User userById=userService.getUserById(businessData.get(i).getuId());
-                if(userById!=null){
-                  business.setUserName(userById.getName()); // 用户    
+            if(userOrganization.size()>0){//有权限数据
+                List<String> code=new ArrayList<>();
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    code.add(userOrganization.get(i).getString("his_permission"));
                 }
-                business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
-                business.setStatus(businessData.get(i).getStatus());// 状态
-                business.setCompany(businessData.get(i).getCompanyName()); // 公司
-                business.setStructures(businessData.get(i).getOrgName()); // 业务方式
-                businessList.add(business);
-              }
-            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
-            businessResult.setData(businessList); // 返回的资金流水数据
-            businessResult.setTotal(total.size());// 返回的总条数  
+                map.put("code", code);
+                map.put("codee", code);
+                map.put("orgName", keyword); 
+                map.put("year", year); // 年份
+                map.put("month", month); // 月份
+                if (sId == null || sId < 1 || sId > 2) {
+                    map.put("sId", ""); // 判断是损益还是预算表 1损益 2 预算
+                } else {
+                    map.put("sId", sId); // 判断是损益还是预算表 1损益 2 预算
+                }
+                List<BusinessData> total = businessDataService.businessDataExport(map); // 查询权限下的所有数据 未经分页
+                if (pageSize == null || pageSize == 0) {
+                    map.put("pageSize", 10);
+                } else {
+                    map.put("pageSize", pageSize);
+                }
+                if (page == null) {
+                    map.put("start", 0);
+                } else {
+                    map.put("start", pageSize * (page - 1));
+                }
+                List<BusinessData> businessData = businessDataService.listBusinessDataBy(map); // 查询权限下分页数据
+                List<Business> businessList = new ArrayList<>();
+                for (int i = 0; i < businessData.size(); i++) {
+                    Business business = new Business();
+                    business.setId(businessData.get(i).getId());// id
+                    business.setYear(businessData.get(i).getYear()); // 年份
+                    business.setMonth(businessData.get(i).getMonth()); // 月份
+                    User userById=userService.getUserById(businessData.get(i).getuId());
+                    if(userById!=null){
+                      business.setUserName(userById.getName()); // 用户    
+                    }
+                    business.setUpdateTime(businessData.get(i).getUpdateTime()); // 操作时间
+                    business.setStatus(businessData.get(i).getStatus());// 状态
+                    business.setCompany(businessData.get(i).getCompanyName()); // 公司
+                    business.setStructures(businessData.get(i).getOrgName()); // 业务方式
+                    businessList.add(business);
+                  }
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
+                businessResult.setData(businessList); // 返回的资金流水数据
+                businessResult.setTotal(total.size());// 返回的总条数    
+            }else{
+                List<Business> businessList = new ArrayList<>();
+                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
+                businessResult.setData(businessList); // 返回的资金流水数据
+                businessResult.setTotal(businessList.size());// 返回的总条数  
+            }
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, businessResult);
             this.logger.error(e.getMessage(), e);

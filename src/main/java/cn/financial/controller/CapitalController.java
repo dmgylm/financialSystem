@@ -124,9 +124,15 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
-                String[] code = new String[userOrganization.size()];
+                if(userOrganization.size()<0){
+                    List<Capital> list=new ArrayList<>();
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                    capitalResult.setData(list);
+                    capitalResult.setTotal(list.size());  
+                }else{
+                List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
-                    code[i]=userOrganization.get(i).getString("id");
+                    code.add(userOrganization.get(i).getString("his_permission"));
                 }
                 map.put("accountBank",accountBank);//开户行
                 map.put("accountNature",accountNature);//账户性质
@@ -161,6 +167,7 @@ public class CapitalController {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                 capitalResult.setData(list);
                 capitalResult.setTotal(total.size());
+                }
              } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
                 this.logger.error(e.getMessage(), e);
@@ -606,9 +613,20 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
-                String[] code = new String[userOrganization.size()];
+               if(userOrganization.size()<0){
+                    List<String[]> strList=new ArrayList<>();
+                    String[] ss={"公司名称","户名","开户行","账户","账户性质",
+                            "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
+                    strList.add(ss);
+                    response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
+                    response.setContentType("application/octet-stream");
+                    os = response.getOutputStream();
+                    ExcelUtil.export(strList, os);
+                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                }else{
+                List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
-                    code[i]=userOrganization.get(i).getString("id");
+                    code.add(userOrganization.get(i).getString("his_permission"));
                 }
                 if(keyword!=null&&!keyword.equals("")){
                     keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
@@ -683,6 +701,7 @@ public class CapitalController {
                   os = response.getOutputStream();
                   ExcelUtil.export(strList, os);
                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);    
+               }
              } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                 e.printStackTrace();

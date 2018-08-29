@@ -34,6 +34,8 @@ public class TreeNode<T> {
      * 树节点名称，内容和text一样 该字段主要是为了兼容Ext和zTree
      */
     private String name;
+    
+    private String his_permission;
 
     /**
      * 是否为叶子节点
@@ -129,6 +131,7 @@ public class TreeNode<T> {
         this.name = name;
     }
     
+    
 //    public Boolean getExpanded() {
 //        return expanded;
 //    }
@@ -136,6 +139,14 @@ public class TreeNode<T> {
 //    public void setExpanded(Boolean expanded) {
 //        this.expanded = expanded;
 //    }
+
+    public String getHis_permission() {
+        return his_permission;
+    }
+
+    public void setHis_permission(String his_permission) {
+        this.his_permission = his_permission;
+    }
 
     public String getOrgPlateId() {
         return orgPlateId;
