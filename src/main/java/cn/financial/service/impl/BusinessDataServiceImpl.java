@@ -149,4 +149,10 @@ public class BusinessDataServiceImpl implements BusinessDataService {
         // TODO Auto-generated method stub
         return businessDataDao.businessDataYear(map);
     }
+
+	@Override
+	public List<BusinessData> listBusinessDataByIdAndDateList(
+			Map<Object, Object> map) {
+		return businessDataDao.listBusinessDataByIdAndDateList(map);
+	}
 }

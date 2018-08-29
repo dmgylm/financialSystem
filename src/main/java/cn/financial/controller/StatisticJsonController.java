@@ -138,7 +138,7 @@ public class StatisticJsonController {
      		//获取所选机构
      		List<Organization> codeSonList = statisticService.companyList(JSONArray.parseArray(orgId));
     		//获取最底层数据
-    		List<String> typeIdList = statisticService.typeIdList(codeSonList);
+//    		List<String> typeIdList = statisticService.typeIdList(codeSonList);
     		//获取对应公司列表
      		Map<String,List<String>> companyList =  statisticService.companyCacheList(codeSonList);
      		if(companyList==null){
@@ -146,7 +146,11 @@ public class StatisticJsonController {
                 return sj;
      		}
     		//获取底层对应数据的集合
-    		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
+//    		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
+    		
+    		//直接获取底层对应数据的集合
+    		List<BusinessData> businessDataList = statisticService.BusList(startDate,endDate,JSONArray.parseArray(orgId));
+    		
     		//获取传递到页面的数据集合
     		JSONObject ja = null;
     		//分组处理对应数据集合

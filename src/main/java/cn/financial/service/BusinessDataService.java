@@ -78,6 +78,10 @@ public interface BusinessDataService {
      * @return
      */
 	List<BusinessData> listBusinessDataByIdAndDate(Map<Object, Object> map);  
+	
+	
+	List<BusinessData> listBusinessDataByIdAndDateList(Map<Object, Object> map);   
+	
 	/**
 	 * 
 	 * @param orgDep 部门对象

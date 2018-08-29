@@ -19,10 +19,12 @@ import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.OrganizationDAO;
 import cn.financial.dao.OrganizationMoveDao;
+import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
@@ -49,6 +51,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     
     @Autowired
     private UserOrganizationServiceImpl userorganization;
+    
+    @Autowired
+    private BusinessDataService businessDataService;
  
     /**
      * 新增组织结构
@@ -673,6 +678,39 @@ public class OrganizationServiceImpl implements OrganizationService {
 	      return codeSonList;
 	
 	}
+	
+	   /**
+	    * 1.通过节点id查询对应his_permission
+	    * 2.将code等于his_permission的数据查询对应的数据集合
+	    */
+	@Override
+	public List<BusinessData> listBusinessList(String startDate, String endDate,
+			List<String> ids) {
+		List<Organization> list = organizationDAO.listOrganization(ids);
+		List<BusinessData> BusinessDataList = new ArrayList<BusinessData>();
+		List<String> listmap = new ArrayList<String>();
+		for (Organization organization : list) {
+			String his_permission = organization.getHis_permission();
+			String[] hps = his_permission.split(",");// 分割逗号
+			listmap.addAll(Arrays.asList(hps));// 所有的his_permission存到listmap当中
+		}
+
+		// 分隔传过来的开始结束时间
+		String[] startYAndM = startDate.split("/");
+		String[] endYAndM = endDate.split("/");
+
+		Map<Object, Object> map = new HashMap<>();
+		map.put("codeId", listmap);
+		map.put("startYear", startYAndM[0]);
+		map.put("endYear", endYAndM[0]);
+		map.put("startMonth", startYAndM[1]);
+		map.put("endMonth", endYAndM[1]);
+
+		BusinessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
+		return BusinessDataList;
+
+	}
+	
 	 /*   public List<Organization> listOrganizationcode(List<String> listmap) {
     return organizationDAO.listOrganizationcode(listmap);
      }

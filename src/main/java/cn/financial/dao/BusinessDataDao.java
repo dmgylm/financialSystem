@@ -85,5 +85,7 @@ public interface BusinessDataDao {
      * @return
      */
     List<BusinessData> businessDataYear(Map<Object, Object> map);
+    
+    List<BusinessData> listBusinessDataByIdAndDateList(Map<Object, Object> map);
                
 }

@@ -123,6 +123,17 @@
          <include refid="query_businessData_foreachTypeId"></include>   
          <include refid="query_businessData_dateAndId"></include>
        </select>
+       
+       <!-- 根据选定条件查询所有损益数据 -->
+       <select id="listBusinessDataByIdAndDateList" parameterType="map" resultType="businessData">
+		SELECT bd.id,bd.oId,bd.dataModuleId,bd.typeId,bi.info FROM
+	 	organization oz , businessData bd ,businessDataInfo bi
+		WHERE oz.id = bd.typeId AND bd.id = bi.businessDataId
+		AND oz.orgType = 3
+		AND bd.delStatus = 1
+         <include refid="query_businessData_foreachCode"></include>   
+         <include refid="query_businessData_dateCode"></include>
+       </select>
       
     
       <!--sql-->
@@ -186,6 +197,28 @@
     
      <!--data sql-->
      
+    <sql id="query_businessData_foreachCode">
+         and 
+        <foreach collection="codeId" item="codeId" index="index"  separator="OR">
+             oz.code LIKE CONCAT(#{codeId},'%')
+        </foreach>
+    </sql>
+    
+    <sql id="query_businessData_dateCode">
+        <if test="startYear!=null and startYear!=''">
+             and  bd.year &gt;=  #{startYear,jdbcType=INTEGER}
+        </if>
+        <if test="endYear!=null and endYear!=''">
+             and  bd.year &lt;= #{endYear,jdbcType=INTEGER}
+        </if>
+        <if test="startMonth!=null and startMonth!=''">
+             and  bd.month &gt;=  #{startMonth,jdbcType=INTEGER}
+        </if>
+        <if test="endMonth!=null and endMonth!=''">
+             and  bd.month &lt;= #{endMonth,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
     <sql id="query_businessData_foreachTypeId">
         and s.typeId in
         <foreach item="item" collection="typeId" open="(" separator=","

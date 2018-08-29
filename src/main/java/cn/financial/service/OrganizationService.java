@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 
@@ -136,6 +137,8 @@ public interface OrganizationService {
     List<Organization> listOrganization(List<String> ids);
 
     List<Organization>  TreeByIdForSons(String getoId);
+
+	List<BusinessData> listBusinessList(String startDate, String endDate,List<String> ids);
 
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     
