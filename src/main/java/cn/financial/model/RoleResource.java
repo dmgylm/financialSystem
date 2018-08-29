@@ -28,6 +28,8 @@ public class RoleResource {
     private String parentId;//父节点
     @ApiModelProperty(value="权限",name="permssion")
     private String permssion;//权限
+    @ApiModelProperty(value="菜单排序",name="sort")
+    private String sort;//菜单排序
     @ApiModelProperty(value="创建时间",name="createTime")
     private String createTime;//创建时间
     @ApiModelProperty(value="更新时间",name="updateTime")
@@ -102,6 +104,14 @@ public class RoleResource {
 
     public void setPermssion(String permssion) {
         this.permssion = permssion;
+    }
+    
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 
     public String getCreateTime() {
