@@ -39,5 +39,4 @@ public interface UserOrganizationService {
      */
     List<JSONObject> userOrganizationList(String uId);
     
-	List<Organization> userOrganizationLists(String id);
 }
