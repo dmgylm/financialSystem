@@ -12,6 +12,20 @@
         </if>
 		ORDER BY m.createTime DESC
     </select>
+	<!--根据sort排序-->
+    <select id="listRoleResourceSort" parameterType="list" resultType="cn.financial.model.RoleResource">
+        SELECT m.id as id,r.id as rId,s.id as sId,r.roleName as roleName,s.name as name,s.code as code,
+		s.url as url,s.parentId as parentId,s.permssion as permssion,s.sort as sort,DATE_FORMAT(m.createTime,"%Y-%m-%d %h:%i:%s") as createTime
+		FROM role r inner join role_resource_mapping m on r.id=m.rId INNER JOIN resource s on s.id=m.sId 
+		WHERE 1 = 1 and r.status = 1 and s.status = 1
+		<if test="rId!=null and rId!=''">
+            and r.id in
+            <foreach collection="rId" item="rId" index="index" open="(" separator="," close=")" >
+                #{rId}
+            </foreach>
+        </if>
+		ORDER BY s.sort DESC
+    </select>
     <!--新增-->
     <insert id="insertRoleResource" parameterType="cn.financial.model.RoleResource">
         insert into role_resource_mapping(id,rId,sId,createTime) values (#{id},#{rId},#{sId},now())
