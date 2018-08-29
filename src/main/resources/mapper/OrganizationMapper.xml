@@ -81,7 +81,14 @@
 		status = 1
 		<include refid="query_organization_code"></include>
 	</select>
-
+	<select id="listCode" resultType="Organization">
+        SELECT DISTINCT uom.uId,uom.oId FROM organization o INNER JOIN 
+          user_organization_mapping uom on o.id=uom.oId
+          INNER JOIN user u ON u.id=uom.uId 
+	  		<if test="code!=null and code!=''">
+			  and code like '%${code}%' ORDER BY uom.oId desc 
+		   </if>
+	</select>
 	<sql id="query_organization_find">
 
 		and id in
