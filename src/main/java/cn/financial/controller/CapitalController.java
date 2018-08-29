@@ -130,10 +130,18 @@ public class CapitalController {
                     capitalResult.setData(list);
                     capitalResult.setTotal(list.size());  
                 }else{
-                List<String> code=new ArrayList<>();
-                for (int i = 0; i < userOrganization.size(); i++) {
-                    code.add(userOrganization.get(i).getString("his_permission"));
-                }
+                    List<String> code=new ArrayList<>();
+                    for (int i = 0; i < userOrganization.size(); i++) {
+                        String str=userOrganization.get(i).getString("his_permission");
+                        if(str.contains(",")){
+                            String[] his_permission=str.split(","); 
+                            for (int j = 0; j < his_permission.length; j++) {
+                              code.add(his_permission[j]); 
+                            }  
+                        }else{
+                            code.add(str);
+                        }
+                    }
                 map.put("accountBank",accountBank);//开户行
                 map.put("accountNature",accountNature);//账户性质
                 map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
@@ -624,10 +632,18 @@ public class CapitalController {
                     ExcelUtil.export(strList, os);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                 }else{
-                List<String> code=new ArrayList<>();
-                for (int i = 0; i < userOrganization.size(); i++) {
-                    code.add(userOrganization.get(i).getString("his_permission"));
-                }
+                    List<String> code=new ArrayList<>();
+                    for (int i = 0; i < userOrganization.size(); i++) {
+                        String str=userOrganization.get(i).getString("his_permission");
+                        if(str.contains(",")){
+                            String[] his_permission=str.split(","); 
+                            for (int j = 0; j < his_permission.length; j++) {
+                              code.add(his_permission[j]); 
+                            }  
+                        }else{
+                            code.add(str);
+                        }
+                    }
                 if(keyword!=null&&!keyword.equals("")){
                     keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                 }

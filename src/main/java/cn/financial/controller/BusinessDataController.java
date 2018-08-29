@@ -127,9 +127,13 @@ public class BusinessDataController {
                 List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
                     String str=userOrganization.get(i).getString("his_permission");
-                    String[] his_permission=str.split(","); 
-                    for (int j = 0; j < his_permission.length; j++) {
-                      code.add(his_permission[i]); 
+                    if(str.contains(",")){
+                        String[] his_permission=str.split(","); 
+                        for (int j = 0; j < his_permission.length; j++) {
+                          code.add(his_permission[j]); 
+                        }  
+                    }else{
+                        code.add(str);
                     }
                 }
                 map.put("code", code);
