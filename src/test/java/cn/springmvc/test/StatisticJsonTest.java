@@ -196,12 +196,16 @@ public class StatisticJsonTest {
     @Test
     public void StatisticGroupTest() {
        	String orgId = "['22ee8c554c2a4f5383038c3f11ae02ed']";
-    	//获取所选机构
- 		List<Organization> codeSonList = service.companyList(JSONArray.parseArray(orgId));
-		//获取最底层数据
-		List<String> typeIdList = service.typeIdList(codeSonList);
-		//获取底层对应数据的集合
-		List<BusinessData> businessDataList = service.valueList("2018/1","2019/12",typeIdList);
+       	
+       	List<BusinessData> businessDataList = service.BusList("2018/1","2019/12",JSONArray.parseArray(orgId));
+       	
+//    	//获取所选机构
+// 		List<Organization> codeSonList = service.companyList(JSONArray.parseArray(orgId));
+//		//获取最底层数据
+//		List<String> typeIdList = service.typeIdList(codeSonList);
+//		//获取底层对应数据的集合
+//		List<BusinessData> businessDataList = service.valueList("2018/1","2019/12",typeIdList);
+		
 		JSONObject ja =JSONObject.parseObject(service.jsonCalculationCollect("SUMMARY_BUDGET",null,businessDataList));
 		HtmlGenerate hg = new HtmlGenerate(true);
 		String html = hg.generateHtml(ja,HtmlGenerate.HTML_TYPE_PREVIEW);
