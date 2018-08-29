@@ -14,6 +14,7 @@ import cn.financial.controller.MessageController;
 import cn.financial.dao.MessageDAO;
 import cn.financial.model.DataModule;
 import cn.financial.model.Message;
+import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
@@ -39,8 +40,8 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private UserOrganizationServiceImpl userOrganizationServiceImpl;
 	
-//	@Autowired
-//	private OrganizationServiceImpl organizationService;
+	@Autowired
+	private OrganizationServiceImpl organizationService;
 
 
     /**
@@ -210,17 +211,28 @@ public class MessageServiceImpl implements MessageService {
 		
 //		List<UserRole> lur = userRoleDao.listUserRole(user.getName(), null);
 		List<Message> lm = new ArrayList<Message>();
-//		List<Organization> lo = new ArrayList<Organization>();
-//		List<String> oIdList = new ArrayList<String>();
+		List<Organization> lo = new ArrayList<Organization>();
+		List<String> his = new ArrayList<String>();
 		Map<Object, Object> filter = new HashMap<Object, Object>();
 		
 		String uId = user.getId();
 		
 		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);
-		
-		String code[] = new String[list.size()];
 		for(int i=0; i<list.size(); i++) {
-			code[i] = list.get(i).getString("id");
+			String cd = list.get(i).getString("id");
+			lo = organizationService.listOrganizationBy(null, null, null, null, cd, null, null, null, null);
+		}
+		
+		for(int j=0; j<lo.size(); j++) {
+			String[] strArray = lo.get(j).getHis_permission().toString().split(",");
+			for(int k=0; k<strArray.length; k++) {
+				his.add(strArray[k]);
+			}
+		}
+		
+		String code[] = new String[his.size()];
+		for(int m=0; m<his.size(); m++) {
+			code[m] = his.get(m);
 		}
  		
 //		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
@@ -262,10 +274,9 @@ public class MessageServiceImpl implements MessageService {
 //			}
 //		}
 		if(pagingMap.get("status")!=null && !"".equals(pagingMap.get("status"))) {
-//			if(oIdList.size()>0) {
-//				filter.put("oId", oIdList);
-//			}
-			filter.put("code", code);
+			if(code.length>0) {
+				filter.put("code", code);
+			}
 			filter.put("uId", user.getId());
 			filter.put("pageSize", pageSize);
 			filter.put("start", start);
@@ -276,10 +287,9 @@ public class MessageServiceImpl implements MessageService {
 			}
 			lm = messageDao.listMessageBy(filter);
 		}else {
-//			if(oIdList.size()>0) {
-//				filter.put("oId", oIdList);
-//			}
-			filter.put("code", code);
+			if(code.length>0) {
+				filter.put("code", code);
+			}
 			filter.put("uId", user.getId());
 			filter.put("pageSize", pageSize);
 			filter.put("start", start);
