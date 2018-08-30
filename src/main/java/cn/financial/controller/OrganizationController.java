@@ -146,10 +146,6 @@ public class OrganizationController {
               	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
          	         return result;
                 }
-            	if(orgType==1&&typeList==orgType){
-             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
-        	         return result;
-               }
               }
             int parentOrgType=lists.get(0).getOrgType();
 
@@ -311,10 +307,6 @@ public class OrganizationController {
               	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
          	         return result;
                 }
-            	if(orgType==1&&typeList==orgType){
-             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
-        	         return result;
-               }
               }
             JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
             JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
@@ -599,10 +591,6 @@ public class OrganizationController {
                   	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
              	         return result;
                     }
-                	if(orgType==1&&typeList==orgType){
-                 	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
-            	         return result;
-                   }
                   }
                 if(orgType==4){
                 	int sum=0;
