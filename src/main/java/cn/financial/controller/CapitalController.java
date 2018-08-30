@@ -746,8 +746,8 @@ public class CapitalController {
         @ResponseBody
         public ResultUtils exportModule(HttpServletRequest request,HttpServletResponse response) throws Exception{
            ResultUtils result =new ResultUtils();
-           String fileURL= SiteConst.CAPITALEXPORT;
-           File file=new File(new String(fileURL.getBytes("iso8859-1"),"utf-8"));
+           String fileURL= SiteConst.CAPITALEXPORT+"资金流水模板.xls";
+           File file=new File(fileURL);
            Boolean sucess=capitalServiceImpl.export(request, response,file);
            if(sucess){
                ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result); 

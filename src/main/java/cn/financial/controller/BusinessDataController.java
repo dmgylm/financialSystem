@@ -24,6 +24,7 @@ import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
+import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.response.BusinessDataYearResult;
@@ -33,6 +34,7 @@ import cn.financial.model.response.ResultUtils;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.DataModuleService;
+import cn.financial.service.MessageService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
@@ -66,6 +68,9 @@ public class BusinessDataController {
 
     @Autowired
     private BusinessDataService businessDataService;
+    
+    @Autowired
+    private MessageService messageService;
 
     @Autowired
     private BusinessDataInfoServiceImpl businessDataInfoServiceImpl;
@@ -414,6 +419,8 @@ public class BusinessDataController {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         // Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result = new ResultUtils();
+        User user = (User) request.getAttribute("user");
+        String uId=user.getId();
         try {
             BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
             List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
@@ -473,6 +480,21 @@ public class BusinessDataController {
                     if (deleteBusinessDataInfo == 1) {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
                         result.setResultDesc("修改成功");
+                        //修改成功给消息中心发送消息
+                        Message message = new Message();
+                        List<Organization>  organization=organizationService.listOrganizationBy("", "", "",business.getoId(), "", "", "", null, null);
+                        String company=organization.get(0).getOrgName();
+                        String type=listOrganization.get(0).getOrgName();
+                        String content=company+type+"（预算/损益）表已被退回，需要修改后重新提交";
+                        message.setId(UuidUtil.getUUID());// 消息id
+                        message.setStatus(0);// 消息状态
+                        message.setTheme(1);// 消息主题
+                        message.setContent(content);// 消息内容
+                        message.setoId(business.getTypeId());
+                        message.setsName("系统默认");
+                        message.setIsTag(0);
+                        message.setuId(uId);// 消息来源
+                        messageService.saveMessage(message);
                     } else {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
                         result.setResultDesc("修改失败");
