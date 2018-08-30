@@ -198,7 +198,7 @@
      
     <sql id="query_businessData_foreachCode">
          and 
-        <foreach collection="codeId" item="codeId" index="index"  separator="OR">
+        <foreach collection="codeId" item="item" index="index"  separator="OR">
              oz.code LIKE CONCAT(#{codeId},'%')
         </foreach>
     </sql>
