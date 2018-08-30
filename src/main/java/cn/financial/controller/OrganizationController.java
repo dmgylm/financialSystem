@@ -292,8 +292,15 @@ public class OrganizationController {
         ResultUtils result=new ResultUtils();
         try {
             User user = (User) request.getAttribute("user");
+            List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+        	if(list.get(0).getOrgType()==2){
+        		 int count= organizationService.TreeByIdForSonList(id);
+        		 if(count==1){
+        			 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+           	         return result;
+        		 }
+        	}
             List<Organization> lists =organizationService.listTreeByIdForParent(id);
-            
             int parentOrgType=lists.get(1).getOrgType();
             String parentOrgId=lists.get(1).getId();
             List<Organization> listype =organizationService.listTreeByIdForParent(parentOrgId);
