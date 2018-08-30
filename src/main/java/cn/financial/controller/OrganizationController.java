@@ -136,21 +136,29 @@ public class OrganizationController {
             }
             if (null != parentOrgId && !"".equals(parentOrgId)) {                     
             List<Organization> lists =organizationService.listTreeByIdForParent(parentOrgId);
+            for(Organization ll:lists){
+             	int typeList=ll.getOrgType();
+            	if(orgType==2&&typeList==orgType){
+            		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+           	         return result;
+                 }
+            	if(orgType==4&&typeList==orgType){
+              	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+         	         return result;
+                }
+            	if(orgType==1&&typeList==orgType){
+             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
+        	         return result;
+               }
+              }
             int parentOrgType=lists.get(0).getOrgType();
+
                 // 新增的时候这里保存的是此节点的code
                 if(parentOrgType==3){
                	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
             	      return result;
               	} 
-                if(parentOrgType==2&&parentOrgType==orgType){
-                	 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-           	         return result;
-                }
-                if(parentOrgType==4&&parentOrgType==orgType){
-               	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
-          	         return result;
-                }
-            	 if(orgType==3){//部门级别
+               if(orgType==3){//部门级别
             		int sum=0;
                	    for(int z=0;z<lists.size();z++){
                 		   int num=lists.get(z).getOrgType();
@@ -289,8 +297,25 @@ public class OrganizationController {
         try {
             User user = (User) request.getAttribute("user");
             List<Organization> lists =organizationService.listTreeByIdForParent(id);
+            
             int parentOrgType=lists.get(1).getOrgType();
             String parentOrgId=lists.get(1).getId();
+            List<Organization> listype =organizationService.listTreeByIdForParent(parentOrgId);
+            for(Organization ll:listype){
+             	int typeList=ll.getOrgType();
+            	if(orgType==2&&typeList==orgType){
+            		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+           	         return result;
+                 }
+            	if(orgType==4&&typeList==orgType){
+              	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+         	         return result;
+                }
+            	if(orgType==1&&typeList==orgType){
+             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
+        	         return result;
+               }
+              }
             JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
             JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
             for(int z=0;z<jsonlist.size();z++){
@@ -305,14 +330,7 @@ public class OrganizationController {
          	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
       	          return result;
         	} 
-            if(parentOrgType==2&&parentOrgType==orgType){
-          	     ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-     	         return result;
-            }
-            if(parentOrgType==4&&parentOrgType==orgType){
-         	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
-    	         return result;
-             }
+
             if(orgType==3){//部门
             	 int sum=0;
          		 for(int i=0;i<lists.size();i++){
@@ -562,9 +580,7 @@ public class OrganizationController {
             	return result;
             }
             
-            
-            
-            else{
+           else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();//当前级别
                 List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
@@ -573,14 +589,21 @@ public class OrganizationController {
              	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
           	          return result;
             	} 
-                if(parentOrgType==2&&parentOrgType==orgType){
-              	     ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-         	         return result;
-                }
-                if(parentOrgType==4&&parentOrgType==orgType){
-             	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
-        	         return result;
-                 }
+                for(Organization ll:lists){
+                 	int typeList=ll.getOrgType();
+                	if(orgType==2&&typeList==orgType){
+                		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+               	         return result;
+                     }
+                	if(orgType==4&&typeList==orgType){
+                  	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+             	         return result;
+                    }
+                	if(orgType==1&&typeList==orgType){
+                 	     ElementXMLUtils.returnValue(ElementConfig.PLATE_SUMMARY,result);
+            	         return result;
+                   }
+                  }
                 if(orgType==4){
                 	int sum=0;
                 	 for(int i=0;i<lists.size();i++){
