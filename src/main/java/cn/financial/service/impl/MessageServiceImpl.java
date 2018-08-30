@@ -224,6 +224,10 @@ public class MessageServiceImpl implements MessageService {
 				String[] strArray = list.get(i).getString("his_permission").split(",");
 				his.addAll(Arrays.asList(strArray));
 			}
+			if(orgType == 1 || orgType == 4) {
+				his.clear();
+				break;
+			}
 		}
 		
 		String code[] = new String[his.size()];
