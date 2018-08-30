@@ -254,9 +254,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			e.printStackTrace();
 		}
 		
-		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
-		String bytes = JSON.toJSONString(staticMD,feature);  
-		return (JSONObject) JSONObject.parse(bytes);
+//		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
+//		String bytes = JSON.toJSONString(staticMD,feature);  
+		return (JSONObject) JSONObject.parse(staticMD);
 	}
 	
 	//进行整合数据
