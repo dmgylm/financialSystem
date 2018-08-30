@@ -278,5 +278,9 @@ public class ElementConfig {
      * 板块下面不能添加板块
      */
     public static final String PLATE_PLATELEVEL="PLATE_PLATELEVEL";
+    /**
+     * 所选板块下没有业务数据
+     */
+    public static final String BUSSINESS_NODATA="BUSSINESS_NODATA";
   
 }

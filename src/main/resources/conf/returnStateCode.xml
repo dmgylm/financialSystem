@@ -271,4 +271,8 @@
         <code>301</code>
         <description>板块下面不能添加板块</description>
     </Result>
+     <Result name="BUSSINESS_NODATA">
+        <code>302</code>
+        <description>所选板块下没有业务数据</description>
+    </Result>
 </StateCode>

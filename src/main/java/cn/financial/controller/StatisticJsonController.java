@@ -151,6 +151,11 @@ public class StatisticJsonController {
     		//直接获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.BusList(startDate,endDate,JSONArray.parseArray(orgId));
     		
+    		if(businessDataList==null){
+            	ElementXMLUtils.returnValue(ElementConfig.BUSSINESS_NODATA,sj);
+            	return sj;
+    		}
+    		
     		//获取传递到页面的数据集合
     		JSONObject ja = null;
     		//分组处理对应数据集合
