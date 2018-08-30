@@ -124,6 +124,16 @@ public class OrganizationController {
             }
             User user = (User) request.getAttribute("user");
             organization.setuId(user.getId());// 提交人id
+            JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
+            JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
+            for(int z=0;z<jsonlist.size();z++){
+               JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
+               if(jsonss.get("name").equals(orgName)){
+            	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+         	       return result;
+               }
+          	
+            }
             if (null != parentOrgId && !"".equals(parentOrgId)) {                     
             List<Organization> lists =organizationService.listTreeByIdForParent(parentOrgId);
             int parentOrgType=lists.get(0).getOrgType();
@@ -280,6 +290,17 @@ public class OrganizationController {
             User user = (User) request.getAttribute("user");
             List<Organization> lists =organizationService.listTreeByIdForParent(id);
             int parentOrgType=lists.get(1).getOrgType();
+            String parentOrgId=lists.get(1).getId();
+            JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
+            JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
+            for(int z=0;z<jsonlist.size();z++){
+               JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
+               if(jsonss.get("name").equals(orgName)){
+            	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+         	       return result;
+               }
+          	
+            }
            if(parentOrgType==3){
          	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
       	          return result;
