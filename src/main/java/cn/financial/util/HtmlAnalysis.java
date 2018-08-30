@@ -135,6 +135,9 @@ public class HtmlAnalysis {
 						inputboxType = HtmlGenerate.BOX_TYPE_LABEL;
 					}
 				}
+				if(td.hasClass(HtmlGenerate.CLASS_LAST_HIDE_CELL)) {
+					inputboxType = HtmlGenerate.BOX_TYPE_HIDECELL;
+				}
 				addRowAndColKey(inputValue, inputClassSet,rowNum, colNum);
 				
 				JSONObject tdJson = setJsonData(inputboxType,inputValue,rowNum,colNum,rowspan,colspan,!tdDisplay);

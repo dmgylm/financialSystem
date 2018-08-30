@@ -66,58 +66,64 @@ public class HtmlGenerate {
 	/**
 	 * HTML类型:配置模板
 	 */
-	public static int HTML_TYPE_TEMPLATE = 1;
+	public static final int HTML_TYPE_TEMPLATE = 1;
 
 	/**
 	 * HTML类型:录入页面
 	 */
-	public static int HTML_TYPE_INPUT = 2;
+	public static final int HTML_TYPE_INPUT = 2;
 
 	/**
 	 * HTML类型:查看页面
 	 */
-	public static int HTML_TYPE_PREVIEW = 3;
+	public static final int HTML_TYPE_PREVIEW = 3;
 	/**
 	 * 11 输入框类型(label)
 	 */
-	public static int BOX_TYPE_LABEL = 11;
+	public static final int BOX_TYPE_LABEL = 11;
 	/**
 	 * 12  输入框类型(模块)
 	 */
-	public static int BOX_TYPE_MODULE = 12;
+	public static final int BOX_TYPE_MODULE = 12;
 	/**
 	 * 13 输入框类型(科目)
 	 */
-	public static int BOX_TYPE_ITEM = 13;
+	public static final int BOX_TYPE_ITEM = 13;
 	/**
 	 * 14 输入框类型(主标题)
 	 */
-	public static int BOX_TYPE_MAINTITLE = 14;
+	public static final int BOX_TYPE_MAINTITLE = 14;
 	/**
 	 * 15 输入框类型(子标题)
 	 */
-	public static int BOX_TYPE_SUBTITLE = 15;
+	public static final int BOX_TYPE_SUBTITLE = 15;
 	/**
 	 * 2 输入框类型(录入框)
 	 */
-	public static int BOX_TYPE_INPUT = 2;
+	public static final int BOX_TYPE_INPUT = 2;
 	/**
 	 * 3 输入框类型(公式)
 	 */
-	public static int BOX_TYPE_FORMULA = 3;
+	public static final int BOX_TYPE_FORMULA = 3;
 	/**
 	 * 4 输入框类型(预算)
 	 */
-	public static int BOX_TYPE_BUDGET = 4;
+	public static final int BOX_TYPE_BUDGET = 4;
 	
-	public static String CLASS_LABEL = "title";// Label所带Class
-	public static String CLASS_MODULE = "module";// 模块所带Class
-	public static String CLASS_ITEM = "item";// 科目所带Class
-	public static String CLASS_MAINTITLE = "maintitle";// 主标题所带Class
-	public static String CLASS_SUBTITLE = "subtitle";// 子标题所带Class
-	public static String CLASS_INPUT = "input";// Input所带Class
-	public static String CLASS_FORMULA = "formula";// 公式所带Class
-	public static String CLASS_BUDGET = "budget";// 公式所带Class
+	/**
+	 * 最后一列隐藏,用于模板配置时, 合并单元格不会错乱
+	 */
+	public static final int BOX_TYPE_HIDECELL = 5;
+	
+	public static final String CLASS_LABEL = "title";// Label所带Class
+	public static final String CLASS_MODULE = "module";// 模块所带Class
+	public static final String CLASS_ITEM = "item";// 科目所带Class
+	public static final String CLASS_MAINTITLE = "maintitle";// 主标题所带Class
+	public static final String CLASS_SUBTITLE = "subtitle";// 子标题所带Class
+	public static final String CLASS_INPUT = "input";// Input所带Class
+	public static final String CLASS_FORMULA = "formula";// 公式所带Class
+	public static final String CLASS_BUDGET = "budget";// 公式所带Class
+	public static final String CLASS_LAST_HIDE_CELL = "lastHideCell";
 
 	public static void main(String[] args) {
 		String path = "C:/Users/Admin/Desktop/解析后文件.txt";
@@ -164,7 +170,7 @@ public class HtmlGenerate {
 		JsonConvertProcess jcp = new JsonConvertProcess();
 		Map<Integer,Map<Integer,JSONObject>> trMap = jcp.assembleData(jsonObj);
 		trMap = jcp.sortTableRowMap(trMap);
-		Document doc = Jsoup.parse("<html> <head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style> <body></body></html>");
+		Document doc = Jsoup.parse("<html><head></head><style>."+NONE_DISPLAY_CLASS+"{display:none}</style><body></body></html>");
 		doc.outputSettings().charset(CharEncoding.UTF_8).prettyPrint(false);
 		Element table = createTable(doc);
 		assembleTable(trMap,table,htmlType);
@@ -178,23 +184,18 @@ public class HtmlGenerate {
 	 */
 	private void assembleTable(
 			Map<Integer, Map<Integer, JSONObject>> trMap, Element table,Integer htmlType) {
+		int lastRowColSize = 0;
+		boolean addLastHide = true;
 		for(Iterator<Integer> rowIter = trMap.keySet().iterator();rowIter.hasNext();) {
 			Integer rowNum = rowIter.next();
 			Map<Integer, JSONObject> row = trMap.get(rowNum);
 			Element tr = table.appendElement("tr");
-//			Element tmpTd = tr.appendElement("td");
-//			tmpTd.text(""+i);
-//			Element keyRow = null;
-//			if(i==0) {
-//				keyRow = table.appendElement("tr");
-//			}
-			for(Iterator<Integer> colIter = row.keySet().iterator();colIter.hasNext();) {
+			int cNum = 1;
+			int colSize = row.size();
+			addLastHide = true;
+			for(Iterator<Integer> colIter = row.keySet().iterator();colIter.hasNext();cNum++) {
 				Integer colNum = colIter.next();
 				JSONObject col = row.get(colNum);
-//				int colRowNum = col.getInt("row");
-				
-//				int rowspan = col.getInt("rowspan");
-//				addMergedList(rowspan+"", colRowNum);
 				
 				boolean display = true;
 				if(col.containsKey("display")) {
@@ -203,10 +204,38 @@ public class HtmlGenerate {
 				
 				Element td = tr.appendElement("td");
 				setTableCellAttr(td,col,display,htmlType,rowNum,colNum);
+				
+				if(addLastHide) {
+					lastRowColSize = row.size();
+				}
+				
+				if(colSize == cNum) {
+					Integer type = col.getInteger("type");
+					if(type == BOX_TYPE_HIDECELL) {
+						addLastHide = false;
+					}
+				}
+			}
+			//如果最后隐藏行/列不存在,则添加
+			if(addLastHide) {
+				addHideNullCell(tr);
+			}
+		}
+		
+		if(addLastHide) {
+			Element tr = table.appendElement("tr");
+			for(int i=0;i<=lastRowColSize;i++) {
+				addHideNullCell(tr);
 			}
 		}
 	}
 	
+	private void addHideNullCell(Element tr) {
+		Element td = tr.appendElement("td");
+		td.addClass(CLASS_LAST_HIDE_CELL);
+		Element input = td.appendElement("input");
+		input.addClass(CLASS_LABEL);
+	}
 
 	/**
 	 * 设置单元格属性
@@ -238,13 +267,10 @@ public class HtmlGenerate {
 		if (htmlType == HTML_TYPE_TEMPLATE) {
 			generateTemplateContent(td, inputType,key, name, formula);
 		} else if (htmlType == HTML_TYPE_INPUT) {
-			
 			generateInputContent(td, inputType, key, name, formula, value, display);
 		} else if (htmlType == HTML_TYPE_PREVIEW) {
 			generatePreviewContent(td, inputType,key, name, value);
 		}
-		
-		
 		
 		int colspan = col.getInteger("colspan");
 		int rowspan = col.getInteger("rowspan");
@@ -274,6 +300,11 @@ public class HtmlGenerate {
 			if(isPreviewNeedId) {
 				td.attr("id",key);
 			}
+			 if(inputType==BOX_TYPE_HIDECELL) {
+				td.addClass(NONE_DISPLAY_CLASS);
+			}
+		} else if(inputType==BOX_TYPE_HIDECELL) {
+			td.addClass(NONE_DISPLAY_CLASS);
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
@@ -297,6 +328,7 @@ public class HtmlGenerate {
 			input.attr("id",key);
 			input.attr("type","number");
 			
+			//针对预算报表, 设置是否可以编辑
 			boolean disableInput = isDisable(key);
 			
 			if(disableInput) {
@@ -315,6 +347,8 @@ public class HtmlGenerate {
 			input.attr("type", "hidden");
 			td.appendText(value);
 //			td.text(value);
+		} else if(inputType==BOX_TYPE_HIDECELL) {
+			td.addClass(NONE_DISPLAY_CLASS);
 		} else {//显示类控件,包括模块/科目/主标题/子标题等
 			td.text(name);
 		}
@@ -377,6 +411,8 @@ public class HtmlGenerate {
 				input.addClass(CLASS_MAINTITLE);
 			} else if(inputType == BOX_TYPE_SUBTITLE) {
 				input.addClass(CLASS_SUBTITLE);
+			} else if(inputType == BOX_TYPE_HIDECELL) {
+				td.addClass(CLASS_LAST_HIDE_CELL);
 			} else {
 				input.addClass(CLASS_LABEL);
 			}
