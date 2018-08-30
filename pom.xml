@@ -503,7 +503,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                	<eencoding>UTF-8</eencoding>
+                	<encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             
