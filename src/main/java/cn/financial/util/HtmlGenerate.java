@@ -218,23 +218,25 @@ public class HtmlGenerate {
 			}
 			//如果最后隐藏行/列不存在,则添加
 			if(addLastHide) {
-				addHideNullCell(tr);
+				addHideNullCell(tr,htmlType);
 			}
 		}
 		
 		if(addLastHide) {
 			Element tr = table.appendElement("tr");
 			for(int i=0;i<=lastRowColSize;i++) {
-				addHideNullCell(tr);
+				addHideNullCell(tr,htmlType);
 			}
 		}
 	}
 	
-	private void addHideNullCell(Element tr) {
+	private void addHideNullCell(Element tr,Integer htmlType) {
 		Element td = tr.appendElement("td");
 		td.addClass(CLASS_LAST_HIDE_CELL);
-		Element input = td.appendElement("input");
-		input.addClass(CLASS_LABEL);
+		if(htmlType == HTML_TYPE_TEMPLATE) {
+			Element input = td.appendElement("input");
+			input.addClass(CLASS_LABEL);
+		}
 	}
 
 	/**
@@ -300,7 +302,7 @@ public class HtmlGenerate {
 			if(isPreviewNeedId) {
 				td.attr("id",key);
 			}
-			 if(inputType==BOX_TYPE_HIDECELL) {
+			if(inputType==BOX_TYPE_HIDECELL) {
 				td.addClass(NONE_DISPLAY_CLASS);
 			}
 		} else if(inputType==BOX_TYPE_HIDECELL) {
