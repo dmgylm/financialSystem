@@ -66,6 +66,7 @@ public interface OrganizationService {
      */
     JSONObject TreeByIdForSon(String id);
 
+    Integer TreeByIdForSonList(String id);
     /**
      * 根据id查询该节点下的所有子节点集合
      * 
