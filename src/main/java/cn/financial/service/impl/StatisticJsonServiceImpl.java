@@ -70,7 +70,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		List<String> orgList =JSONObject.parseArray(js, String.class) ;
 		//获取选中的子节点数据
 		List<BusinessData> BusList = organizationService.listBusinessList(startDate, endDate, orgList);
-		
+		if(BusList==null){
+			return null;
+		}
 		return BusList;
 	}
 	
