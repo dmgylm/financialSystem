@@ -275,4 +275,9 @@
         <code>302</code>
         <description>所选板块下没有业务数据</description>
     </Result>
+        </Result>
+         <Result name="NAMELY_NOSAME">
+        <code>303</code>
+        <description>同层级节点不可重复</description>
+    </Result>
 </StateCode>
