@@ -219,8 +219,11 @@ public class MessageServiceImpl implements MessageService {
 		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);
 		
 		for(int i=0; i<list.size(); i++) {
-			String[] strArray = list.get(i).getString("his_permission").split(",");
-			his.addAll(Arrays.asList(strArray));
+			Integer orgType = Integer.valueOf(list.get(i).getString("orgType"));
+			if(orgType != 1  && orgType != 4) {
+				String[] strArray = list.get(i).getString("his_permission").split(",");
+				his.addAll(Arrays.asList(strArray));
+			}
 		}
 		
 		String code[] = new String[his.size()];
