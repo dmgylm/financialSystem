@@ -245,9 +245,17 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
     	JSONObject item = valueListNewSum(valueList);
     	//进行模板填写
     	model = JsonConvertProcess.mergeJson(model,item);
+		//模板公式计算
+		ExcelReckonUtils eru = new ExcelReckonUtils();
+		String staticMD =null;
+		try {
+			staticMD = eru.computeByExcel(model.toString());
+		} catch (FormulaAnalysisException e) {
+			e.printStackTrace();
+		}
 		
 		SerializerFeature feature = SerializerFeature.DisableCircularReferenceDetect; 
-		String bytes = JSON.toJSONString(model,feature);  
+		String bytes = JSON.toJSONString(staticMD,feature);  
 		return (JSONObject) JSONObject.parse(bytes);
 	}
 	
