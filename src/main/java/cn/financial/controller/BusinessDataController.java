@@ -485,7 +485,14 @@ public class BusinessDataController {
                         List<Organization>  organization=organizationService.listOrganizationBy("", "", "",business.getoId(), "", "", "", null, null);
                         String company=organization.get(0).getOrgName();
                         String type=listOrganization.get(0).getOrgName();
-                        String content=company+type+"（预算/损益）表已被退回，需要修改后重新提交";
+                        Integer sId=business.getsId();
+                        String bu="";
+                        if(sId==1){
+                            bu="损益"; 
+                        }else{
+                            bu="预算";
+                        }
+                        String content=company+type+bu+"表已被退回，需要修改后重新提交";
                         message.setId(UuidUtil.getUUID());// 消息id
                         message.setStatus(0);// 消息状态
                         message.setTheme(1);// 消息主题
