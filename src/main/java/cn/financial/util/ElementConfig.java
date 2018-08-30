@@ -282,5 +282,9 @@ public class ElementConfig {
      * 所选板块下没有业务数据
      */
     public static final String BUSSINESS_NODATA="BUSSINESS_NODATA";
+    /**
+     * 同层级节点不可重复
+     */
+    public static final String NAMELY_NOSAME="NAMELY_NOSAME";
   
 }
