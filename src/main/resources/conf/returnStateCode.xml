@@ -197,7 +197,7 @@
     </Result>
     <Result name="STATIC_ORGID_NULL">
         <code>284</code>
-        <description>选中组织架构id集合不能为空</description>
+        <description>数据范围没有选中,请选择数据汇总范围</description>
     </Result>
     <Result name="STATIC_CACHEUUID_NULL">
         <code>285</code>
