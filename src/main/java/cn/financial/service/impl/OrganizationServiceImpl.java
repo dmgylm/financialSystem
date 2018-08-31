@@ -267,7 +267,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         return null;
     }
     /**
-     * 根据id查询该节点下的所有子节点
+     * 根据id查询该节点下有没有部门级别
      */
     @Override
     public  Integer TreeByIdForSonList(String id) {
@@ -293,6 +293,40 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!CollectionUtils.isEmpty(list)) {
             for (Organization organization : list) {
             	    if(organization.getOrgType()==3){
+            	    	 a=1;
+            	    }
+             }
+         }
+		return a;
+ 
+    }
+    /**
+     * 根据id查询该节点下有没有公司级别
+     */
+    @Override
+    public  Integer TreeByIdForSonSum(String id) {
+        List<Organization> list = new ArrayList<>();
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+        if (id == null || "".equals(id)) {
+            list.addAll(departList);
+        } else {
+            // 根据id查询到该节点信息
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);
+            // 当前节点
+            List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(organizationByIds)) {
+                list.add(organizationByIds.get(0));
+                if (!CollectionUtils.isEmpty(departList)) {
+                    getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+                }
+            }
+        }
+        int a=0;
+        if (!CollectionUtils.isEmpty(list)) {
+            for (Organization organization : list) {
+            	    if(organization.getOrgType()==2){
             	    	 a=1;
             	    }
              }
