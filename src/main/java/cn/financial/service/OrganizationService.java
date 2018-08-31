@@ -65,8 +65,20 @@ public interface OrganizationService {
      * @return
      */
     JSONObject TreeByIdForSon(String id);
-
+    /**
+     * 根据id查询该节点下有没有部门级别
+     * 
+     * @param id
+     * @return
+     */
     Integer TreeByIdForSonList(String id);
+    /**
+     * 根据id查询该节点下有没有公司级别
+     * 
+     * @param id
+     * @return
+     */
+    Integer TreeByIdForSonSum(String id);
     /**
      * 根据id查询该节点下的所有子节点集合
      * 
