@@ -162,8 +162,8 @@ public class ExcelReckonUtils {
 					sheet.addMergedRegion(cellRangeAddress);
 				}
 				HSSFCell cell = row.createCell(celNum);
-//				Double value = 0D;
-				Double value = rowNum.doubleValue();
+				Double value = 0D;
+//				Double value = rowNum.doubleValue();
 				if(type == HtmlGenerate.BOX_TYPE_INPUT ||type == HtmlGenerate.BOX_TYPE_BUDGET) {
 					if(obj.containsKey("value")) {
 						value = obj.getDoubleValue("value");
