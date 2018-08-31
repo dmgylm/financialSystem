@@ -80,6 +80,13 @@ public interface OrganizationService {
      */
     Integer TreeByIdForSonSum(String id);
     /**
+     * 根据id查询该节点下的公司级别有没有部门级别
+     * 
+     * @param id
+     * @return
+     */
+    Integer TreeByIdForSonOryType(String id);
+    /**
      * 根据id查询该节点下的所有子节点集合
      * 
      * @param id
