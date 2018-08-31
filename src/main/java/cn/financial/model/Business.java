@@ -40,7 +40,17 @@ public class Business {
         @ApiModelProperty(value="状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）",name="status")
         private Integer status; //状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
 
-       
+        @ApiModelProperty(value="填写状态（0 全部填写 部分填写 ）",name="writeStatus")
+        private Integer writeStatus; //填写状态（0 全部填写 部分填写 ）
+
+        
+        public Integer getWriteStatus() {
+            return writeStatus;
+        }
+
+        public void setWriteStatus(Integer writeStatus) {
+            this.writeStatus = writeStatus;
+        }
 
         public Integer getYear() {
             return year;

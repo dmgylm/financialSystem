@@ -177,6 +177,7 @@ public class BusinessDataController {
                     business.setStatus(businessData.get(i).getStatus());// 状态
                     business.setCompany(businessData.get(i).getCompanyName()); // 公司
                     business.setStructures(businessData.get(i).getOrgName()); // 业务方式
+                    business.setWriteStatus(businessData.get(i).getWriteStatus()); //填写状态 
                     businessList.add(business);
                   }
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);

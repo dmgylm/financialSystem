@@ -50,7 +50,17 @@ public class BusinessData {
         
         private String companyName ; //公司名字
         
+        private Integer writeStatus; //填写状态（0 全部填写 部分填写 ）
         
+        
+        public Integer getWriteStatus() {
+            return writeStatus;
+        }
+
+        public void setWriteStatus(Integer writeStatus) {
+            this.writeStatus = writeStatus;
+        }
+
         public String getCompanyName() {
             return companyName;
         }
