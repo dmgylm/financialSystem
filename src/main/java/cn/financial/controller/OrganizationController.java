@@ -295,18 +295,25 @@ public class OrganizationController {
             List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
         	if(list.get(0).getOrgType()==2){
         		 int count= organizationService.TreeByIdForSonList(id);
-        		 if(count==1){
+        		 if(count==1&&orgType!=2){
         			 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
            	         return result;
         		 }
         	}
+        	if(list.get(0).getOrgType()!=2){
+       		 int count= organizationService.TreeByIdForSonSum(id);
+       		 if(count==1&&orgType==2){//修改为公司节点，看子节点有没有公司判断
+       			 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+      	         return result;
+       		 }
+       	   }
             List<Organization> lists =organizationService.listTreeByIdForParent(id);
-            int parentOrgType=lists.get(1).getOrgType();
+            int parentOrgType=lists.get(1).getOrgType();//父节点
             String parentOrgId=lists.get(1).getId();
             List<Organization> listype =organizationService.listTreeByIdForParent(parentOrgId);
             for(Organization ll:listype){
              	int typeList=ll.getOrgType();
-            	if(orgType==2&&typeList==orgType){
+            	if(orgType==2&&typeList==orgType){//修改为公司节点，看父节点有没有公司判断
             		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
            	         return result;
                  }
@@ -583,11 +590,16 @@ public class OrganizationController {
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();//当前级别
                 List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
-                int parentOrgType=lists.get(0).getOrgType();
+                int parentOrgType=lists.get(0).getOrgType();//父节点级别节点
                 if(parentOrgType==3){
              	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
           	          return result;
             	} 
+         		int count= organizationService.TreeByIdForSonSum(id);
+                if(parentOrgType==2&&orgType!=2&&count==1){//公司
+                	ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+          	        return result;
+                }
                 for(Organization ll:lists){
                  	int typeList=ll.getOrgType();
                 	if(orgType==2&&typeList==orgType){
