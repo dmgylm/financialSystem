@@ -500,7 +500,6 @@ public class BusinessDataController {
                         message.setoId(business.getTypeId());
                         message.setsName("系统默认");
                         message.setIsTag(0);
-                        message.setuId(uId);// 消息来源
                         messageService.saveMessage(message);
                     } else {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
