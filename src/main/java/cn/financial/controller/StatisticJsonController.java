@@ -129,7 +129,7 @@ public class StatisticJsonController {
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_ENDDATE_NULL, sj);
                 return sj;
             }
-        	if(orgId == null || orgId.equals("")||orgId.equals("[]")){
+        	if(orgId == null || orgId.equals("")||orgId.length()==0){
                 ElementXMLUtils.returnValue(ElementConfig.STATIC_ORGID_NULL, sj);
                 return sj;
             }
@@ -151,7 +151,7 @@ public class StatisticJsonController {
     		//直接获取底层对应数据的集合
     		List<BusinessData> businessDataList = statisticService.BusList(startDate,endDate,JSONArray.parseArray(orgId));
     		
-    		if(businessDataList==null){
+    		if(businessDataList==null||businessDataList.size()==0){
             	ElementXMLUtils.returnValue(ElementConfig.BUSSINESS_NODATA,sj);
             	return sj;
     		}
