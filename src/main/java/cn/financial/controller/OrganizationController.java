@@ -596,10 +596,9 @@ public class OrganizationController {
           	          return result;
             	} 
          		int count= organizationService.TreeByIdForSonSum(id);
-                if(parentOrgType==2&&orgType!=2&&count==1){//公司
-                	ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-          	        return result;
-                }
+         		int sums= organizationService.TreeByIdForSonSum(id);
+         		int assum=list.size();
+         		int acount=0;
                 for(Organization ll:lists){
                  	int typeList=ll.getOrgType();
                 	if(orgType==2&&typeList==orgType){
@@ -610,6 +609,22 @@ public class OrganizationController {
                   	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
              	         return result;
                     }
+                    if(typeList==2&&orgType!=2&&count==1){//公司
+                         ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+                  	     return result;
+                    }
+                    if(typeList!=2){//判断是不是公司
+                    	acount++;
+                    }
+                  } 
+                  int ascount=assum-acount;
+                  if(ascount==0&&sums==1&&count==1){
+                  	int cum= organizationService.TreeByIdForSonOryType(id);
+                  	if(cum==0){
+                  		ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+             	        return result;
+                  	}
+                		
                   }
                 if(orgType==4){
                 	int sum=0;
