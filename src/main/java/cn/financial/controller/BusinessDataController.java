@@ -280,9 +280,10 @@ public class BusinessDataController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "strJson", value = "传的json格式:[{'name':'name1','value':'value1'},{'name':'name2','value':'value2'}]", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "id", value = "表id", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "writeStatus", value = "填写状态：0全部填写 1部分填写", required = true, dataType = "integer", paramType = "query"),
             @ApiImplicitParam(name = "status", value = "传过来的状态（1保存 , 2提交   ）", required = false, dataType = "String", paramType = "query") })
     @ResponseBody
-    public ResultUtils updateBusinessData(HttpServletRequest request, String strJson, Integer status, String id) {
+    public ResultUtils updateBusinessData(HttpServletRequest request, String strJson, Integer status, String id,Integer writeStatus) {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         ResultUtils result = new ResultUtils();
         User user = (User) request.getAttribute("user");
@@ -340,6 +341,7 @@ public class BusinessDataController {
                             businessData.setId(id);
                             businessData.setuId(uId);
                             businessData.setStatus(status);
+                            businessData.setWriteStatus(writeStatus);
                             // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                             Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                             if (i == 1) {
@@ -376,6 +378,7 @@ public class BusinessDataController {
                         businessData.setId(id);
                         businessData.setuId(uId);
                         businessData.setStatus(status);
+                        businessData.setWriteStatus(writeStatus);
                         Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                         if (i == 1) {
                             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
@@ -447,6 +450,7 @@ public class BusinessDataController {
                     businessData.setsId(selectBusinessDataById.getsId());
                     businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
                     businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+                    businessData.setWriteStatus(selectBusinessDataById.getWriteStatus());
                     Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
                     if (insertBusinessData == 1) {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);

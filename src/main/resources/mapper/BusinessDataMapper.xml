@@ -24,8 +24,8 @@
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version)
-            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version})
+            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version,writeStatus)
+            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version},#{writeStatus})
        </insert>
       
     
@@ -106,7 +106,8 @@
         update businessData
         <set>
            <if test="status!=null">status = #{status},</if>
-            <if test="uId !=null and uId!=''">uId = #{uId},</if>
+           <if test="writeStatus!=null">writeStatus = #{writeStatus},</if>
+           <if test="uId !=null and uId!=''">uId = #{uId},</if>
               updateTime = now()
         </set>
          where id = #{id}
