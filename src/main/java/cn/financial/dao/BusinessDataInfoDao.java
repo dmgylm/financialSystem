@@ -32,6 +32,12 @@ public interface BusinessDataInfoDao {
      * @return
      */
     Integer updateBusinessDataInfo(BusinessDataInfo businessData);  
+    /**
+     * 修改损益从表状态
+     * @param businessData
+     * @return
+     */
+    Integer updateBusinessDataInfoDelStatus(BusinessDataInfo businessData);  
    
     /**
      * 查询损益从表所有的数据
