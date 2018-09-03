@@ -84,8 +84,6 @@ public class OrganizationController {
 	
 	private BusinessDataServiceImpl businessDataServices;
 
-	
-	
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
     /**
@@ -670,59 +668,17 @@ public class OrganizationController {
                   	     return result;
                        }
            	  }
-            JSONObject jsonobject= organizationService.TreeByIdForSon(id);
-            JSONArray  jsonarry=JSONArray.parseArray(jsonobject.get("children").toString());
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-            	JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
-            	JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
-            	if(jsonarry.size()==0){
-            		 String name=jsonobject.get("name").toString();
-            		 for(int z=0;z<jsonarray.size();z++){
-                      	 JSONObject jsonss=JSONObject.parseObject(jsonarray.get(z).toString());
-                      	 if(jsonss.get("name").equals(name)&&Integer.parseInt(jsonobject.get("orgType").toString())==3){
-                      	    String pid=jsonss.get("pid").toString();//移动后的id
-                            String reportType = DataModule.REPORT_TYPE_BUDGET;
-               			    List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
-                       	    int year = Calendar.getInstance().get(Calendar.YEAR);
-                       	    int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                       	    organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-                       	    businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
-                     		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-                     		Organization getOrgDep=orgDep.get(0);
-                     		DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                     		businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                      	    saveid(pid);
-                      	  }
-                       }
-            		   ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-              		   return result;
-            	}
-            	else {
-            		 JSONObject arry=JSONObject.parseObject(jsonarray.get(0).toString());
-            		 String sid=arry.get("pid").toString();
-            		 JSONObject jscount= organizationService.TreeByIdForSon(sid);
-            		 JSONArray js=JSONArray.parseArray(jscount.get("children").toString());
-            		 for(int z=0;z<js.size();z++){
-                     	 JSONObject json=JSONObject.parseObject(js.get(z).toString());
-                     	    if(Integer.parseInt(json.get("orgType").toString())==3){
-                     	    String pid=json.get("pid").toString();//移动后id
-                     	    String reportType = DataModule.REPORT_TYPE_BUDGET;
-              			    List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
-                      	    int year = Calendar.getInstance().get(Calendar.YEAR);
-                      	    int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                      	    organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-                      	    businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
-                    		businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-                    		Organization getOrgDep=orgDep.get(0);
-                    		DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                    		businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                     	    saveid(pid);
-                     	  }
-                      }
-            		  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-            		  return result;
-            	}
+            	       Integer a=organizationService.TreeByIdForSonShow(parentOrgId);
+            	       if(a==1){
+            	    	   ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+                  		   return result;
+            	       }
+            	       else{
+            	           ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                           return result;
+            	       }
             	
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
@@ -770,33 +726,4 @@ public class OrganizationController {
         }
         return hason;
     }
-    
-    public void saveid(String id){
-    	    String businessId=UuidUtil.getUUID();
-			BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
-			BusinessData businessData = new BusinessData();
-			businessData.setId(businessId); // id自动生成
-			businessData.setoId(selectBusinessDataById.getoId());
-			businessData.setTypeId(selectBusinessDataById.getTypeId());
-			businessData.setuId(selectBusinessDataById.getuId());
-			businessData.setYear(selectBusinessDataById.getYear());
-			businessData.setMonth(selectBusinessDataById.getMonth());
-			businessData.setStatus(1);
-			businessData.setDelStatus(selectBusinessDataById.getDelStatus());
-			businessData.setsId(selectBusinessDataById.getsId());
-			businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
-			businessData.setVersion(selectBusinessDataById.getVersion() + 1);
-			businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
-			selectBusinessDataById.setDelStatus(0);
-			businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
-			BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
-			BusinessDataInfo businfo=new BusinessDataInfo();
-			String busId=UuidUtil.getUUID();
-			businfo.setId(busId);
-			businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
-			businfo.setInfo(businessInfo.getInfo());
-			businfo.setuId(businessInfo.getuId());
-		   businessDataInfoService.insertBusinessDataInfo(businfo);
-    }
-
 }
