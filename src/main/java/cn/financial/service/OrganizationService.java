@@ -87,6 +87,13 @@ public interface OrganizationService {
      */
     Integer TreeByIdForSonOryType(String id);
     /**
+     * 根据id查询该节点下的部门级别 ,并且增加预算表生成
+     * 
+     * @param id
+     * @return
+     */
+    Integer TreeByIdForSonShow(String id);
+    /**
      * 根据id查询该节点下的所有子节点集合
      * 
      * @param id
