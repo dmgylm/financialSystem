@@ -880,7 +880,7 @@ public class UserController{
         List<Role> roleList = new ArrayList<>();
         List<RoleResource> roleResource = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
-        JSONArray  jsonArray = new JSONArray();
+       
         //根据用户名查询用户角色关联信息
         List<UserRole> userRole = userRoleService.listUserRole(name, null);
         for(UserRole uRole : userRole){//循环获取角色名
@@ -890,6 +890,7 @@ public class UserController{
             for(Role role : roleList){
                 //根据角色id查询角色关联功能权限信息
                 roleResource = roleResourceService.listRoleResource(role.getId());
+                JSONArray  jsonArray = new JSONArray();
                 List<TreeNode<RoleResource>> nodes = new ArrayList<>();
                 if(!CollectionUtils.isEmpty(roleResource)){
                     for (RoleResource rss : roleResource) {
