@@ -110,7 +110,16 @@
         </set>
          where id = #{id}
       </update>
-      
+         <!-- 修改损益数据的状态-->
+       <update id="updateBusinessDataDelStatus"  parameterType="businessData">
+        update businessData
+       <trim prefix="set" suffixOverrides=",">
+           <if test="delStatus!=null">delStatus = #{delStatus},</if>
+           <if test="uId !=null and uId!=''">uId = #{uId},</if>
+              updateTime = now()
+        </trim>
+         where id = #{id}
+      </update>
       <!-- 删除用户  status=0 -->
       <update id="deleteBusinessData">
         UPDATE businessData SET delStatus=0 WHERE id=#{id}

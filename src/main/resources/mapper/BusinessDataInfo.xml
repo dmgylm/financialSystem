@@ -47,6 +47,16 @@
         </trim>
          where id = #{id} 
       </update>
+        <!-- 修改损益数据状态 -->
+      <update id="updateBusinessDataInfoDelStatus" parameterType="BusinessDataInfo">
+        update businessDataInfo
+        <trim prefix="set" suffixOverrides=",">
+           <if test="delStatus!=null">delStatus = #{delStatus},</if>
+            updateTime = now(),
+            <if test="uId!=null and uId!=''">uId = #{uId},</if>
+        </trim>
+         where id = #{id} 
+      </update>
       
       <!-- 删除用户  status=0 -->
       <update id="deleteBusinessDataInfo">
