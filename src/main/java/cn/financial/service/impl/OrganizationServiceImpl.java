@@ -2,13 +2,15 @@ package cn.financial.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,10 +22,14 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.dao.OrganizationDAO;
 import cn.financial.dao.OrganizationMoveDao;
 import cn.financial.model.BusinessData;
+import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.quartz.AccountQuartzListener;
+import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
 import cn.financial.util.TreeNode;
@@ -38,7 +44,8 @@ import cn.financial.util.UuidUtil;
 @Service("OrganizationServiceImpl")
 @Transactional
 public class OrganizationServiceImpl implements OrganizationService {
-	private Logger logger = Logger.getLogger(OrganizationServiceImpl.class);
+	//private Logger logger = Logger.getLogger(OrganizationServiceImpl.class);
+	protected Logger logger = LoggerFactory.getLogger(OrganizationServiceImpl.class);
 
     @Autowired
     private OrganizationDAO organizationDAO;
@@ -53,7 +60,21 @@ public class OrganizationServiceImpl implements OrganizationService {
     private UserOrganizationServiceImpl userorganization;
     
     @Autowired
-    private BusinessDataService businessDataService;
+    private BusinessDataService businessDataService;	
+    
+	@Autowired
+	private DataModuleServiceImpl dataModuleServiceImpl;
+	
+	@Autowired
+	private BusinessDataInfoService businessDataInfoService;
+    
+    private BusinessDataInfoServiceImpl businessDataInfoServices;
+	
+	private OrganizationServiceImpl organizationServices;
+	
+	private BusinessDataServiceImpl businessDataServices;
+    
+    
  
     /**
      * 新增组织结构
@@ -364,6 +385,52 @@ public class OrganizationServiceImpl implements OrganizationService {
             	    	 if(sum==1){
             	    		 a=1;
             	    	 }
+            	    }
+             }
+         }
+		return a;
+ 
+    }
+    /**
+     * 根据id查询该节点下有没有部门级别
+     */
+    @Override
+    public  Integer TreeByIdForSonShow(String id) {
+        List<Organization> list = new ArrayList<>();
+        // 所有的组织结构
+        List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
+        if (id == null || "".equals(id)) {
+            list.addAll(departList);
+        } else {
+            // 根据id查询到该节点信息
+            Map<Object, Object> map = new HashMap<>();
+            map.put("id", id);
+            // 当前节点
+            List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
+            if (!CollectionUtils.isEmpty(organizationByIds)) {
+                list.add(organizationByIds.get(0));
+                if (!CollectionUtils.isEmpty(departList)) {
+                    getOrganizationSonList2(departList, list, organizationByIds.get(0).getCode());
+                }
+            }
+        }
+        int a=0;
+        if (!CollectionUtils.isEmpty(list)) {
+            for (Organization organization : list) {
+            	    if(organization.getOrgType()==3){
+            	    	 String pid=organization.getId();//移动后的id
+            	    	 String reportType = DataModule.REPORT_TYPE_BUDGET;
+            			  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
+                    	  int year = Calendar.getInstance().get(Calendar.YEAR);
+                    	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
+                    	  organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
+                    	  businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
+                  		  businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
+                  		  Organization getOrgDep=orgDep.get(0);
+                  		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
+                  		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+                   	      saveid(pid);
+                   	      a=1;
             	    }
              }
          }
@@ -857,6 +924,32 @@ public class OrganizationServiceImpl implements OrganizationService {
 		
 	}
 
-
+    public void saveid(String id){
+	    String businessId=UuidUtil.getUUID();
+		BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
+		BusinessData businessData = new BusinessData();
+		businessData.setId(businessId); // id自动生成
+		businessData.setoId(selectBusinessDataById.getoId());
+		businessData.setTypeId(selectBusinessDataById.getTypeId());
+		businessData.setuId(selectBusinessDataById.getuId());
+		businessData.setYear(selectBusinessDataById.getYear());
+		businessData.setMonth(selectBusinessDataById.getMonth());
+		businessData.setStatus(1);
+		businessData.setDelStatus(selectBusinessDataById.getDelStatus());
+		businessData.setsId(selectBusinessDataById.getsId());
+		businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
+		businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+		businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
+		selectBusinessDataById.setDelStatus(0);
+		businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
+		BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
+		BusinessDataInfo businfo=new BusinessDataInfo();
+		String busId=UuidUtil.getUUID();
+		businfo.setId(busId);
+		businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
+		businfo.setInfo(businessInfo.getInfo());
+		businfo.setuId(businessInfo.getuId());
+	    businessDataInfoService.insertBusinessDataInfo(businfo);
+   }
 	
 }
