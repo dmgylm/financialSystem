@@ -28,6 +28,8 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info("connect to the websocket success......");
 		users.add(session);
+		System.out.println("wenSocketSession"+session);
+		
 	}
 	
 	/**
