@@ -88,13 +88,23 @@ public interface BusinessDataService {
 	 * @param year  当前年份
 	 * @param month 当前月份
 	 * @param dm  数据模板对象
-	 * @param logger 异常类
+	 * @param logger 日志类
 	 * @param businessDataService  
 	 * @param businessDataInfoService
 	 * @param organizationService
 	 */
 	void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) ;
-    /**
+  /**
+   * 
+   * @param year 年份
+   * @param logger 日志类
+   * @param orgCompany 公司
+   * @param orgDep 部门
+   * @param messageService
+   */
+	void createBunsinessDataMessage(int year,Logger logger,Organization orgCompany,Organization orgDep,MessageService messageService);
+	
+	/**
      * 根据组织查询业务表数据
      * @param id
      * @return
