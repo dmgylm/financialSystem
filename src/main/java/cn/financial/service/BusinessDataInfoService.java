@@ -19,6 +19,7 @@ public interface BusinessDataInfoService {
      * @return 
      */
     Integer insertBusinessDataInfo(BusinessDataInfo businessData);
+   
     
     /**
      * 删除损益从表数据 （status=0）
@@ -33,6 +34,12 @@ public interface BusinessDataInfoService {
      * @return
      */
     Integer updateBusinessDataInfo(BusinessDataInfo businessData);  
+    /**
+     * 修改损益从表状态
+     * @param businessData
+     * @return
+     */
+    Integer updateBusinessDataInfoDelStatus(BusinessDataInfo businessData);  
    
     /**
      * 查询损益从表所有的数据

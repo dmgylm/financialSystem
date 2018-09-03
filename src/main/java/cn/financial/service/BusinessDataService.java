@@ -38,6 +38,12 @@ public interface BusinessDataService {
      * @return
      */
     Integer updateBusinessData(BusinessData businessData);  
+    /**
+     * 修改业务表状态
+     * @param businessData
+     * @return
+     */
+    Integer updateBusinessDataDelStatus(BusinessData businessData);
    
     /**
      * 查询业务表所有的数据

@@ -90,15 +90,24 @@ public interface OrganizationService {
      * 根据id查询该节点下的部门级别 ,并且增加预算表生成
      * 
      * @param id
+     * @param listId 
      * @return
      */
-    Integer TreeByIdForSonShow(String id);
+    void TreeByIdForSonShow( Map<String, String> before, Map<String, String> map);
+    /**
+     * 根据id查询该节点下的部门级别 
+     * 
+     * @param id
+     * @return
+     */
+    Map<String, String> TreeByIdForSonAfter(String id);
     /**
      * 根据id查询该节点下的所有子节点集合
      * 
      * @param id
      * @return
      */
+
     List<Organization> listTreeByIdForSon(String id);
 
     /**
