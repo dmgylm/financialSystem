@@ -11,8 +11,15 @@ public class BusinessDataInfo {
 	private String createTime; //创建时间
     private String updateTime;//修改时间
     private String uId;//提交人
+    private Integer delStatus; //删除状态（0已删除 1未删除）
     
     
+	public Integer getDelStatus() {
+		return delStatus;
+	}
+	public void setDelStatus(Integer delStatus) {
+		this.delStatus = delStatus;
+	}
 	public String getCreateTime() {
 		return createTime;
 	}
