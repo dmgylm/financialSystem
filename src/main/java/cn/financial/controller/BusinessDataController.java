@@ -177,7 +177,6 @@ public class BusinessDataController {
                     business.setStatus(businessData.get(i).getStatus());// 状态
                     business.setCompany(businessData.get(i).getCompanyName()); // 公司
                     business.setStructures(businessData.get(i).getOrgName()); // 业务方式
-                    business.setWriteStatus(businessData.get(i).getWriteStatus()); //填写状态 
                     businessList.add(business);
                   }
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, businessResult);
@@ -341,7 +340,6 @@ public class BusinessDataController {
                             businessData.setId(id);
                             businessData.setuId(uId);
                             businessData.setStatus(status);
-                            businessData.setWriteStatus(writeStatus);
                             // map.put("info",JsonConvertProcess.simplifyJson(newBudgetHtml).toString());
                             Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                             if (i == 1) {
@@ -378,7 +376,6 @@ public class BusinessDataController {
                         businessData.setId(id);
                         businessData.setuId(uId);
                         businessData.setStatus(status);
-                        businessData.setWriteStatus(writeStatus);
                         Integer i = businessDataService.updateBusinessData(businessData); // 修改损益表/预算的状态
                         if (i == 1) {
                             ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
@@ -450,7 +447,6 @@ public class BusinessDataController {
                     businessData.setsId(selectBusinessDataById.getsId());
                     businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
                     businessData.setVersion(selectBusinessDataById.getVersion() + 1);
-                    businessData.setWriteStatus(selectBusinessDataById.getWriteStatus());
                     Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
                     if (insertBusinessData == 1) {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
