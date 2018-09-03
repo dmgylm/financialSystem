@@ -23,12 +23,10 @@ import cn.financial.dao.OrganizationDAO;
 import cn.financial.dao.OrganizationMoveDao;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
-import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
-import cn.financial.quartz.AccountQuartzListener;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
@@ -68,11 +66,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 	@Autowired
 	private BusinessDataInfoService businessDataInfoService;
     
-    private BusinessDataInfoServiceImpl businessDataInfoServices;
-	
-	private OrganizationServiceImpl organizationServices;
-	
-	private BusinessDataServiceImpl businessDataServices;
     
     
  
@@ -392,10 +385,26 @@ public class OrganizationServiceImpl implements OrganizationService {
  
     }
     /**
-     * 根据id查询该节点下有没有部门级别
+     * 根据id查询该节点下的部门级别
      */
     @Override
-    public  Integer TreeByIdForSonShow(String id) {
+    public  void TreeByIdForSonShow(Map<String, String> map1, Map<String, String> map2) {
+    	 Iterator<String> it = map1.keySet().iterator();
+         while(it.hasNext()){
+           String key = it.next();
+           if(map2.containsKey(key)){
+             String beforeId=map1.get(key);//移动之前的id
+             String afterId =map2.get(key);
+             saveid(beforeId,afterId);
+            }
+          }
+   
+    }
+    /**
+     * 根据之后id查询该节点下的部门级别 
+     */
+    @Override
+    public Map<String, String> TreeByIdForSonAfter(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -414,27 +423,17 @@ public class OrganizationServiceImpl implements OrganizationService {
                 }
             }
         }
-        int a=0;
+        Map<String, String> mapList = new HashMap<String, String>();
         if (!CollectionUtils.isEmpty(list)) {
             for (Organization organization : list) {
             	    if(organization.getOrgType()==3){
-            	    	 String pid=organization.getId();//移动后的id
-            	    	 String reportType = DataModule.REPORT_TYPE_BUDGET;
-            			  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
-                    	  int year = Calendar.getInstance().get(Calendar.YEAR);
-                    	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                    	  organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-                    	  businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
-                  		  businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-                  		  Organization getOrgDep=orgDep.get(0);
-                  		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                  		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                   	      saveid(pid);
-                   	      a=1;
+            	    	String pid=organization.getId();
+            	    	String orgname=organization.getOrgName();
+            	    	mapList.put(orgname,pid);
             	    }
              }
          }
-		return a;
+		return mapList;
  
     }
     
@@ -923,33 +922,40 @@ public class OrganizationServiceImpl implements OrganizationService {
         return list;
 		
 	}
-
-    public void saveid(String id){
+   /**
+    * 添加预算以及副表信息
+    * @param beforeId
+    * @param aferId
+    */
+    public void saveid(String beforeId,String aferId){
+    	Organization org = organizationService.getCompanyNameBySon(aferId);// 获取对应部门的公司
 	    String businessId=UuidUtil.getUUID();
-		BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);// 查询对应id的数据
+		BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(beforeId);// 查询对应id的数据
 		BusinessData businessData = new BusinessData();
 		businessData.setId(businessId); // id自动生成
-		businessData.setoId(selectBusinessDataById.getoId());
-		businessData.setTypeId(selectBusinessDataById.getTypeId());
+		businessData.setoId(org.getId());
+		businessData.setTypeId(aferId);
 		businessData.setuId(selectBusinessDataById.getuId());
 		businessData.setYear(selectBusinessDataById.getYear());
 		businessData.setMonth(selectBusinessDataById.getMonth());
-		businessData.setStatus(1);
+		businessData.setStatus(selectBusinessDataById.getStatus());
 		businessData.setDelStatus(selectBusinessDataById.getDelStatus());
 		businessData.setsId(selectBusinessDataById.getsId());
 		businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
 		businessData.setVersion(selectBusinessDataById.getVersion() + 1);
 		businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
 		selectBusinessDataById.setDelStatus(0);
-		businessDataService.updateBusinessData(selectBusinessDataById);//将以前的数据delstatus改为0
+		businessDataService.updateBusinessDataDelStatus(selectBusinessDataById);//将以前的数据delstatus改为0
 		BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
 		BusinessDataInfo businfo=new BusinessDataInfo();
 		String busId=UuidUtil.getUUID();
 		businfo.setId(busId);
-		businfo.setBusinessDataId(businessInfo.getBusinessDataId());  
+		businfo.setBusinessDataId(businessId);  
 		businfo.setInfo(businessInfo.getInfo());
 		businfo.setuId(businessInfo.getuId());
 	    businessDataInfoService.insertBusinessDataInfo(businfo);
+	    businessInfo.setDelStatus(0);
+	    businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
    }
 	
 }

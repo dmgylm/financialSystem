@@ -43,6 +43,10 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService {
 	public Integer updateBusinessDataInfo(BusinessDataInfo businessData) {
 		return businessDataInfoDao.updateBusinessDataInfo(businessData);
 	}
+	@Override
+	public Integer updateBusinessDataInfoDelStatus(BusinessDataInfo businessData) {
+		return businessDataInfoDao.updateBusinessDataInfoDelStatus(businessData);
+	}
 
 	@Override
 	public List<BusinessData> getAll(Map<Object, Object> map) {

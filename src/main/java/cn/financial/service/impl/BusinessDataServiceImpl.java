@@ -45,6 +45,13 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	public Integer updateBusinessData(BusinessData businessData) {
 		return businessDataDao.updateBusinessData(businessData);
 	}
+	/**
+	 * 修改损益状态
+	 */
+	@Override
+	public Integer updateBusinessDataDelStatus(BusinessData businessData) {
+		return businessDataDao.updateBusinessDataDelStatus(businessData);
+	}
 
 	/**
 	 * 查询所有的损益数据
