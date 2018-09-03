@@ -83,7 +83,7 @@ public interface BusinessDataService {
 	List<BusinessData> listBusinessDataByIdAndDateList(Map<Object, Object> map);   
 	
 	/**
-	 * 
+	 * 生成预算空白模板
 	 * @param orgDep 部门对象
 	 * @param year  当前年份
 	 * @param month 当前月份
@@ -95,7 +95,7 @@ public interface BusinessDataService {
 	 */
 	void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) ;
   /**
-   * 
+   * 生产预算空白模板时往消息中心发消息
    * @param year 年份
    * @param logger 日志类
    * @param orgCompany 公司
