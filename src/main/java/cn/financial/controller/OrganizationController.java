@@ -596,7 +596,7 @@ public class OrganizationController {
           	          return result;
             	} 
          		int count= organizationService.TreeByIdForSonSum(id);
-         		int sums= organizationService.TreeByIdForSonSum(id);
+         		int sums= organizationService.TreeByIdForSonList(id);
          		int assum=list.size();
          		int acount=0;
                 for(Organization ll:lists){
