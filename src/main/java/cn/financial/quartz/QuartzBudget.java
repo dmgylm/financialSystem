@@ -104,7 +104,7 @@ public class QuartzBudget implements Job {
 					message.setId(UuidUtil.getUUID());
 					message.setStatus(0);
 					message.setTheme(1);
-					message.setContent(year + "年" + month + "月" + orgCompany.get(i).getOrgName() + msgType + "表已生成");
+					message.setContent(year + "年"  + orgCompany.get(i).getOrgName() + msgType + "表已生成");
 					message.setoId(orgCompany.get(i).getId());
 					message.setIsTag(0);
 					message.setsName("系统默认");
