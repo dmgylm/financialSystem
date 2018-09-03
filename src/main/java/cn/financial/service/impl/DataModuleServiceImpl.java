@@ -285,7 +285,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 		
 		Map<String,String> map1=new HashMap<String, String>();
 		Map<String,String> map2=new HashMap<String, String>();
-		if(reportType==DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY){
+		if(reportType.equals(DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY)){
 			for(DataModule dataModule:models){
 				if(dataModule.getReportType().equals(DataModule.REPORT_TYPE_PROFIT_LOSS)){
 					 String id = dataModule.getId();
@@ -295,7 +295,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 					 map2.put(moduleLogo, modelData);
 				}
 			}
-		}else if(reportType==DataModule.REPORT_TYPE_BUDGET_SUMMARY){
+		}else if(reportType.equals(DataModule.REPORT_TYPE_BUDGET_SUMMARY)){
 			for(DataModule dataModule:models){
 				if(dataModule.getReportType().equals(DataModule.REPORT_TYPE_BUDGET)){
 					 String id = dataModule.getId();
