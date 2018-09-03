@@ -15,6 +15,8 @@ public class LoginResult{
     private List<ChildrenObject> userOrganization;
     @ApiModelProperty(value = "用户sessionId")
     private String sessionId;
+    @ApiModelProperty(value = "用户Id")
+    private String userId;
     
     public List<String> getUserName() {
         return userName;
@@ -45,5 +47,11 @@ public class LoginResult{
     }
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }   
+    }
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }  
 }
