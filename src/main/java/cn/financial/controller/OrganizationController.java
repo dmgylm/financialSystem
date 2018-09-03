@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.financial.model.BusinessData;
-import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -39,9 +37,9 @@ import cn.financial.model.response.OrganizaHason;
 import cn.financial.model.response.OrganizaParnode;
 import cn.financial.model.response.OrganizaResult;
 import cn.financial.model.response.ResultUtils;
-import cn.financial.quartz.AccountQuartzListener;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
+import cn.financial.service.MessageService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
@@ -72,17 +70,18 @@ public class OrganizationController {
 	
 	@Autowired
 	private BusinessDataInfoService businessDataInfoService;
-	
 	@Autowired
 	private DataModuleServiceImpl dataModuleServiceImpl;
 	@Autowired
 	private UserOrganizationService userOrganizationService;
-	
+	@Autowired
 	private BusinessDataInfoServiceImpl businessDataInfoServices;
-	
+	@Autowired
 	private OrganizationServiceImpl organizationServices;
-	
+	@Autowired
 	private BusinessDataServiceImpl businessDataServices;
+	@Autowired
+	private  MessageService messageService;
 
     protected Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
@@ -205,14 +204,14 @@ public class OrganizationController {
             			  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
                     	  int year = Calendar.getInstance().get(Calendar.YEAR);
                     	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                    	  organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-                    	  businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
-                  		  businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-                  		  Organization getOrgDep=orgDep.get(0);
+                    	  Organization orgCompany = organizationService.getCompanyNameBySon(pid);// 获取对应部门的公司
+                  		  Organization getOrgDep=orgDep.get(0);//部门
                   		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
                   		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+                  		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService);
                     	  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
                        }
+ 
             		  else{
                  		 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	   }
@@ -376,18 +375,18 @@ public class OrganizationController {
                 }
             Integer i = organizationService.updateOrganizationById(orgName,id,orgType,user.getId());
             if (Integer.valueOf(1).equals(i)) {
-            	 if(orgType==3){         		
+            	 if(list.get(0).getOrgType()!=3&&orgType==3){         		
             		  String reportType = DataModule.REPORT_TYPE_BUDGET;
                  	  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,id,null,null,null,3,null);
                 	  int year = Calendar.getInstance().get(Calendar.YEAR);
                 	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                	  organizationServices = (OrganizationServiceImpl) AccountQuartzListener.getSpringContext().getBean("OrganizationServiceImpl");
-                	  businessDataServices = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
-              		  businessDataInfoServices = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-              		  Organization getOrgDep=orgDep.get(0);
+                	  Organization orgCompany = organizationService.getCompanyNameBySon(id);// 获取对应部门的公司
+              		  MessageService messageService = null;
+              		  Organization getOrgDep=orgDep.get(0);//部门
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
               		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                 	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+              		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService); 
+              		  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
             	 }
             	 else{
@@ -595,7 +594,7 @@ public class OrganizationController {
             	} 
          		int count= organizationService.TreeByIdForSonSum(id);
          		int sums= organizationService.TreeByIdForSonList(id);
-         		int assum=list.size();
+         		int assum=lists.size();
          		int acount=0;
                 for(Organization ll:lists){
                  	int typeList=ll.getOrgType();
@@ -668,16 +667,18 @@ public class OrganizationController {
                   	     return result;
                        }
            	  }
+            Map<String, String> listBefore=organizationService.TreeByIdForSonAfter(id);  
             Integer i = organizationService.moveOrganization(user, id, parentOrgId);
             if (Integer.valueOf(1).equals(i)) {
-            	       Integer a=organizationService.TreeByIdForSonShow(parentOrgId);
-            	       if(a==1){
-            	    	   ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-                  		   return result;
-            	       }
-            	       else{
-            	           ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                           return result;
+            	      Map<String, String> listAfter=organizationService.TreeByIdForSonAfter(parentOrgId);
+            	      organizationService.TreeByIdForSonShow(listBefore,listAfter);
+            	      if(listBefore.size()>0){
+            	    	  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+                 		   return result;
+            	      }
+            	      else{
+            	          ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                          return result;
             	       }
             	
             } else {
