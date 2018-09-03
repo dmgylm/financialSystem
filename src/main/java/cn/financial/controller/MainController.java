@@ -170,6 +170,7 @@ public class MainController {
             }     
             List<JSONObject> jsonOrg = userOrganizationService.userOrganizationList(user.getId());
             dataMap.put("userName", username);
+            dataMap.put("userId", user.getId());
             dataMap.put("roleName", roleName);
             dataMap.put("userOrganization", jsonOrg);
             dataMap.put("sessionId", subject.getSession().getId());
