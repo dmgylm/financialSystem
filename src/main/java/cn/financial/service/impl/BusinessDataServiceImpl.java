@@ -11,8 +11,10 @@ import cn.financial.dao.BusinessDataDao;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
+import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.service.BusinessDataService;
+import cn.financial.service.MessageService;
 import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.UuidUtil;
 
@@ -154,5 +156,21 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	public List<BusinessData> listBusinessDataByIdAndDateList(
 			Map<Object, Object> map) {
 		return businessDataDao.listBusinessDataByIdAndDateList(map);
+	}
+
+	@Override
+	public void createBunsinessDataMessage(int year, Logger logger, Organization orgCompany,Organization orgDep, MessageService messageService) {
+			Message message = new Message();
+			message.setId(UuidUtil.getUUID());
+			message.setStatus(0);
+			message.setTheme(1);
+			message.setContent(year + "年"  + orgCompany.getOrgName()+orgDep.getOrgName()+ "预算表已生成");
+			message.setoId(orgCompany.getId());
+			message.setIsTag(0);
+			message.setsName("系统默认");
+			Integer i1 = messageService.saveMessage(message);
+			if (i1 != 1) {
+				logger.error("预算报表发送消息失败");
+		}		
 	}
 }
