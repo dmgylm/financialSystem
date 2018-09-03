@@ -18,14 +18,13 @@
            <result column="sId" property="sId" jdbcType="INTEGER"/>
            <result column="dataModuleId" property="dataModuleId" jdbcType="VARCHAR" />
            <result column="version" property="version" jdbcType="INTEGER"/>
-           <result column="writeStatus" property="writeStatus" jdbcType="INTEGER"/>
           <!--  <association property="users"  resultMap="userResultMap" ></association> -->
        </resultMap> 
           
        <!--新增损益数据 -->
        <insert id="insertBusinessData" parameterType="businessData" keyProperty="id">
-            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version,writeStatus)
-            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version},#{writeStatus})
+            insert into businessData(id,oId,createTime,updateTime,typeId,uId,year,month,status,delStatus,sId,dataModuleId,version)
+            values (#{id},#{oId},now(),now(),#{typeId},#{uId},#{year},#{month},#{status},#{delStatus},#{sId},#{dataModuleId},#{version})
        </insert>
       
     
