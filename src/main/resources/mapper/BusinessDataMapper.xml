@@ -105,7 +105,6 @@
         update businessData
         <set>
            <if test="status!=null">status = #{status},</if>
-           <if test="writeStatus!=null">writeStatus = #{writeStatus},</if>
            <if test="uId !=null and uId!=''">uId = #{uId},</if>
               updateTime = now()
         </set>
