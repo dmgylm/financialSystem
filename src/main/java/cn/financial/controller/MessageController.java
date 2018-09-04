@@ -71,12 +71,12 @@ public class MessageController {
     	
     }
     
-	public void sendSocketMessageInfo(String unread, String sessionId, String userId) {
+	public void sendSocketMessageInfo(String unread, String userId) {
 	    	
 	    	JSONObject jsonObject = new JSONObject();
 	        jsonObject.put("unread",unread);
-	        System.out.println("MessageSocketServerInfo;JSESSIONID="+sessionId+";userId="+userId+"]");
-	        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo;JSESSIONID="+sessionId+";USERID="+userId+"]", new TextMessage(jsonObject.toString()),unread);
+	        System.out.println("userId="+userId+"]");
+	        financialWebSocketHandler().sendMessageToUser("userId="+userId+"]", new TextMessage(jsonObject.toString()),unread);
 	    	
 	    }
     
