@@ -27,6 +27,7 @@ import cn.financial.model.DataModule;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.model.response.BusinessDataYearResult;
 import cn.financial.model.response.BusinessResult;
 import cn.financial.model.response.HtmlResult;
@@ -39,6 +40,7 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.UserOrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.ExcelReckonUtils;
@@ -71,6 +73,9 @@ public class BusinessDataController {
     
     @Autowired
     private MessageService messageService;
+    
+    @Autowired
+    private MessageController messageController;
 
     @Autowired
     private BusinessDataInfoServiceImpl businessDataInfoServiceImpl;
@@ -80,6 +85,9 @@ public class BusinessDataController {
 
     @Autowired
     private UserOrganizationService userOrganizationService; // 角色的权限
+    
+    @Autowired
+    private UserOrganizationServiceImpl userOrganizationServiceImpl; // 角色的权限
 
     @Autowired
     private OrganizationService organizationService; // 组织架构
@@ -498,10 +506,38 @@ public class BusinessDataController {
                         message.setStatus(0);// 消息状态
                         message.setTheme(1);// 消息主题
                         message.setContent(content);// 消息内容
-                        message.setoId(business.getTypeId());
+                        message.setoId(business.getoId());
                         message.setsName("系统默认");
                         message.setIsTag(0);
                         messageService.saveMessage(message);
+                        
+                        Map<Object, Object> map = new HashMap<>();
+        	    		map.put("pageSize", Message.PAGESIZE);
+        	    		map.put("start", 0);
+        				List<Message> list = messageService.quartMessageByPower(user,map);
+        		    	
+        		        int unreadMessage = 0;
+        		        for(int i=0;i<list.size();i++) {
+        		            if(list.get(i).getStatus()==0) {
+        		            	unreadMessage++;
+        		            }
+        		        }
+        		        
+        		        String unread = String.valueOf(unreadMessage);//获取未读消息条数
+                        
+                        List<UserOrganization> uo = new ArrayList<UserOrganization>();
+                        uo = userOrganizationServiceImpl.listUserOrganizations(business.getoId());
+                        if(uo.size()!=0) {
+                        	for(int i=0; i<uo.size(); i++) {
+                        		String userId = uo.get(i).getuId();
+                                
+                                String url = request.getRequestURI();
+                                String sessionId = url.substring(url.lastIndexOf("=")+1);
+                                
+                                messageController.sendSocketMessageInfo(unread, sessionId, userId);
+                        	}
+                        }
+                        
                     } else {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
                         result.setResultDesc("修改失败");
