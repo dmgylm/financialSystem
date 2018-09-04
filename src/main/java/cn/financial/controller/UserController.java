@@ -296,7 +296,7 @@ public class UserController{
             	UserRole userRole = new UserRole();
                 userRole.setId(UuidUtil.getUUID());
                 userRole.setrId(roleId);
-                userRole.setuId(user.getId());
+                userRole.setuId(userId);
                 userRoleList = userRoleService.updateUserRole(userRole);
             }
             //修改用户组织架构关联信息，先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息
@@ -306,7 +306,7 @@ public class UserController{
                 userOrganization = new UserOrganization();
                 userOrganization.setId(UuidUtil.getUUID());
                 userOrganization.setoId(orgId);
-                userOrganization.setuId(user.getId());
+                userOrganization.setuId(userId);
                 userOrganizationList = userOrganizationService.updateUserOrganization(userOrganization);
             }
             
