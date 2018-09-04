@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.financial.model.BusinessData;
+import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
@@ -385,13 +387,22 @@ public class OrganizationController {
                 	  int year = Calendar.getInstance().get(Calendar.YEAR);
                 	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
                 	  Organization orgCompany = organizationService.getCompanyNameBySon(id);// 获取对应部门的公司
-              		  MessageService messageService = null;
               		  Organization getOrgDep=orgDep.get(0);//部门
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
               		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
               		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService); 
               		  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
+            	 }
+                 if(list.get(0).getOrgType()==3&&orgType!=3){
+                	 BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);
+                	 selectBusinessDataById.setDelStatus(0);
+                	 businessDataService.updateBusinessDataDelStatus(selectBusinessDataById);//将以前的数据delstatus改为0
+                	 BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
+                	 businessInfo.setDelStatus(0);
+             	     businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
+                	 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+               	     return result;
             	 }
             	 else{
             	     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
@@ -441,11 +452,22 @@ public class OrganizationController {
                 	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_DISABLE,result);
                 	return result;
                 }
+                List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+                int orgType=list.get(0).getOrgType();//当前级别
                 Boolean boolean1 = organizationService.hasOrganizationSon(mmp);
                 if (!boolean1) {
                     i = organizationService.deleteOrganizationById(request.getParameter("id"), user);
                     if (Integer.valueOf(1).equals(i)) {
-                    	ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                    	if(orgType==3){
+                    		 BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(id);
+                        	 selectBusinessDataById.setDelStatus(0);
+                        	 businessDataService.updateBusinessDataDelStatus(selectBusinessDataById);//将以前的数据delstatus改为0
+                        	 BusinessDataInfo businessInfo=businessDataInfoService.selectBusinessDataById(selectBusinessDataById.getId());
+                        	 businessInfo.setDelStatus(0);
+                     	     businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
+                        	 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                    	}
+                    	
                     } else {
                     	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                     }
