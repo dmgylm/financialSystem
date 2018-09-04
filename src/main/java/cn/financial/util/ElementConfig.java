@@ -290,5 +290,9 @@ public class ElementConfig {
      * 汇总下面不能添加汇总
      */
     public static final String PLATE_SUMMARY="PLATE_SUMMARY";
+    /**
+     * 没有足够的数据权限对该用户信息进行修改
+     */
+    public static final String USER_ORGANIZATION_RESULT="USER_ORGANIZATION_RESULT";
   
 }
