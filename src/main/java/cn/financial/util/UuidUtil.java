@@ -34,20 +34,14 @@ public class UuidUtil {
      * @return
      */
     public static String getCodeByBrother(String parentCode, List<String> listCode) {
-        //List<Integer> code = new ArrayList<Integer>(listCode.size());
-    	List<String> code = new ArrayList<String>(listCode.size());
-        for (String i : listCode) {
-            String result = i.replaceFirst(parentCode, "");
-            //code.add(Integer.parseInt(result.trim()));
-            code.add(result);
-        }
-        String sa=Collections.max(code);
-        String begin=sa.substring(0,sa.length()-1);
-        String end=sa.substring(sa.length()-1,sa.length());
-    	String re=begin+String.valueOf(Integer.valueOf(end)+1);
-    	String resultCode=parentCode+re;
-        //String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
-        return resultCode;
+    	 List<Integer> code = new ArrayList<Integer>(listCode.size());
+         for (String i : listCode) {
+             String result = i.substring(i.length()-2, i.length());
+             code.add(Integer.valueOf(result));
+         }
+         int re=Collections.max(code)+1;
+         String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
+         return resultCode;
     }
 /*    
     public static void main(String[] args) {
