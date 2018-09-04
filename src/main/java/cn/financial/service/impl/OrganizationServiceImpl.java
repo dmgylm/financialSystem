@@ -985,5 +985,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 	    businessInfo.setDelStatus(0);
 	    businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
    }
+
+@Override
+public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
+    // TODO Auto-generated method stub
+    return organizationDAO.listAllOrganizationBy(map);
+}
 	
 }

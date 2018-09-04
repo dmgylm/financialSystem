@@ -204,7 +204,9 @@ public class CapitalController {
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
                 Capital  capital=capitalService.selectCapitalById(id);//查询id的数据
-                List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",capital.getoId(), "", "", "", null, null);
+                Map<Object, Object> map1=new HashMap<>();
+                map1.put("id",capital.getoId());
+                List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                 if(isImport){
                   if(isStatus==0){
@@ -262,7 +264,9 @@ public class CapitalController {
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
                 Capital  selectCapitalById=capitalService.selectCapitalById(id);//查询id的数据
-                List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",selectCapitalById.getoId(), "", "", "", null, null);
+                Map<Object, Object> map1=new HashMap<>();
+                map1.put("id",selectCapitalById.getoId());
+                List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
                 Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                 if(isImport){
                   if(isStatus==0){
@@ -358,7 +362,9 @@ public class CapitalController {
                                     insertFlag=false;
                                     break;    
                                 }else{
-                                    List<Organization>  listOrganization= organizationService.listOrganizationBy(orgName, "", "", "", "", "", "",null,null); //查询公司的信息
+                                    Map<Object, Object> map1=new HashMap<>();
+                                    map1.put("orgName",orgName);
+                                    List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
                                     if(listOrganization.size()>0){
                                     Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
                                       if(isStatus==0){

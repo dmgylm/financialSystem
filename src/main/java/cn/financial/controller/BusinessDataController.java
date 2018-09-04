@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -22,10 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
@@ -60,6 +54,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jhlabs.image.HSBAdjustFilter;
 
 /**
  * 损益表Controller
@@ -231,7 +228,9 @@ public class BusinessDataController {
             User user = (User) request.getAttribute("user");
             String uId = user.getId();
             BusinessData businessData = businessDataService.selectBusinessDataById(id);//查询id的数据
-            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",businessData.getTypeId(), "", "", "", null, null);
+            Map<Object, Object> map1=new HashMap<>();
+            map1.put("id",businessData.getTypeId());
+            List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer status=listOrganization.get(0).getStatus();
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
@@ -301,7 +300,9 @@ public class BusinessDataController {
         String uId=user.getId();
         try {
             BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
-            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
+            Map<Object, Object> map1=new HashMap<>();
+            map1.put("id",business.getTypeId());
+            List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
@@ -432,10 +433,12 @@ public class BusinessDataController {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         // Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result = new ResultUtils();
-        //User user = (User) request.getAttribute("user");
+        User user = (User) request.getAttribute("user");
         try {
             BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
-            List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
+            Map<Object, Object> map1=new HashMap<>();
+            map1.put("id",business.getTypeId());
+            List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
             if(isStatus==0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
@@ -494,7 +497,9 @@ public class BusinessDataController {
                         result.setResultDesc("修改成功");
                         //修改成功给消息中心发送消息
                         Message message = new Message();
-                        List<Organization>  organization=organizationService.listOrganizationBy("", "", "",business.getoId(), "", "", "", null, null);
+                        Map<Object, Object> map2=new HashMap<>();
+                        map2.put("id",business.getoId());
+                        List<Organization>  organization=organizationService.listAllOrganizationBy(map2);
                         String company=organization.get(0).getOrgName();
                         String type=listOrganization.get(0).getOrgName();
                         Integer sId=business.getsId();
@@ -513,40 +518,39 @@ public class BusinessDataController {
                         message.setsName("系统默认");
                         message.setIsTag(0);
                         messageService.saveMessage(message);
-                        
                         List<UserOrganization> uo = new ArrayList<UserOrganization>();
                         uo = userOrganizationServiceImpl.listUserOrganizations(business.getoId());
                         if(uo.size()!=0) {
-                        	for(int i=0; i<uo.size(); i++) {
-                        		boolean bool = true;
-                        		String userId = uo.get(i).getuId();
-                        		List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(userId);
-                        		for(int k=0; k<org.size(); k++) {
-                        			Integer orgType = Integer.valueOf(org.get(k).getString("orgType"));
-                        			if(orgType != 1  && orgType != 4) {
-                            			bool = true;
-                        			}
-                        			if(orgType == 1 || orgType == 4) {
-                        				bool = false;
-                        				break;
-                        			}
-                        		}
-                        		if(bool) {
-                        			User u = userService.getUserById(userId);
-                        			Map<Object, Object> map = new HashMap<>();
-                    	    		map.put("pageSize", Message.PAGESIZE);
-                    	    		map.put("start", 0);
-                    				List<Message> list = messageService.quartMessageByPower(u,map);
-                    		        int unreadMessage = 0;
-                    		        for(int j=0;j<list.size();j++) {
-                    		            if(list.get(j).getStatus()==0) {
-                    		            	unreadMessage++;
-                    		            }
-                    		        }
-                    		        String unread = String.valueOf(unreadMessage);//获取未读消息条数
-                    		        messageController.sendSocketMessageInfo(unread, userId);
-                        		}
-                        	}
+                            for(int i=0; i<uo.size(); i++) {
+                                boolean bool = true;
+                                String userId = uo.get(i).getuId();
+                                List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(userId);
+                                for(int k=0; k<org.size(); k++) {
+                                    Integer orgType = Integer.valueOf(org.get(k).getString("orgType"));
+                                    if(orgType != 1  && orgType != 4) {
+                                        bool = true;
+                                    }
+                                    if(orgType == 1 || orgType == 4) {
+                                        bool = false;
+                                        break;
+                                    }
+                                }
+                                if(bool) {
+                                    User u = userService.getUserById(userId);
+                                    Map<Object, Object> map = new HashMap<>();
+                                    map.put("pageSize", Message.PAGESIZE);
+                                    map.put("start", 0);
+                                    List<Message> list = messageService.quartMessageByPower(u,map);
+                                    int unreadMessage = 0;
+                                    for(int j=0;j<list.size();j++) {
+                                        if(list.get(j).getStatus()==0) {
+                                            unreadMessage++;
+                                        }
+                                    }
+                                    String unread = String.valueOf(unreadMessage);//获取未读消息条数
+                                    messageController.sendSocketMessageInfo(unread, userId);
+                                }
+                            }
                         }
                     } else {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
@@ -589,11 +593,20 @@ public class BusinessDataController {
                 if (businessData == null) {
                     ElementXMLUtils.returnValue(ElementConfig.BUSINESSDATA_ID_FAIL, result);
                 } else {
-                  //获取公司名字
-                    Organization companyName = organizationService.getCompanyNameBySon(businessData.getoId());// 查询部门所属的公司名
-                    String company=companyName.getOrgName();
+                    Map<Object, Object> map1=new HashMap<>();
+                    map1.put("id",businessData.getTypeId());
+                    List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
+                    Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
+                    if(isStatus==0){
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                        result.setResultDesc("当前组织架构数据已被停用！不能进行编辑！");    
+                    }else{
+                    Map<Object, Object> map2=new HashMap<>();
+                    map2.put("id",businessData.getoId());
+                    List<Organization> organization=organizationService.listAllOrganizationBy(map2);
+                    //获取公司名字
+                    String company=organization.get(0).getOrgName();
                     //获取业务方式
-                    List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",businessData.getTypeId(), "", "", "", null, null);
                     String orgName=listOrganization.get(0).getOrgName();
                     DataModule dm = dataModuleService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(businId);
@@ -617,6 +630,7 @@ public class BusinessDataController {
                     os.flush();
                     os.close();
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                  }
                 }
               
             } catch (Exception e) {

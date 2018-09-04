@@ -33,7 +33,16 @@ public interface OrganizationService {
      * @return
      */
     List<Organization> listOrganizationBy(String orgName,String createTime,String updateTime,String id,String code,String uId,String parentId,Integer orgType,String orgkey);
+   
 
+    /**
+     * 接口（条件查询组织结构信息(包含状态为0和1)）
+     * 
+     * @param map
+     * @return
+     */
+    List<Organization> listAllOrganizationBy(Map<Object, Object> map);
+    
     /**
      * 接口（根据条件修改组织结构信息,这里是根据id来修改其他项,所以map中必须包含id）
      * 
