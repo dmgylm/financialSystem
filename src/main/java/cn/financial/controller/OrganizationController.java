@@ -429,8 +429,8 @@ public class OrganizationController {
                 HashMap<Object, Object> mmp = new HashMap<Object, Object>();
                 mmp.put("id", request.getParameter("id"));
                 Calendar cal = Calendar.getInstance();
-    		    //int day = cal.get(Calendar.DATE);
-    		    int day=12;
+    		    int day = cal.get(Calendar.DATE);
+    		    //int day=12;
                 int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
                 int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
                 if(day<start_time||day>stop_time){
@@ -574,8 +574,8 @@ public class OrganizationController {
             }
             User user = (User) request.getAttribute("user");
             Calendar cal = Calendar.getInstance();
-		    //int day = cal.get(Calendar.DATE);
-            int day=12;
+		    int day = cal.get(Calendar.DATE);
+            //int day=12;
             int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
             int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
             if(day<start_time||day>stop_time){
