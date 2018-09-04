@@ -672,8 +672,15 @@ public class OrganizationController {
             if (Integer.valueOf(1).equals(i)) {
             	      Map<String, String> listAfter=organizationService.TreeByIdForSonAfter(parentOrgId);
             	      organizationService.TreeByIdForSonShow(listBefore,listAfter);
-            	        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                        return result;
+            	      if(listBefore.size()>0){
+            	    	  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+            	    	  return result;
+            	      }
+            	      else{
+            	    	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                          return result;
+            	      }
+            	        
             } else {
             	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
             }
