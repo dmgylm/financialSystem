@@ -279,8 +279,12 @@
         <code>303</code>
         <description>同层级节点不可重复</description>
     </Result>
-        <Result name="PLATE_SUMMARY">
+    <Result name="PLATE_SUMMARY">
         <code>304</code>
         <description>汇总下面不能添加汇总</description>
+    </Result>
+    <Result name="USER_ORGANIZATION_RESULT">
+        <code>305</code>
+        <description>您没有足够的数据权限进行修改操作</description>
     </Result>
 </StateCode>
