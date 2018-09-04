@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -20,6 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.financial.model.Business;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
@@ -54,8 +60,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  * 损益表Controller
@@ -527,11 +531,7 @@ public class BusinessDataController {
                         if(uo.size()!=0) {
                         	for(int i=0; i<uo.size(); i++) {
                         		String userId = uo.get(i).getuId();
-                                
-                                String url = request.getRequestURI();
-                                String sessionId = url.substring(url.lastIndexOf("=")+1);
-                                
-                                messageController.sendSocketMessageInfo(unread, sessionId, userId);
+                                messageController.sendSocketMessageInfo(unread, userId);
                         	}
                         }
                         
