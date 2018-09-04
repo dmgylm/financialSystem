@@ -586,6 +586,17 @@ public class OrganizationController {
            else{
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();//当前级别
+                String orgName=list.get(0).getOrgName();
+                JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
+                JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
+                for(int z=0;z<jsonlist.size();z++){
+                   JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
+                   if(jsonss.get("name").equals(orgName)){
+                	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+             	       return result;
+                   }
+              	
+                }
                 List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
                 int parentOrgType=lists.get(0).getOrgType();//父节点级别节点
                 if(parentOrgType==3){
