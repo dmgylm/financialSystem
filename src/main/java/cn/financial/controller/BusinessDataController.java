@@ -429,7 +429,6 @@ public class BusinessDataController {
         // Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result = new ResultUtils();
         User user = (User) request.getAttribute("user");
-        String uId=user.getId();
         try {
             BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
             List<Organization>  listOrganization=organizationService.listOrganizationBy("", "", "",business.getTypeId(), "", "", "", null, null);
@@ -510,12 +509,10 @@ public class BusinessDataController {
                         message.setsName("系统默认");
                         message.setIsTag(0);
                         messageService.saveMessage(message);
-                        
                         Map<Object, Object> map = new HashMap<>();
         	    		map.put("pageSize", Message.PAGESIZE);
         	    		map.put("start", 0);
         				List<Message> list = messageService.quartMessageByPower(user,map);
-        		    	
         		        int unreadMessage = 0;
         		        for(int i=0;i<list.size();i++) {
         		            if(list.get(i).getStatus()==0) {
