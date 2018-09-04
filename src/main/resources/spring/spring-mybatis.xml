@@ -17,6 +17,7 @@
  <!-- spring与mybatis连接属性 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
     destroy-method="close" >
+    <property name="testOnBorrow" value="true" />
     <property name="driverClassName">
       <value>${jdbc_driverClassName}</value>
     </property>
@@ -55,7 +56,7 @@
     </property>
     <!-- 清除无用连接的等待时间 -->
     <property name="removeAbandonedTimeout">
-      <value>180</value>
+      <value>1800</value>
     </property>
     <!-- 连接属性 -->
     <property name="connectionProperties">
