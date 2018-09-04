@@ -1,6 +1,7 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
+import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
 
 @Service("DataModuleServiceImpl")
@@ -73,7 +75,10 @@ public class DataModuleServiceImpl implements DataModuleService{
 		for(DataModule dataModule:dataModules){
 			ModuleList moduleList=new ModuleList();
 			moduleList.setId(dataModule.getId());
-			moduleList.setCreateTime(dataModule.getCreateTime());
+			Date createTime = dataModule.getCreateTime();
+			if(createTime!=null) {
+				moduleList.setCreateTime(TimeUtils.format(createTime,TimeUtils.yyyy_MM_dd_HH_mm_ss));
+			}
 			moduleList.setFounder(dataModule.getFounder());
 			moduleList.setModuleName(dataModule.getModuleName());
 			moduleList.setStatue(dataModule.getStatue());
@@ -112,7 +117,10 @@ public class DataModuleServiceImpl implements DataModuleService{
 		for(DataModule dataModule:dataModules){
 			ModuleList moduleList=new ModuleList();
 			moduleList.setId(dataModule.getId());
-			moduleList.setCreateTime(dataModule.getCreateTime());
+			Date createTime = dataModule.getCreateTime();
+			if(createTime!=null) {
+				moduleList.setCreateTime(TimeUtils.format(createTime,TimeUtils.yyyy_MM_dd_HH_mm_ss));
+			}
 			moduleList.setFounder(dataModule.getFounder());
 			moduleList.setModuleName(dataModule.getModuleName());
 			moduleList.setStatue(dataModule.getStatue());

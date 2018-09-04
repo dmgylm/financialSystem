@@ -1,5 +1,7 @@
 package cn.financial.model;
 
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -75,7 +77,7 @@ public class DataModule {
 	private String startTime; //起效日期
 */	
     @ApiModelProperty(value="创建时间",name="createTime",example="")
-	private String createTime; // 创建时间
+	private Date createTime; // 创建时间
 
     @ApiModelProperty(value="更新时间",name="updateTime",example="")
     private String updateTime; // 更新时间
@@ -151,11 +153,11 @@ public class DataModule {
 		this.founder = founder;
 	}
 
-	public String getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
