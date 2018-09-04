@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.OrganizationDAO;
@@ -86,17 +87,21 @@ public class OrganizationServiceImpl implements OrganizationService {
             Map<Object, Object> mapbro = new HashMap<>();
             mapbro.put("parentId", org.get(0).getCode());
             List<Organization> list = organizationDAO.listAllOrganizationBy(mapbro);
+            JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
+            JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
             // 若存在兄弟节点，则兄弟节点的code找到该节点的code
-            if (!CollectionUtils.isEmpty(list)) {
-                List<String> codes = new ArrayList<String>();
-                for (Organization orga : list) {
-                    codes.add(orga.getCode());
-                }
-                code = UuidUtil.getCodeByBrother(org.get(0).getCode(), codes);
+            if(jsonarray.size()>0){
+            	 List<String> codes = new ArrayList<String>();
+            	  for(int i=0;i<jsonarray.size();i++){
+            		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
+            		  String codeList= jsonss.get("id").toString();
+            		  codes.add(codeList);
+            	  }
+            	  code = UuidUtil.getCodeByBrother(org.get(0).getCode(), codes);
             }
-            // 若不存在兄弟节点，那code就是父节点的code加上01
-            else {
-                code = org.get(0).getCode() + "01";
+         // 若不存在兄弟节点，那code就是父节点的code加上01
+            else{
+            	 code = org.get(0).getCode() + "01";
             }
             organization.setParentId(org.get(0).getCode());// 父id
             organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
@@ -601,15 +606,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         map = new HashMap<>();
         map.put("parentId", orgParent.get(0).getCode());
         List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
-        if (!CollectionUtils.isEmpty(listSon)) {
-            List<String> codes = new ArrayList<String>();
-            for (Organization orgaSon : listSon) {
-                codes.add(orgaSon.getCode());
-            }
-            code = UuidUtil.getCodeByBrother(orgParent.get(0).getCode(), codes);
-        } else {
-            code = orgParent.get(0).getCode() + "01";
+        JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
+        JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
+        // 若存在兄弟节点，则兄弟节点的code找到该节点的code
+        if(jsonarray.size()>0){
+        	 List<String> codes = new ArrayList<String>();
+        	  for(int i=0;i<jsonarray.size();i++){
+        		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
+        		  String codeList= jsonss.get("id").toString();
+        		  codes.add(codeList);
+        	  }
+        	 code = UuidUtil.getCodeByBrother(orgParent.get(0).getCode(), codes);
         }
+        // 若不存在兄弟节点，那code就是父节点的code加上01
+        else{
+       	 code = org.get(0).getCode() + "01";
+       }
         Organization organization = new Organization();
         String new_id = UuidUtil.getUUID();
         organization.setId(new_id);
