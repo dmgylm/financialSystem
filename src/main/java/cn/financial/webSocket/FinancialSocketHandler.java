@@ -77,7 +77,7 @@ public class FinancialSocketHandler implements WebSocketHandler {
 					e.printStackTrace();
 				}
 			}
-			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(user.toString().substring(0,user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(userName)) {
+			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(userName)) {
 				try {
 					if(user.isOpen()) {
 						synchronized (user) {
