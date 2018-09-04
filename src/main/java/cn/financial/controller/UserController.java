@@ -223,6 +223,48 @@ public class UserController{
     	ResultUtils result = new ResultUtils();
     	
     	try {
+    	    User currentUser = (User) request.getAttribute("user");
+            List<UserOrganization> userOrgPermission = new ArrayList<>();
+            List<Organization> listOrg = new ArrayList<>();
+            if(currentUser.getId()!=null && !currentUser.getId().equals("")){
+                //根据当前登录用户id查询组织节点信息
+                userOrgPermission.addAll(userOrganizationService.listUserOrganization(currentUser.getId()));
+            }
+            if(!CollectionUtils.isEmpty(userOrgPermission)){
+                for(UserOrganization orgCode : userOrgPermission){
+                    //根据code查询组织架构信息(查询当前登录人orgId信息)
+                    listOrg.addAll(organizationService.listOrganizationBy(null,null,null,null,orgCode.getCode(),null,null,null,null));
+                }
+            }
+            //查询需要修改的用户orgId信息
+            List<UserOrganization> userOrgPermissions = new ArrayList<>();
+            List<Organization> listOrgs = new ArrayList<>();
+            userOrgPermissions.addAll(userOrganizationService.listUserOrganization(userId));
+            if(!CollectionUtils.isEmpty(userOrgPermissions)){
+                for(UserOrganization orgCode : userOrgPermissions){
+                    //根据code查询组织架构信息(查询需要修改的用户orgId信息)
+                    listOrgs.addAll(organizationService.listOrganizationBy(null,null,null,null,orgCode.getCode(),null,null,null,null));
+                }
+            }
+            //当前登录人的orgId
+            List<String> org = new ArrayList<>();//需要修改的orgId
+            if(!CollectionUtils.isEmpty(listOrg)){
+                for(Organization orgCode : listOrg){
+                    org.add(orgCode.getId());
+                }
+            }
+            //需要修改的orgId
+            List<String> orgs = new ArrayList<>();//需要修改的orgId
+            if(!CollectionUtils.isEmpty(listOrgs)){
+                for(Organization orgCode : listOrgs){
+                    orgs.add(orgCode.getId());
+                }
+            }
+            //循环检索需要修改的orgId是否包括在当前登录人的orgId之内
+            if(!org.containsAll(orgs)){
+                ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION_RESULT, result);
+                return result;
+            } 
     	    if(name!=null && !name.equals("")){
     	        //判断用户名是否存在
                 Integer flag = userService.countUserName(name,"");//查询用户名是否存在(真实姓名可以重复)
@@ -260,49 +302,6 @@ public class UserController{
             //修改用户组织架构关联信息，先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息
             Integer userOrganizationList = 0;
             if(orgId != null && !"".equals(orgId)) {
-                User currentUser = (User) request.getAttribute("user");
-                List<UserOrganization> userOrgPermission = new ArrayList<>();
-                List<Organization> listOrg = new ArrayList<>();
-                if(currentUser.getId()!=null && !currentUser.getId().equals("")){
-                    //根据当前登录用户id查询组织节点信息
-                    userOrgPermission.addAll(userOrganizationService.listUserOrganization(currentUser.getId()));
-                }
-                if(!CollectionUtils.isEmpty(userOrgPermission)){
-                    for(UserOrganization orgCode : userOrgPermission){
-                        //根据code查询组织架构信息(查询当前登录人orgId信息)
-                        listOrg.addAll(organizationService.listOrganizationBy(null,null,null,null,orgCode.getCode(),null,null,null,null));
-                    }
-                }
-                //查询需要修改的用户orgId信息
-                List<UserOrganization> userOrgPermissions = new ArrayList<>();
-                List<Organization> listOrgs = new ArrayList<>();
-                userOrgPermissions.addAll(userOrganizationService.listUserOrganization(userId));
-                if(!CollectionUtils.isEmpty(userOrgPermissions)){
-                    for(UserOrganization orgCode : userOrgPermissions){
-                        //根据code查询组织架构信息(查询需要修改的用户orgId信息)
-                        listOrgs.addAll(organizationService.listOrganizationBy(null,null,null,null,orgCode.getCode(),null,null,null,null));
-                    }
-                }
-                //当前登录人的orgId
-                List<String> org = new ArrayList<>();//需要修改的orgId
-                if(!CollectionUtils.isEmpty(listOrg)){
-                    for(Organization orgCode : listOrg){
-                        org.add(orgCode.getId());
-                    }
-                }
-                //需要修改的orgId
-                List<String> orgs = new ArrayList<>();//需要修改的orgId
-                if(!CollectionUtils.isEmpty(listOrgs)){
-                    for(Organization orgCode : listOrgs){
-                        orgs.add(orgCode.getId());
-                    }
-                }
-                //循环检索需要修改的orgId是否包括在当前登录人的orgId之内
-                if(!org.containsAll(orgs)){
-                    ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION_RESULT, result);
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                    return result;
-                } 
             	UserOrganization userOrganization = null;
                 userOrganization = new UserOrganization();
                 userOrganization.setId(UuidUtil.getUUID());
