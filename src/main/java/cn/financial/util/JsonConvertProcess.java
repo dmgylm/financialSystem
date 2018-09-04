@@ -33,6 +33,7 @@ public class JsonConvertProcess {
 	 * @return
 	 */
 	public static JSONObject mergeJson(JSONObject templateJson, JSONObject dataJson) {
+		JSONObject tempDataJson = new JSONObject();
 		for(Iterator<String> iter = templateJson.keySet().iterator();iter.hasNext();){
 			String key = iter.next();
 			Object templateObj = templateJson.get(key);
@@ -40,14 +41,16 @@ public class JsonConvertProcess {
 			if (templateObj instanceof JSONArray) {
 				JSONArray longLst = (JSONArray) templateObj;
 				if(longLst!=null && shortData!=null) {
-					mergeDetail(longLst,shortData);
+					JSONArray mergeDetail = mergeDetail(longLst,shortData);
+					tempDataJson.put(key, mergeDetail);
 				}
 			} else if (templateObj instanceof JSONObject) {
 				JSONObject longData = (JSONObject) templateObj;
-				mergeJson(longData, shortData);
+				JSONObject mergeJson = mergeJson(longData, shortData);
+				tempDataJson.put(key, mergeJson);
 			}
 		}
-		return templateJson;
+		return tempDataJson;
 	}
 	
 	/**
@@ -55,7 +58,7 @@ public class JsonConvertProcess {
 	 * @param templateArr 模板Json
 	 * @param dataJson 数据Json
 	 */
-	public static void mergeDetail(JSONArray templateArr, JSONObject dataJson) {
+	public static JSONArray mergeDetail(JSONArray templateArr, JSONObject dataJson) {
 		for(int i=0;i<templateArr.size();i++) {
 			JSONObject longJson = templateArr.getJSONObject(i);
 			if(longJson.containsKey("key")) {
@@ -69,6 +72,7 @@ public class JsonConvertProcess {
 				}
 			}
 		}
+		return templateArr;
 	}
 
 	/**
@@ -147,7 +151,7 @@ public class JsonConvertProcess {
 							|| type == HtmlGenerate.BOX_TYPE_BUDGET) {
 						if(json.containsKey("key")) {
 							String key = json.getString("key");
-							Object value = 0;
+							Object value = i;
 							if(json.containsKey("value")) {
 								value = json.get("value");
 							}
