@@ -63,12 +63,23 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 */
 	public void sendMessageToUser(String userName,TextMessage message,String unread) {
 		for(WebSocketSession user : users) {
+			System.out.println(user.toString().substring(user.toString().lastIndexOf("/")+1));
+			System.out.println(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")+1));
 			if(user.toString().substring(user.toString().lastIndexOf("/")+1).equals(userName)) {
 				try {
 					if(user.isOpen()) {
-//						user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).substring(0,user.getUri().toString().substring(user.getUri().toString().lastIndexOf("/")+1).indexOf(";")).equals(userName)
-						System.out.println(user.toString());
-//						System.out.println(user.toString().substring(user.toString().lastIndexOf("=")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("=")+1).indexOf("]")));
+						synchronized (user) {
+							user.sendMessage(message);
+							System.out.println("发送消息成功"+message+unread);
+						}
+					}
+				}catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")+1).equals(userName)) {
+				try {
+					if(user.isOpen()) {
 						synchronized (user) {
 							user.sendMessage(message);
 							System.out.println("发送消息成功"+message+unread);
