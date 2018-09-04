@@ -67,9 +67,18 @@ public class MessageController {
     	
     	JSONObject jsonObject = new JSONObject();
         jsonObject.put("unread",unread);
-        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo;JSESSIONID="+sessionId+"]", new TextMessage(jsonObject.toString()),unread);
+        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo;JSESSIONID="+sessionId, new TextMessage(jsonObject.toString()),unread);
     	
     }
+    
+	public void sendSocketMessageInfo(String unread, String sessionId, String userId) {
+	    	
+	    	JSONObject jsonObject = new JSONObject();
+	        jsonObject.put("unread",unread);
+	        System.out.println("MessageSocketServerInfo;JSESSIONID="+sessionId+";userId="+userId+"]");
+	        financialWebSocketHandler().sendMessageToUser("MessageSocketServerInfo;JSESSIONID="+sessionId+";USERID="+userId+"]", new TextMessage(jsonObject.toString()),unread);
+	    	
+	    }
     
     
     protected Logger logger = LoggerFactory.getLogger(MessageController.class);
