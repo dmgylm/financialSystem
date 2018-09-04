@@ -290,6 +290,7 @@ public class OrganizationController {
         try {
             User user = (User) request.getAttribute("user");
             List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+            String  name=list.get(0).getOrgName();
         	if(list.get(0).getOrgType()==2){
         		 int count= organizationService.TreeByIdForSonList(id);
         		 if(count==1&&orgType!=2){
@@ -319,16 +320,19 @@ public class OrganizationController {
          	         return result;
                 }
               }
-            JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
-            JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
-            for(int z=0;z<jsonlist.size();z++){
-               JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
-               if(jsonss.get("name").equals(orgName)){
-            	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
-         	       return result;
-               }
-          	
+            if(!name.equals(orgName)){
+            	 JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
+                 JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
+                 for(int z=0;z<jsonlist.size();z++){
+                    JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
+                    if(jsonss.get("name").equals(orgName)){
+                 	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+              	       return result;
+                    }
+               	
+                 }
             }
+           
            if(parentOrgType==3){
          	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
       	          return result;
