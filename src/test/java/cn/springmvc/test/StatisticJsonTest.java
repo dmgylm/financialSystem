@@ -171,8 +171,8 @@ public class StatisticJsonTest {
 		HttpClient3 httpClient = new HttpClient3();
 		
 		Map<String , String> params = new HashMap<String, String>();
-		params.put("infoKey", "guanlifeiyong_zhufanggongjijinbenyueshiji");
-		params.put("caCheUuid", "9ee9313edc334232b7a64a60f27ce5dd");
+		params.put("infoKey", "zongyewu_chengbenaichedaiyewubenyueyusuan");
+		params.put("caCheUuid", "cef10abbdf4e40a19d4bd4ce1065779f");
 		
 		String responseStr = httpClient.doPost("http://localhost:8080/financialSystem/statistic/staticInfo;JSESSIONID=24951a30-34a4-46c7-84fe-855db87a017b", params);
 		System.out.println(responseStr);
@@ -195,9 +195,9 @@ public class StatisticJsonTest {
     
     @Test
     public void StatisticGroupTest() {
-       	String orgId = "['22ee8c554c2a4f5383038c3f11ae02ed']";
+       	String orgId = "['b9d14004e8b342b190fab1eeb2c3dd2c']";
        	
-       	List<BusinessData> businessDataList = service.BusList("2018/1","2019/12",JSONArray.parseArray(orgId));
+       	List<BusinessData> businessDataList = service.BusList("PROFIT_LOSS","2018/1","2018/8",JSONArray.parseArray(orgId));
        	
 //    	//获取所选机构
 // 		List<Organization> codeSonList = service.companyList(JSONArray.parseArray(orgId));

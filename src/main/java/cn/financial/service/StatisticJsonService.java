@@ -81,6 +81,6 @@ public interface StatisticJsonService {
 	String jsonCalculationCollect(String reportType, String businessType,
 			List<BusinessData> businessDataList);
 
-	List<BusinessData> BusList(String startDate, String endDate,JSONArray orgId);
+	List<BusinessData> BusList(String reportType,String startDate, String endDate, JSONArray orgId);
 
 }

@@ -136,7 +136,7 @@
        
        <!-- 根据选定条件查询所有损益数据 -->
        <select id="listBusinessDataByIdAndDateList" parameterType="map" resultType="businessData">
-		SELECT bd.id,bd.oId,bd.dataModuleId,bd.typeId,bi.info FROM
+		SELECT bd.id,bd.oId,bd.dataModuleId,bd.typeId,bi.info,bd.sId FROM
 	 	organization oz , businessData bd ,businessDataInfo bi
 		WHERE oz.id = bd.typeId AND bd.id = bi.businessDataId
 		AND oz.status = 1

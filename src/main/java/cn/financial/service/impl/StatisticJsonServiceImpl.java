@@ -64,12 +64,12 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	 * 获取所选数据集合
 	 */
 	@Override
-	public List<BusinessData> BusList(String startDate, String endDate,JSONArray orgId) {
+	public List<BusinessData> BusList(String reportType,String startDate, String endDate,JSONArray orgId) {
 		//将json里数据转换为list类型
 		String js=JSONObject.toJSONString(orgId, SerializerFeature.WriteClassName);
 		List<String> orgList =JSONObject.parseArray(js, String.class) ;
 		//获取选中的子节点数据
-		List<BusinessData> BusList = organizationService.listBusinessList(startDate, endDate, orgList);
+		List<BusinessData> BusList = organizationService.listBusinessList(reportType,startDate, endDate, orgList);
 		if(BusList==null){
 			return null;
 		}

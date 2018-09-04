@@ -174,7 +174,7 @@ public interface OrganizationService {
 
     List<Organization>  TreeByIdForSons(String getoId);
 
-	List<BusinessData> listBusinessList(String startDate, String endDate,List<String> ids);
+	List<BusinessData> listBusinessList(String reportType,String startDate, String endDate, List<String> ids);
 
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     

@@ -149,7 +149,7 @@ public class StatisticJsonController {
 //    		List<BusinessData> businessDataList = statisticService.valueList(startDate,endDate,typeIdList);
     		
     		//直接获取底层对应数据的集合
-    		List<BusinessData> businessDataList = statisticService.BusList(startDate,endDate,JSONArray.parseArray(orgId));
+    		List<BusinessData> businessDataList = statisticService.BusList(reportType,startDate,endDate,JSONArray.parseArray(orgId));
     		
     		if(businessDataList==null||businessDataList.size()==0){
             	ElementXMLUtils.returnValue(ElementConfig.BUSSINESS_NODATA,sj);

@@ -24,6 +24,7 @@ import cn.financial.dao.OrganizationDAO;
 import cn.financial.dao.OrganizationMoveDao;
 import cn.financial.model.BusinessData;
 import cn.financial.model.BusinessDataInfo;
+import cn.financial.model.DataModule;
 import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
@@ -866,7 +867,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 	    * 2.将code等于his_permission的数据查询对应的数据集合
 	    */
 	@Override
-	public List<BusinessData> listBusinessList(String startDate, String endDate,
+	public List<BusinessData> listBusinessList(String reportType,String startDate, String endDate,
 			List<String> ids) {
 		List<Organization> list = organizationDAO.listOrganization(ids);
 		List<BusinessData> BusinessDataList = new ArrayList<BusinessData>();
@@ -889,7 +890,22 @@ public class OrganizationServiceImpl implements OrganizationService {
 		map.put("endMonth", endYAndM[1]);
 
 		BusinessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
-		return BusinessDataList;
+		Integer tpye = 0;
+		if(DataModule.REPORT_TYPE_PROFIT_LOSS.equals(reportType)||DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)){
+			tpye = 1;
+		}
+		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)||DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)){
+			tpye = 2;
+		}
+		List<BusinessData> result = new ArrayList<BusinessData>();
+		for (int i = 0; i < BusinessDataList.size(); i++) {
+			if(BusinessDataList.get(i).getsId()==tpye)
+			{
+				result.add(BusinessDataList.get(i));
+			}
+		}
+		
+		return result;
 
 	}
 	
