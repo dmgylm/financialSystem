@@ -124,6 +124,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 			statement.setoId(org.getId());// 分公司id
 			statement.setTypeId(orgDep.getId());// 部门（根据部门id查分公司id）
 			statement.setYear(year);
+			statement.setMonth(null);
 			statement.setStatus(3);// 提交状态（0 待提交   1待修改  2已提交  3新增 4 退回修改）
 			statement.setDelStatus(1);
 			statement.setsId(2);// 1表示损益表 2表示预算表
