@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -15,7 +16,9 @@ import cn.financial.controller.MessageController;
 import cn.financial.dao.MessageDAO;
 import cn.financial.model.DataModule;
 import cn.financial.model.Message;
+import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
 
@@ -40,8 +43,8 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private UserOrganizationServiceImpl userOrganizationServiceImpl;
 	
-//	@Autowired
-//	private OrganizationServiceImpl organizationService;
+	@Autowired
+	private OrganizationServiceImpl organizationService;
 
 
     /**
@@ -216,18 +219,31 @@ public class MessageServiceImpl implements MessageService {
 		
 		String uId = user.getId();
 		
-		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);
+		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);//根据用户ID查询关联的组织结构
 		
-		for(int i=0; i<list.size(); i++) {
-			Integer orgType = Integer.valueOf(list.get(i).getString("orgType"));
-			if(orgType != 1  && orgType != 4) {
+		UserOrganization uo = userOrganizationServiceImpl.maxOrganizations(uId);//根据用户ID获得最高组织节点
+		
+		Integer orgType = Integer.valueOf(uo.getOrgType());
+		if(orgType == 1) {//如果是汇总级别，更具oid判断其上是否有公司
+			Organization org = organizationService.getCompanyNameBySon(uo.getoId());
+			if(org == null) {
+				his.clear();
+			}else {
+				for(int i=0; i<list.size(); i++) {
+					String[] strArray = list.get(i).getString("his_permission").split(",");
+					his.addAll(Arrays.asList(strArray));
+				}
+			}
+			
+		}
+		if(orgType == 2 || orgType == 3) {//如果是公司和部门级别，获取code集合
+			for(int i=0; i<list.size(); i++) {
 				String[] strArray = list.get(i).getString("his_permission").split(",");
 				his.addAll(Arrays.asList(strArray));
 			}
-			if(orgType == 1 || orgType == 4) {
-				his.clear();
-				break;
-			}
+		}
+		if(orgType == 4) {//如果是公司以上，清空集合
+			his.clear();
 		}
 		
 		String code[] = new String[his.size()];
@@ -296,22 +312,6 @@ public class MessageServiceImpl implements MessageService {
 			lm = messageDao.listMessageBy(filter);
 		}
 		return lm;
-	}
-	
-	public boolean isCompany(String uId) {
-		boolean flag = true;
-		List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(uId);
-        for(int i=0; i<org.size(); i++) {
-            Integer orgType = Integer.valueOf(org.get(i).getString("orgType"));
-            if(orgType != 1  && orgType != 4) {
-            	flag = true;
-            }
-            if(orgType == 1 || orgType == 4) {
-            	flag = false;
-                break;
-            }
-        }
-		return flag;
 	}
 	
 	public Integer listUnread() {
