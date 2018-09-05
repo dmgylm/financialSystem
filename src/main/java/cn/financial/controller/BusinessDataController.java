@@ -252,6 +252,10 @@ public class BusinessDataController {
                         htmlResult.setData(html);     
                     }
                 }else if(htmlType==3){//查看详情
+                    if(status==0){
+                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
+                        htmlResult.setResultDesc("当前组织架构数据已被停用！不能进行编辑！"); 
+                    }else{
                     DataModule dm = dmService.getDataModule(businessData.getDataModuleId());
                     BusinessDataInfo busInfo = businessDataInfoService.selectBusinessDataById(id);
                     JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
@@ -261,6 +265,7 @@ public class BusinessDataController {
                     String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
                     ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);
                     htmlResult.setData(html); 
+                   }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
                     htmlResult.setResultDesc("您当前没有权限进行此操作！"); 
@@ -433,7 +438,6 @@ public class BusinessDataController {
         // 需要参数，前端传来的HTML，业务表的id，状态（1保存 还是 2提交 4退回 ） 0 待提交 1待修改 2已提交 3新增 4 退回修改
         // Map<String, Object> dataMap = new HashMap<String, Object>();
         ResultUtils result = new ResultUtils();
-        User user = (User) request.getAttribute("user");
         try {
             BusinessData business = businessDataService.selectBusinessDataById(id);//查询id的数据
             Map<Object, Object> map1=new HashMap<>();
