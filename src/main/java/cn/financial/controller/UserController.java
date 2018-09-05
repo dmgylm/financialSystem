@@ -228,7 +228,7 @@ public class UserController{
             List<Organization> listOrg = new ArrayList<>();
             if(currentUser.getId()!=null && !currentUser.getId().equals("")){
                 //根据当前登录用户id查询组织节点信息
-                userOrgPermission.addAll(userOrganizationService.listUserOrganization(currentUser.getId()));
+                userOrgPermission.addAll(userOrganizationService.listUserOrganization(currentUser.getId(),null));
             }
             if(!CollectionUtils.isEmpty(userOrgPermission)){
                 for(UserOrganization orgCode : userOrgPermission){
@@ -239,7 +239,7 @@ public class UserController{
             //查询需要修改的用户orgId信息
             List<UserOrganization> userOrgPermissions = new ArrayList<>();
             List<Organization> listOrgs = new ArrayList<>();
-            userOrgPermissions.addAll(userOrganizationService.listUserOrganization(userId));
+            userOrgPermissions.addAll(userOrganizationService.listUserOrganization(userId,null));
             if(!CollectionUtils.isEmpty(userOrgPermissions)){
                 for(UserOrganization orgCode : userOrgPermissions){
                     //根据code查询组织架构信息(查询需要修改的用户orgId信息)
@@ -390,7 +390,7 @@ public class UserController{
             //判断当前登录用户数据权限范围
             if(currentUser.getId()!=null && !currentUser.getId().equals("")){
                 //根据当前登录用户id查询组织节点信息
-                userOrgPermission = userOrganizationService.listUserOrganization(currentUser.getId());
+                userOrgPermission = userOrganizationService.listUserOrganization(currentUser.getId(),null);
                 //根据当前登录用户名查询用户关联的角色id信息
                 List<UserRole> userRole = userRoleService.listUserRole(currentUser.getName(), null);
                 if(!CollectionUtils.isEmpty(userRole)){
