@@ -127,14 +127,40 @@ public class CapitalController {
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
+                    Integer type=Integer.parseInt(userOrganization.get(i).getString("orgType").toString()); 
+                    String name=userOrganization.get(i).getString("name").toString();
                     String str=userOrganization.get(i).getString("his_permission");
-                    if(str.contains(",")){
-                        String[] his_permission=str.split(","); 
-                        for (int j = 0; j < his_permission.length; j++) {
-                          code.add(his_permission[j]); 
-                        }  
+                    if(type==Capital.DEPNUM||name.contains(Capital.NAME)){//如果是部门级别 则 获取公司的oid
+                     Organization  organization=organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));
+                     if(organization!=null){
+                      String his_permission= organization.getHis_permission();//如果是部门级别的则是得到公司的  his_permission
+                      if(his_permission.contains(",")){
+                          String[] hispermission=his_permission.split(","); 
+                          for (int j = 0; j < hispermission.length; j++) {
+                            code.add(hispermission[j]); 
+                          }  
+                      }else{
+                          code.add(his_permission);
+                      }
+                     }else{//如果不是部门级别则是直接取组织架构的his_permission
+                         if(str.contains(",")){
+                             String[] his_permission=str.split(","); 
+                             for (int j = 0; j < his_permission.length; j++) {
+                               code.add(his_permission[j]); 
+                             }  
+                         }else{
+                             code.add(str);
+                         } 
+                     }
                     }else{
-                        code.add(str);
+                        if(str.contains(",")){
+                            String[] his_permission=str.split(","); 
+                            for (int j = 0; j < his_permission.length; j++) {
+                              code.add(his_permission[j]); 
+                            }  
+                        }else{
+                            code.add(str);
+                        }  
                     }
                 }
                 map.put("accountBank",accountBank);//开户行
@@ -312,16 +338,43 @@ public class CapitalController {
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             List<String> code=new ArrayList<>();
             for (int i = 0; i < userOrganization.size(); i++) {
+                Integer type=Integer.parseInt(userOrganization.get(i).getString("orgType").toString()); 
+                String name=userOrganization.get(i).getString("name").toString();
                 String str=userOrganization.get(i).getString("his_permission");
-                if(str.contains(",")){
-                    String[] his_permission=str.split(","); 
-                    for (int j = 0; j < his_permission.length; j++) {
-                      code.add(his_permission[j]); 
-                    }  
+                if(type==Capital.DEPNUM||name.contains(Capital.NAME)){//如果是部门级别 则 获取公司的oid
+                 Organization  organization=organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));
+                 if(organization!=null){
+                  String his_permission= organization.getHis_permission();//如果是部门级别的则是得到公司的  his_permission
+                  if(his_permission.contains(",")){
+                      String[] hispermission=his_permission.split(","); 
+                      for (int j = 0; j < hispermission.length; j++) {
+                        code.add(hispermission[j]); 
+                      }  
+                  }else{
+                      code.add(his_permission);
+                  }
+                 }else{//如果不是部门级别则是直接取组织架构的his_permission
+                     if(str.contains(",")){
+                         String[] his_permission=str.split(","); 
+                         for (int j = 0; j < his_permission.length; j++) {
+                           code.add(his_permission[j]); 
+                         }  
+                     }else{
+                         code.add(str);
+                     } 
+                 }
                 }else{
-                code.add(str);
+                    if(str.contains(",")){
+                        String[] his_permission=str.split(","); 
+                        for (int j = 0; j < his_permission.length; j++) {
+                          code.add(his_permission[j]); 
+                        }  
+                    }else{
+                        code.add(str);
+                    }  
                 }
-               }
+                         
+            }
             map.put("code", code);//根据权限的typeId查询相对应的数据
             List<Capital> totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页  
             String[] company=new String[totalCapital.size()]; //获取所有的权限公司名字
@@ -634,15 +687,41 @@ public class CapitalController {
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
+                    Integer type=Integer.parseInt(userOrganization.get(i).getString("orgType").toString()); 
+                    String name=userOrganization.get(i).getString("name").toString();
                     String str=userOrganization.get(i).getString("his_permission");
-                    if(str.contains(",")){
-                        String[] his_permission=str.split(","); 
-                        for (int j = 0; j < his_permission.length; j++) {
-                          code.add(his_permission[j]); 
-                        }  
+                    if(type==Capital.DEPNUM||name.contains(Capital.NAME)){//如果是部门级别 则 获取公司的oid
+                     Organization  organization=organizationService.getCompanyNameBySon(userOrganization.get(i).getString("pid"));
+                     if(organization!=null){
+                      String his_permission= organization.getHis_permission();//如果是部门级别的则是得到公司的  his_permission
+                      if(his_permission.contains(",")){
+                          String[] hispermission=his_permission.split(","); 
+                          for (int j = 0; j < hispermission.length; j++) {
+                            code.add(hispermission[j]); 
+                          }  
+                      }else{
+                          code.add(his_permission);
+                      }
+                     }else{//如果不是部门级别则是直接取组织架构的his_permission
+                         if(str.contains(",")){
+                             String[] his_permission=str.split(","); 
+                             for (int j = 0; j < his_permission.length; j++) {
+                               code.add(his_permission[j]); 
+                             }  
+                         }else{
+                             code.add(str);
+                         } 
+                     }
                     }else{
-                        code.add(str);
-                    }
+                        if(str.contains(",")){
+                            String[] his_permission=str.split(","); 
+                            for (int j = 0; j < his_permission.length; j++) {
+                              code.add(his_permission[j]); 
+                            }  
+                        }else{
+                            code.add(str);
+                        }  
+                    }    
                 }
                 if(keyword!=null&&!keyword.equals("")){
                     keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
