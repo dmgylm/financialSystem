@@ -599,7 +599,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 								valve +=(Double)item.get(downKey);
 							}
 							item.put(downKey, valve);
-							partItem.put(downKey, downKey);
+							partItem.put(downKey, valve);
 						}
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
