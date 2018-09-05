@@ -963,6 +963,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		businessData.setId(businessId); // id自动生成
 		businessData.setoId(org.getId());
 		businessData.setTypeId(aferId);
+		businessData.setUpdateTime(selectBusinessDataById.getUpdateTime());
 		businessData.setuId(selectBusinessDataById.getuId());
 		businessData.setYear(selectBusinessDataById.getYear());
 		businessData.setMonth(selectBusinessDataById.getMonth());
