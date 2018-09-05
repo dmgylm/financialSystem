@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -457,6 +458,7 @@ public class BusinessDataController {
                     businessData.setsId(selectBusinessDataById.getsId());
                     businessData.setDataModuleId(selectBusinessDataById.getDataModuleId());
                     businessData.setVersion(selectBusinessDataById.getVersion() + 1);
+                    businessData.setUpdateTime(new Date());
                     Integer insertBusinessData = businessDataService.insertBusinessData(businessData); // 新增一条一模一样的新数据
                     if (insertBusinessData == 1) {
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
