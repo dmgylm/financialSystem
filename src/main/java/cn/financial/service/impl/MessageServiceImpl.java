@@ -233,17 +233,16 @@ public class MessageServiceImpl implements MessageService {
 			}
 			
 		}
-		if(orgType == 2) {//如果是公司级别，获取code集合
+		if(orgType == 2 || orgType == 3) {//如果是公司或部门级别，获取code集合
 			for(int i=0; i<list.size(); i++) {
-				strArray = list.get(i).getString("his_permission").split(",");
-				his.addAll(Arrays.asList(strArray));
-			}
-		}
-		if(orgType == 3) {//如果是部门级别，获取code集合
-			for(int i=0; i<list.size(); i++) {
-				Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
-				strArray = orga.getHis_permission().split(",");
-				his.addAll(Arrays.asList(strArray));
+				if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
+					Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
+					strArray = orga.getHis_permission().split(",");
+					his.addAll(Arrays.asList(strArray));
+				}else {
+					strArray = list.get(i).getString("his_permission").split(",");
+					his.addAll(Arrays.asList(strArray));
+				}
 			}
 		}
 		if(orgType == 4) {//如果是公司以上，清空集合
