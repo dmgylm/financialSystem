@@ -128,13 +128,6 @@
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
-	<!-- 查询未读消息  -->
-	<select id="listUnread" parameterType="map" resultMap="messageResultMap">
-		select * from message
-        where uId = #{uId,jdbcType=VARCHAR}
-        and status = 0
-		order by createTime desc
-	</select>
 	
 	<!--定义一个sql片段 -->
 	<sql id="query_message_where">
