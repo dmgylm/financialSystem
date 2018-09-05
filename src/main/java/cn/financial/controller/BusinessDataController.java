@@ -520,13 +520,18 @@ public class BusinessDataController {
                             for(int i=0; i<uo.size(); i++) {
                                 boolean bool = true;
                                 String userId = uo.get(i).getuId();
-                                List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(userId);
-                                for(int k=0; k<org.size(); k++) {
-                                    Integer orgType = Integer.valueOf(org.get(k).getString("orgType"));
-                                    if(orgType == 1 || orgType == 4) {
-                                        bool = false;
-                                        break;
-                                    }
+                                UserOrganization userOrg = userOrganizationServiceImpl.maxOrganizations(userId);//根据用户ID获得最高组织节点
+                                Integer orgType = Integer.valueOf(userOrg.getOrgType());
+                                if(orgType == 1) {
+                                	Organization org = organizationService.getCompanyNameBySon(userOrg.getoId());
+                                	if(org == null) {
+                                		bool = false;
+                                	}else {
+                                		bool = true;
+                                	}
+                                }
+                                if(orgType == 4) {
+                                    bool = false;
                                 }
                                 if(bool) {
                                     User u = userService.getUserById(userId);
