@@ -252,7 +252,6 @@ public class MessageServiceImpl implements MessageService {
 		String code[] = new String[his.size()];
 		for(int j=0; j<his.size(); j++) {
 			code[j] = his.get(j);
-			System.out.println(code[j]);
 		}
  		
 //		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
