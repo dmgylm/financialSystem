@@ -192,7 +192,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 				redisCacheInfo.put(valueKey, companyMap);
 			}
 		}
-		
 		return redisCacheInfo ;
 	}
 
@@ -243,8 +242,16 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 //		}
     	//开始数据计算
     	JSONObject item = valueListNewSum(valueList);
+    	//数据计算后重新排版(预算用)
+    	JSONObject arrayItem = new JSONObject();
+		if(DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)||
+				DataModule.REPORT_TYPE_BUDGET.equals(reportType)){
+			arrayItem = arrayItemData(item);
+		}else{
+			arrayItem = item;
+		}
     	//进行模板填写
-    	model = JsonConvertProcess.mergeJson(model,item);
+    	model = JsonConvertProcess.mergeJson(model,arrayItem);
 		//模板公式计算
 		ExcelReckonUtils eru = new ExcelReckonUtils();
 		String staticMD =null;
@@ -334,7 +341,15 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 			}
 			//开始数据计算
 			JSONObject groupsum = valueListNewSum(valueList);
-			groupmap.put(groupname, groupsum);
+	    	//数据计算后重新排版(预算用)
+	    	JSONObject arrayItem = new JSONObject();
+			if(DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)||
+					DataModule.REPORT_TYPE_BUDGET.equals(reportType)){
+				arrayItem = arrayItemData(groupsum);
+			}else{
+				arrayItem = groupsum;
+			}
+			groupmap.put(groupname, arrayItem);
 		}
 
 		//将数据集填入模板
@@ -561,17 +576,18 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	
 	//汇总分段的计算方法
 	public JSONObject valueListNewSum(List<JSONObject> valueList){
-		JSONObject group = new JSONObject();
+		JSONObject group = new JSONObject();//全部数据
+		JSONObject item = new JSONObject();//业务数据
 		for (int k = 0; k < valueList.size(); k++) {
 			JSONObject valueJson = valueList.get(k);
 			Iterator<String> it = valueJson.keySet().iterator();
 			while (it.hasNext()) {
 				String Jsonkey = it.next();//分组开始名
-				JSONObject item = new JSONObject();
+				JSONObject partItem = new JSONObject();//对业务数据里的数据进行整合
 				JSONObject jsonValve = valueJson.getJSONObject(Jsonkey);
 				Iterator<String> vt = jsonValve.keySet().iterator();
 				while (vt.hasNext()) {
-					String itemKey = vt.next();
+					String itemKey = vt.next();//取出板块key
 					//判断是否为JSONObject
 					if(jsonValve.get(itemKey) instanceof JSONObject){
 						JSONObject downValve = jsonValve.getJSONObject(itemKey);
@@ -583,6 +599,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 								valve +=(Double)item.get(downKey);
 							}
 							item.put(downKey, valve);
+							partItem.put(downKey, downKey);
 						}
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
@@ -590,9 +607,10 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 							valve +=(Double)item.get(itemKey);
 						}
 						item.put(itemKey, valve);
+						partItem.put(itemKey, valve);
 					}
 				}
-				group.put(Jsonkey, item);
+				group.put(Jsonkey, partItem);
 			}
 		}
 		
@@ -602,4 +620,36 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 
 	}
 
+	/**
+	 * 将数据重新排版
+	 * @param item
+	 * @return
+	 */
+	public JSONObject arrayItemData(JSONObject item){
+		JSONObject itemData = new JSONObject();
+		Iterator<String> monthData = item.keySet().iterator();
+		while(monthData.hasNext()){
+			JSONObject md = new JSONObject();
+			String month = monthData.next();//分组开始名
+			JSONObject mData = (JSONObject) item.get(month);
+			Iterator<String> nData = mData.keySet().iterator();
+			
+			while(nData.hasNext()){
+				JSONObject data = new JSONObject();//用于组合
+				JSONObject alldata = new JSONObject();//用于合并
+				String nk = nData.next();
+				String[] nkSplit = nk.split("_");//取第一个然后将数据作为集合
+				data.put(nk, mData.get(nk));//重新组合的key,value
+				if(md.containsKey(nkSplit[0])){
+					alldata = md.getJSONObject(nkSplit[0]);
+				}
+				alldata.putAll(data);
+				md.put(nkSplit[0], alldata);
+			}
+			itemData.put(month, md);
+		}
+		return itemData;
+	}
+	
+	
 }
