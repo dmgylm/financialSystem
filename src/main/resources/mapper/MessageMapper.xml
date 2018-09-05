@@ -136,7 +136,6 @@
 		order by createTime desc
 	</select>
 	
-
 	<!--定义一个sql片段 -->
 	<sql id="query_message_where">
 		<if test="status!=null and status!=''">
