@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.financial.model.Message;
-import cn.financial.model.User;
 
 /**
  * 消息DAO业务接口
@@ -67,10 +66,5 @@ public interface MessageDAO {
      * @return
      */
     List<Message> listAllMessage();
-    /**
-     * 查询未读消息条数
-     * @return
-     */
-    List<Message> listUnread(User user);
 
 }
