@@ -125,24 +125,18 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
-                if(userOrganization.size()<0){
-                    List<Capital> list=new ArrayList<>();
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
-                    capitalResult.setData(list);
-                    capitalResult.setTotal(list.size());  
-                }else{
-                    List<String> code=new ArrayList<>();
-                    for (int i = 0; i < userOrganization.size(); i++) {
-                        String str=userOrganization.get(i).getString("his_permission");
-                        if(str.contains(",")){
-                            String[] his_permission=str.split(","); 
-                            for (int j = 0; j < his_permission.length; j++) {
-                              code.add(his_permission[j]); 
-                            }  
-                        }else{
-                            code.add(str);
-                        }
+                List<String> code=new ArrayList<>();
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    String str=userOrganization.get(i).getString("his_permission");
+                    if(str.contains(",")){
+                        String[] his_permission=str.split(","); 
+                        for (int j = 0; j < his_permission.length; j++) {
+                          code.add(his_permission[j]); 
+                        }  
+                    }else{
+                        code.add(str);
                     }
+                }
                 map.put("accountBank",accountBank);//开户行
                 map.put("accountNature",accountNature);//账户性质
                 map.put("tradeTimeBeg",tradeTimeBeg);//交易起始日期
@@ -176,7 +170,6 @@ public class CapitalController {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                 capitalResult.setData(list);
                 capitalResult.setTotal(total.size());
-                }
              } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
                 this.logger.error(e.getMessage(), e);
@@ -318,7 +311,6 @@ public class CapitalController {
             //判断 权限的数据 公司及其公司以下的级别才可以上传数据
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
             List<String> code=new ArrayList<>();
-            if(userOrganization.size()>0){
             for (int i = 0; i < userOrganization.size(); i++) {
                 String str=userOrganization.get(i).getString("his_permission");
                 if(str.contains(",")){
@@ -330,12 +322,8 @@ public class CapitalController {
                 code.add(str);
                 }
                }
-            }
-            List<Capital> totalCapital=new ArrayList<>();
-            if(code.size()>0){
-              map.put("code", code);//根据权限的typeId查询相对应的数据
-              totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页  
-            }
+            map.put("code", code);//根据权限的typeId查询相对应的数据
+            List<Capital> totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页  
             String[] company=new String[totalCapital.size()]; //获取所有的权限公司名字
             for (int i = 0; i < totalCapital.size(); i++) {
                 if(totalCapital.size()>0){
@@ -644,29 +632,18 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
-               if(userOrganization.size()<0){
-                    List<String[]> strList=new ArrayList<>();
-                    String[] ss={"公司名称","户名","开户行","账户","账户性质",
-                            "交易日期","期初余额","本期收入","本期支出","期末余额","摘要","项目分类","备注"};
-                    strList.add(ss);
-                    response.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode("资金流水表", "UTF-8")+".xls");
-                    response.setContentType("application/octet-stream");
-                    os = response.getOutputStream();
-                    ExcelUtil.export(strList, os);
-                    ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                }else{
-                    List<String> code=new ArrayList<>();
-                    for (int i = 0; i < userOrganization.size(); i++) {
-                        String str=userOrganization.get(i).getString("his_permission");
-                        if(str.contains(",")){
-                            String[] his_permission=str.split(","); 
-                            for (int j = 0; j < his_permission.length; j++) {
-                              code.add(his_permission[j]); 
-                            }  
-                        }else{
-                            code.add(str);
-                        }
+                List<String> code=new ArrayList<>();
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    String str=userOrganization.get(i).getString("his_permission");
+                    if(str.contains(",")){
+                        String[] his_permission=str.split(","); 
+                        for (int j = 0; j < his_permission.length; j++) {
+                          code.add(his_permission[j]); 
+                        }  
+                    }else{
+                        code.add(str);
                     }
+                }
                 if(keyword!=null&&!keyword.equals("")){
                     keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
                 }
@@ -740,7 +717,6 @@ public class CapitalController {
                   os = response.getOutputStream();
                   ExcelUtil.export(strList, os);
                   ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);    
-               }
              } catch (IOException e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                 e.printStackTrace();
