@@ -232,7 +232,7 @@ public class BusinessDataController {
             map1.put("id",businessData.getTypeId());
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer status=listOrganization.get(0).getStatus();
-            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
             if (id != null && !id.equals("") && htmlType != null) {
                 if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
@@ -309,7 +309,7 @@ public class BusinessDataController {
             map1.put("id",business.getTypeId());
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
-            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
             boolean isImport = isImport(userOrganization);//是否可编辑
             if(isImport){
              if(isStatus==0){
@@ -676,19 +676,19 @@ public class BusinessDataController {
          * @param list
          * @return
          */
-        private Boolean isImport(List<JSONObject> list) {
-            boolean isImport = true;//是否可编辑
-            for (int i = 0; i < list.size(); i++) {
-                JSONObject obu = (JSONObject) list.get(i);
-                Integer num=Integer.parseInt(obu.get("orgType").toString());
-                String emm=obu.getString("name").toString();
-                if(!emm.contains(BusinessData.NAME)){
-                    if(num==4||num==1){
-                        isImport =false;
-                        break;
-                      }   
-               }
-            }
+        private Boolean isImport(UserOrganization userOrganization) {
+          boolean isImport = true;//是否可编辑
+          Integer num=Integer.parseInt(userOrganization.getOrgType()); //组织节点
+          String oId=userOrganization.getoId(); //组织id
+          if(num==4){
+             isImport =false;
+          }
+          if(num==1){
+           Organization  organization=organizationService.getCompanyNameBySon(oId);
+           if(organization==null){//如果没有查到公司级别的则是不能编辑
+            isImport =false;
+           }
+         }
           return isImport;
         }
 

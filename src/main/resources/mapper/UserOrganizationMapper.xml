@@ -23,6 +23,14 @@
 		WHERE 1 = 1 and o.status = 1  and oId=#{sId} 
   		ORDER BY m.createTime DESC
     </select>
+    
+       <!--查询组织架构的uid的最高节点 -->
+    <select id="maxOrganizations" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
+      select  o.orgName,u.name ,MIN(o.code)as code ,o.orgType, u.id ,o.id as oId from organization o,user_organization_mapping uo,user  u
+      WHERE u.id=uo.uId AND uo.oId=o.id 
+     <if test="uId!=null and uId!=''">AND u.id=#{uId}</if>
+    </select>
+    
     <!--新增-->
     <insert id="insertUserOrganization" parameterType="cn.financial.model.UserOrganization">
         insert into user_organization_mapping(id,uId,oId,createTime) values (#{id},#{uId},#{oId},now())

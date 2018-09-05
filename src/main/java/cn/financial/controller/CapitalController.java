@@ -33,6 +33,7 @@ import cn.financial.model.Capital;
 import cn.financial.model.CapitalNatrue;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.UserOrganization;
 import cn.financial.model.response.CapitalByIdResult;
 import cn.financial.model.response.CapitalNatrueResult;
 import cn.financial.model.response.CapitalResult;
@@ -201,7 +202,7 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
                 Capital  capital=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
@@ -261,7 +262,7 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
                 boolean isImport = isImport(userOrganization);//是否可编辑
                 Capital  selectCapitalById=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
@@ -316,19 +317,35 @@ public class CapitalController {
             Map<Object, Object> map = new HashMap<>();
             //判断 权限的数据 公司及其公司以下的级别才可以上传数据
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            String[] code = new String[userOrganization.size()];
+            List<String> code=new ArrayList<>();
+            if(userOrganization.size()>0){
             for (int i = 0; i < userOrganization.size(); i++) {
-                code[i]=userOrganization.get(i).getString("id");
+                String str=userOrganization.get(i).getString("his_permission");
+                if(str.contains(",")){
+                    String[] his_permission=str.split(","); 
+                    for (int j = 0; j < his_permission.length; j++) {
+                      code.add(his_permission[j]); 
+                    }  
+                }else{
+                code.add(str);
+                }
+               }
             }
-            map.put("code", code);//根据权限的typeId查询相对应的数据
-            List<Capital> totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
+            List<Capital> totalCapital=new ArrayList<>();
+            if(code.size()>0){
+              map.put("code", code);//根据权限的typeId查询相对应的数据
+              totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页  
+            }
             String[] company=new String[totalCapital.size()]; //获取所有的权限公司名字
             for (int i = 0; i < totalCapital.size(); i++) {
-                company[i]=totalCapital.get(i).getCompany();
+                if(totalCapital.size()>0){
+                 company[i]=totalCapital.get(i).getCompany();   
+                }
             }
             List<String> companyList = new ArrayList<String>();
             companyList=Arrays.asList(company); 
-            boolean isImport = isImport(userOrganization);//是否可上传
+            UserOrganization organization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
+            boolean isImport = isImport(organization);//是否可编辑
             boolean insertFlag = true;//上传数据是否有错
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
@@ -819,19 +836,19 @@ public class CapitalController {
         * @param list
         * @return
         */
-       private Boolean isImport(List<JSONObject> list) {
-           boolean isImport = true;//是否可编辑
-           for (int i = 0; i < list.size(); i++) {
-               JSONObject obu = (JSONObject) list.get(i);
-               Integer num=Integer.parseInt(obu.get("orgType").toString());
-               String emm=obu.getString("name").toString();
-               if(!emm.contains(BusinessData.NAME)){
-                   if(num==4||num==1){
-                       isImport =false;
-                       break;
-                     }   
-              }
-           }
+       private Boolean isImport(UserOrganization userOrganization) {
+         boolean isImport = true;//是否可编辑
+         Integer num=Integer.parseInt(userOrganization.getOrgType()); //组织节点
+         String oId=userOrganization.getoId(); //组织id
+         if(num==4){
+            isImport =false;
+         }
+         if(num==1){
+          Organization  organization=organizationService.getCompanyNameBySon(oId);
+          if(organization==null){//如果没有查到公司级别的则是不能编辑
+           isImport =false;
+          }
+        }
          return isImport;
        }
 }

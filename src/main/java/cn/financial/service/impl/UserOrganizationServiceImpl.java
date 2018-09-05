@@ -167,6 +167,11 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
 	public List<UserOrganization> listUserOrganizations(String sid) {
 		 return userOrganizationDao.listUserOrganizations(sid);
 	}
+    @Override
+    public UserOrganization maxOrganizations(String uId) {
+        // TODO Auto-generated method stub
+        return userOrganizationDao.maxOrganizations(uId);
+    }
 
 }
  

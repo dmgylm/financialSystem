@@ -17,6 +17,13 @@ public interface UserOrganizationDAO {
      * @return
      */
 	List<UserOrganization> listUserOrganization(@Param("uId") String uId,@Param("oId")String oId);
+	
+	/**
+     * 根据uId查询组织架构的最高节点
+     * @return
+     */
+    UserOrganization maxOrganizations(@Param("uId") String uId);
+	
     /**
      * 新增
      * @param userOrganization

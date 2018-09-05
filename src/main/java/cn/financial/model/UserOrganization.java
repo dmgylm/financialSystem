@@ -35,6 +35,17 @@ public class UserOrganization {
     @ApiModelProperty(value="更新时间",name="updateTime")
     private String updateTime;//修改时间
     
+    @ApiModelProperty(value="机构节点",name="orgType")
+    private String orgType;//机构节点
+    
+    public String getOrgType() {
+        return orgType;
+    }
+
+    public void setOrgType(String orgType) {
+        this.orgType = orgType;
+    }
+
     public UserOrganization() {
         super();
     }

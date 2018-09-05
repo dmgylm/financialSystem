@@ -2,6 +2,8 @@ package cn.financial.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.model.Organization;
@@ -14,6 +16,13 @@ public interface UserOrganizationService {
      * @return
      */
     List<UserOrganization> listUserOrganization(String uId,String oId);
+    
+    /**
+     * 根据uId查询组织架构的最高节点
+     * @return
+     */
+    UserOrganization maxOrganizations(@Param("uId") String uId);
+    
     /**
      * 新增
      * @param userOrganization
