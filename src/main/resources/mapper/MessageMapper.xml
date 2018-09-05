@@ -128,20 +128,13 @@
 		where
 		id = #{_parameter,jdbcType=VARCHAR}
 	</delete>
-	<!-- 根据消息状态展示消息列表  -->
-	<!-- <select id="listMessage" parameterType="map" resultMap="messageResultMap">
+	<!-- 查询未读消息  -->
+	<select id="listUnread" parameterType="map" resultMap="messageResultMap">
 		select * from message
-        where (uId = #{uId,jdbcType=VARCHAR}
-        <if test="oId!=null and oId!=''">
-        	or	oId in 
-	        <foreach collection="oId" index="index" item="item" open="(" separator="," close=")">
-	        	#{item}
-	        </foreach>
-        </if>)
-		<include refid="query_message_where"></include>
+        where uId = #{uId,jdbcType=VARCHAR}
+        and status = 0
 		order by createTime desc
-		limit #{start},#{pageSize}
-	</select> -->
+	</select>
 	
 
 	<!--定义一个sql片段 -->
