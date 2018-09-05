@@ -297,4 +297,25 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return lm;
 	}
+	
+	public boolean isCompany(String uId) {
+		boolean flag = true;
+		List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(uId);
+        for(int i=0; i<org.size(); i++) {
+            Integer orgType = Integer.valueOf(org.get(i).getString("orgType"));
+            if(orgType != 1  && orgType != 4) {
+            	flag = true;
+            }
+            if(orgType == 1 || orgType == 4) {
+            	flag = false;
+                break;
+            }
+        }
+		return flag;
+	}
+	
+	public Integer listUnread() {
+		Integer unread = 0;
+		return unread;
+	}
 }
