@@ -212,22 +212,37 @@ public class MessageServiceImpl implements MessageService {
 		
 		UserOrganization uo = userOrganizationServiceImpl.maxOrganizations(uId);//根据用户ID获得最高组织节点
 		
+		String[] strArray;
+		
 		Integer orgType = Integer.valueOf(uo.getOrgType());
-		if(orgType == 1) {//如果是汇总级别，更具oid判断其上是否有公司
+		if(orgType == 1) {//如果是汇总级别，根据oid判断其上是否有公司
 			Organization org = organizationService.getCompanyNameBySon(uo.getoId());
 			if(org == null) {
 				his.clear();
 			}else {
 				for(int i=0; i<list.size(); i++) {
-					String[] strArray = list.get(i).getString("his_permission").split(",");
-					his.addAll(Arrays.asList(strArray));
+					if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
+						Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
+						strArray = orga.getHis_permission().split(",");
+						his.addAll(Arrays.asList(strArray));
+					}else {
+						strArray = list.get(i).getString("his_permission").split(",");
+						his.addAll(Arrays.asList(strArray));
+					}
 				}
 			}
 			
 		}
-		if(orgType == 2 || orgType == 3) {//如果是公司和部门级别，获取code集合
+		if(orgType == 2) {//如果是公司级别，获取code集合
 			for(int i=0; i<list.size(); i++) {
-				String[] strArray = list.get(i).getString("his_permission").split(",");
+				strArray = list.get(i).getString("his_permission").split(",");
+				his.addAll(Arrays.asList(strArray));
+			}
+		}
+		if(orgType == 3) {//如果是部门级别，获取code集合
+			for(int i=0; i<list.size(); i++) {
+				Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
+				strArray = orga.getHis_permission().split(",");
 				his.addAll(Arrays.asList(strArray));
 			}
 		}
@@ -238,6 +253,7 @@ public class MessageServiceImpl implements MessageService {
 		String code[] = new String[his.size()];
 		for(int j=0; j<his.size(); j++) {
 			code[j] = his.get(j);
+			System.out.println(code[j]);
 		}
  		
 //		for (int i = 0; i < lur.size(); i++) {//查询用户组织结构
