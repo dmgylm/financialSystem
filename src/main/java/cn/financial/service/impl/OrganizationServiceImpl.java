@@ -718,7 +718,7 @@ public class OrganizationServiceImpl implements OrganizationService {
                 }
             }
         }  
-        while (iterator.hasNext()) {
+/*        while (iterator.hasNext()) {
         	 Organization orga = iterator.next();
             List<UserOrganization> listsize= userorganization.listUserOrganizations(orga.getId());
             if(listsize.size()>0){
@@ -729,7 +729,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         		lists.setId(UuidUtil.getUUID());
                 organizationDAO.saveUserOrganization(lists);
             }
-        }
+        }*/
         
         return Integer.valueOf(1);
     }
