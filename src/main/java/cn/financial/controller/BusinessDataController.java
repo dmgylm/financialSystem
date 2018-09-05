@@ -515,7 +515,8 @@ public class BusinessDataController {
                         message.setIsTag(0);
                         messageService.saveMessage(message);
                         List<UserOrganization> uo = new ArrayList<UserOrganization>();
-                        uo = userOrganizationServiceImpl.listUserOrganization(null,business.getoId());
+                        List<Organization> orga = organizationService.listOrganizationBy(null, null, null, business.getoId(), null, null, null, null, null);
+                        uo = userOrganizationServiceImpl.listUserOrganization(null,orga.get(0).getCode());
                         if(uo.size()!=0) {
                             for(int i=0; i<uo.size(); i++) {
                                 boolean bool = true;
