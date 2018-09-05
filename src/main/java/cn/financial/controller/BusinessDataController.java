@@ -523,7 +523,7 @@ public class BusinessDataController {
                         message.setIsTag(0);
                         messageService.saveMessage(message);
                         List<UserOrganization> uo = new ArrayList<UserOrganization>();
-                        uo = userOrganizationServiceImpl.listUserOrganizations(business.getoId());
+                        uo = userOrganizationServiceImpl.listUserOrganization(null,business.getoId());
                         if(uo.size()!=0) {
                             for(int i=0; i<uo.size(); i++) {
                                 boolean bool = true;
@@ -531,9 +531,6 @@ public class BusinessDataController {
                                 List<JSONObject> org = userOrganizationServiceImpl.userOrganizationList(userId);
                                 for(int k=0; k<org.size(); k++) {
                                     Integer orgType = Integer.valueOf(org.get(k).getString("orgType"));
-                                    if(orgType != 1  && orgType != 4) {
-                                        bool = true;
-                                    }
                                     if(orgType == 1 || orgType == 4) {
                                         bool = false;
                                         break;
