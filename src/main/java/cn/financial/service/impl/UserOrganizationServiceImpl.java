@@ -30,8 +30,8 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     @Override
-    public List<UserOrganization> listUserOrganization(String uId) {
-        return userOrganizationDao.listUserOrganization(uId);
+    public List<UserOrganization> listUserOrganization(String uId,String oId) {
+    	return userOrganizationDao.listUserOrganization(uId,oId);
     }
     /**
      * 新增
@@ -109,7 +109,7 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
      * @return
      */
     public List<JSONObject> userOrganizationList(String uId){
-        List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId);
+        List<UserOrganization> userOrganization = userOrganizationDao.listUserOrganization(uId,null);
         List<JSONObject> jsonUserOrg = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         if(!CollectionUtils.isEmpty(userOrganization)){
