@@ -63,10 +63,9 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 */
 	public void sendMessageToUser(String userName,TextMessage message,String unread) {
 		for(WebSocketSession user : users) {
-			System.out.println(user.toString());
-			System.out.println(user.toString().substring(user.toString().lastIndexOf(";")+1));
-			System.out.println(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")));
+			System.out.println("sub:  "+user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")));
 			if(user.toString().substring(user.toString().lastIndexOf(";")+1).equals(userName)) {
+				System.out.println("websocket userName"+userName);
 				try {
 					if(user.isOpen()) {
 						synchronized (user) {
