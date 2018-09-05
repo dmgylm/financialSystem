@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -170,18 +169,8 @@ public class MessageServiceImpl implements MessageService {
 	    		map.put("pageSize", Message.PAGESIZE);
 	    		map.put("start", 0);
 				List<Message> list = quartMessageByPower(user,map);
-		    	
-		        int unreadMessage = 0;
-		        for(int i=0;i<list.size();i++) {
-		            if(list.get(i).getStatus()==0) {
-		            	unreadMessage++;
-		            }
-		        }
-            
 	            String sessionId = url.substring(url.lastIndexOf("=")+1);
-	            System.out.println(sessionId);
-		        String unread = String.valueOf(unreadMessage);//获取未读消息条数
-	            mc.sendSocketInfo(unread, sessionId);
+	            mc.sendSocketInfo(String.valueOf(list.size()), sessionId);
             
         } catch (Exception e) {
         	e.printStackTrace();
@@ -312,10 +301,5 @@ public class MessageServiceImpl implements MessageService {
 			lm = messageDao.listMessageBy(filter);
 		}
 		return lm;
-	}
-	
-	public Integer listUnread() {
-		Integer unread = 0;
-		return unread;
 	}
 }
