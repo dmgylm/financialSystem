@@ -112,8 +112,7 @@ public class MessageController {
     		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
     		map.put("status", request.getParameter("status"));
-            List<Message> list = messageService.quartMessageByPower(user,map);
-            Integer total = list.size();//用户总的消息条数
+            Integer total = messageService.quartMessageByPower(user,map).size();//用户总的消息条数
             
             if (lm.size() >= 0) {
             	result.setTotal(total);
@@ -345,14 +344,7 @@ public class MessageController {
         		Map<Object, Object> map1 = new HashMap<Object, Object>();
         		map1.put("pageSize", Message.PAGESIZE);
         		map1.put("start", 0);
-                List<Message> list = messageService.quartMessageByPower(user,map1);
-                int unreadMessage = 0;
-                for(int j=0;j<list.size();j++) {
-                    if(list.get(j).getStatus() == 0) {
-                    	unreadMessage++;
-                    }
-                }
-                
+                Integer unreadMessage = messageService.quartMessageByPower(user,map1).size();
                 result.setData(unreadMessage);
             	ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
             } else {
@@ -455,14 +447,7 @@ public class MessageController {
     		Map<Object, Object> map = new HashMap<Object, Object>();
     		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
-            List<Message> list = messageService.quartMessageByPower(user,map);
-            int unreadMessage = 0;
-            for(int i=0;i<list.size();i++) {
-                if(list.get(i).getStatus() == 0) {
-                	unreadMessage++;
-                }
-            }
-            
+            Integer unreadMessage = messageService.quartMessageByPower(user,map).size();
             result.setData(unreadMessage);
             ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
     	}catch (Exception e) {
