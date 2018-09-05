@@ -10,6 +10,10 @@
 		<if test="uId!=null and uId!=''">
             and u.id=#{uId}
         </if> 
+        <if test="oId!=null and oId!=''">
+        	and o.code like concat(#{oId},"%")
+        	group by u.id
+        </if>
 		ORDER BY m.createTime DESC
     </select>
     <select id="listUserOrganizations" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
