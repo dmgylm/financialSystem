@@ -542,14 +542,7 @@ public class BusinessDataController {
                                     map.put("pageSize", Message.PAGESIZE);
                                     map.put("start", 0);
                                     List<Message> list = messageService.quartMessageByPower(u,map);
-                                    int unreadMessage = 0;
-                                    for(int j=0;j<list.size();j++) {
-                                        if(list.get(j).getStatus()==0) {
-                                            unreadMessage++;
-                                        }
-                                    }
-                                    String unread = String.valueOf(unreadMessage);//获取未读消息条数
-                                    messageController.sendSocketMessageInfo(unread, userId);
+                                    messageController.sendSocketMessageInfo(String.valueOf(list.size()), userId);
                                 }
                             }
                         }
