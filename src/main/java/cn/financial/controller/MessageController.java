@@ -447,6 +447,7 @@ public class MessageController {
     		Map<Object, Object> map = new HashMap<Object, Object>();
     		map.put("pageSize", Message.PAGESIZE);
     		map.put("start", 0);
+    		map.put("status", 0);
             Integer unreadMessage = messageService.quartMessageByPower(user,map).size();
             result.setData(unreadMessage);
             ElementXMLUtils.returnValue((ElementConfig.RUN_SUCCESSFULLY),result);
