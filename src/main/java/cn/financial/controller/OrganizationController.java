@@ -43,6 +43,7 @@ import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
 import cn.financial.service.OrganizationService;
+import cn.financial.service.RedisCacheService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
 import cn.financial.service.impl.BusinessDataServiceImpl;
@@ -51,6 +52,7 @@ import cn.financial.service.impl.OrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
 import cn.financial.util.SiteConst;
+import cn.financial.util.StringUtils;
 import cn.financial.util.UuidUtil;
 
 /**
@@ -69,6 +71,9 @@ public class OrganizationController {
     
 	@Autowired
 	private BusinessDataService businessDataService;
+	
+	@Autowired
+	private RedisCacheService redisCacheService;
 	
 	@Autowired
 	private BusinessDataInfoService businessDataInfoService;
@@ -107,131 +112,208 @@ public class OrganizationController {
     })
     @PostMapping(value = "/save")
     public ResultUtils saveOrganization(String orgName,Integer orgType,
-    		String parentOrgId,HttpServletRequest request, HttpServletResponse response) {
-        ResultUtils result=new ResultUtils();
-        Integer i = 0;
-        try {
-            Organization organization = new Organization();
-            String uuid = UuidUtil.getUUID();
-            organization.setId(uuid);// 组织结构id
-            if (null != orgName && !"".equals(orgName)) {
-                organization.setOrgName(orgName.toString().trim());// 组织架构名
-            }
-            if (null != orgType && !"".equals(orgType)) {
-                organization.setOrgType(Integer.parseInt(orgType.toString().trim()));// 类别（汇总，公司，部门）
-               
-            }
-            User user = (User) request.getAttribute("user");
-            organization.setuId(user.getId());// 提交人id
-            JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
-            JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
-            for(int z=0;z<jsonlist.size();z++){
-               JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
-               if(jsonss.get("name").equals(orgName)){
-            	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
-         	       return result;
-               }
-          	
-            }
-            if (null != parentOrgId && !"".equals(parentOrgId)) {                     
-            List<Organization> lists =organizationService.listTreeByIdForParent(parentOrgId);
-            for(Organization ll:lists){
-             	int typeList=ll.getOrgType();
-            	if(orgType==2&&typeList==orgType){
-            		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-           	         return result;
-                 }
-            	if(orgType==4&&typeList==orgType){
-              	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
-         	         return result;
-                }
-              }
-            int parentOrgType=lists.get(0).getOrgType();
+			String parentOrgId, HttpServletRequest request,
+			HttpServletResponse response) {
+    	ResultUtils result = new ResultUtils();
+		try {
+			Organization bean = new Organization();
+			String orgId = UuidUtil.getUUID();
+			bean.setId(orgId);// 组织结构id
+			bean.setOrgName(orgName);
+			bean.setOrgType(orgType);
+			bean.setParentId(parentOrgId);
+			User user = (User) request.getAttribute("user");
+			bean.setuId(user.getId());// 提交人id
 
-                // 新增的时候这里保存的是此节点的code
-                if(parentOrgType==3){
-               	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
-            	      return result;
-              	} 
-               if(orgType==3){//部门级别
-            		int sum=0;
-               	    for(int z=0;z<lists.size();z++){
-                		   int num=lists.get(z).getOrgType();
-                		     if(num==2){//公司级别
-                			  sum++;
-                		     }
-                       }
-               	          if(sum==0){
-          	    	         ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-          	                 return result;
-          	               }
-            	     }
-            	  if(orgType==4){
-                 	   int sum=0;
-                 	    for(int z=0;z<lists.size();z++){
-                		     int num=lists.get(z).getOrgType();
-                		      if(num==2){//判断父级是公司的数量
-                			    sum++;
-                		       }
-                  	      }
-                 	           if(sum>0){
-                 		          ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
-                	              return result;
-                                 }
-                       }
-            	  if(orgType==2){
-            		   int sum=0;
-                 	   for(int z=0;z<lists.size();z++){
-               		     int num=lists.get(z).getOrgType();
-               		       if(num==4){//判断父级是板块的数量
-               			     sum++;
-               		       }
-                 	 }
-                 	 if(sum==0){
-               	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
-               	        return result;
-               	     }
-            	  }
-               	 i = organizationService.saveOrganization(organization,parentOrgId);
-            }
-            if (Integer.valueOf(1).equals(i)) {
-             	JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
-            	JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
-            	for(int z=0;z<jsonarray.size();z++){
-            		 JSONObject jsonss=JSONObject.parseObject(jsonarray.get(z).toString());
-            		 String name= jsonss.get("name").toString();
-            		  if(orgType==3&&name.equals(orgName)){
-            			  String reportType = DataModule.REPORT_TYPE_BUDGET;
-            			  String pid=jsonss.get("pid").toString();
-            			  List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,pid,null,null,null,3,null);
-                    	  int year = Calendar.getInstance().get(Calendar.YEAR);
-                    	  int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-                    	  Organization orgCompany = organizationService.getCompanyNameBySon(pid);// 获取对应部门的公司
-                  		  Organization getOrgDep=orgDep.get(0);//部门
-                  		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                  		  businessDataService.createBusinessData(getOrgDep, year, month, dm);
-                  		  businessDataService.createBunsinessDataMessage(year,orgCompany,getOrgDep);
-                    	  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-                       }
- 
-            		  else{
-                 		 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                 	   }
-            	}
+			// 新增时检查数据合法性
+			result = organizationService.checkOrgData(bean,false);
+			// 数据不通过, 则直接返回检查结果
+			if (!"200".equals(result.getResultCode())) {
+				return result;
+			}
+			int saveResult = organizationService
+					.saveOrganization(bean, parentOrgId);
+			if (saveResult == 1) {// 1 为保存成功
+				// 获取模板数据,并生成预算数据
+				if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
+					JSONObject subOrgJson = organizationService.TreeByIdForSon(parentOrgId);
+					JSONArray childrens = subOrgJson.getJSONArray("children");
+					JSONObject curOrg = null;
+					for(int i=0;childrens!=null && i<childrens.size();i++) {
+						JSONObject node = childrens.getJSONObject(i);
+						if(orgName.equals(node.getString("name"))) {
+							curOrg = node;
+							break ;
+						}
+					}
+					String orgPlateId = curOrg.getString("orgPlateId");
+					DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
+					Organization department = new Organization();
+					department.setId(orgId);
+					Calendar c = Calendar.getInstance();
+					int year = c.get(Calendar.YEAR);
+					int month = c.get(Calendar.MONTH) + 1;
+					businessDataService.createBusinessData(department , year,
+							month, dataModule, logger, businessDataServices,
+							businessDataInfoServices, organizationServices);
+					// 预算生成成功, 则向组织节点发送消息
+					Organization company = new Organization();
+					company.setId(bean.getCompany());
+					businessDataService.createBunsinessDataMessage(year,
+							logger,company , department, messageService);
+				}
+			}
+			redisCacheService.removeAll("organizationValue");
+		} catch (Exception e) {
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+			logger.error(e.getMessage(), e);
+		}
+		return result;
+//		Integer i = 0;
+//		try {
+//			Organization organization = new Organization();
+//			String uuid = UuidUtil.getUUID();
+//			organization.setId(uuid);// 组织结构id
+//			if (null != orgName && !"".equals(orgName)) {
+//				organization.setOrgName(orgName.toString().trim());// 组织架构名
+//			}
+//			if (null != orgType && !"".equals(orgType)) {
+//				organization.setOrgType(Integer.parseInt(orgType.toString()
+//						.trim()));// 类别（汇总，公司，部门）
+//
+//			}
+////			User user = (User) request.getAttribute("user");
+//			organization.setuId(user.getId());// 提交人id
+//			JSONObject json = organizationService.TreeByIdForSon(parentOrgId);
+//			JSONArray jsonlist = JSONArray.parseArray(json.get("children")
+//					.toString());
+//			for (int z = 0; z < jsonlist.size(); z++) {
+//				JSONObject jsonss = JSONObject.parseObject(jsonlist.get(z)
+//						.toString());
+//				if (jsonss.get("name").equals(orgName)) {
+//					ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,
+//							result);
+//					return result;
+//				}
+//
+//			}
+//			if (null != parentOrgId && !"".equals(parentOrgId)) {
+//				List<Organization> lists = organizationService
+//						.listTreeByIdForParent(parentOrgId);
+//				for (Organization ll : lists) {
+//					int typeList = ll.getOrgType();
+//					if (orgType == 2 && typeList == orgType) {
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.COMPANY_COMPANY, result);
+//						return result;
+//					}
+//					if (orgType == 4 && typeList == orgType) {
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.PLATE_PLATELEVEL, result);
+//						return result;
+//					}
+//				}
+//				int parentOrgType = lists.get(0).getOrgType();
+//
+//				// 新增的时候这里保存的是此节点的code
+//				if (parentOrgType == 3) {
+//					ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,
+//							result);
+//					return result;
+//				}
+//				if (orgType == 3) {// 部门级别
+//					int sum = 0;
+//					for (int z = 0; z < lists.size(); z++) {
+//						int num = lists.get(z).getOrgType();
+//						if (num == 2) {// 公司级别
+//							sum++;
+//						}
+//					}
+//					if (sum == 0) {
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.DEPER_COMPANY, result);
+//						return result;
+//					}
+//				}
+//				if (orgType == 4) {
+//					int sum = 0;
+//					for (int z = 0; z < lists.size(); z++) {
+//						int num = lists.get(z).getOrgType();
+//						if (num == 2) {// 判断父级是公司的数量
+//							sum++;
+//						}
+//					}
+//					if (sum > 0) {
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.DEPER_PLATELEVEL, result);
+//						return result;
+//					}
+//				}
+//				if (orgType == 2) {
+//					int sum = 0;
+//					for (int z = 0; z < lists.size(); z++) {
+//						int num = lists.get(z).getOrgType();
+//						if (num == 4) {// 判断父级是板块的数量
+//							sum++;
+//						}
+//					}
+//					if (sum == 0) {
+//						ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,
+//								result);
+//						return result;
+//					}
+//				}
+//				i = organizationService.saveOrganization(organization,
+//						parentOrgId);
+//			}
+//			if (Integer.valueOf(1).equals(i)) {
+//				JSONObject jsonTree = organizationService
+//						.TreeByIdForSon(parentOrgId);
+//				JSONArray jsonarray = JSONArray.parseArray(jsonTree.get(
+//						"children").toString());
+//				for (int z = 0; z < jsonarray.size(); z++) {
+//					JSONObject jsonss = JSONObject.parseObject(jsonarray.get(z)
+//							.toString());
+//					String name = jsonss.get("name").toString();
+//					if (orgType == 3 && name.equals(orgName)) {
+//						String reportType = DataModule.REPORT_TYPE_BUDGET;
+//						String pid = jsonss.get("pid").toString();
+//						List<Organization> orgDep = organizationService
+//								.listOrganizationBy(null, null, null, pid,
+//										null, null, null, 3, null);
+//						int year = Calendar.getInstance().get(Calendar.YEAR);
+//						int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+//						Organization orgCompany = organizationService
+//								.getCompanyNameBySon(pid);// 获取对应部门的公司
+//						Organization getOrgDep = orgDep.get(0);// 部门
+//						DataModule dm = dataModuleServiceImpl.getDataModule(
+//								reportType, orgDep.get(0).getOrgPlateId());
+//						businessDataService.createBusinessData(getOrgDep, year,
+//								month, dm, logger, businessDataServices,
+//								businessDataInfoServices, organizationServices);
+//						businessDataService.createBunsinessDataMessage(year,
+//								logger, orgCompany, getOrgDep, messageService);
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.BUDGET_GENERATE, result);
+//					}
+//
+//					else {
+//						ElementXMLUtils.returnValue(
+//								ElementConfig.RUN_SUCCESSFULLY, result);
+//					}
+//				}
+//
+//			} else {
+//				ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
+//			}
+//		} catch (Exception e) {
+//			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+//			this.logger.error(e.getMessage(), e);
+//		}
+//		return result;
+	}
 
-            	
-            	
-            } else {
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-            }
-        } catch (Exception e) {
-        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-            this.logger.error(e.getMessage(), e);
-        }
-        return result;
-    }
-
-    /**
+	/**
      * 根据条件查询组织结构信息。如果存在参数，则根据传递的参数查询相应的节点信息；如果参数不存在，则查询所有节点的信息
      * 
      * @param request
@@ -389,8 +471,8 @@ public class OrganizationController {
                 	  Organization orgCompany = organizationService.getCompanyNameBySon(id);// 获取对应部门的公司
               		  Organization getOrgDep=orgDep.get(0);//部门
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-              		  businessDataService.createBusinessData(getOrgDep, year, month, dm);
-              		  businessDataService.createBunsinessDataMessage(year,orgCompany,getOrgDep); 
+              		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
+              		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService); 
               		  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
             	 }
@@ -588,145 +670,153 @@ public class OrganizationController {
     	@ApiImplicitParam(paramType="query", dataType = "String", name = "parentId", value = "父id", required = true),
     	})
     @PostMapping(value = "/move")
-    public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request, HttpServletResponse response) {
+    public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request) {
         ResultUtils result=new ResultUtils();
-        String parentOrgId = null;
-        try {
-            if (null != id && !"".equals(id)) {
-                id =id;
-            }
-            if (null !=parentId && !"".equals(parentId)) {
-                parentOrgId =parentId;
-            }
-            User user = (User) request.getAttribute("user");
-            Calendar cal = Calendar.getInstance();
-		    //int day = cal.get(Calendar.DATE);
-            int day=12;
-            int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
-            int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
-            if(day<start_time||day>stop_time){
-            	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
-            	return result;
-            }
-            
-           else{
-                List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
-                int orgType=list.get(0).getOrgType();//当前级别
-                String orgName=list.get(0).getOrgName();
-                JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
-                JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
-                for(int z=0;z<jsonlist.size();z++){
-                   JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
-                   if(jsonss.get("name").equals(orgName)){
-                	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
-             	       return result;
-                   }
-              	
-                }
-                List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
-                int parentOrgType=lists.get(0).getOrgType();//父节点级别节点
-                if(parentOrgType==3){
-             	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
-          	          return result;
-            	} 
-         		int count= organizationService.TreeByIdForSonSum(id);
-         		int sums= organizationService.TreeByIdForSonList(id);
-         		int assum=lists.size();
-         		int acount=0;
-                for(Organization ll:lists){
-                 	int typeList=ll.getOrgType();
-                	if(orgType==2&&typeList==orgType){
-                		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-               	         return result;
-                     }
-                	if(orgType==4&&typeList==orgType){
-                  	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
-             	         return result;
-                    }
-                    if(typeList==2&&orgType!=2&&count==1){//公司
-                         ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
-                  	     return result;
-                    }
-                    if(typeList!=2){//判断是不是公司
-                    	acount++;
-                    }
-                  } 
-                  int ascount=assum-acount;
-                  if(ascount==0&&sums==1&&count==1){
-                  	int cum= organizationService.TreeByIdForSonOryType(id);
-                  	if(cum==0){
-                  		ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-             	        return result;
-                  	}
-                		
-                  }
-                if(orgType==4){
-                	int sum=0;
-                	 for(int i=0;i<lists.size();i++){
-               		    int num=lists.get(i).getOrgType();
-               		    if(num==2){//判断父级是公司的数量
-               			 sum++;
-               		    }
-                 	 }
-                	 if(sum>0){
-                		 ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
-               	         return result;
-                	 }
-                }
-                if(orgType==2){
-                	 int sum=0;
-                	 for(int i=0;i<lists.size();i++){
-              		    int num=lists.get(i).getOrgType();
-              		    if(num==4){//判断父级是板块的数量
-              			 sum++;
-              		    }
-                	 }
-                	 if(sum==0){
-              	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
-              	        return result;
-              	     }
-                }
-                if(orgType==3){//判断该组织是否是部门级别
-                	  int sum=0;
-                	  for(int i=0;i<lists.size();i++){
-                 		    int num=lists.get(i).getOrgType();
-                 		    if(num==2){
-                 			 sum++;
-                 		    }
-                          }
-                	  if(sum==0){
-                 	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-                 	        return result;
-                 	     }
-                 	     
-                       if(lists.get(0).getOrgType()==3){
-                      	 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
-                  	     return result;
-                       }
-           	  }
-            Map<String, String> listBefore=organizationService.TreeByIdForSonAfter(id);  
-            Integer i = organizationService.moveOrganization(user, id, parentOrgId);
-            if (Integer.valueOf(1).equals(i)) {
-            	      Map<String, String> listAfter=organizationService.TreeByIdForSonAfter(parentOrgId);
-            	      organizationService.TreeByIdForSonShow(listBefore,listAfter);
-            	      for(Organization ll:lists){
-            	    	  if(ll.getOrgType()==2){
-            	    		  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
-                	    	  return result;
-            	    	  }
-            	      }
-            	    	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
-                          return result;
-            	     
-            	        
-            } else {
-            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-            }
-            }
-        } catch (Exception e) {
-        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
-            this.logger.error(e.getMessage(), e);
-        }
+        
+        User user = (User) request.getAttribute("user");
+        
+        result = organizationService.moveOrg(id,parentId,user.getId());
+        //清除Redis缓存
+        redisCacheService.removeAll("organizationValue");
+        
+        
+//        
+//        String parentOrgId = null;
+//        try {
+//            if (null != id && !"".equals(id)) {
+//                id =id;
+//            }
+//            if (null !=parentId && !"".equals(parentId)) {
+//                parentOrgId =parentId;
+//            }
+//            Calendar cal = Calendar.getInstance();
+//		    //int day = cal.get(Calendar.DATE);
+//            int day=12;
+//            int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
+//            int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
+//            if(day<start_time||day>stop_time){
+//            	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
+//            	return result;
+//            }
+//            
+//           else{
+//                List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+//                int orgType=list.get(0).getOrgType();//当前级别
+//                String orgName=list.get(0).getOrgName();
+//                JSONObject json=organizationService.TreeByIdForSon(parentOrgId);
+//                JSONArray jsonlist=JSONArray.parseArray(json.get("children").toString());
+//                for(int z=0;z<jsonlist.size();z++){
+//                   JSONObject jsonss=JSONObject.parseObject(jsonlist.get(z).toString());
+//                   if(jsonss.get("name").equals(orgName)){
+//                	   ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+//             	       return result;
+//                   }
+//              	
+//                }
+//                List<Organization> lists =organizationService.listTreeByIdForParent(parentId);
+//                int parentOrgType=lists.get(0).getOrgType();//父节点级别节点
+//                if(parentOrgType==3){
+//             	      ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE,result);
+//          	          return result;
+//            	} 
+//         		int count= organizationService.TreeByIdForSonSum(id);
+//         		int sums= organizationService.TreeByIdForSonList(id);
+//         		int assum=lists.size();
+//         		int acount=0;
+//                for(Organization ll:lists){
+//                 	int typeList=ll.getOrgType();
+//                	if(orgType==2&&typeList==orgType){
+//                		 ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+//               	         return result;
+//                     }
+//                	if(orgType==4&&typeList==orgType){
+//                  	     ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL,result);
+//             	         return result;
+//                    }
+//                    if(typeList==2&&orgType!=2&&count==1){//公司
+//                         ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY,result);
+//                  	     return result;
+//                    }
+//                    if(typeList!=2){//判断是不是公司
+//                    	acount++;
+//                    }
+//                  } 
+//                  int ascount=assum-acount;
+//                  if(ascount==0&&sums==1&&count==1){
+//                  	int cum= organizationService.TreeByIdForSonOryType(id);
+//                  	if(cum==0){
+//                  		ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+//             	        return result;
+//                  	}
+//                		
+//                  }
+//                if(orgType==4){
+//                	int sum=0;
+//                	 for(int i=0;i<lists.size();i++){
+//               		    int num=lists.get(i).getOrgType();
+//               		    if(num==2){//判断父级是公司的数量
+//               			 sum++;
+//               		    }
+//                 	 }
+//                	 if(sum>0){
+//                		 ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL,result);
+//               	         return result;
+//                	 }
+//                }
+//                if(orgType==2){
+//                	 int sum=0;
+//                	 for(int i=0;i<lists.size();i++){
+//              		    int num=lists.get(i).getOrgType();
+//              		    if(num==4){//判断父级是板块的数量
+//              			 sum++;
+//              		    }
+//                	 }
+//                	 if(sum==0){
+//              	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE,result);
+//              	        return result;
+//              	     }
+//                }
+//                if(orgType==3){//判断该组织是否是部门级别
+//                	  int sum=0;
+//                	  for(int i=0;i<lists.size();i++){
+//                 		    int num=lists.get(i).getOrgType();
+//                 		    if(num==2){
+//                 			 sum++;
+//                 		    }
+//                          }
+//                	  if(sum==0){
+//                 	    	ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+//                 	        return result;
+//                 	     }
+//                 	     
+//                       if(lists.get(0).getOrgType()==3){
+//                      	 ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY,result);
+//                  	     return result;
+//                       }
+//           	  }
+//            Map<String, String> listBefore=organizationService.TreeByIdForSonAfter(id);  
+//            Integer i = organizationService.moveOrganization(user, id, parentOrgId);
+//            if (Integer.valueOf(1).equals(i)) {
+//            	      Map<String, String> listAfter=organizationService.TreeByIdForSonAfter(parentOrgId);
+//            	      organizationService.TreeByIdForSonShow(listBefore,listAfter);
+//            	      for(Organization ll:lists){
+//            	    	  if(ll.getOrgType()==2){
+//            	    		  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
+//                	    	  return result;
+//            	    	  }
+//            	      }
+//            	    	  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+//                          return result;
+//            	     
+//            	        
+//            } else {
+//            	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+//            }
+//            }
+//        } catch (Exception e) {
+//        	ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
+//            this.logger.error(e.getMessage(), e);
+//        }
         return result;
     }
 
