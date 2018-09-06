@@ -168,7 +168,7 @@ public class MessageServiceImpl implements MessageService {
 				Map<Object, Object> map = new HashMap<>();
 	    		map.put("pageSize", Message.PAGESIZE);
 	    		map.put("start", 0);
-	    		map.put("status", 0);
+	    		map.put("status", "0");
 				List<Message> list = quartMessageByPower(user,map);
 	            String sessionId = url.substring(url.lastIndexOf("=")+1);
 	            mc.sendSocketInfo(String.valueOf(list.size()), sessionId);
