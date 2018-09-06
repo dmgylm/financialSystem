@@ -29,7 +29,7 @@
     </update>
     <!--查询组织架构的uid的最高节点 -->
     <select id="maxOrganizations" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
-      select id,orgType from organation where code = (
+      select id,orgType from organization where code = (
       	  select MIN(o.code) from organization o,user_organization_mapping uo,user u
 	      where u.id=uo.uId and uo.oId=o.id 
 	      <if test="uId!=null and uId!=''">
