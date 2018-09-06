@@ -209,8 +209,8 @@ public class OrganizationController {
                     	  Organization orgCompany = organizationService.getCompanyNameBySon(pid);// 获取对应部门的公司
                   		  Organization getOrgDep=orgDep.get(0);//部门
                   		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-                  		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-                  		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService);
+                  		  businessDataService.createBusinessData(getOrgDep, year, month, dm);
+                  		  businessDataService.createBunsinessDataMessage(year,orgCompany,getOrgDep);
                     	  ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE,result);
                        }
  
@@ -389,8 +389,8 @@ public class OrganizationController {
                 	  Organization orgCompany = organizationService.getCompanyNameBySon(id);// 获取对应部门的公司
               		  Organization getOrgDep=orgDep.get(0);//部门
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-              		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-              		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService); 
+              		  businessDataService.createBusinessData(getOrgDep, year, month, dm);
+              		  businessDataService.createBunsinessDataMessage(year,orgCompany,getOrgDep); 
               		  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
             	 }
