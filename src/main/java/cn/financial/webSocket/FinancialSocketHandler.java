@@ -35,9 +35,17 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	/**
 	 * 关闭链接时触发
 	 */
-	public void afterConnectionClosed(WebSocketSession session,CloseStatus closeStatus) throws Exception {
-		logger.info("websocket connection closed......");
-		users.remove(session);
+	public void afterConnectionClosed(String session,CloseStatus closeStatus) throws Exception {
+		
+		for(WebSocketSession user : users) {
+			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(session)) {
+				users.remove(user);
+				System.out.println("removeWebSocket:"+user);
+			}
+		}
+	
+		/*logger.info("websocket connection closed......");
+		users.remove(session);*/
 	}
 	
 	/**
@@ -108,6 +116,12 @@ public class FinancialSocketHandler implements WebSocketHandler {
 				e.printStackTrace();
 			}
 		}
+		
+	}
+
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+		// TODO Auto-generated method stub
 		
 	}
 
