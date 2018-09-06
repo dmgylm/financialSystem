@@ -541,6 +541,7 @@ public class BusinessDataController {
                                     Map<Object, Object> map = new HashMap<>();
                                     map.put("pageSize", Message.PAGESIZE);
                                     map.put("start", 0);
+                                    map.put("status", 0);
                                     List<Message> list = messageService.quartMessageByPower(u,map);
                                     messageController.sendSocketMessageInfo(String.valueOf(list.size()), userId);
                                 }
