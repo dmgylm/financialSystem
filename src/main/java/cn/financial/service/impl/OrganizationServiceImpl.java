@@ -86,25 +86,29 @@ public class OrganizationServiceImpl implements OrganizationService {
         List<Organization> org = organizationDAO.listOrganizationBy(mapparentOrgId);
         if (!CollectionUtils.isEmpty(org)) {
             // 找到兄弟节点信息
-            Map<Object, Object> mapbro = new HashMap<>();
-            mapbro.put("parentId", org.get(0).getCode());
-            List<Organization> list = organizationDAO.listAllOrganizationBy(mapbro);
-            JSONObject jsonTree= treeByIdForSon(parentOrgId);
-            JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
+//            Map<Object, Object> mapbro = new HashMap<>();
+//            mapbro.put("parentId", org.get(0).getCode());
+//            List<Organization> list = organizationDAO.listAllOrganizationBy(mapbro);
+//            JSONObject jsonTree= treeByIdForSon(parentOrgId);
+//            JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
+            String parentCode = org.get(0).getCode();
             // 若存在兄弟节点，则兄弟节点的code找到该节点的code
-            if(jsonarray.size()>0){
-            	 List<String> codes = new ArrayList<String>();
-            	  for(int i=0;i<jsonarray.size();i++){
-            		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
-            		  String codeList= jsonss.get("id").toString();
-            		  codes.add(codeList);
-            	  }
-            	  code = UuidUtil.getCodeByBrother(org.get(0).getCode(), codes);
-            }
-         // 若不存在兄弟节点，那code就是父节点的code加上01
-            else{
-            	 code = org.get(0).getCode() + "01";
-            }
+//            if(jsonarray.size()>0){
+//            	 List<String> codes = new ArrayList<String>();
+//            	  for(int i=0;i<jsonarray.size();i++){
+//            		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
+//            		  String codeList= jsonss.get("id").toString();
+//            		  codes.add(codeList);
+//            	  }
+//            	  code = UuidUtil.getCodeByBrother(parentCode, codes);
+//            }
+//         // 若不存在兄弟节点，那code就是父节点的code加上01
+//            else{
+//            	 code = org.get(0).getCode() + "01";
+//            }
+            
+            List<Organization> orglst = listOrgByParentCode(parentCode,null);
+    		code = UuidUtil.assembleOrgCode(parentCode, orglst);
             organization.setParentId(org.get(0).getCode());// 父id
             organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
             organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
@@ -607,23 +611,25 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 得到新父节点的子节点
         map = new HashMap<>();
         map.put("parentId", orgParent.get(0).getCode());
-        List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
-        JSONObject jsonTree= treeByIdForSon(parentOrgId);
-        JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
+//        List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
+//        JSONObject jsonTree= treeByIdForSon(parentOrgId);
+//        JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
         // 若存在兄弟节点，则兄弟节点的code找到该节点的code
-        if(jsonarray.size()>0){
-        	 List<String> codes = new ArrayList<String>();
-        	  for(int i=0;i<jsonarray.size();i++){
-        		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
-        		  String codeList= jsonss.get("id").toString();
-        		  codes.add(codeList);
-        	  }
-        	 code = UuidUtil.getCodeByBrother(orgParent.get(0).getCode(), codes);
-        }
-        // 若不存在兄弟节点，那code就是父节点的code加上01
-        else{
-       	 code = org.get(0).getCode() + "01";
-       }
+//        if(jsonarray.size()>0){
+//        	 List<String> codes = new ArrayList<String>();
+//        	  for(int i=0;i<jsonarray.size();i++){
+//        		  JSONObject jsonss=JSONObject.parseObject(jsonarray.get(i).toString());
+//        		  String codeList= jsonss.get("id").toString();
+//        		  codes.add(codeList);
+//        	  }
+//        	 code = UuidUtil.getCodeByBrother(orgParent.get(0).getCode(), codes);
+//        }
+//        // 若不存在兄弟节点，那code就是父节点的code加上01
+//        else{
+//       	 code = org.get(0).getCode() + "01";
+//       }
+        List<Organization> orglst = listOrgByParentCode(orgParent.get(0).getCode(),null);
+		code = UuidUtil.assembleOrgCode(orgParent.get(0).getCode(), orglst);
         Organization organization = new Organization();
         String new_id = UuidUtil.getUUID();
         organization.setId(new_id);
@@ -1128,23 +1134,35 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 
 	private void doMoveOrg(JSONObject sourceOrgJson, JSONObject targetOrgJson,String userId) {
 		String targetCode = targetOrgJson.getString("id");//id即code
-		JSONArray targetChildrens = targetOrgJson.getJSONArray("children");
+//		JSONArray targetChildrens = targetOrgJson.getJSONArray("children");
 		
-		List<String> listCode = new ArrayList<String>();
-		String targetNodeCode = null;
-		if(targetChildrens != null && targetChildrens.size()>0) {
-			for(int i=0;i<targetChildrens.size();i++) {
-				JSONObject node = targetChildrens.getJSONObject(i);
-				String targetSubCode = node.getString("id");//id即code
-				listCode.add(targetSubCode);
-			}
-			targetNodeCode = UuidUtil.getCodeByBrother(targetCode, listCode);
-		} else {
-			targetNodeCode = targetCode + "01";
-		}
+//		List<String> listCode = new ArrayList<String>();
+//		String targetNodeCode = null;
+//		if(targetChildrens != null && targetChildrens.size()>0) {
+//			for(int i=0;i<targetChildrens.size();i++) {
+//				JSONObject node = targetChildrens.getJSONObject(i);
+//				String targetSubCode = node.getString("id");//id即code
+//				listCode.add(targetSubCode);
+//			}
+//			targetNodeCode = UuidUtil.getCodeByBrother(targetCode, listCode);
+//		} else {
+//			targetNodeCode = targetCode + "01";
+//		}
+		//查询下一级节点,包括停用状态的
+		List<Organization> orglst = listOrgByParentCode(targetCode,null);
+		String targetNodeCode = UuidUtil.assembleOrgCode(targetCode, orglst);
 		doSaveMoveOrgByRecursion(sourceOrgJson,targetNodeCode,targetCode,userId);
 	}
 	
+	private List<Organization> listOrgByParentCode(String parentCode,Integer status) {
+		Map<String,Object> params = new HashMap<String, Object>();
+		params.put("parentCode", parentCode);
+		if(status!=null) {
+			params.put("status", status);
+		}
+		return organizationDAO.listOrgByParentCode(params);
+	}
+
 	@Transactional
 	private void doSaveMoveOrgByRecursion(JSONObject json,
 			String nodeCode,String parentCode,String userId) {

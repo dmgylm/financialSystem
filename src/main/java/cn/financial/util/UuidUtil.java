@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import cn.financial.model.Organization;
+
 /**
  * UUID 工具类
  * 
@@ -42,6 +44,21 @@ public class UuidUtil {
          int re=Collections.max(code)+1;
          String resultCode = parentCode + (re < 10 ? "0" + re : re + "");
          return resultCode;
+    }
+    
+    public static String assembleOrgCode(String parentCode, List<Organization> orglst) {
+    	if(orglst==null || orglst.size()==0) {
+    		return parentCode + "01";
+    	}
+    	List<Integer> codelst = new ArrayList<Integer>();
+    	for(Organization bean:orglst) {
+    		String code = bean.getCode();
+    		 String result = code.substring(code.length()-2);
+    		 codelst.add(Integer.valueOf(result));
+    	}
+    	int re=Collections.max(codelst)+1;
+        String resultCode = parentCode + (re < 10 ? "0" + re : re);
+        return resultCode;
     }
 /*    
     public static void main(String[] args) {
