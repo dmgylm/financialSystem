@@ -236,14 +236,19 @@ public class MainController {
     @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.POST})  
     @ApiOperation(value="登出",notes="登出", response = ResultUtils.class)
     @ResponseBody  
-    public ResultUtils logout(HttpServletRequest request) throws Exception {  
+    public ResultUtils logout(HttpServletRequest request)  {  
     	 String url = request.getRequestURI();
          String sessionId= url.substring(url.lastIndexOf("=")+1);
-         financialWebSocketHandler(). afterConnectionClosed("MessageSocketServerInfo;JSESSIONID="+sessionId,null);
-        ResultUtils result = new ResultUtils();
-        Subject currentUser = SecurityUtils.getSubject();
-        currentUser.logout(); 
-        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+         ResultUtils result = new ResultUtils();
+         try {
+			financialWebSocketHandler(). afterConnectionClosed("MessageSocketServerInfo;JSESSIONID="+sessionId,null);
+	        Subject currentUser = SecurityUtils.getSubject();
+	        currentUser.logout(); 
+	        ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
         return result;  
     } 
     
