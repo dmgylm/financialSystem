@@ -81,6 +81,14 @@
 		status = 1
 		<include refid="query_organization_code"></include>
 	</select>
+	<select id="getOrgByCode" parameterType="STRING" resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
+		from
+		organization
+		where
+		status = 1 AND code=#{code} LIMIT 1
+	</select>
 	<select id="listCode" resultType="Organization">
         SELECT DISTINCT uom.uId,uom.oId FROM organization o INNER JOIN 
           user_organization_mapping uom on o.id=uom.oId
