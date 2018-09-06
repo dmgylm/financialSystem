@@ -253,7 +253,7 @@
     </Result>
     <Result name="DEPER_REMOVE">
         <code>297</code>
-        <description>部门下面不能添加节点</description>
+        <description>部门下面不能存在节点</description>
     </Result>
     <Result name="DEPER_PLATE">
         <code>298</code>

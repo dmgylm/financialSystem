@@ -3,10 +3,13 @@ package cn.financial.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -1249,6 +1252,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		bean.setsId(oldBudget.getsId());
 		bean.setDataModuleId(oldBudget.getDataModuleId());
 		bean.setVersion(oldBudget.getVersion()+1);
+		bean.setUpdateTime(new Date());
 		//创建主表信息
 		businessDataService.insertBusinessData(bean);
 		//删除之前的数据
@@ -1274,20 +1278,32 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 	 * @param sourceOrgJson
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	public Integer getNodeType(JSONObject orgJson) {
+	public Integer getNodeType(JSONObject orgJson){
+		Set<Integer> set = new HashSet<Integer>();
+		getNodeType(orgJson,set);
+		if(set.contains(Organization.ORG_TYPE_PLATE)) {
+			return Organization.ORG_TYPE_PLATE;
+		} else if(set.contains(Organization.ORG_TYPE_COMPANY)) {
+			return Organization.ORG_TYPE_COMPANY;
+		} else if(set.contains(Organization.ORG_TYPE_DEPARTMENT)) {
+			return Organization.ORG_TYPE_DEPARTMENT;
+		} else {
+			return Organization.ORG_TYPE_SUMMARY;
+		}
+	}
+	
+	public void getNodeType(JSONObject orgJson,Set<Integer> set) {
 		Integer orgType = orgJson.getInteger("orgType");
 		if(Organization.ORG_TYPE_PLATE == orgType
 				|| Organization.ORG_TYPE_COMPANY == orgType
 				|| Organization.ORG_TYPE_DEPARTMENT == orgType){
-			return orgType;
+			set.add(orgType);
 		}
 		JSONArray childrens = orgJson.getJSONArray("children");
 		for (int i = 0; childrens != null && i < childrens.size(); i++) {
 			JSONObject subNode = childrens.getJSONObject(i);
-			return getNodeType(subNode);
+			getNodeType(subNode,set);
 		}
-		return Organization.ORG_TYPE_SUMMARY;
 	}
 	
 	
@@ -1318,6 +1334,15 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		ResultUtils result = new ResultUtils();
     	try {
     		JSONObject json = treeByIdForSon(id);
+    		JSONArray curSubNode = json.getJSONArray("children");
+    		//如果修改为部门节点,则先检查其下有没有节点存在
+    		if(Organization.ORG_TYPE_DEPARTMENT==orgType && curSubNode.size()>0) {
+    			ElementXMLUtils.returnValue(ElementConfig.DEPER_REMOVE, result);
+    			return result;
+    		}
+    		
+    		json.put("orgType", orgType);
+    		
         	Integer upOrgType = getNodeType(json);
         	String parentId = json.getString("parentId");
         	Integer oldOrgType = json.getInteger("orgType");
