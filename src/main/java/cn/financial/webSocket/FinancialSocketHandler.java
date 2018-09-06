@@ -2,6 +2,7 @@ package cn.financial.webSocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.socket.CloseStatus;
@@ -36,14 +37,24 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	 * 关闭链接时触发
 	 */
 	public void afterConnectionClosed(String session,CloseStatus closeStatus) throws Exception {
-		
-		for(WebSocketSession user : users) {
+		 
+	        Iterator<WebSocketSession> iterator = users.iterator();
+	        while(iterator.hasNext()){
+	        	WebSocketSession user = iterator.next();
+	        	if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(session)) {
+	        		 iterator.remove();   //注意这个地方
+					System.out.println("removeWebSocket:"+user);
+				}
+	          /*  if(integer==2)
+	                iterator.remove();   //注意这个地方
+*/	        }
+/*		for(WebSocketSession user : users) {
 			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(session)) {
 				users.remove(user);
 				System.out.println("removeWebSocket:"+user);
 			}
 		}
-	
+	*/
 		/*logger.info("websocket connection closed......");
 		users.remove(session);*/
 	}
