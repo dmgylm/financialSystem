@@ -45,18 +45,7 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	        		 iterator.remove();   //注意这个地方
 					System.out.println("removeWebSocket:"+user);
 				}
-	          /*  if(integer==2)
-	                iterator.remove();   //注意这个地方
-*/	        }
-/*		for(WebSocketSession user : users) {
-			if(user.toString().substring(user.toString().lastIndexOf("/")+1).substring(0,user.toString().substring(user.toString().lastIndexOf("/")+1).lastIndexOf(";")).equals(session)) {
-				users.remove(user);
-				System.out.println("removeWebSocket:"+user);
-			}
-		}
-	*/
-		/*logger.info("websocket connection closed......");
-		users.remove(session);*/
+        }
 	}
 	
 	/**
