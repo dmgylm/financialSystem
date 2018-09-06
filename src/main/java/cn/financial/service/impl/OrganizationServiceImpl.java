@@ -1116,20 +1116,26 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 	 * 移动组织架构
 	 */
 	public ResultUtils moveOrg(String id, String parentId, String userId) {
-		JSONObject sourceOrgJson = treeByIdForSon(id);
-	    JSONObject targetOrgJson = treeByIdForSon(parentId);
-	    Integer orgType = getNodeType(sourceOrgJson);
-	    Organization bean = new Organization();
-	    bean.setId(sourceOrgJson.getString("id"));// 组织结构id
-	    bean.setOrgName(sourceOrgJson.getString("name"));
-	    bean.setParentId(parentId);
-	    bean.setOrgType(orgType);
-	    ResultUtils result = checkOrgData(bean,parentId,true);
-	    if (!"200".equals(result.getResultCode())) {
-			return result;
+		ResultUtils result = new ResultUtils();
+		try {
+			JSONObject sourceOrgJson = treeByIdForSon(id);
+		    JSONObject targetOrgJson = treeByIdForSon(parentId);
+		    Integer orgType = getNodeType(sourceOrgJson);
+		    Organization bean = new Organization();
+		    bean.setId(sourceOrgJson.getString("id"));// 组织结构id
+		    bean.setOrgName(sourceOrgJson.getString("name"));
+		    bean.setParentId(parentId);
+		    bean.setOrgType(orgType);
+		    result = checkOrgData(bean,parentId,true);
+		    if (!"200".equals(result.getResultCode())) {
+				return result;
+			}
+		    doMoveOrg(sourceOrgJson,targetOrgJson,userId);
+		} catch (Exception e) {
+			logger.error("",e);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
 		}
-	    doMoveOrg(sourceOrgJson,targetOrgJson,userId);
-		return null;
+		return result;
 	}
 
 	private void doMoveOrg(JSONObject sourceOrgJson, JSONObject targetOrgJson,String userId) {
