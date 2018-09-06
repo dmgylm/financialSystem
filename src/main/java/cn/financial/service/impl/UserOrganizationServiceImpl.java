@@ -1,7 +1,9 @@
 package cn.financial.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,6 +169,14 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
 	public List<UserOrganization> listUserOrganizations(String sid) {
 		 return userOrganizationDao.listUserOrganizations(sid);
 	}
+	
+	public int updateUOOrgByOrgId(String oldOrgId, String newOrgId) {
+		Map<String,String> params = new HashMap<String, String>();
+		params.put("oldOrgId", oldOrgId);
+		params.put("newOrgId", newOrgId);
+		return userOrganizationDao.updateUOOrgByOrgId(params);
+	}
+	
     @Override
     public UserOrganization maxOrganizations(String uId) {
         // TODO Auto-generated method stub

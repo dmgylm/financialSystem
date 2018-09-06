@@ -1,6 +1,7 @@
 package cn.financial.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -43,4 +44,10 @@ public interface UserOrganizationDAO {
      */
     Integer updateUserOrganization(UserOrganization userOrganization);
 	List<UserOrganization> listUserOrganizations(@Param("sId") String sId);
+	/**
+	 * 根据组织
+	 * @param params
+	 * @return
+	 */
+	Integer updateUOOrgByOrgId(Map<String, String> params);
 }

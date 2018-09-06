@@ -29,9 +29,13 @@ import cn.financial.model.Organization;
 import cn.financial.model.OrganizationMove;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.model.response.ResultUtils;
 import cn.financial.service.BusinessDataInfoService;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.OrganizationService;
+import cn.financial.util.ElementConfig;
+import cn.financial.util.ElementXMLUtils;
+import cn.financial.util.StringUtils;
 import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
@@ -272,13 +276,14 @@ public class OrganizationServiceImpl implements OrganizationService {
                 }
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
-                node.setParentId(organization.getParentId().toString());
+                node.setParentId(organization.getParentId());
                 node.setName(organization.getOrgName());
                 node.setOrgkeyName(organizationList.getOrgName());
                 node.setOrgType(organization.getOrgType().toString());
                 node.setHis_permission(organization.getHis_permission());
                 node.setPid(organization.getId());
                 node.setOrgPlateId(organization.getOrgPlateId());
+                node.setOrgKey(organization.getOrgkey());
                 nodes.add(node);
             }
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(TreeNode.buildTree(nodes));
@@ -992,5 +997,299 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
     // TODO Auto-generated method stub
     return organizationDAO.listAllOrganizationBy(map);
 }
+/**
+ * 添加或修改或移动组织架构时检查数据的合法性
+ * @param bean
+ * @param saveOrMove  false:保存
+ * @return
+ */
+	public ResultUtils checkOrgData(Organization bean,boolean isMove) {
+		String returnCode = null;
+		ResultUtils result = new ResultUtils();
+		String parentId = bean.getParentId();
+		Integer orgType = bean.getOrgType();
+		String orgId = bean.getId();
+		String orgName = bean.getOrgName();
+		JSONObject subOrgJson = organizationService.TreeByIdForSon(parentId);
+		//部门下面不能添加节点
+		if(Organization.ORG_TYPE_DEPARTMENT==subOrgJson.getInteger("orgType")) {
+			if(isMove) {
+				returnCode = ElementConfig.DEPER_MOBILE;
+			} else {
+				returnCode = ElementConfig.DEPER_REMOVE;
+			}
+			ElementXMLUtils.returnValue(returnCode, result);
+			return result;
+		}
+		JSONArray childrens = subOrgJson.getJSONArray("children");
+		//检查子级是否有同名节点
+		for(int i=0;childrens != null && i<childrens.size();i++){
+			JSONObject node = childrens.getJSONObject(i);
+			String nodeName = node.getString("orgName");
+			String nodeId = node.getString("id");
+			if(!StringUtils.isValid(orgId)) {
+				if(StringUtils.isValid(orgName) && orgName.equals(nodeName)) {
+					ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,
+							result);
+					return result;
+				}
+			} else {
+				//编辑时不检查自己
+				if(!orgId.equals(nodeId) && StringUtils.isValid(orgName) && orgName.equals(nodeName)) {
+					ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,
+							result);
+					return result;
+				}
+			}
+		}
+		
+		//获取修改/新增的父节点的所有父节点
+		List<Organization> parentNodes = organizationService.listTreeByIdForParent(parentId);
+		int companyQty = 0;
+		int plateQty = 0;
+		int departmentQty = 0;
+		//计算该节点以后各属性节点的数量
+		for(int i=0;i<parentNodes.size();i++) {
+			Organization node = parentNodes.get(i);
+			Integer nodeType = node.getOrgType();
+			//公司
+			if(nodeType==Organization.ORG_TYPE_COMPANY) {
+				companyQty ++;
+				bean.setCompany(node.getId());//设置其所属公司,为后面发送消息做准备
+			}
+			//板块
+			if(nodeType==Organization.ORG_TYPE_PLATE) {
+				plateQty ++;
+			}
+			//部门
+			if(nodeType==Organization.ORG_TYPE_DEPARTMENT) {
+				departmentQty ++;
+			}
+		}
+		
+		if (departmentQty > 0) {//部门下面不能添加节点
+			if(isMove) {
+				returnCode = ElementConfig.DEPER_MOBILE;
+			} else {
+				returnCode = ElementConfig.DEPER_REMOVE;
+			}
+			ElementXMLUtils.returnValue(returnCode, result);
+			return result;
+		}
+		
+		//处理节点为部门
+		if(orgType==Organization.ORG_TYPE_DEPARTMENT) {
+			if (companyQty != 1) {//部门上级必须有公司级别
+				ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY, result);
+				return result;
+			}
+		}
+		//处理节点为公司
+		if(orgType==Organization.ORG_TYPE_COMPANY) {
+			if (companyQty > 0) {//公司下面不能添加公司
+				ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY, result);
+				return result;
+			}
+			if (plateQty != 1) {//公司上级必须有板块级别
+				ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE, result);
+				return result;
+			}
+		}
+		//处理节点为业务板块
+		if(orgType==Organization.ORG_TYPE_PLATE) {
+			if (companyQty > 0) {//板块上级不能有公司级别
+				ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL, result);
+				return result;
+			}
+			if (plateQty != 1) {//板块下面不能添加板块
+				ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL, result);
+				return result;
+			}
+		}
+		ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+		return result;
+	}
+
+	/**
+	 * 移动组织架构
+	 */
+	public ResultUtils moveOrg(String id, String parentId, String userId) {
+		JSONObject sourceOrgJson = TreeByIdForSon(id);
+	    JSONObject targetOrgJson = TreeByIdForSon(parentId);
+	    Integer orgType = getNodeType(sourceOrgJson);
+	    Organization bean = new Organization();
+	    bean.setId(sourceOrgJson.getString("id"));// 组织结构id
+	    bean.setOrgName(sourceOrgJson.getString("name"));
+	    bean.setParentId(targetOrgJson.getString("code"));
+	    bean.setOrgType(orgType);
+	    ResultUtils result = checkOrgData(bean,true);
+	    if (!"200".equals(result.getResultCode())) {
+			return result;
+		}
+	    doMoveOrg(sourceOrgJson,targetOrgJson,userId);
+		return null;
+	}
+
+	private void doMoveOrg(JSONObject sourceOrgJson, JSONObject targetOrgJson,String userId) {
+		String targetCode = targetOrgJson.getString("id");//id即code
+		JSONArray targetChildrens = targetOrgJson.getJSONArray("children");
+		
+		List<String> listCode = new ArrayList<String>();
+		String targetNodeCode = null;
+		if(targetChildrens != null && targetChildrens.size()>0) {
+			for(int i=0;i<targetChildrens.size();i++) {
+				JSONObject node = targetChildrens.getJSONObject(i);
+				String targetSubCode = node.getString("id");//id即code
+				listCode.add(targetSubCode);
+			}
+			targetNodeCode = UuidUtil.getCodeByBrother(targetCode, listCode);
+		} else {
+			targetNodeCode = targetCode + "01";
+		}
+		doSaveMoveOrgByRecursion(sourceOrgJson,targetNodeCode,targetCode,userId);
+	}
+	
+	
+	private void doSaveMoveOrgByRecursion(JSONObject json,
+			String nodeCode,String parentCode,String userId) {
+		String oldOrgId = json.getString("pid");
+		String code = json.getString("id");//id即code
+//		String parenId = json.getString("parentId");
+		String orgName = json.getString("name");
+		String orgKey = json.getString("orgKey");
+		String orgType = json.getString("orgType");
+		String his_permission = json.getString("his_permission");
+		String orgPlateId = json.getString("orgPlateId");
+		JSONArray childrens = json.getJSONArray("children");
+		//将原来的code前缀替换成新的前缀
+//		code = code.replaceFirst(parenId, parentCode);
+		Organization bean = new Organization();
+		String newId = UuidUtil.getUUID();
+		bean.setId(newId);
+		bean.setCode(nodeCode);
+		bean.setOrgkey(orgKey);
+		bean.setOrgName(orgName);
+		Integer orgTypeInt = Integer.parseInt(orgType);
+		bean.setOrgType(orgTypeInt);
+		bean.setHis_permission(his_permission+","+code);
+		bean.setOrgPlateId(orgPlateId);
+		bean.setParentId(parentCode);
+		bean.setuId(userId);
+		organizationDAO.saveOrganization(bean);
+		//停用移动前的组织架构
+		organizationDAO.deleteOrganizationByStatus(oldOrgId);
+		
+		//如果节点为部门,则copy预算数据
+		if(Organization.ORG_TYPE_DEPARTMENT==orgTypeInt) {
+			copyBudgetData(oldOrgId,newId);
+		}
+		
+		//保存组织架构移动记录
+		OrganizationMove organizationMove = new OrganizationMove();
+        organizationMove.setId(UuidUtil.getUUID());
+        organizationMove.setHis_Id(oldOrgId);
+        organizationMove.setNew_Id(newId);
+        organizationMove.setModifier(userId);
+        organizationMove.setNewParent_Id(parentCode);
+        moveDao.saveOrganizationMove(organizationMove);
+		//更新用户组织架构关联表数据
+        userorganization.updateUOOrgByOrgId(oldOrgId,newId);
+        
+        for(int i=0;childrens!=null && i<childrens.size();i++) {
+        	JSONObject children = childrens.getJSONObject(i);
+        	String subNodeCode = children.getString("id");
+        	subNodeCode = nodeCode + subNodeCode.substring(subNodeCode.length()-2);
+        	doSaveMoveOrgByRecursion(children, subNodeCode, nodeCode, userId);
+        }
+        
+        
+	}
+
+	/**
+	 * 根据组织架构ID copy预算数据
+	 * @param oldOrgId
+	 * @param newOrgId
+	 */
+	private void copyBudgetData(String oldOrgId, String newOrgId) {
+		BusinessData oldBudget = businessDataService.selectBusinessDataByType(oldOrgId);
+		if(oldBudget == null) {
+			return;
+		}
+		BusinessData bean = new BusinessData();
+		Organization newCompany = organizationService.getCompanyNameBySon(newOrgId);// 获取对应部门的公司
+		String budgetId = UuidUtil.getUUID();
+		bean.setId(budgetId);
+		bean.setoId(newCompany.getId());
+		bean.setTypeId(newOrgId);
+		bean.setuId(oldBudget.getuId());
+		bean.setYear(oldBudget.getYear());
+		bean.setMonth(oldBudget.getMonth());
+		bean.setStatus(oldBudget.getStatus());
+		bean.setDelStatus(oldBudget.getDelStatus());
+		bean.setsId(oldBudget.getsId());
+		bean.setDataModuleId(oldBudget.getDataModuleId());
+		bean.setVersion(oldBudget.getVersion()+1);
+		//创建主表信息
+		businessDataService.insertBusinessData(bean);
+		//删除之前的数据
+		oldBudget.setDelStatus(0);
+		businessDataService.updateBusinessDataDelStatus(oldBudget);
+		
+		//创建从表数据
+		BusinessDataInfo oldBudgetInfo = businessDataInfoService.selectBusinessDataById(oldBudget.getId());
+		BusinessDataInfo newBudgetInfo=new BusinessDataInfo();
+		String newBudgetInfoId=UuidUtil.getUUID();
+		newBudgetInfo.setId(newBudgetInfoId);
+		newBudgetInfo.setBusinessDataId(budgetId);  
+		newBudgetInfo.setInfo(oldBudgetInfo.getInfo());
+		newBudgetInfo.setuId(oldBudgetInfo.getuId());
+	    businessDataInfoService.insertBusinessDataInfo(newBudgetInfo);
+	    //删除之前的Info数据
+	    oldBudgetInfo.setDelStatus(0);
+	    businessDataInfoService.updateBusinessDataInfoDelStatus(oldBudgetInfo);
+	}
+	
+	/**
+	 * 获取当前及所有子节点所属类型,以板块/公司/部门为顺序依次判断
+	 * @param sourceOrgJson
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	public Integer getNodeType(JSONObject orgJson) {
+		Integer orgType = orgJson.getInteger("orgType");
+		if(Organization.ORG_TYPE_PLATE == orgType
+				|| Organization.ORG_TYPE_COMPANY == orgType
+				|| Organization.ORG_TYPE_DEPARTMENT == orgType){
+			return orgType;
+		}
+		JSONArray childrens = orgJson.getJSONArray("children");
+		for (int i = 0; childrens != null && i < childrens.size(); i++) {
+			JSONObject subNode = childrens.getJSONObject(i);
+			return getNodeType(subNode);
+		}
+		return Organization.ORG_TYPE_SUMMARY;
+	}
+	
+	
+	public static void main(String[] args) {
+//		JSONObject map = new JSONObject();
+//		map.put("orgType", Organization.ORG_TYPE_SUMMARY);
+//		JSONArray array1 = new JSONArray();
+//		JSONObject a2 = new JSONObject();
+//		a2.put("orgType", Organization.ORG_TYPE_DEPARTMENT);
+//		array1.add(a2);
+//
+//		JSONObject a1 = new JSONObject();
+//		a1.put("orgType", Organization.ORG_TYPE_COMPANY);
+//		array1.add(a1);
+//
+//		
+//		map.put("children", array1);
+//		
+//		OrganizationServiceImpl service = new OrganizationServiceImpl();
+//		Integer nodeType = service.getNodeType(map);
+//		System.out.println(nodeType);
+		
+	}
 	
 }

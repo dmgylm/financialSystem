@@ -153,14 +153,11 @@ public class OrganizationController {
 					Calendar c = Calendar.getInstance();
 					int year = c.get(Calendar.YEAR);
 					int month = c.get(Calendar.MONTH) + 1;
-					businessDataService.createBusinessData(department , year,
-							month, dataModule, logger, businessDataServices,
-							businessDataInfoServices, organizationServices);
+					businessDataService.createBusinessData(department , year, month, dataModule);
 					// 预算生成成功, 则向组织节点发送消息
 					Organization company = new Organization();
 					company.setId(bean.getCompany());
-					businessDataService.createBunsinessDataMessage(year,
-							logger,company , department, messageService);
+					businessDataService.createBunsinessDataMessage(year, company , department);
 				}
 			}
 			redisCacheService.removeAll("organizationValue");
@@ -471,8 +468,8 @@ public class OrganizationController {
                 	  Organization orgCompany = organizationService.getCompanyNameBySon(id);// 获取对应部门的公司
               		  Organization getOrgDep=orgDep.get(0);//部门
               		  DataModule dm=dataModuleServiceImpl.getDataModule(reportType,orgDep.get(0).getOrgPlateId());
-              		  businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataServices, businessDataInfoServices, organizationServices);
-              		  businessDataService.createBunsinessDataMessage(year,logger,orgCompany,getOrgDep,messageService); 
+              		  businessDataService.createBusinessData(getOrgDep, year, month, dm);
+              		  businessDataService.createBunsinessDataMessage(year,orgCompany,getOrgDep); 
               		  ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                  	  return result;
             	 }

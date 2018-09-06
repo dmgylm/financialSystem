@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.financial.model.BusinessData;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
+import cn.financial.model.response.ResultUtils;
 
 /**
  * 组织结构service接口层
@@ -184,6 +185,10 @@ public interface OrganizationService {
     List<Organization>  TreeByIdForSons(String getoId);
 
 	List<BusinessData> listBusinessList(String reportType,String startDate, String endDate, List<String> ids);
+
+	ResultUtils checkOrgData(Organization bean,boolean isMove);
+
+	ResultUtils moveOrg(String id, String parentId, String userId);
 
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     

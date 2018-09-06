@@ -13,6 +13,15 @@ import org.springframework.data.annotation.Transient;
  *
  */
 public class Organization implements Serializable {
+	
+	public static final int ORG_TYPE_SUMMARY = 1;//节点类型:汇总
+
+	public static final int ORG_TYPE_COMPANY = 2;//节点类型:公司
+
+	public static final int ORG_TYPE_DEPARTMENT = 3;//节点类型:部门
+
+	public static final int ORG_TYPE_PLATE = 4;//节点类型:板块
+	
 	@ApiModelProperty(value="组织架构id",name="id",example="")
     private String id; // 组织架构表id
 	@ApiModelProperty(value="组织机构节点的序号",name="code",example="")
@@ -39,6 +48,8 @@ public class Organization implements Serializable {
     private String orgPlateId;// 板块id
 	@Transient
 	private String oId;//组织id
+	//所属公司,可能为空,不进行数据库映射
+	private String company;
 	
     // private List<User> users; // 提交人id（一对多，组织结构为一）
 
@@ -153,6 +164,14 @@ public class Organization implements Serializable {
                 + ", his_permission=" + his_permission + ", orgkey=" + orgkey + ", orgType=" + orgType + ", orgPlateId="
                 + orgPlateId + "]";
     }
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
 
     // public List<User> getUsers() {
     // return users;

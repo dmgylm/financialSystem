@@ -30,6 +30,8 @@ public class TreeNode<T> {
      */
     private String orgPlateId;
     private String orgkeyName;
+    
+    private String orgKey;
     /**
      * 树节点名称，内容和text一样 该字段主要是为了兼容Ext和zTree
      */
@@ -265,4 +267,12 @@ public class TreeNode<T> {
 
         return root;
     }
+
+	public String getOrgKey() {
+		return orgKey;
+	}
+
+	public void setOrgKey(String orgKey) {
+		this.orgKey = orgKey;
+	}
 }

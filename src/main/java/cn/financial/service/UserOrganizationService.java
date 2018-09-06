@@ -47,5 +47,12 @@ public interface UserOrganizationService {
      * @return
      */
     List<JSONObject> userOrganizationList(String uId);
-    
+
+    /**
+     * 根据组织架构ID更新用户组织架构关联关系
+     * @param oldOrgId
+     * @param newOrgId
+     * @return
+     */
+    int updateUOOrgByOrgId(String oldOrgId, String newOrgId);
 }
