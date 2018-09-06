@@ -15,10 +15,10 @@ public class FinancialSocketHandler implements WebSocketHandler {
 	
 	private static final Logger logger;
 	
-	private   ArrayList<WebSocketSession> users;
+	private static  ArrayList<WebSocketSession> users;
 	
 	static {
-       // users = new ArrayList<WebSocketSession>();
+        users = new ArrayList<WebSocketSession>();
         logger = Logger.getLogger(FinancialSocketHandler.class);
     }
 	
