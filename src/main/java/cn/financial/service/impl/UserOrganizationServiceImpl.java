@@ -117,7 +117,7 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
         if(!CollectionUtils.isEmpty(userOrganization)){
             for (UserOrganization rss : userOrganization) {
                 //根据id查询该节点下的所有子节点,构建成树
-                jsonObject = organizationService.TreeByIdForSon(rss.getoId());
+                jsonObject = organizationService.treeByIdForSon(rss.getoId());
                 jsonUserOrg.add(jsonObject);
             }
         }

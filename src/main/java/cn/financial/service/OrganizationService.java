@@ -74,28 +74,28 @@ public interface OrganizationService {
      * @param id
      * @return
      */
-    JSONObject TreeByIdForSon(String id);
+    JSONObject treeByIdForSon(String id);
     /**
      * 根据id查询该节点下有没有部门级别
      * 
      * @param id
      * @return
      */
-    Integer TreeByIdForSonList(String id);
+    Integer treeByIdForSonList(String id);
     /**
      * 根据id查询该节点下有没有公司级别
      * 
      * @param id
      * @return
      */
-    Integer TreeByIdForSonSum(String id);
+    Integer treeByIdForSonSum(String id);
     /**
      * 根据id查询该节点下的公司级别有没有部门级别
      * 
      * @param id
      * @return
      */
-    Integer TreeByIdForSonOryType(String id);
+    Integer treeByIdForSonOryType(String id);
     /**
      * 根据id查询该节点下的部门级别 ,并且增加预算表生成
      * 
@@ -103,14 +103,14 @@ public interface OrganizationService {
      * @param listId 
      * @return
      */
-    void TreeByIdForSonShow( Map<String, String> before, Map<String, String> map);
+    void treeByIdForSonShow( Map<String, String> before, Map<String, String> map);
     /**
      * 根据id查询该节点下的部门级别 
      * 
      * @param id
      * @return
      */
-    Map<String, String> TreeByIdForSonAfter(String id);
+    Map<String, String> treeByIdForSonAfter(String id);
     /**
      * 根据id查询该节点下的所有子节点集合
      * 
@@ -182,11 +182,11 @@ public interface OrganizationService {
 
     List<Organization> listOrganization(List<String> ids);
 
-    List<Organization>  TreeByIdForSons(String getoId);
+    List<Organization>  treeByIdForSons(String getoId);
 
 	List<BusinessData> listBusinessList(String reportType,String startDate, String endDate, List<String> ids);
 
-	ResultUtils checkOrgData(Organization bean,boolean isMove);
+	ResultUtils checkOrgData(Organization bean,String parentId,boolean isMove);
 
 	ResultUtils moveOrg(String id, String parentId, String userId);
 

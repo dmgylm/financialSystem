@@ -100,7 +100,9 @@ public interface OrganizationDAO {
 
 	Integer  saveUserOrganization(UserOrganization lists);
 
-	List<Organization> listCode(@Param("code")String code);
+	List<Organization> listCode(@Param("code") String code);
+
+	Organization getOrgByCode(@Param("code") String code);
 
 	
 

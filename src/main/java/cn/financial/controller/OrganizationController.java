@@ -126,7 +126,7 @@ public class OrganizationController {
 			bean.setuId(user.getId());// 提交人id
 
 			// 新增时检查数据合法性
-			result = organizationService.checkOrgData(bean,false);
+			result = organizationService.checkOrgData(bean,parentOrgId,false);
 			// 数据不通过, 则直接返回检查结果
 			if (!"200".equals(result.getResultCode())) {
 				return result;
@@ -136,7 +136,7 @@ public class OrganizationController {
 			if (saveResult == 1) {// 1 为保存成功
 				// 获取模板数据,并生成预算数据
 				if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
-					JSONObject subOrgJson = organizationService.TreeByIdForSon(parentOrgId);
+					JSONObject subOrgJson = organizationService.treeByIdForSon(parentOrgId);
 					JSONArray childrens = subOrgJson.getJSONArray("children");
 					JSONObject curOrg = null;
 					for(int i=0;childrens!=null && i<childrens.size();i++) {

@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -138,6 +139,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 			statement.setsId(2);// 1表示损益表 2表示预算表
 			statement.setVersion(1);
 			statement.setDataModuleId(dm.getId());// 数据模板id
+			statement.setUpdateTime(new Date());
 			Integer flag = businessDataService.insertBusinessData(statement);
 			if (flag != 1) {
 				System.out.println("预算主表数据新增失败");

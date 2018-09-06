@@ -58,9 +58,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     private OrganizationMoveDao moveDao;
     
     @Autowired
-    private OrganizationService organizationService;
-    
-    @Autowired
     private UserOrganizationServiceImpl userorganization;
     
     @Autowired
@@ -92,7 +89,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             Map<Object, Object> mapbro = new HashMap<>();
             mapbro.put("parentId", org.get(0).getCode());
             List<Organization> list = organizationDAO.listAllOrganizationBy(mapbro);
-            JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
+            JSONObject jsonTree= treeByIdForSon(parentOrgId);
             JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
             // 若存在兄弟节点，则兄弟节点的code找到该节点的code
             if(jsonarray.size()>0){
@@ -239,9 +236,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * 根据id查询该节点下的所有子节点,构建成树
      */
-    @Override
     @Cacheable(value = "organizationValue", key = "'orga_key_treeById_'+#id")
-    public  JSONObject TreeByIdForSon(String id) {
+    public  JSONObject treeByIdForSon(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -272,7 +268,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             for (Organization organization : list) {
                 Organization organizationList = new Organization();
                 if(organization.getOrgPlateId()!=null && !organization.getOrgPlateId().equals("")){
-                     organizationList = organizationService.listOrganizationBy(null, null, null, null, null, null, null, null, organization.getOrgPlateId()).get(0);
+                     organizationList = listOrganizationBy(null, null, null, null, null, null, null, null, organization.getOrgPlateId()).get(0);
                 }
                 TreeNode<Organization> node = new TreeNode<>();
                 node.setId(organization.getCode());
@@ -295,7 +291,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下有没有部门级别
      */
     @Override
-    public  Integer TreeByIdForSonList(String id) {
+    public  Integer treeByIdForSonList(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -329,7 +325,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下有没有公司级别
      */
     @Override
-    public  Integer TreeByIdForSonSum(String id) {
+    public  Integer treeByIdForSonSum(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -362,7 +358,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下有没有公司级别
      */
     @Override
-    public  Integer TreeByIdForSonOryType(String id) {
+    public  Integer treeByIdForSonOryType(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -385,7 +381,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!CollectionUtils.isEmpty(list)) {
             for (Organization organization : list) {
             	    if(organization.getOrgType()==2){
-            	    	int sum=TreeByIdForSonList(organization.getId());
+            	    	int sum=treeByIdForSonList(organization.getId());
             	    	 if(sum==1){
             	    		 a=1;
             	    	 }
@@ -399,7 +395,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点下的部门级别
      */
     @Override
-    public  void TreeByIdForSonShow(Map<String, String> map1, Map<String, String> map2) {
+    public  void treeByIdForSonShow(Map<String, String> map1, Map<String, String> map2) {
     	 Iterator<String> it = map1.keySet().iterator();
          while(it.hasNext()){
            String key = it.next();
@@ -415,7 +411,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据之后id查询该节点下的部门级别 
      */
     @Override
-    public Map<String, String> TreeByIdForSonAfter(String id) {
+    public Map<String, String> treeByIdForSonAfter(String id) {
         List<Organization> list = new ArrayList<>();
         // 所有的组织结构
         List<Organization> departList = organizationDAO.listOrganizationBy(new HashMap<Object, Object>());
@@ -612,7 +608,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         map = new HashMap<>();
         map.put("parentId", orgParent.get(0).getCode());
         List<Organization> listSon = organizationDAO.listAllOrganizationBy(map);
-        JSONObject jsonTree= organizationService.TreeByIdForSon(parentOrgId);
+        JSONObject jsonTree= treeByIdForSon(parentOrgId);
         JSONArray jsonarray=JSONArray.parseArray(jsonTree.get("children").toString());
         // 若存在兄弟节点，则兄弟节点的code找到该节点的code
         if(jsonarray.size()>0){
@@ -657,7 +653,7 @@ public class OrganizationServiceImpl implements OrganizationService {
          */
         Iterator<Organization> iterator = list.iterator();
         int sum=0;
-        List<Organization> listset = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
+        List<Organization> listset = listOrganizationBy(null,null,null,id,null,null,null,null,null);
         String codes=listset.get(0).getCode();
         List<Organization> listcode=organizationDAO.listCode(codes);
         while (iterator.hasNext()) {
@@ -936,7 +932,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     //@Cacheable(value = "organizationValue", key = "'orga_key_listson_'+#id")
-	public List<Organization> TreeByIdForSons(String id) {
+	public List<Organization> treeByIdForSons(String id) {
     	 List<Organization> list = new ArrayList<>();
          // 根据id查询到该节点信息
          Map<Object, Object> map = new HashMap<>();
@@ -961,7 +957,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     * @param aferId
     */
     public void saveid(String beforeId,String aferId){
-    	Organization org = organizationService.getCompanyNameBySon(aferId);// 获取对应部门的公司
+    	Organization org = getCompanyNameBySon(aferId);// 获取对应部门的公司
 	    String businessId=UuidUtil.getUUID();
 		BusinessData selectBusinessDataById = businessDataService.selectBusinessDataByType(beforeId);// 查询对应id的数据
 		BusinessData businessData = new BusinessData();
@@ -1003,14 +999,14 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
  * @param saveOrMove  false:保存
  * @return
  */
-	public ResultUtils checkOrgData(Organization bean,boolean isMove) {
+	public ResultUtils checkOrgData(Organization bean, String parentId,boolean isMove) {
 		String returnCode = null;
 		ResultUtils result = new ResultUtils();
-		String parentId = bean.getParentId();
+//		String parentId = bean.getParentId();
 		Integer orgType = bean.getOrgType();
 		String orgId = bean.getId();
 		String orgName = bean.getOrgName();
-		JSONObject subOrgJson = organizationService.TreeByIdForSon(parentId);
+		JSONObject subOrgJson = treeByIdForSon(parentId);
 		//部门下面不能添加节点
 		if(Organization.ORG_TYPE_DEPARTMENT==subOrgJson.getInteger("orgType")) {
 			if(isMove) {
@@ -1044,7 +1040,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		}
 		
 		//获取修改/新增的父节点的所有父节点
-		List<Organization> parentNodes = organizationService.listTreeByIdForParent(parentId);
+		List<Organization> parentNodes = listTreeByIdForParent(parentId);
 		int companyQty = 0;
 		int plateQty = 0;
 		int departmentQty = 0;
@@ -1101,7 +1097,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 				ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL, result);
 				return result;
 			}
-			if (plateQty != 1) {//板块下面不能添加板块
+			if (plateQty > 0 ) {//板块下面不能添加板块
 				ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL, result);
 				return result;
 			}
@@ -1114,15 +1110,15 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 	 * 移动组织架构
 	 */
 	public ResultUtils moveOrg(String id, String parentId, String userId) {
-		JSONObject sourceOrgJson = TreeByIdForSon(id);
-	    JSONObject targetOrgJson = TreeByIdForSon(parentId);
+		JSONObject sourceOrgJson = treeByIdForSon(id);
+	    JSONObject targetOrgJson = treeByIdForSon(parentId);
 	    Integer orgType = getNodeType(sourceOrgJson);
 	    Organization bean = new Organization();
 	    bean.setId(sourceOrgJson.getString("id"));// 组织结构id
 	    bean.setOrgName(sourceOrgJson.getString("name"));
-	    bean.setParentId(targetOrgJson.getString("code"));
+	    bean.setParentId(parentId);
 	    bean.setOrgType(orgType);
-	    ResultUtils result = checkOrgData(bean,true);
+	    ResultUtils result = checkOrgData(bean,parentId,true);
 	    if (!"200".equals(result.getResultCode())) {
 			return result;
 		}
@@ -1149,7 +1145,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		doSaveMoveOrgByRecursion(sourceOrgJson,targetNodeCode,targetCode,userId);
 	}
 	
-	
+	@Transactional
 	private void doSaveMoveOrgByRecursion(JSONObject json,
 			String nodeCode,String parentCode,String userId) {
 		String oldOrgId = json.getString("pid");
@@ -1216,7 +1212,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 			return;
 		}
 		BusinessData bean = new BusinessData();
-		Organization newCompany = organizationService.getCompanyNameBySon(newOrgId);// 获取对应部门的公司
+		Organization newCompany = getCompanyNameBySon(newOrgId);// 获取对应部门的公司
 		String budgetId = UuidUtil.getUUID();
 		bean.setId(budgetId);
 		bean.setoId(newCompany.getId());
@@ -1292,13 +1288,13 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		
 	}
 
-	@Override
+	@Transactional(rollbackFor=Exception.class)
 	public ResultUtils doUpdateOrg(String id, String orgName, Integer orgType,String userId) {
 
 		ResultUtils result = new ResultUtils();
     	try {
-    		JSONObject json = organizationService.TreeByIdForSon(id);
-        	Integer upOrgType = organizationService.getNodeType(json);
+    		JSONObject json = treeByIdForSon(id);
+        	Integer upOrgType = getNodeType(json);
         	String parentId = json.getString("parentId");
         	Integer oldOrgType = json.getInteger("orgType");
         	Organization bean = new Organization();
@@ -1309,15 +1305,20 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
     		
     		bean.setuId(userId);// 提交人id
 
+    		Organization parentNode = getOrgByCode(parentId);
+    		if(parentNode == null) {
+    			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+    			return result;
+    		}
     		// 新增时检查数据合法性
-    		result = organizationService.checkOrgData(bean,false);
+    		result = checkOrgData(bean,parentNode.getId(),false);
     		// 数据不通过, 则直接返回检查结果
     		if (!"200".equals(result.getResultCode())) {
     			return result;
     		}
-    		int saveResult = organizationService.updateOrganizationById(orgName,id,orgType,userId);
+    		int saveResult = updateOrganizationById(orgName,id,orgType,userId);
     		if (saveResult == 1) {// 1 为保存成功
-    			// 获取模板数据,并生成预算数据
+    			// 如果将节点类型改为部门,则生成预算数据
     			if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
     				String orgPlateId = json.getString("orgPlateId");
     				DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
@@ -1334,13 +1335,20 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
     			}
     			//如果修改之前的节点类型为部门,则把对应的预算表删除
     			if(Organization.ORG_TYPE_DEPARTMENT == oldOrgType) {
-    				
+    				BusinessData budget = businessDataService.selectBusinessDataByType(id);
+    				budget.setDelStatus(0);
+    				businessDataService.updateBusinessDataDelStatus(budget);
     			}
     		}
 		} catch (Exception e) {
+			logger.error("",e);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
 		}
 		return result;
+	}
+
+	private Organization getOrgByCode(String code) {
+		return organizationDAO.getOrgByCode(code);
 	}
 	
 }
