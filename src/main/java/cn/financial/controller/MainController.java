@@ -237,12 +237,12 @@ public class MainController {
     @ApiOperation(value="登出",notes="登出", response = ResultUtils.class)
     @ResponseBody  
     public ResultUtils logout(HttpServletRequest request) throws Exception {  
+    	 String url = request.getRequestURI();
+         String sessionId= url.substring(url.lastIndexOf("=")+1);
+         financialWebSocketHandler(). afterConnectionClosed("MessageSocketServerInfo;JSESSIONID="+sessionId,null);
         ResultUtils result = new ResultUtils();
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.logout(); 
-        String url = request.getRequestURI();
-        String sessionId= url.substring(url.lastIndexOf("=")+1);
-        financialWebSocketHandler(). afterConnectionClosed("MessageSocketServerInfo;JSESSIONID="+sessionId,null);
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
