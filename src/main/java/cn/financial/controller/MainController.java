@@ -22,6 +22,7 @@ import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ import cn.financial.service.UserService;
 import cn.financial.service.impl.RoleResourceServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
+import cn.financial.webSocket.FinancialSocketHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -72,6 +74,13 @@ public class MainController {
      * @param session
      * @return
      */
+    @Bean
+   	public FinancialSocketHandler financialWebSocketHandler() {
+   		
+   		return new FinancialSocketHandler();
+   		
+   	}
+    
     @RequestMapping(value="/test", method = RequestMethod.GET)
     public String test(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -222,14 +231,18 @@ public class MainController {
     /**
      * 登出
      * @return
+     * @throws Exception 
      */
     @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.POST})  
     @ApiOperation(value="登出",notes="登出", response = ResultUtils.class)
     @ResponseBody  
-    public ResultUtils logout() {  
+    public ResultUtils logout(HttpServletRequest request) throws Exception {  
         ResultUtils result = new ResultUtils();
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.logout(); 
+        String url = request.getRequestURI();
+        String sessionId= url.substring(url.lastIndexOf("=")+1);
+        financialWebSocketHandler(). afterConnectionClosed("MessageSocketServerInfo;JSESSIONID="+sessionId,null);
         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
         return result;  
     } 
