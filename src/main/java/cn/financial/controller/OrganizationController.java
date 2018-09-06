@@ -158,12 +158,13 @@ public class OrganizationController {
 					Organization company = new Organization();
 					company.setId(bean.getCompany());
 					businessDataService.createBunsinessDataMessage(year, company , department);
+					ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
 				}
 			}
 			redisCacheService.removeAll("organizationValue");
 		} catch (Exception e) {
-			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
 			logger.error(e.getMessage(), e);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
 		}
 		return result;
 //		Integer i = 0;
@@ -649,7 +650,7 @@ public class OrganizationController {
         }
         return node;
     }
-
+    
     /**
      * 移动组织机构
      * 
@@ -670,6 +671,16 @@ public class OrganizationController {
     public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request) {
         ResultUtils result=new ResultUtils();
         
+        Calendar c = Calendar.getInstance();
+//        int day = c.get(Calendar.DAY_OF_MONTH);
+        int day = 11;
+        //判断当前时间是否允许移动组织架构
+        //10-19号允许移动
+		if (day < SiteConst.MOVE_ORGANIZATION_START_TIME
+				|| day > SiteConst.MOVE_ORGANIZATION_STOP_TIME) {
+        	ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+  	       	return result;
+        }
         User user = (User) request.getAttribute("user");
         
         result = organizationService.moveOrg(id,parentId,user.getId());
