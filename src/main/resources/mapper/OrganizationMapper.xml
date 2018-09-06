@@ -89,6 +89,16 @@
 		where
 		status = 1 AND code=#{code} LIMIT 1
 	</select>
+	<select id="listOrgByParentCode" parameterType="map" resultType="Organization">
+		select
+		id,code,parentId,orgName,createTime,updateTime,uId,his_permission,orgkey,orgType,status,orgPlateId
+		from
+		organization
+		where parentId=#{parentCode}
+		<if test="status!=null and status!=''">
+			  and status=#{status}
+		   </if>
+	</select>
 	<select id="listCode" resultType="Organization">
         SELECT DISTINCT uom.uId,uom.oId FROM organization o INNER JOIN 
           user_organization_mapping uom on o.id=uom.oId
