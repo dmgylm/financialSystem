@@ -38,7 +38,7 @@ public class RedisTest {
 //		cache.put("testCache", "test1", 233333);//添加缓存
 //		cache.put("testCache", "test2", 233333);//添加缓存
 //		cache.remove("testCache", "test1");//删除单个缓存KEY
-		cache.removeAll("dataModule");//删除整个Cache
+		cache.removeAll("organizationValue");//删除整个Cache
 	}
 
 	@Test

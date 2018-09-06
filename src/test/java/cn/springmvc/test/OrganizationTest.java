@@ -92,7 +92,7 @@ public class OrganizationTest {
     public void getSubnode(){
     	  String id="7825dff0398841069ae41afd73f8677e";
           com.alibaba.fastjson.JSONObject  json=new com.alibaba.fastjson.JSONObject();
-    	  json= oarimpl.TreeByIdForSon(id);
+    	  json= oarimpl.treeByIdForSon(id);
           com.alibaba.fastjson.JSONArray jsons=com.alibaba.fastjson.JSONArray.parseArray(json.get("children").toString());
           if(jsons.size()==0){
         	  if(Integer.parseInt(json.get("orgType").toString())==3){
@@ -348,7 +348,7 @@ public class OrganizationTest {
     }
     @Test
     public void sar() {
-      com.alibaba.fastjson.JSONObject json= service.TreeByIdForSon("");
+      com.alibaba.fastjson.JSONObject json= service.treeByIdForSon("");
       System.out.println(json);
        
     }

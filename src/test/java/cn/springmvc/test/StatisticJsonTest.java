@@ -44,7 +44,7 @@ public class StatisticJsonTest {
     @Test
     public void ss(){
     	String id="00a1f4a699c945638e4c6114e9a8448d";
-    	GG(orgin.TreeByIdForSon(id));
+    	GG(orgin.treeByIdForSon(id));
     }
     public void GG(JSONObject json){
         if(json==null || json.equals("")){

@@ -3,6 +3,7 @@ package cn.springmvc.test;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -14,6 +15,7 @@ import cn.financial.util.HtmlAnalysis;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
 
+@RunWith(JUnit4ClassRunner.class)
 public class AnalysisDemo {
 	
 	//1: 解析Excel,得到Json, 用于Html生成
@@ -41,19 +43,28 @@ public class AnalysisDemo {
 	
 	//3: 用(2)生成的Html进行解析,得到一个Json模板数据
 	
-	public static void main(String[] args) {
+	@Test
+	public void htmlToJson() {
 //		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/butten.html"));
 		HtmlAnalysis ha = new HtmlAnalysis(new File("C:/Users/Admin/Desktop/Html budget.html"));
 		try {
 			String json = ha.analysis();
-			JsonConvertProcess jcp = new JsonConvertProcess();
-			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);
-			System.out.println(budgetJson);
+//			JsonConvertProcess jcp = new JsonConvertProcess();
+//			json = jcp.generateMonthlyBudgetJson(json);
+			System.out.println(json);
 //			System.out.println(json);
 		} catch (FormulaAnalysisException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void addNullRowCol(){
+		HtmlGenerate hg = new HtmlGenerate();
+		String jsonStr = JsonConvertProcess.readFileContent("C:/Users/Admin/Desktop/wxsy.txt");
+		String html = hg.generateHtml(jsonStr, HtmlGenerate.HTML_TYPE_TEMPLATE);
+		System.out.println(html);
 	}
 	
 //	public static void main(String[] args) {
