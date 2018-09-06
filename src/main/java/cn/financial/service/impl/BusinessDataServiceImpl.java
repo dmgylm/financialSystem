@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
+import cn.financial.quartz.QuartzBudget;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
 import cn.financial.util.JsonConvertProcess;
@@ -29,7 +31,14 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 
 	@Autowired
 	private BusinessDataDao businessDataDao;
-
+	@Autowired
+	BusinessDataServiceImpl businessDataService;
+	@Autowired
+	MessageService messageService;
+	@Autowired
+	BusinessDataInfoServiceImpl businessDataInfoService;
+	@Autowired
+	OrganizationServiceImpl organizationService;
 	/**
 	 * 新增损益数据
 	 */
@@ -114,8 +123,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * @param organizationService
 	 */
     @Override
-	public void createBusinessData(Organization orgDep,int year,int month,DataModule dm,Logger logger,BusinessDataServiceImpl businessDataService,BusinessDataInfoServiceImpl businessDataInfoService,OrganizationServiceImpl organizationService) {
-		
+	public void createBusinessData(Organization orgDep,int year,int month,DataModule dm) {
 		Organization org = organizationService.getCompanyNameBySon(orgDep.getId());// 获取对应部门的公司
 		if (org != null) {
 			BusinessData statement = new BusinessData();
@@ -132,7 +140,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 			statement.setDataModuleId(dm.getId());// 数据模板id
 			Integer flag = businessDataService.insertBusinessData(statement);
 			if (flag != 1) {
-				logger.error("预算主表数据新增失败");
+				System.out.println("预算主表数据新增失败");
 			} else {
 				BusinessDataInfo sdi = new BusinessDataInfo();
 				sdi.setId(UuidUtil.getUUID());
@@ -140,7 +148,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 				sdi.setInfo(JsonConvertProcess.simplifyJson(dm.getModuleData()).toString());
 				Integer flagt = businessDataInfoService.insertBusinessDataInfo(sdi);
 				if (flagt != 1) {
-					logger.error("预算从表数据新增失败");
+					System.out.println("预算从表数据新增失败");
 				}
 			}
 		}
@@ -166,7 +174,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	}
 
 	@Override
-	public void createBunsinessDataMessage(int year, Logger logger, Organization orgCompany,Organization orgDep, MessageService messageService) {
+	public void createBunsinessDataMessage(int year,  Organization orgCompany,Organization orgDep) {
 			Message message = new Message();
 			message.setId(UuidUtil.getUUID());
 			message.setStatus(0);
@@ -177,7 +185,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 			message.setsName("系统默认");
 			Integer i1 = messageService.saveMessage(message);
 			if (i1 != 1) {
-				logger.error("预算报表发送消息失败");
+				System.out.println("预算报表发送消息失败");
 		}		
 	}
 }
