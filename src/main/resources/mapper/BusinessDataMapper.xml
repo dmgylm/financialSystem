@@ -46,11 +46,11 @@
            WHERE id=#{id} AND delStatus=1 
        </select>
        
-         <!--  根据组织id查询损益数据 -->
+         <!--  根据组织id查询预算数据,SID=2表示预算 -->
        <select id="selectBusinessDataByType" parameterType="String" resultMap="businessData" >
            SELECT * 
            FROM businessData 
-           WHERE typeId=#{id} AND delStatus=1 LIMIT 1
+           WHERE typeId=#{id} AND sid=2 AND year=date_format(now(),'%Y') AND delStatus=1 LIMIT 1
        </select>
        
        

@@ -23,7 +23,10 @@
 		WHERE 1 = 1 and o.status = 1  and oId=#{sId} 
   		ORDER BY m.createTime DESC
     </select>
-    
+    <!-- 根据组织架构ID更新新的组织架构ID关联,用于移动组织架构 -->
+    <update id="updateUOOrgByOrgId" parameterType="map">
+    	update user_organization_mapping set oId=#{newOrgId} where oId=#{oldOrgId}
+    </update>
        <!--查询组织架构的uid的最高节点 -->
     <select id="maxOrganizations" parameterType="STRING" resultType="cn.financial.model.UserOrganization">
       select  o.orgName,u.name ,MIN(o.code)as code ,o.orgType, u.id ,o.id as oId from organization o,user_organization_mapping uo,user  u
