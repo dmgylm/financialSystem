@@ -50,7 +50,7 @@ public class QuartzBudget implements Job {
 		businessDataService = (BusinessDataServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataServiceImpl");
 		dataModuleServiceImpl = (DataModuleServiceImpl) AccountQuartzListener.getSpringContext().getBean("DataModuleServiceImpl");
 		businessDataInfoService = (BusinessDataInfoServiceImpl) AccountQuartzListener.getSpringContext().getBean("BusinessDataInfoServiceImpl");
-		System.out.println("启动业务表定时添加任务");
+		System.out.println("启动预算业务表定时添加任务");
 		int sum=0;
 		int zsum=0;
 		String reportType = DataModule.REPORT_TYPE_BUDGET; // reportType，数据模板报表类型。DataModule.REPORT_TYPE_BUDG预算，DataModule.REPORT_TYPE_PROFIT_LOSS损益
@@ -69,7 +69,7 @@ public class QuartzBudget implements Job {
 						Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
 						if (org != null) {
 							Organization getOrgDep=orgDep.get(i);
-							businessDataService.createBusinessData(getOrgDep, year, month, dm, logger, businessDataService, businessDataInfoService, organizationService);
+							businessDataService.createBusinessData(getOrgDep, year, month, dm);
 						/*	BusinessData statement = new BusinessData();
 							String sid = UuidUtil.getUUID();
 							statement.setId(sid);
