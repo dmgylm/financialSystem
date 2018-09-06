@@ -438,7 +438,6 @@ public class MessageController {
     @ResponseBody
     @RequestMapping(value = "/listUnread", method = RequestMethod.POST)
     @ApiOperation(value="查询未读消息",notes="根据登陆用户查询未读消息",response = UnreadInfo.class)
-    @RequiresPermissions("message:view")
     public UnreadInfo listUnreadMessage(HttpServletRequest request, HttpServletResponse response){
     	
     	UnreadInfo result = new UnreadInfo();
