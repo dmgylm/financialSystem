@@ -1291,5 +1291,56 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 //		System.out.println(nodeType);
 		
 	}
+
+	@Override
+	public ResultUtils doUpdateOrg(String id, String orgName, Integer orgType,String userId) {
+
+		ResultUtils result = new ResultUtils();
+    	try {
+    		JSONObject json = organizationService.TreeByIdForSon(id);
+        	Integer upOrgType = organizationService.getNodeType(json);
+        	String parentId = json.getString("parentId");
+        	Integer oldOrgType = json.getInteger("orgType");
+        	Organization bean = new Organization();
+    		bean.setId(id);// 组织结构id
+    		bean.setOrgName(orgName);
+    		bean.setOrgType(upOrgType);
+    		bean.setParentId(parentId);
+    		
+    		bean.setuId(userId);// 提交人id
+
+    		// 新增时检查数据合法性
+    		result = organizationService.checkOrgData(bean,false);
+    		// 数据不通过, 则直接返回检查结果
+    		if (!"200".equals(result.getResultCode())) {
+    			return result;
+    		}
+    		int saveResult = organizationService.updateOrganizationById(orgName,id,orgType,userId);
+    		if (saveResult == 1) {// 1 为保存成功
+    			// 获取模板数据,并生成预算数据
+    			if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
+    				String orgPlateId = json.getString("orgPlateId");
+    				DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
+    				Organization department = new Organization();
+    				department.setId(id);
+    				Calendar c = Calendar.getInstance();
+    				int year = c.get(Calendar.YEAR);
+    				businessDataService.createBusinessData(department , year, dataModule);
+    				// 预算生成成功, 则向组织节点发送消息
+    				Organization company = new Organization();
+    				company.setId(bean.getCompany());
+    				businessDataService.createBunsinessDataMessage(year, company , department);
+    				ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
+    			}
+    			//如果修改之前的节点类型为部门,则把对应的预算表删除
+    			if(Organization.ORG_TYPE_DEPARTMENT == oldOrgType) {
+    				
+    			}
+    		}
+		} catch (Exception e) {
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+		}
+		return result;
+	}
 	
 }

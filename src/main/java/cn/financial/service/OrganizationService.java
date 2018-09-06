@@ -190,6 +190,10 @@ public interface OrganizationService {
 
 	ResultUtils moveOrg(String id, String parentId, String userId);
 
+	Integer getNodeType(JSONObject json);
+
+	ResultUtils doUpdateOrg(String id, String orgName, Integer orgType,String userId);
+
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     
 

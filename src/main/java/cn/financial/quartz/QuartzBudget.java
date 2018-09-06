@@ -59,7 +59,6 @@ public class QuartzBudget implements Job {
 		List<Organization> orgDep = organizationService.getDep();// 获取所有部门
 		List<Organization> orgCompany = organizationService.getCompany();// 获取所有公司
 		int year = Calendar.getInstance().get(Calendar.YEAR);
-		int month = Calendar.getInstance().get(Calendar.MONTH)+1;
 		try {
 			System.out.println("部门条数+"+orgDep.size());
 			
@@ -69,7 +68,7 @@ public class QuartzBudget implements Job {
 						Organization org = organizationService.getCompanyNameBySon(orgDep.get(i).getId());// 获取对应部门的公司
 						if (org != null) {
 							Organization getOrgDep=orgDep.get(i);
-							businessDataService.createBusinessData(getOrgDep, year, month, dm);
+							businessDataService.createBusinessData(getOrgDep, year, dm);
 						/*	BusinessData statement = new BusinessData();
 							String sid = UuidUtil.getUUID();
 							statement.setId(sid);

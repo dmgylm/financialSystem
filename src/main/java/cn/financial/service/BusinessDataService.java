@@ -99,7 +99,7 @@ public interface BusinessDataService {
 	 * @param businessDataInfoService
 	 * @param organizationService
 	 */
-	void createBusinessData(Organization orgDep,int year,int month,DataModule dm) ;
+	void createBusinessData(Organization orgDep,int year,DataModule dm) ;
   /**
    * 生产预算空白模板时往消息中心发消息
    * @param year 年份

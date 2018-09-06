@@ -123,7 +123,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * @param organizationService
 	 */
     @Override
-	public void createBusinessData(Organization orgDep,int year,int month,DataModule dm) {
+	public void createBusinessData(Organization orgDep,int year,DataModule dm) {
 		Organization org = organizationService.getCompanyNameBySon(orgDep.getId());// 获取对应部门的公司
 		if (org != null) {
 			BusinessData statement = new BusinessData();
