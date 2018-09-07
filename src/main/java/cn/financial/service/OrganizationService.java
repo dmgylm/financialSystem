@@ -194,6 +194,8 @@ public interface OrganizationService {
 	Integer getNodeType(JSONObject json);
 
 	ResultUtils doUpdateOrg(String id, String orgName, Integer orgType,String userId);
+	
+	Organization getOrgById(String id);
 
 /*    List<Organization> listOrganizationcode(List<String> listmap);*/
     

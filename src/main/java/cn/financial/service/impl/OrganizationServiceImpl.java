@@ -997,17 +997,18 @@ public class OrganizationServiceImpl implements OrganizationService {
 	    businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
    }
 
-@Override
-public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
-    // TODO Auto-generated method stub
-    return organizationDAO.listAllOrganizationBy(map);
-}
-/**
- * 添加或修改或移动组织架构时检查数据的合法性
- * @param bean
- * @param saveOrMove  false:保存
- * @return
- */
+	@Override
+	public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
+	    return organizationDAO.listAllOrganizationBy(map);
+	}
+
+	/**
+	 * 添加或修改或移动组织架构时检查数据的合法性
+	 * 
+	 * @param bean
+	 * @param saveOrMove false:保存
+	 * @return
+	 */
 	public ResultUtils checkOrgData(Organization bean, String parentId,boolean isMove) {
 		String returnCode = null;
 		ResultUtils result = new ResultUtils();
@@ -1252,7 +1253,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 		bean.setsId(oldBudget.getsId());
 		bean.setDataModuleId(oldBudget.getDataModuleId());
 		bean.setVersion(oldBudget.getVersion()+1);
-		bean.setUpdateTime(new Date());
+		bean.setUpdateTime(oldBudget.getUpdateTime());
 		//创建主表信息
 		businessDataService.insertBusinessData(bean);
 		//删除之前的数据
@@ -1333,6 +1334,7 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 
 		ResultUtils result = new ResultUtils();
     	try {
+    		
     		JSONObject json = treeByIdForSon(id);
     		JSONArray curSubNode = json.getJSONArray("children");
     		//如果修改为部门节点,则先检查其下有没有节点存在
@@ -1344,6 +1346,24 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
     		json.put("orgType", orgType);
     		
         	Integer upOrgType = getNodeType(json);
+        	
+        	if(upOrgType==orgType) {
+        		if(orgType==Organization.ORG_TYPE_COMPANY) {
+        			ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY, result);
+        			return result;
+        		} else if(orgType==Organization.ORG_TYPE_PLATE) {
+        			ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL, result);
+        			return result;
+        		}
+        	}
+        	
+        	//修改节点为公司,以下节点类型为板块
+        	if(orgType==Organization.ORG_TYPE_COMPANY && upOrgType == Organization.ORG_TYPE_PLATE) {
+        		ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL, result);
+        		return result;
+        		
+        	}
+        	
         	String parentId = json.getString("parentId");
         	Integer oldOrgType = json.getInteger("orgType");
         	Organization bean = new Organization();
@@ -1371,14 +1391,12 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
     			if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
     				String orgPlateId = json.getString("orgPlateId");
     				DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
-    				Organization department = new Organization();
-    				department.setId(id);
+    				Organization department = getOrgById(id);
     				Calendar c = Calendar.getInstance();
     				int year = c.get(Calendar.YEAR);
     				businessDataService.createBusinessData(department , year, dataModule);
     				// 预算生成成功, 则向组织节点发送消息
-    				Organization company = new Organization();
-    				company.setId(bean.getCompany());
+    				Organization company = getOrgById(bean.getCompany());
     				businessDataService.createBunsinessDataMessage(year, company , department);
     				ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
     			}
@@ -1398,6 +1416,14 @@ public List<Organization> listAllOrganizationBy(Map<Object, Object> map) {
 
 	private Organization getOrgByCode(String code) {
 		return organizationDAO.getOrgByCode(code);
+	}
+
+	public Organization getOrgById(String id) {
+		List<Organization> list = listOrganizationBy(null, null, null, id, null, null, null, null, null);
+		if(list!=null && list.size()>0) {
+			return list.get(0);
+		}
+		return null;
 	}
 	
 }

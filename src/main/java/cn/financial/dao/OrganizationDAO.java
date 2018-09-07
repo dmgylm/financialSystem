@@ -106,7 +106,4 @@ public interface OrganizationDAO {
 
 	List<Organization> listOrgByParentCode(Map<String,Object> map);
 
-	
-
-
 }

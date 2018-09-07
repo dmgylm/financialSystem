@@ -257,19 +257,19 @@
     </Result>
     <Result name="DEPER_PLATE">
         <code>298</code>
-        <description>公司上级必须有板块级别</description>
+        <description>公司上级必须有板块</description>
     </Result>
     <Result name="DEPER_PLATELEVEL">
         <code>299</code>
-        <description>板块上级不能有公司级别</description>
+        <description>板块上级不能有公司</description>
     </Result>
      <Result name="COMPANY_COMPANY">
         <code>300</code>
-        <description>公司下面不能添加公司</description>
+        <description>公司下面不能存在公司</description>
     </Result>
      <Result name="PLATE_PLATELEVEL">
         <code>301</code>
-        <description>板块下面不能添加板块</description>
+        <description>板块下面不能存在板块</description>
     </Result>
      <Result name="BUSSINESS_NODATA">
         <code>302</code>
