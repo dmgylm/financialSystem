@@ -896,15 +896,14 @@ public class OrganizationServiceImpl implements OrganizationService {
 		// 分隔传过来的开始结束时间
 		String[] startYAndM = startDate.split("/");
 		String[] endYAndM = endDate.split("/");
-
+		
 		Map<Object, Object> map = new HashMap<>();
 		map.put("codeId", listmap);
 		map.put("startYear", startYAndM[0]);
 		map.put("endYear", endYAndM[0]);
 		map.put("startMonth", startYAndM[1]);
 		map.put("endMonth", endYAndM[1]);
-
-		BusinessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
+		
 		Integer tpye = 0;
 		if(DataModule.REPORT_TYPE_PROFIT_LOSS.equals(reportType)||DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)){
 			tpye = 1;
@@ -912,6 +911,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)||DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)){
 			tpye = 2;
 		}
+		map.put("sId", tpye);
+		BusinessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
+
 		List<BusinessData> result = new ArrayList<BusinessData>();
 		for (int i = 0; i < BusinessDataList.size(); i++) {
 			if(BusinessDataList.get(i).getsId()==tpye)
