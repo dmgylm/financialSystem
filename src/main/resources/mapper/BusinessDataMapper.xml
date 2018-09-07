@@ -142,8 +142,14 @@
 		AND oz.status = 1
 		AND oz.orgType = 3
 		AND bd.delStatus = 1
-         <include refid="query_businessData_foreachCode"></include>   
-         <include refid="query_businessData_dateCode"></include>
+        <include refid="query_businessData_foreachCode"></include>   
+      	<if test="sId==1">
+            <include refid="query_businessData_dateCode"></include>
+        </if>
+        <if test="sId==2">
+            <include refid="query_businessData_budget"></include>
+        </if>
+
        </select>
       
     
@@ -224,6 +230,15 @@
         </if>
         <if test="endMonth!=null and endMonth!=''">
              and  bd.month &lt;= #{endMonth,jdbcType=INTEGER}
+        </if>
+    </sql>
+    
+    <sql id="query_businessData_budget">
+        <if test="startYear!=null and startYear!=''">
+             and  bd.year &gt;=  #{startYear,jdbcType=INTEGER}
+        </if>
+        <if test="endYear!=null and endYear!=''">
+             and  bd.year &lt;= #{endYear,jdbcType=INTEGER}
         </if>
     </sql>
     
