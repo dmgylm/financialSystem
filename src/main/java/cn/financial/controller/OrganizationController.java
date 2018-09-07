@@ -148,17 +148,12 @@ public class OrganizationController {
 					}
 					String orgPlateId = curOrg.getString("orgPlateId");
 					DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
-					List<Organization> orgDep = organizationService.listOrganizationBy(null,null,null,orgId,null,null,null,3,null);
-					Organization company = organizationService.getCompanyNameBySon(orgId);// 获取对应部门的公司
-             		Organization department=orgDep.get(0);//部门
-					//Organization department = new Organization();
-					//department.setId(orgId);
+					Organization department = organizationService.getOrgById(orgId);
 					Calendar c = Calendar.getInstance();
 					int year = c.get(Calendar.YEAR);
 					businessDataService.createBusinessData(department , year, dataModule);
 					// 预算生成成功, 则向组织节点发送消息
-					//Organization company = new Organization();
-					//company.setId(bean.getCompany());
+					Organization company = organizationService.getOrgById(bean.getCompany());
 					businessDataService.createBunsinessDataMessage(year, company , department);
 					ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
 				}
