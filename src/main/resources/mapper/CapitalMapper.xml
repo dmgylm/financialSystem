@@ -64,7 +64,17 @@
          <include refid="query_capital_where"></include>
          ORDER BY c.tradeTime DESC
        </select>
-      
+
+       <!-- 查询组织架构的公司-->
+       <select id="capitalCompany" parameterType="map" resultType="Capital">
+            SELECT orgName as company from organization WHERE orgType=2
+            <if test="code!=null and code!=''">
+              and
+           <foreach collection="code" item="code" index="index"  separator="OR">
+             code LIKE CONCAT(#{code},'%')
+           </foreach>
+          </if>
+       </select>
        
        <!--导出根据多个id查询 -->
        <!-- <select id="listCapitalById" parameterType="java.util.List" resultMap="capital" >
@@ -148,7 +158,7 @@
            </foreach>
            )
            <if test=" company!=null and company!=''">
-            and c.company LIKE CONCAT('%',#{company},'%')
+            and o.orgName LIKE CONCAT('%',#{company},'%')
            </if> 
          </if> 
         <if test="accountBank!=null and accountBank!=''">

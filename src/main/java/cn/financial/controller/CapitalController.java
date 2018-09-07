@@ -376,7 +376,7 @@ public class CapitalController {
                          
             }
             map.put("code", code);//根据权限的typeId查询相对应的数据
-            List<Capital> totalCapital = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页  
+            List<Capital> totalCapital = capitalService.capitalCompany(map); //根据权限oId查询里面的权限的全部数据未经过分页  
             String[] company=new String[totalCapital.size()]; //获取所有的权限公司名字
             for (int i = 0; i < totalCapital.size(); i++) {
                 if(totalCapital.size()>0){

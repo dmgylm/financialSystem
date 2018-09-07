@@ -137,6 +137,12 @@ public class CapitalServiceImpl implements CapitalService{
         return result;
     }
 
+    @Override
+    public List<Capital> capitalCompany(Map<Object, Object> map) {
+        // TODO Auto-generated method stub
+        return capitalDao.capitalCompany(map);
+    }
+
   
 }
  

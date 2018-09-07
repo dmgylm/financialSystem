@@ -71,4 +71,10 @@ public interface CapitalService {
      * @return
      */
     List<Capital> getAllCapital(Map<Object, Object> map);
+    /**
+     * 查询组织架构的公司
+     * @param map
+     * @return
+     */
+    List<Capital> capitalCompany(Map<Object, Object> map);
 }
