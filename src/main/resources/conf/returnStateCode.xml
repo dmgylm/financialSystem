@@ -287,4 +287,8 @@
         <code>305</code>
         <description>您没有足够的数据权限进行修改操作</description>
     </Result>
+    <Result name="COMPANY_REPEAT">
+        <code>306</code>
+        <description>存在相同名称的公司</description>
+    </Result>
 </StateCode>

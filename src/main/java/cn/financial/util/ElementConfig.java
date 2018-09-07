@@ -287,6 +287,10 @@ public class ElementConfig {
      */
     public static final String NAMELY_NOSAME="NAMELY_NOSAME";
     /**
+     * 同层级节点不可重复
+     */
+    public static final String COMPANY_REPEAT ="COMPANY_REPEAT";
+    /**
      * 汇总下面不能添加汇总
      */
     public static final String PLATE_SUMMARY="PLATE_SUMMARY";

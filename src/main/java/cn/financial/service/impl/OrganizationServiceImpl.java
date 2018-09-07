@@ -1036,8 +1036,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 		//检查子级是否有同名节点
 		for(int i=0;childrens != null && i<childrens.size();i++){
 			JSONObject node = childrens.getJSONObject(i);
-			String nodeName = node.getString("orgName");
-			String nodeId = node.getString("id");
+			String nodeName = node.getString("name");
+			String nodeId = node.getString("pid");
 			if(!StringUtils.isValid(orgId)) {
 				if(StringUtils.isValid(orgName) && orgName.equals(nodeName)) {
 					ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,
@@ -1105,6 +1105,17 @@ public class OrganizationServiceImpl implements OrganizationService {
 				ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE, result);
 				return result;
 			}
+			//检查是否有重名公司
+			List<Organization> companylst = getCompany();
+			Set<String> companySet = new HashSet<String>();
+			for(Organization comp:companylst) {
+				String companyName = comp.getOrgName();
+				if(companySet.contains(companyName)) {
+					ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE, result);
+					return result;
+				}
+				companySet.add(companyName);
+			}
 		}
 		//处理节点为业务板块
 		if(orgType==Organization.ORG_TYPE_PLATE) {
@@ -1131,7 +1142,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		    JSONObject targetOrgJson = treeByIdForSon(parentId);
 		    Integer orgType = getNodeType(sourceOrgJson);
 		    Organization bean = new Organization();
-		    bean.setId(sourceOrgJson.getString("id"));// 组织结构id
+		    bean.setId(sourceOrgJson.getString("pid"));// 组织结构id
 		    bean.setOrgName(sourceOrgJson.getString("name"));
 		    bean.setParentId(parentId);
 		    bean.setOrgType(orgType);
