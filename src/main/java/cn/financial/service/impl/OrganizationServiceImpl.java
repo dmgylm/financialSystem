@@ -1343,11 +1343,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     			return result;
     		}
     		
+    		Integer oldOrgType = json.getInteger("orgType");
     		json.put("orgType", orgType);
     		
         	Integer upOrgType = getNodeType(json);
         	
-        	if(upOrgType==orgType) {
+        	if(upOrgType==orgType && oldOrgType!=orgType) {
         		if(orgType==Organization.ORG_TYPE_COMPANY) {
         			ElementXMLUtils.returnValue(ElementConfig.COMPANY_COMPANY, result);
         			return result;
@@ -1365,7 +1366,6 @@ public class OrganizationServiceImpl implements OrganizationService {
         	}
         	
         	String parentId = json.getString("parentId");
-        	Integer oldOrgType = json.getInteger("orgType");
         	Organization bean = new Organization();
     		bean.setId(id);// 组织结构id
     		bean.setOrgName(orgName);
