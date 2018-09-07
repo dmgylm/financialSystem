@@ -754,12 +754,17 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (!map.isEmpty() && map.size() > 0) {
             List<Organization> organizationByIds = organizationDAO.listOrganizationBy(map);
             if (!CollectionUtils.isEmpty(organizationByIds)) {
-                Map<Object, Object> mapp = new HashMap<>();
+            	JSONObject json=treeByIdForSon(organizationByIds.get(0).getId());
+            	JSONArray jsonarray=JSONArray.parseArray(json.get("children").toString());
+            	 if(jsonarray.size()!=0){
+            		 flag = true;
+                 }
+               /* Map<Object, Object> mapp = new HashMap<>();
                 mapp.put("parentId", organizationByIds.get(0).getCode());
                 List<Organization> list = organizationDAO.listOrganizationBy(mapp);
                 if (!CollectionUtils.isEmpty(list)) {
                     flag = true;
-                }
+                }*/
             }
         }
         return flag;
@@ -940,7 +945,7 @@ public class OrganizationServiceImpl implements OrganizationService {
      * 根据id查询该节点极其下的所有子节点集合
      */
     @Override
-    //@Cacheable(value = "organizationValue", key = "'orga_key_listson_'+#id")
+    @Cacheable(value = "organizationValue", key = "'orga_key_listson_'+#id")
 	public List<Organization> treeByIdForSons(String id) {
     	 List<Organization> list = new ArrayList<>();
          // 根据id查询到该节点信息
