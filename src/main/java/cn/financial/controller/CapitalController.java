@@ -423,16 +423,21 @@ public class CapitalController {
                                     Map<Object, Object> map1=new HashMap<>();
                                     map1.put("orgName",orgName);
                                     List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
+                                    Integer isStatus=0;//判断组织架构是否被停用  0表示停用已经被删除
                                     if(listOrganization.size()>0){
-                                    Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
-                                      if(isStatus==0){
-                                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                                         result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
-                                         insertFlag=false;
-                                         break; 
-                                      }else{
-                                        capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id   
-                                      }
+                                    for (int j = 0; j < listOrganization.size(); j++) {
+                                        if(listOrganization.get(j).getStatus()==1){
+                                           isStatus=listOrganization.get(j).getStatus();
+                                        }
+                                    }
+                                    if(isStatus!=1){
+                                        ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+                                        result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司数据已经被停用");
+                                        insertFlag=false;
+                                        break; 
+                                     }else{
+                                       capital.setoId(listOrganization.get(0).getId()); //公司名字所对应的组织架构id   
+                                     }
                                     }else{
                                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                         result.setResultDesc("Excel表格第"+(i+2)+"行第一个的单元格公司不存在");
