@@ -551,6 +551,9 @@ public class OrganizationController {
                      	     businessDataInfoService.updateBusinessDataInfoDelStatus(businessInfo);
                         	 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
                     	}
+                    	else{
+                    		ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);
+                    	}
                     	
                     } else {
                     	ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
