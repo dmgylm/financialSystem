@@ -67,7 +67,7 @@
 
        <!-- 查询组织架构的公司-->
        <select id="capitalCompany" parameterType="map" resultType="Capital">
-            SELECT orgName as company from organization WHERE orgType=2
+            SELECT orgName as company from organization WHERE orgType=2 and status=1
             <if test="code!=null and code!=''">
               and
            <foreach collection="code" item="code" index="index"  separator="OR">
