@@ -1107,14 +1107,19 @@ public class OrganizationServiceImpl implements OrganizationService {
 			}
 			//检查是否有重名公司
 			List<Organization> companylst = getCompany();
-			Set<String> companySet = new HashSet<String>();
+			Map<String,Organization> companyMap = new HashMap<String, Organization>();
 			for(Organization comp:companylst) {
 				String companyName = comp.getOrgName();
-				if(companySet.contains(companyName)) {
-					ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE, result);
+				if(companyMap.get(companyName)!=null) {
+					ElementXMLUtils.returnValue(ElementConfig.COMPANY_REPEAT, result);
 					return result;
 				}
-				companySet.add(companyName);
+				companyMap.put(companyName,comp);
+			}
+			Organization organization = companyMap.get(orgName);
+			if(organization!=null && !organization.getId().equals(bean.getId())) {
+				ElementXMLUtils.returnValue(ElementConfig.COMPANY_REPEAT, result);
+				return result;
 			}
 		}
 		//处理节点为业务板块
