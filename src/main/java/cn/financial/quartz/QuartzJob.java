@@ -2,6 +2,7 @@ package cn.financial.quartz;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -102,6 +103,7 @@ public class QuartzJob implements Job{
 								statement.setDelStatus(1);
 								statement.setsId(bunType);// 1表示损益表 2表示预算表
 								statement.setVersion(1);
+								statement.setUpdateTime(new Date());
 								statement.setDataModuleId(dm.getId());// 数据模板id
 								Integer flag = businessDataService.insertBusinessData(statement);
 								sum++;
