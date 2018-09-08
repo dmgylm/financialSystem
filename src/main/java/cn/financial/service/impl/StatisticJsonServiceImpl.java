@@ -538,7 +538,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 
 	//进行分段的计算方法
 	public Map<String,Object> valueListSum(List<JSONObject> valueList){
-		DecimalFormat df = new DecimalFormat("#.00");
+		DecimalFormat df = new DecimalFormat("#0.00");
 		Map<String,Object> item = new HashMap<String, Object>();
 		for (int k = 0; k < valueList.size(); k++) {
 			JSONObject valueJson = valueList.get(k);
@@ -556,19 +556,17 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 						while (dt.hasNext()) {
 							String downKey = dt.next();
 							Double valve = downValve.getDouble(downKey);
-							df.format(valve);
 							if(item.containsKey(downKey)){
 								valve +=(Double)item.get(downKey);
 							}
-							item.put(downKey, valve);
+							item.put(downKey,df.format(valve));
 						}
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
-						df.format(valve);
 						if(item.containsKey(itemKey)){
 							valve +=(Double)item.get(itemKey);
 						}
-						item.put(itemKey, valve);
+						item.put(itemKey, df.format(valve));
 					}
 				}
 			}
