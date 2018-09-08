@@ -4,10 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.financial.dao.BusinessDataDao;
 import cn.financial.model.BusinessData;
@@ -15,6 +19,7 @@ import cn.financial.model.BusinessDataInfo;
 import cn.financial.model.DataModule;
 import cn.financial.model.Message;
 import cn.financial.model.Organization;
+import cn.financial.model.UserOrganization;
 import cn.financial.quartz.QuartzBudget;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
@@ -190,4 +195,28 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 				System.out.println("预算报表发送消息失败");
 		}		
 	}
+	
+	 /**
+     * 判断权限数据
+     * @param list
+     * @return
+     */
+	@Cacheable(value="isImport",key="userOrganization")
+	public Boolean isImport(List<JSONObject> userOrganization) {
+      boolean isImport = true;//是否可编辑
+      for (int i = 0; i < userOrganization.size(); i++) {
+          Integer num=Integer.parseInt(userOrganization.get(i).getString("orgType")); //组织节点
+          String id=userOrganization.get(i).getString("pid"); //组织id
+          if(num==4){
+             isImport =false;
+          }
+          if(num==1){
+           Organization  organization=organizationService.getCompanyNameBySon(id);
+           if(organization==null){//如果没有查到公司级别的则是不能编辑
+            isImport =false;
+           }
+         }
+      }
+      return isImport;
+    }
 }

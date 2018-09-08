@@ -41,6 +41,7 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.UserService;
 import cn.financial.service.impl.BusinessDataInfoServiceImpl;
+import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.UserOrganizationServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -71,6 +72,9 @@ public class BusinessDataController {
 
     @Autowired
     private BusinessDataService businessDataService;
+    
+    @Autowired
+    private BusinessDataServiceImpl businessDataServiceimpl;
     
     @Autowired
     private MessageService messageService;
@@ -225,8 +229,8 @@ public class BusinessDataController {
             map1.put("id",businessData.getTypeId());
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer status=listOrganization.get(0).getStatus();
-            UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
-            boolean isImport = isImport(userOrganization);//是否可编辑
+            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport = businessDataServiceimpl.isImport(userOrganization);//是否可编辑
             if (id != null && !id.equals("") && htmlType != null) {
                 if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
                    if(status==0){
@@ -302,8 +306,8 @@ public class BusinessDataController {
             map1.put("id",business.getTypeId());
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
-            UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
-            boolean isImport = isImport(userOrganization);//是否可编辑
+            List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport =businessDataServiceimpl.isImport(userOrganization);//是否可编辑
             if(isImport){
              if(isStatus==0){
                  ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
@@ -664,26 +668,5 @@ public class BusinessDataController {
          }
         return result;
        }
-    
-        /**
-         * 判断权限数据
-         * @param list
-         * @return
-         */
-        private Boolean isImport(UserOrganization userOrganization) {
-          boolean isImport = true;//是否可编辑
-          Integer num=Integer.parseInt(userOrganization.getOrgType()); //组织节点
-          String oId=userOrganization.getoId(); //组织id
-          if(num==4){
-             isImport =false;
-          }
-          if(num==1){
-           Organization  organization=organizationService.getCompanyNameBySon(oId);
-           if(organization==null){//如果没有查到公司级别的则是不能编辑
-            isImport =false;
-           }
-         }
-          return isImport;
-        }
 
 }
