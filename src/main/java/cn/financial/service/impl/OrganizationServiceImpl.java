@@ -1395,7 +1395,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         	Organization bean = new Organization();
     		bean.setId(id);// 组织结构id
     		bean.setOrgName(orgName);
-    		bean.setOrgType(upOrgType);
+    		bean.setOrgType(orgType);
     		bean.setParentId(parentId);
     		
     		bean.setuId(userId);// 提交人id
@@ -1429,8 +1429,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     			//如果修改之前的节点类型为部门,则把对应的预算表删除
     			if(Organization.ORG_TYPE_DEPARTMENT == oldOrgType) {
     				BusinessData budget = businessDataService.selectBusinessDataByType(id);
-    				budget.setDelStatus(0);
-    				businessDataService.updateBusinessDataDelStatus(budget);
+    				if(budget != null) {
+    					budget.setDelStatus(0);
+    					businessDataService.updateBusinessDataDelStatus(budget);
+    				}
     			}
     		}
 		} catch (Exception e) {
