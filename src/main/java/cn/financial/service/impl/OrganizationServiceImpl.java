@@ -1371,6 +1371,8 @@ public class OrganizationServiceImpl implements OrganizationService {
     		//忽略被修改的节点,判断其节点下所有子节点最高级别
     		json.put("orgType", Organization.ORG_TYPE_SUMMARY);
         	Integer upOrgType = getNodeType(json);
+        	//将节点属性改为修改后的, 用于判断父级节点是否合法
+        	json.put("orgType", orgType);
         	
         	if(upOrgType==orgType && oldOrgType!=orgType) {
         		if(orgType==Organization.ORG_TYPE_COMPANY) {
