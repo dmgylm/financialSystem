@@ -224,8 +224,10 @@ public class MessageServiceImpl implements MessageService {
 				for(int i=0; i<list.size(); i++) {
 					if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
 						Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
-						strArray = orga.getHis_permission().split(",");
-						his.addAll(Arrays.asList(strArray));
+						if(orga != null) {
+							strArray = orga.getHis_permission().split(",");
+							his.addAll(Arrays.asList(strArray));
+						}
 					}else {
 						strArray = list.get(i).getString("his_permission").split(",");
 						his.addAll(Arrays.asList(strArray));
@@ -238,8 +240,10 @@ public class MessageServiceImpl implements MessageService {
 			for(int i=0; i<list.size(); i++) {
 				if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
 					Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
-					strArray = orga.getHis_permission().split(",");
-					his.addAll(Arrays.asList(strArray));
+					if(orga != null) {
+						strArray = orga.getHis_permission().split(",");
+						his.addAll(Arrays.asList(strArray));
+					}
 				}else {
 					strArray = list.get(i).getString("his_permission").split(",");
 					his.addAll(Arrays.asList(strArray));
