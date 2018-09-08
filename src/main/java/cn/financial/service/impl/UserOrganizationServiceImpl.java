@@ -18,6 +18,7 @@ import cn.financial.model.Organization;
 import cn.financial.model.UserOrganization;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.util.TreeNode;
 import cn.financial.util.UuidUtil;
 
 
@@ -122,6 +123,23 @@ public class UserOrganizationServiceImpl implements UserOrganizationService{
             }
         }
         return jsonUserOrg;
+    }
+    public  JSONObject userOrganizationLists(String uId){
+    	JSONObject json = new JSONObject();
+    	List<JSONObject> list = userOrganizationList(uId);
+    	if(list.size()==1) {
+    		return list.get(0);
+    	} else if(list.size()>1) {
+    		json.put("name", "根目录");
+    		json.put("orgkeyName",null);
+    		json.put("pid",null);
+    		json.put("parentId",null);
+    		json.put("orgType",null);
+    		json.put("his_permission",null);
+    		json.put("id",null);
+    		json.put("children", list);
+    	}
+    	return json;
     }
     /**
      * 用户组织结构关联表(直接勾选子节点或者全选)
