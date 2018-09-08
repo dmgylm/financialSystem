@@ -1247,7 +1247,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		bean.setOrgName(orgName);
 		Integer orgTypeInt = Integer.parseInt(orgType);
 		bean.setOrgType(orgTypeInt);
-		bean.setHis_permission(his_permission+","+code);
+		bean.setHis_permission(his_permission+","+nodeCode);
 		bean.setOrgPlateId(orgPlateId);
 		bean.setParentId(parentCode);
 		bean.setuId(userId);
