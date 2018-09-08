@@ -160,7 +160,7 @@ public class OrganizationController {
 			}
 			redisCacheService.removeAll("organizationValue");
 			//清除该组织架构节点是否拥有编辑表单权限
-			redisCacheService.remove("userOrganization", "isImport");
+			redisCacheService.removeAll("userOrganization");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
@@ -373,7 +373,7 @@ public class OrganizationController {
         	result = organizationService.doUpdateOrg(id,orgName,orgType,user.getId());
 			redisCacheService.removeAll("organizationValue");
 			//清除该组织架构节点是否拥有编辑表单权限
-			redisCacheService.remove("userOrganization", "isImport");
+			redisCacheService.removeAll("userOrganization");
 			return result;
 			
 			
@@ -692,7 +692,7 @@ public class OrganizationController {
         //清除Redis缓存
         redisCacheService.removeAll("organizationValue");
         //清除该组织架构节点是否拥有编辑表单权限
-		redisCacheService.remove("userOrganization", "isImport");
+		redisCacheService.removeAll("userOrganization");
         
 //        
 //        String parentOrgId = null;
