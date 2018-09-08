@@ -557,14 +557,14 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 							String downKey = dt.next();
 							Double valve = downValve.getDouble(downKey);
 							if(item.containsKey(downKey)){
-								valve +=(Double)item.get(downKey);
+								valve +=Double.valueOf(item.get(downKey).toString());
 							}
 							item.put(downKey,df.format(valve));
 						}
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
 						if(item.containsKey(itemKey)){
-							valve +=(Double)item.get(itemKey);
+							valve +=Double.valueOf(item.get(itemKey).toString());
 						}
 						item.put(itemKey, df.format(valve));
 					}
