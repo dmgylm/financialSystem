@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import cn.financial.model.BusinessData;
@@ -42,6 +44,7 @@ import cn.financial.service.CapitalNatrueService;
 import cn.financial.service.CapitalService;
 import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
+import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.CapitalServiceImpl;
 import cn.financial.util.ElementConfig;
 import cn.financial.util.ElementXMLUtils;
@@ -69,6 +72,9 @@ public class CapitalController {
     
         @Autowired
         private  CapitalService capitalService; //资金流水表
+        
+        @Autowired
+        private  BusinessDataServiceImpl businessDataServiceImpl; 
         
         @Autowired
         private  CapitalServiceImpl capitalServiceImpl; //资金流水表
@@ -228,8 +234,8 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
-                boolean isImport = isImport(userOrganization);//是否可编辑
+                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                boolean isImport = businessDataServiceImpl.isImport(userOrganization);//是否可编辑
                 Capital  capital=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
                 map1.put("id",capital.getoId());
@@ -288,8 +294,8 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                UserOrganization userOrganization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
-                boolean isImport = isImport(userOrganization);//是否可编辑
+                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                boolean isImport = businessDataServiceImpl.isImport(userOrganization);//是否可编辑
                 Capital  selectCapitalById=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
                 map1.put("id",selectCapitalById.getoId());
@@ -392,8 +398,8 @@ public class CapitalController {
             }
             List<String> companyList = new ArrayList<String>();
             companyList=Arrays.asList(company); 
-            UserOrganization organization= userOrganizationService.maxOrganizations(uId); //判断 权限的数据 
-            boolean isImport = isImport(organization);//是否可编辑
+            List<JSONObject> organization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+            boolean isImport =businessDataServiceImpl.isImport(organization);//是否可编辑
             boolean insertFlag = true;//上传数据是否有错
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
@@ -898,24 +904,4 @@ public class CapitalController {
            return result;
        }
        
-       /**
-        * 判断权限数据
-        * @param list
-        * @return
-        */
-       private Boolean isImport(UserOrganization userOrganization) {
-         boolean isImport = true;//是否可编辑
-         Integer num=Integer.parseInt(userOrganization.getOrgType()); //组织节点
-         String oId=userOrganization.getoId(); //组织id
-         if(num==4){
-            isImport =false;
-         }
-         if(num==1){
-          Organization  organization=organizationService.getCompanyNameBySon(oId);
-          if(organization==null){//如果没有查到公司级别的则是不能编辑
-           isImport =false;
-          }
-        }
-         return isImport;
-       }
 }

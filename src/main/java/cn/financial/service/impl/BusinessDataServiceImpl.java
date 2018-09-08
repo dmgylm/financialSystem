@@ -201,7 +201,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
      * @param list
      * @return
      */
-	@Cacheable(value="isImport",key="userOrganization")
+	@Cacheable(value="userOrganization",key="isImport")
 	public Boolean isImport(List<JSONObject> userOrganization) {
       boolean isImport = true;//是否可编辑
       for (int i = 0; i < userOrganization.size(); i++) {
