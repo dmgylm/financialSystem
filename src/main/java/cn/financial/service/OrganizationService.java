@@ -187,7 +187,9 @@ public interface OrganizationService {
 
 	List<BusinessData> listBusinessList(String reportType,String startDate, String endDate, List<String> ids);
 
-	ResultUtils checkOrgData(Organization bean,String parentId,boolean isMove);
+	ResultUtils checkOrgData(Organization bean, String parentId,boolean isMove);
+	
+	ResultUtils checkOrgData(Organization bean,String parentId,Integer upOrgType,boolean isMove);
 
 	ResultUtils moveOrg(String id, String parentId, String userId);
 

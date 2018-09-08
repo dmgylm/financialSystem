@@ -1017,6 +1017,18 @@ public class OrganizationServiceImpl implements OrganizationService {
 	 * @return
 	 */
 	public ResultUtils checkOrgData(Organization bean, String parentId,boolean isMove) {
+		return checkOrgData(bean, parentId, null, isMove);
+	}
+	
+	/**
+	 * 添加或修改或移动组织架构时检查数据的合法性
+	 * 
+	 * @param bean
+	 * @param saveOrMove false:保存
+	 * @param upOrgType 修改的所有子节点最高级别类型
+	 * @return
+	 */
+	public ResultUtils checkOrgData(Organization bean, String parentId,Integer upOrgType,boolean isMove) {
 		String returnCode = null;
 		ResultUtils result = new ResultUtils();
 //		String parentId = bean.getParentId();
@@ -1123,6 +1135,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 				ElementXMLUtils.returnValue(ElementConfig.COMPANY_REPEAT, result);
 				return result;
 			}
+			companyQty ++ ;
 		}
 		//处理节点为业务板块
 		if(orgType==Organization.ORG_TYPE_PLATE) {
@@ -1133,6 +1146,22 @@ public class OrganizationServiceImpl implements OrganizationService {
 			if (plateQty > 0 ) {//板块下面不能添加板块
 				ElementXMLUtils.returnValue(ElementConfig.PLATE_PLATELEVEL, result);
 				return result;
+			}
+			plateQty++;
+		}
+		//upOrgType不为空,表示需要检查被修改节点的子节点人所有父级关系
+		//保证一条线上有板块/公司和部门
+		if(upOrgType != null) {
+			if(upOrgType==Organization.ORG_TYPE_DEPARTMENT) {
+				if (companyQty != 1) {
+					ElementXMLUtils.returnValue(ElementConfig.DEPER_COMPANY, result);
+					return result;
+				}
+			} else if(upOrgType==Organization.ORG_TYPE_COMPANY) {
+				if (plateQty != 1) {//公司上级必须有板块级别
+					ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATE, result);
+					return result;
+				}
 			}
 		}
 		ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
@@ -1384,6 +1413,12 @@ public class OrganizationServiceImpl implements OrganizationService {
         		}
         	}
         	
+        	if(upOrgType==Organization.ORG_TYPE_DEPARTMENT) {
+        		
+        	} else if(upOrgType==Organization.ORG_TYPE_COMPANY) {
+        		
+        	}
+        	
         	//修改节点为公司,以下节点类型为板块
         	if(orgType==Organization.ORG_TYPE_COMPANY && upOrgType == Organization.ORG_TYPE_PLATE) {
         		ElementXMLUtils.returnValue(ElementConfig.DEPER_PLATELEVEL, result);
@@ -1406,7 +1441,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     			return result;
     		}
     		// 新增时检查数据合法性
-    		result = checkOrgData(bean,parentNode.getId(),false);
+    		result = checkOrgData(bean,parentNode.getId(),upOrgType,false);
     		// 数据不通过, 则直接返回检查结果
     		if (!"200".equals(result.getResultCode())) {
     			return result;
