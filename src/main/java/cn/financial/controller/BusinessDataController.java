@@ -543,18 +543,14 @@ public class BusinessDataController {
                             for(int i=0; i<uo.size(); i++) {
                                 boolean bool = true;
                                 String userId = uo.get(i).getuId();
-                                UserOrganization userOrg = userOrganizationServiceImpl.maxOrganizations(userId);//根据用户ID获得最高组织节点
-                                Integer orgType = Integer.valueOf(userOrg.getOrgType());
-                                if(orgType == 1) {
-                                	Organization org = organizationService.getCompanyNameBySon(userOrg.getoId());
-                                	if(org == null) {
-                                		bool = false;
-                                	}else {
-                                		bool = true;
-                                	}
-                                }
-                                if(orgType == 4) {
-                                    bool = false;
+                                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(userId); //判断 权限的数据 
+                                for (int j = 0; j < userOrganization.size(); j++) {
+                                    Integer orgType=Integer.parseInt(userOrganization.get(j).getString("orgType"));
+                                    String oid=userOrganization.get(j).getString("pid");
+                                    bool=businessDataServiceimpl.isImport(orgType, oid);
+                                    if(bool==false){
+                                        break;
+                                    }
                                 }
                                 if(bool) {
                                     User u = userService.getUserById(userId);
