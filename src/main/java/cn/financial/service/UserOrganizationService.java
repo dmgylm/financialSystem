@@ -55,4 +55,6 @@ public interface UserOrganizationService {
      * @return
      */
     int updateUOOrgByOrgId(String oldOrgId, String newOrgId);
+
+    JSONObject userOrganizationLists(String id);
 }
