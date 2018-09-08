@@ -320,6 +320,13 @@ public class UserController{
                 ElementXMLUtils.returnValue(ElementConfig.USER_ORGANIZATION, result);//用户组织架构关联信息不存在
             }else if(userList > 0 || userRoleList > 0 || userOrganizationList > 0){
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, result);
+                if(status!=null && !status.equals("")){
+                    if(currentUser.getId().equals(userId)){//修改自己的状态为离职
+                        if(status.equals(0)){
+                            ElementXMLUtils.returnValue(ElementConfig.USER_QUIT, result);
+                        }
+                    }
+                }
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR, result);
             }
