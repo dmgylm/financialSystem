@@ -139,7 +139,8 @@
 		SELECT bd.id,bd.oId,bd.dataModuleId,bd.typeId,bi.info,bd.sId FROM
 	 	organization oz , businessData bd ,businessDataInfo bi
 		WHERE oz.id = bd.typeId AND bd.id = bi.businessDataId
-		AND oz.status = 2
+		AND bd.status = 2
+		AND oz.status = 1
 		AND oz.orgType = 3
 		AND bd.delStatus = 1
         <include refid="query_businessData_foreachCode"></include>   
