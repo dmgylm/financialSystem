@@ -287,7 +287,7 @@ public class ElementConfig {
      */
     public static final String NAMELY_NOSAME="NAMELY_NOSAME";
     /**
-     * 同层级节点不可重复
+     * 公司名不可重复
      */
     public static final String COMPANY_REPEAT ="COMPANY_REPEAT";
     /**

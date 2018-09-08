@@ -1367,8 +1367,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     		}
     		
     		Integer oldOrgType = json.getInteger("orgType");
-    		json.put("orgType", orgType);
     		
+    		//忽略被修改的节点,判断其节点下所有子节点最高级别
+    		json.put("orgType", Organization.ORG_TYPE_SUMMARY);
         	Integer upOrgType = getNodeType(json);
         	
         	if(upOrgType==orgType && oldOrgType!=orgType) {
