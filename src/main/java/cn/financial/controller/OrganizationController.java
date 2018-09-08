@@ -595,12 +595,9 @@ public class OrganizationController {
         OrganizaResult loginResult = new OrganizaResult();
         List<OrganizaResult> loginResultList = new ArrayList<>();
         try {
-        	
        	 User user = (User) request.getAttribute("user");
-       	 List<JSONObject> list=userOrganizationService.userOrganizationList(user.getId());
-       	// JSONObject json=new JSONObject();
-       	// json.put("data", list);
-            JSONObject jsonTree = new JSONObject();
+       	JSONObject list=userOrganizationService.userOrganizationLists(user.getId());
+       	 //JSONObject JSOuserOrganizationService.userOrganizationLists(user.getId());
             if (null !=id && !"".equals(id)) {
                 id =id;
             }
@@ -610,12 +607,9 @@ public class OrganizationController {
             loginResult.setChildren(ChildrenObject);
             loginResultList.add(loginResult);
             orgin.setData(loginResultList);
-          //  if (jsonTree != null) {
-                dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
-                dataMap.put("data", list);
-          /*  } else {
-               dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR));
-            }*/
+             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
+             dataMap.put("data", list);
+
         } catch (Exception e) {
             dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE));
             this.logger.error(e.getMessage(), e);
