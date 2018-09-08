@@ -298,5 +298,8 @@ public class ElementConfig {
      * 没有足够的数据权限对该用户信息进行修改
      */
     public static final String USER_ORGANIZATION_RESULT="USER_ORGANIZATION_RESULT";
-  
+    /**
+     * 修改当前登录人状态为离职
+     */
+    public static final String USER_QUIT ="USER_QUIT";
 }
