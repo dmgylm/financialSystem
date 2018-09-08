@@ -351,7 +351,7 @@ public class RoleController {
      * @param rid
      * @param createTime
      */
-    /*@RequiresPermissions({"jurisdiction:create","role:create"})
+    /*@RequiresPermissions("role:create")
     @RequestMapping(value = "/roleResourceInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增(角色功能权限关联信息)",notes="必须勾选父节点,父节点相当于查看权限", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -392,7 +392,7 @@ public class RoleController {
      * @param rid
      * @param updateTime
      */
-    /*@RequiresPermissions({"jurisdiction:update","role:update"})
+    /*@RequiresPermissions("role:update")
     @RequestMapping(value = "/roleResourceUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改(角色功能权限关联信息)",notes="先删除角色关联的功能权限信息，再重新添加该角色的功能权限信息", response = ResultUtils.class)
     @ApiImplicitParams({

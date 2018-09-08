@@ -95,7 +95,7 @@ public class UserController{
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermissions({"role:create","permission:create","organization:create"})
+    @RequiresPermissions("permission:create")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ApiOperation(value="管理员新增用户，对应的角色，组织结构信息",notes="新增用户，对应的角色以及对应的权限", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -202,7 +202,7 @@ public class UserController{
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequiresPermissions({"role:update","permission:update","organization:update"})
+    @RequiresPermissions("permission:update")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value="管理员修改用户,对应的角色，组织结构信息",notes="超级管理员修改用户，对应的角色以及对应的权限信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -765,7 +765,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions({"organization:view","permission:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userOrganizationById", method = RequestMethod.POST)
     @ApiOperation(value="根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query", required = true)})
@@ -795,7 +795,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions({"organization:view","permission:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userOrganizationIndex", method = RequestMethod.POST)
     @ApiOperation(value="获取当前登录人组织架构关联信息/根据用户id查询用户组织结构关联信息",notes="根据用户id查询用户组织结构关联信息(用户组织结构关联表)", response = UserOrganizationResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="uId",value="用户id",dataType="string", paramType = "query")})
@@ -831,7 +831,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    /*@RequiresPermissions({"organization:create","permission:create"})
+    /*@RequiresPermissions("permission:create")
     @RequestMapping(value = "/userOrganizationInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户组织结构关联信息",notes="新增(用户组织结构关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -867,7 +867,7 @@ public class UserController{
      * @param response
      * @return
      */
-    /*@RequiresPermissions({"organization:update","permission:update"})
+    /*@RequiresPermissions("permission:update")
     @RequestMapping(value = "/userOrganizationUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户组织结构关联信息",notes="先删除用户关联的组织架构信息，再重新添加该用户的组织架构信息", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -907,7 +907,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions({"permission:view","role:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userRoleById", method = RequestMethod.POST)
     @ApiOperation(value="根据用户名查询用户关联的角色信息和功能权限信息",notes="根据用户名查询用户关联的角色信息和功能权限信息", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
@@ -969,7 +969,7 @@ public class UserController{
      * @param request
      * @param response
      */
-    @RequiresPermissions({"permission:view","role:view"})
+    @RequiresPermissions("permission:view")
     @RequestMapping(value = "/userRoleIndex", method = RequestMethod.POST)
     @ApiOperation(value="name为空查全部角色信息及关联的功能权限信息,根据用户名查询用户角色关联信息及关联的功能权限信息",notes="修改用", response = UserRoleResult.class)
     @ApiImplicitParams({@ApiImplicitParam(name="name",value="用户名",dataType="string", paramType = "query")})
@@ -1059,7 +1059,7 @@ public class UserController{
      * @param uid
      * @param rid
      */
-    /*@RequiresPermissions({"permission:create","role:create"})
+    /*@RequiresPermissions("permission:create")
     @RequestMapping(value = "/userRoleInsert", method = RequestMethod.POST)
     @ApiOperation(value="新增用户角色关联信息",notes="新增(用户角色关联表)", response = ResultUtils.class)
     @ApiImplicitParams({
@@ -1098,7 +1098,7 @@ public class UserController{
      * @param rid
      * @param updateTime
      */
-    /*@RequiresPermissions({"permission:update","role:update"})
+    /*@RequiresPermissions("permission:update")
     @RequestMapping(value = "/userRoleUpdate", method = RequestMethod.POST)
     @ApiOperation(value="修改用户角色关联信息",notes="修改(用户角色关联表)先删除用户关联的角色信息，再重新添加该用户的角色信息", response = ResultUtils.class)
     @ApiImplicitParams({
