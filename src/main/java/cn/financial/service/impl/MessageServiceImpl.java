@@ -18,6 +18,7 @@ import cn.financial.model.Message;
 import cn.financial.model.Organization;
 import cn.financial.model.User;
 import cn.financial.model.UserOrganization;
+import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
 
@@ -44,6 +45,9 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Autowired
 	private OrganizationServiceImpl organizationService;
+	
+	@Autowired
+	private BusinessDataServiceImpl bService;
 
 
     /**
@@ -211,48 +215,58 @@ public class MessageServiceImpl implements MessageService {
 		
 		List<JSONObject> list = userOrganizationServiceImpl.userOrganizationList(uId);//根据用户ID查询关联的组织结构
 		
-		UserOrganization uo = userOrganizationServiceImpl.maxOrganizations(uId);//根据用户ID获得最高组织节点
+//		UserOrganization uo = userOrganizationServiceImpl.maxOrganizations(uId);//根据用户ID获得最高组织节点
 		
 		String[] strArray;
 		
-		Integer orgType = Integer.valueOf(uo.getOrgType());
-		if(orgType == 1) {//如果是汇总级别，根据oid判断其上是否有公司
-			Organization org = organizationService.getCompanyNameBySon(uo.getoId());
-			if(org == null) {
-				his.clear();
+		for(int i=0; i<list.size(); i++) {
+			Boolean bool = bService.isImport(Integer.valueOf(list.get(i).getString("orgType")), list.get(i).getString("pid"));
+			if(bool) {
+				strArray = list.get(i).getString("his_permission").split(",");
+				his.addAll(Arrays.asList(strArray));
 			}else {
-				for(int i=0; i<list.size(); i++) {
-					if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
-						Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
-						if(orga != null) {
-							strArray = orga.getHis_permission().split(",");
-							his.addAll(Arrays.asList(strArray));
-						}
-					}else {
-						strArray = list.get(i).getString("his_permission").split(",");
-						his.addAll(Arrays.asList(strArray));
-					}
-				}
-			}
-			
-		}
-		if(orgType == 2 || orgType == 3) {//如果是公司或部门级别，获取code集合
-			for(int i=0; i<list.size(); i++) {
-				if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
-					Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
-					if(orga != null) {
-						strArray = orga.getHis_permission().split(",");
-						his.addAll(Arrays.asList(strArray));
-					}
-				}else {
-					strArray = list.get(i).getString("his_permission").split(",");
-					his.addAll(Arrays.asList(strArray));
-				}
+				his.clear();
 			}
 		}
-		if(orgType == 4) {//如果是公司以上，清空集合
-			his.clear();
-		}
+		
+//		Integer orgType = Integer.valueOf(uo.getOrgType());
+//		if(orgType == 1) {//如果是汇总级别，根据oid判断其上是否有公司
+//			Organization org = organizationService.getCompanyNameBySon(uo.getoId());
+//			if(org == null) {
+//				his.clear();
+//			}else {
+//				for(int i=0; i<list.size(); i++) {
+//					if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
+//						Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
+//						if(orga != null) {
+//							strArray = orga.getHis_permission().split(",");
+//							his.addAll(Arrays.asList(strArray));
+//						}
+//					}else {
+//						strArray = list.get(i).getString("his_permission").split(",");
+//						his.addAll(Arrays.asList(strArray));
+//					}
+//				}
+//			}
+//			
+//		}
+//		if(orgType == 2 || orgType == 3) {//如果是公司或部门级别，获取code集合
+//			for(int i=0; i<list.size(); i++) {
+//				if(Integer.valueOf(list.get(i).getString("orgType")) != 2) {//不是公司级别
+//					Organization orga = organizationService.getCompanyNameBySon(list.get(i).getString("pid"));
+//					if(orga != null) {
+//						strArray = orga.getHis_permission().split(",");
+//						his.addAll(Arrays.asList(strArray));
+//					}
+//				}else {
+//					strArray = list.get(i).getString("his_permission").split(",");
+//					his.addAll(Arrays.asList(strArray));
+//				}
+//			}
+//		}
+//		if(orgType == 4) {//如果是公司以上，清空集合
+//			his.clear();
+//		}
 		
 		String code[] = new String[his.size()];
 		for(int j=0; j<his.size(); j++) {
