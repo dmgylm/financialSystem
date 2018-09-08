@@ -291,4 +291,8 @@
         <code>306</code>
         <description>存在相同名称的公司</description>
     </Result>
+    <Result name="USER_QUIT">
+        <code>307</code>
+        <description>您当前为离职状态，将被强制退出系统</description>
+    </Result>
 </StateCode>
