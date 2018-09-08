@@ -885,7 +885,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 	public List<BusinessData> listBusinessList(String reportType,String startDate, String endDate,
 			List<String> ids) {
 		List<Organization> list = organizationDAO.listOrganization(ids);
-		List<BusinessData> BusinessDataList = new ArrayList<BusinessData>();
+		List<BusinessData> businessDataList = new ArrayList<BusinessData>();
 		List<String> listmap = new ArrayList<String>();
 		for (Organization organization : list) {
 			String his_permission = organization.getHis_permission();
@@ -912,13 +912,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 			tpye = 2;
 		}
 		map.put("sId", tpye);
-		BusinessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
+		businessDataList= businessDataService.listBusinessDataByIdAndDateList(map);
 
 		List<BusinessData> result = new ArrayList<BusinessData>();
-		for (int i = 0; i < BusinessDataList.size(); i++) {
-			if(BusinessDataList.get(i).getsId()==tpye)
+		for (int i = 0; i < businessDataList.size(); i++) {
+			if(businessDataList.get(i).getsId()==tpye)
 			{
-				result.add(BusinessDataList.get(i));
+				result.add(businessDataList.get(i));
 			}
 		}
 		
