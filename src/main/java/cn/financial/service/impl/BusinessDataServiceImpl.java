@@ -1,6 +1,7 @@
 package cn.financial.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import cn.financial.model.UserOrganization;
 import cn.financial.quartz.QuartzBudget;
 import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
+import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
 import cn.financial.util.UuidUtil;
 
@@ -201,22 +203,18 @@ public class BusinessDataServiceImpl implements BusinessDataService {
      * @param list
      * @return
      */
-	@Cacheable(value="userOrganization",key="isImport")
-	public Boolean isImport(List<JSONObject> userOrganization) {
-      boolean isImport = true;//是否可编辑
-      for (int i = 0; i < userOrganization.size(); i++) {
-          Integer num=Integer.parseInt(userOrganization.get(i).getString("orgType")); //组织节点
-          String id=userOrganization.get(i).getString("pid"); //组织id
-          if(num==4){
-             isImport =false;
-          }
-          if(num==1){
-           Organization  organization=organizationService.getCompanyNameBySon(id);
-           if(organization==null){//如果没有查到公司级别的则是不能编辑
-            isImport =false;
-           }
-         }
-      }
-      return isImport;
+	@Cacheable(value="userOrganizationValue",key="'userOrganization_'+#id")
+    public Boolean isImport(Integer orgType,String id) {
+	    boolean isImport = true;//是否可编辑
+	          if(orgType==4){
+	             isImport =false;
+	          }
+	          if(orgType==1){
+	           Organization  organization=organizationService.getCompanyNameBySon(id);
+	           if(organization==null){//如果没有查到公司级别的则是不能编辑
+	            isImport =false;
+	           }
+	         }
+	      return isImport;
     }
 }

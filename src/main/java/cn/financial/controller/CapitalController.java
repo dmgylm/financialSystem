@@ -235,7 +235,15 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-                boolean isImport = businessDataServiceImpl.isImport(userOrganization);//是否可编辑
+                boolean isImport=true;//是否可编辑
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                    String oid=userOrganization.get(i).getString("pid");
+                    isImport=businessDataServiceImpl.isImport(orgType, oid);
+                    if(isImport==false){
+                        break;
+                    }
+                }
                 Capital  capital=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
                 map1.put("id",capital.getoId());
@@ -295,7 +303,15 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-                boolean isImport = businessDataServiceImpl.isImport(userOrganization);//是否可编辑
+                boolean isImport=true;//是否可编辑
+                for (int i = 0; i < userOrganization.size(); i++) {
+                    Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                    String oid=userOrganization.get(i).getString("pid");
+                    isImport=businessDataServiceImpl.isImport(orgType, oid);
+                    if(isImport==false){
+                        break;
+                    }
+                }
                 Capital  selectCapitalById=capitalService.selectCapitalById(id);//查询id的数据
                 Map<Object, Object> map1=new HashMap<>();
                 map1.put("id",selectCapitalById.getoId());
@@ -398,8 +414,15 @@ public class CapitalController {
             }
             List<String> companyList = new ArrayList<String>();
             companyList=Arrays.asList(company); 
-            List<JSONObject> organization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport =businessDataServiceImpl.isImport(organization);//是否可编辑
+            boolean isImport=true;//是否可编辑
+            for (int i = 0; i < userOrganization.size(); i++) {
+                Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                String oid=userOrganization.get(i).getString("pid");
+                isImport=businessDataServiceImpl.isImport(orgType, oid);
+                if(isImport==false){
+                    break;
+                }
+            }
             boolean insertFlag = true;//上传数据是否有错
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));

@@ -230,7 +230,15 @@ public class BusinessDataController {
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer status=listOrganization.get(0).getStatus();
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport = businessDataServiceimpl.isImport(userOrganization);//是否可编辑
+            boolean isImport=true;//是否可编辑
+            for (int i = 0; i < userOrganization.size(); i++) {
+                Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                String oid=userOrganization.get(i).getString("pid");
+                isImport=businessDataServiceimpl.isImport(orgType, oid);
+                if(isImport==false){
+                    break;
+                }
+            }
             if (id != null && !id.equals("") && htmlType != null) {
                 if(htmlType==2&&isImport==true){ //有权限编辑录入中心页面
                    if(status==0){
@@ -307,7 +315,15 @@ public class BusinessDataController {
             List<Organization>  listOrganization=organizationService.listAllOrganizationBy(map1);
             Integer isStatus=listOrganization.get(0).getStatus();//判断组织架构是否被停用  0表示停用已经被删除
             List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
-            boolean isImport =businessDataServiceimpl.isImport(userOrganization);//是否可编辑
+            boolean isImport=true;//是否可编辑
+            for (int i = 0; i < userOrganization.size(); i++) {
+                Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
+                String oid=userOrganization.get(i).getString("pid");
+                isImport=businessDataServiceimpl.isImport(orgType, oid);
+                if(isImport==false){
+                    break;
+                }
+            }
             if(isImport){
              if(isStatus==0){
                  ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
