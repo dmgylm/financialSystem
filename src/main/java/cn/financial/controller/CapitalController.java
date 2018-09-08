@@ -125,6 +125,12 @@ public class CapitalController {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
                 List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
+                if(userOrganization==null){
+                 List<Capital> list=new ArrayList<>();
+                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
+                 capitalResult.setData(list);
+                 capitalResult.setTotal(list.size());      
+                }else{
                 List<String> code=new ArrayList<>();
                 for (int i = 0; i < userOrganization.size(); i++) {
                     Integer type=Integer.parseInt(userOrganization.get(i).getString("orgType").toString()); 
@@ -196,6 +202,7 @@ public class CapitalController {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                 capitalResult.setData(list);
                 capitalResult.setTotal(total.size());
+              }
              } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalResult);
                 this.logger.error(e.getMessage(), e);
