@@ -15,10 +15,7 @@ import cn.financial.controller.MessageController;
 import cn.financial.dao.MessageDAO;
 import cn.financial.model.DataModule;
 import cn.financial.model.Message;
-import cn.financial.model.Organization;
 import cn.financial.model.User;
-import cn.financial.model.UserOrganization;
-import cn.financial.service.BusinessDataService;
 import cn.financial.service.MessageService;
 import cn.financial.util.UuidUtil;
 
@@ -43,8 +40,8 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private UserOrganizationServiceImpl userOrganizationServiceImpl;
 	
-	@Autowired
-	private OrganizationServiceImpl organizationService;
+//	@Autowired
+//	private OrganizationServiceImpl organizationService;
 	
 	@Autowired
 	private BusinessDataServiceImpl bService;
@@ -135,7 +132,7 @@ public class MessageServiceImpl implements MessageService {
      * @param fileUrl	汇总表文件的路径
      */
     @Override
-    public Integer saveMessageByUser(User user, String fileUrl, String url, String reportType) {
+    public Integer saveMessageByUser(User user, String fileUrl, String url, String title) {
     	
     	Integer n = 0;
     	MessageController mc = new MessageController();
@@ -144,25 +141,25 @@ public class MessageServiceImpl implements MessageService {
 				message.setId(UuidUtil.getUUID());
 				message.setStatus(0);
 				message.setTheme(2);
-				if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)){
-					message.setContent("预算汇总表已生成");
-				}
-				if(DataModule.REPORT_TYPE_PROFIT_LOSS.equals(reportType)){
-					message.setContent("损益汇总表已生成");
-				}
-				if(DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)){
-					message.setContent("预算简易汇总表已生成");
-				}
-				if(DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)){
-					message.setContent("损益简易汇总表已生成");
-				}
-				if(DataModule.REPORT_TYPE_ASSESSMENT.equals(reportType)){
-					message.setContent("考核汇总表已生成");
-				}
-				if(DataModule.REPORT_TYPE_TAX.equals(reportType)){
-					message.setContent("税金汇总表已生成");
-				}
-//				message.setContent("汇总损益表已生成");
+//				if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)){
+//					message.setContent("预算汇总表已生成");
+//				}
+//				if(DataModule.REPORT_TYPE_PROFIT_LOSS.equals(reportType)){
+//					message.setContent("损益汇总表已生成");
+//				}
+//				if(DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)){
+//					message.setContent("预算简易汇总表已生成");
+//				}
+//				if(DataModule.REPORT_TYPE_PROFIT_LOSS_SUMMARY.equals(reportType)){
+//					message.setContent("损益简易汇总表已生成");
+//				}
+//				if(DataModule.REPORT_TYPE_ASSESSMENT.equals(reportType)){
+//					message.setContent("考核汇总表已生成");
+//				}
+//				if(DataModule.REPORT_TYPE_TAX.equals(reportType)){
+//					message.setContent("税金汇总表已生成");
+//				}
+				message.setContent(title + "表已生成");
 				message.setuId(user.getId());//发送指定人的id
 				message.setIsTag(0);
 				message.setsName("系统");
