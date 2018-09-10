@@ -532,8 +532,8 @@ public class OrganizationController {
                 HashMap<Object, Object> mmp = new HashMap<Object, Object>();
                 mmp.put("id", request.getParameter("id"));
                 Calendar cal = Calendar.getInstance();
-    		    //int day = cal.get(Calendar.DATE);
-    		    int day=12;
+    		    int day = cal.get(Calendar.DATE);
+    		    //int day=12;
                 int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
                 int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
                 if(day<start_time||day>stop_time){
@@ -677,8 +677,8 @@ public class OrganizationController {
         ResultUtils result=new ResultUtils();
         
         Calendar c = Calendar.getInstance();
-//        int day = c.get(Calendar.DAY_OF_MONTH);
-        int day = 11;
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        //int day = 11;
         //判断当前时间是否允许移动组织架构
         //10-19号允许移动
 		if (day < SiteConst.MOVE_ORGANIZATION_START_TIME
