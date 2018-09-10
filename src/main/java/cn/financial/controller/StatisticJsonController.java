@@ -199,7 +199,7 @@ public class StatisticJsonController {
 			
 			URLEncoder.encode(saveName,"UTF-8");  
 			String url = request.getRequestURI();
-			messageservice.saveMessageByUser(user, saveName, url, reportType);
+			messageservice.saveMessageByUser(user, saveName, url,bean.getModuleName());
 			ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,sj);
 //            dataMap.putAll(ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY));
 //            dataMap.put("caCheId", caCheUuid);
