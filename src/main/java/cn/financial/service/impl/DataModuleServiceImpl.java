@@ -243,7 +243,8 @@ public class DataModuleServiceImpl implements DataModuleService{
 		bean.setFounder((String)SecurityUtils.getSubject().getPrincipal());
 		bean.setModuleName(getDataModuleName(reportType,businessType));
 		
-		if(DataModule.REPORT_TYPE_BUDGET.equals(reportType)) {
+		if (DataModule.REPORT_TYPE_BUDGET.equals(reportType)
+				|| DataModule.REPORT_TYPE_BUDGET_SUMMARY.equals(reportType)) {
 			JsonConvertProcess jcp = new JsonConvertProcess();
 			JSONObject budgetJson = jcp.generateMonthlyBudgetJson(json);//生成预算模板数据
 			bean.setModuleData(budgetJson.toJSONString());
