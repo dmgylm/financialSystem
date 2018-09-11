@@ -43,7 +43,7 @@
     <!--根据条件查看单个模板-->
     <select id="getDataModule" parameterType="map" resultType="dataModule">
         SELECT id,moduleKey,moduleName,moduleData,reportType,businessType,versionNumber,founder,statue,createTime,updateTime FROM dataModule WHERE 1 = 1
-        <include refid="query_dataModule_where"></include>
+        and businessType = #{businessType} and reportType = #{reportType}
         ORDER BY versionNumber DESC LIMIT 0,1
     </select>
     
