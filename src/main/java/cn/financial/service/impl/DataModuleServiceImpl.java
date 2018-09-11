@@ -218,6 +218,9 @@ public class DataModuleServiceImpl implements DataModuleService{
 			throws FormulaAnalysisException {
 		HtmlAnalysis htmlAnalysis = new HtmlAnalysis(html);
 		String json = htmlAnalysis.analysis();
+		if(!StringUtils.isValid(businessType)) {
+			businessType = "";
+		}
 		DataModule dataModule = getDataModule(reportType,businessType,null);
 		Integer versionNumber = 0;
 		if(dataModule != null ) {
