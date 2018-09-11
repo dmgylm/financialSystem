@@ -267,7 +267,7 @@
 			and his_permission like '%${his_permission}%'
 		</if>
         <if test="orgkey!=null and orgkey!=''">
-            and orgkey like '%${orgkey}%'
+            and orgkey = '${orgkey}'
         </if>
 		<if test="orgType!=null and orgType!=''">
             and orgType = #{orgType,jdbcType=INTEGER}
