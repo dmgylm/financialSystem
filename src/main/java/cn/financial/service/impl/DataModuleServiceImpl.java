@@ -32,6 +32,7 @@ import cn.financial.service.RedisCacheService;
 import cn.financial.util.HtmlAnalysis;
 import cn.financial.util.HtmlGenerate;
 import cn.financial.util.JsonConvertProcess;
+import cn.financial.util.StringUtils;
 import cn.financial.util.TimeUtils;
 import cn.financial.util.UuidUtil;
 
@@ -261,10 +262,12 @@ public class DataModuleServiceImpl implements DataModuleService{
 	 * @return
 	 */
 	public String getDataModuleName(String reportType, String businessType) {
-		Organization org = organizationService.getOrgaByKey(businessType);
 		String orgName = "";
-		if(org != null) {
-			orgName = org.getOrgName();
+		if(StringUtils.isValid(businessType)) {
+			Organization org = organizationService.getOrgaByKey(businessType);
+			if(org != null) {
+				orgName = org.getOrgName();
+			}
 		}
 		String reportTypeName = DataModule.getReprtTypeName(reportType);
 		return orgName + reportTypeName;
