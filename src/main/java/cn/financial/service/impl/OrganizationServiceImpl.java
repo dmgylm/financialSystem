@@ -1180,6 +1180,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		    String targetOrgPlateId = targetOrgJson.getString("orgPlateId");
 		    if(StringUtils.isValid(sourceOrgPlateId) && StringUtils.isValid(targetOrgPlateId) && !sourceOrgJson.equals(targetOrgPlateId)) {
 		    	ElementXMLUtils.returnValue(ElementConfig.ORG_PALTE_MOVE_PLATE,result);
+		    	return result;
 		    }
 		    Integer orgType = getNodeType(sourceOrgJson);
 		    Organization bean = new Organization();
