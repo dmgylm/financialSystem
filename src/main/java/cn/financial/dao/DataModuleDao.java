@@ -51,4 +51,6 @@ public interface DataModuleDao {
      * @return
      */
 	List<DataModule> dataModuleById();
+
+	DataModule getDataModuleById(@Param("id") String id);
 }

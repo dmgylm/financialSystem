@@ -47,6 +47,11 @@
         ORDER BY versionNumber DESC LIMIT 0,1
     </select>
     
+    <select id="getDataModuleById" parameterType="STRING" resultType="dataModule">
+        SELECT id,moduleKey,moduleName,moduleData,reportType,businessType,versionNumber,founder,statue,createTime,updateTime FROM dataModule WHERE 1 = 1
+        and id = #{id} ORDER BY versionNumber DESC LIMIT 0,1
+    </select>
+    
     <!--新增模板-->
     <insert id="insertDataModule" parameterType="DataModule">
         insert into dataModule(id,moduleKey,moduleName,reportType,businessType,moduleData,versionNumber,founder,statue,createTime) 

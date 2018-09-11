@@ -174,7 +174,7 @@ public class DataModuleServiceImpl implements DataModuleService{
 		Map<String,Object> params = new HashMap<String, Object>();
 		try {
 			params.put("id", dataModuleId);
-			DataModule dataModule=dataModuleDao.getDataModule(params);
+			DataModule dataModule=dataModuleDao.getDataModuleById(dataModuleId);
 			HtmlGenerate hg = new HtmlGenerate();
 			String html = hg.generateHtml(dataModule.getModuleData(),HtmlGenerate.HTML_TYPE_TEMPLATE);
 			dataModule.setDataHtml(html);
