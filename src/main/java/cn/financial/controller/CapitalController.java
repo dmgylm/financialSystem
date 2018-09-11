@@ -550,8 +550,8 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[6].equals("")){
-                                 if(str[6].matches("^\\d+$")){//判断单元格数据是否是数字
-                                     capital.setStartBlack(Integer.parseInt(str[6]));  
+                                 if(str[6].matches("([1-9]+[0-9]*|0)(\\.[\\d]+)?")){//判断单元格数据是否是数字(包含小数点)
+                                     capital.setStartBlack(Double.parseDouble(str[6]));  
                                  }else{
                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                      result.setResultDesc("Excel表格第"+(i+2)+"行第七个单元格只能是数字");
@@ -565,8 +565,8 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[7].equals("")){
-                                 if(str[7].matches("^\\d+$")){//判断单元格数据是否是数字
-                                     capital.setIncom(Integer.parseInt(str[7]));
+                                 if(str[7].matches("([1-9]+[0-9]*|0)(\\.[\\d]+)?")){//判断单元格数据是否是数字
+                                     capital.setIncom(Double.parseDouble(str[7]));
                                  }else{
                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                      result.setResultDesc("Excel表格第"+(i+2)+"行第八个单元格数据只能是数字");
@@ -580,8 +580,8 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[8].equals("")){
-                                 if(str[8].matches("^\\d+$")){//判断单元格数据是否是数字
-                                     capital.setPay(Integer.parseInt(str[8]));
+                                 if(str[8].matches("([1-9]+[0-9]*|0)(\\.[\\d]+)?")){//判断单元格数据是否是数字
+                                     capital.setPay(Double.parseDouble(str[8]));
                                  }else{
                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                      result.setResultDesc("Excel表格第"+(i+2)+"行第九个单元格数据只能是数字");
@@ -595,8 +595,8 @@ public class CapitalController {
                                  break;
                              }
                              if(!str[9].equals("")){
-                                 if(str[9].matches("^\\d+$")){//判断单元格数据是否是数字
-                                     capital.setEndBlack(Integer.parseInt(str[9]));
+                                 if(str[9].matches("([1-9]+[0-9]*|0)(\\.[\\d]+)?")){//判断单元格数据是否是数字
+                                     capital.setEndBlack(Double.parseDouble(str[9]));
                                  }else{
                                      ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                                      result.setResultDesc("Excel表格第"+(i+2)+"行第十个单元格数据只能是数字");
