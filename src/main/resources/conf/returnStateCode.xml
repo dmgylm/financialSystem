@@ -295,4 +295,8 @@
         <code>307</code>
         <description>您当前为离职状态，将被强制退出系统</description>
     </Result>
+    <Result name="ORG_PALTE_MOVE_PLATE">
+        <code>308</code>
+        <description>该节点不能移动到其它事业板块下</description>
+    </Result>
 </StateCode>
