@@ -273,7 +273,7 @@ public class BusinessDataController {
                    }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
-                    htmlResult.setResultDesc("您当前没有权限进行此操作！"); 
+                    htmlResult.setResultDesc("您当前没有权限进行此操作!"); 
                 }
             } else {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,htmlResult);
@@ -423,7 +423,7 @@ public class BusinessDataController {
              }
             }else{
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                result.setResultDesc("您当前所属的组织架构没有此操作权限！"); 
+                result.setResultDesc("您当前没有权限进行此操作！"); 
             }
         } catch (Exception e) {
             ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);

@@ -273,7 +273,7 @@ public class CapitalController {
                   }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
-                    capitalByIdResult.setResultDesc("您当前所属的组织架构没有此操作权限！");  
+                    capitalByIdResult.setResultDesc("您当前没有权限进行此操作！");  
                 }
             } catch (Exception e) {
                 ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,capitalByIdResult);
@@ -340,7 +340,7 @@ public class CapitalController {
                   }
                 }else{
                     ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                    result.setResultDesc("您当前所属的组织架构没有此操作权限！");
+                    result.setResultDesc("您当前没有权限进行此操作！");
                 }
             } catch (Exception e) {
                   ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
@@ -673,7 +673,7 @@ public class CapitalController {
                           }
                      }else{
                          ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                         result.setResultDesc("您当前所属的组织架构没有此操作权限！");
+                         result.setResultDesc("您当前没有权限进行此操作！");
                      }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
