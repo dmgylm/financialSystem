@@ -1196,6 +1196,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	private void doMoveOrg(JSONObject sourceOrgJson, JSONObject targetOrgJson,String userId) {
 		String targetCode = targetOrgJson.getString("id");//id即code
+		String orgPlateId = targetOrgJson.getString("orgPlateId");
 //		JSONArray targetChildrens = targetOrgJson.getJSONArray("children");
 		
 //		List<String> listCode = new ArrayList<String>();
@@ -1213,7 +1214,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		//查询下一级节点,包括停用状态的
 		List<Organization> orglst = listOrgByParentCode(targetCode,null);
 		String targetNodeCode = UuidUtil.assembleOrgCode(targetCode, orglst);
-		doSaveMoveOrgByRecursion(sourceOrgJson,targetNodeCode,targetCode,userId);
+		doSaveMoveOrgByRecursion(sourceOrgJson,targetNodeCode,targetCode,orgPlateId,userId);
 	}
 	
 	private List<Organization> listOrgByParentCode(String parentCode,Integer status) {
@@ -1227,7 +1228,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Transactional
 	private void doSaveMoveOrgByRecursion(JSONObject json,
-			String nodeCode,String parentCode,String userId) {
+			String nodeCode,String parentCode,String orgPlateId,String userId) {
 		String oldOrgId = json.getString("pid");
 		String code = json.getString("id");//id即code
 //		String parenId = json.getString("parentId");
@@ -1235,7 +1236,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 		String orgKey = json.getString("orgKey");
 		String orgType = json.getString("orgType");
 		String his_permission = json.getString("his_permission");
-		String orgPlateId = json.getString("orgPlateId");
 		JSONArray childrens = json.getJSONArray("children");
 		//将原来的code前缀替换成新的前缀
 //		code = code.replaceFirst(parenId, parentCode);
@@ -1275,7 +1275,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         	JSONObject children = childrens.getJSONObject(i);
         	String subNodeCode = children.getString("id");
         	subNodeCode = nodeCode + subNodeCode.substring(subNodeCode.length()-2);
-        	doSaveMoveOrgByRecursion(children, subNodeCode, nodeCode, userId);
+        	doSaveMoveOrgByRecursion(children, subNodeCode, nodeCode,orgPlateId, userId);
         }
         
         
