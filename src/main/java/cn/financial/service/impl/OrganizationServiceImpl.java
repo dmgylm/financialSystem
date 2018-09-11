@@ -1178,7 +1178,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		    JSONObject targetOrgJson = treeByIdForSon(parentId);
 		    String sourceOrgPlateId = sourceOrgJson.getString("orgPlateId");
 		    String targetOrgPlateId = targetOrgJson.getString("orgPlateId");
-		    if(StringUtils.isValid(sourceOrgPlateId) && StringUtils.isValid(targetOrgPlateId) && !sourceOrgJson.equals(targetOrgPlateId)) {
+		    if(StringUtils.isValid(sourceOrgPlateId) && StringUtils.isValid(targetOrgPlateId) && !sourceOrgPlateId.equals(targetOrgPlateId)) {
 		    	ElementXMLUtils.returnValue(ElementConfig.ORG_PALTE_MOVE_PLATE,result);
 		    	return result;
 		    }
