@@ -302,4 +302,6 @@ public class ElementConfig {
      * 修改当前登录人状态为离职
      */
     public static final String USER_QUIT ="USER_QUIT";
+
+	public static final String ORG_PALTE_MOVE_PLATE = "ORG_PALTE_MOVE_PLATE";
 }

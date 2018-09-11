@@ -1176,6 +1176,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 		try {
 			JSONObject sourceOrgJson = treeByIdForSon(id);
 		    JSONObject targetOrgJson = treeByIdForSon(parentId);
+		    String sourceOrgPlateId = sourceOrgJson.getString("orgPlateId");
+		    String targetOrgPlateId = targetOrgJson.getString("orgPlateId");
+		    if(StringUtils.isValid(sourceOrgPlateId) && StringUtils.isValid(targetOrgPlateId) && !sourceOrgJson.equals(targetOrgPlateId)) {
+		    	ElementXMLUtils.returnValue(ElementConfig.ORG_PALTE_MOVE_PLATE,result);
+		    }
 		    Integer orgType = getNodeType(sourceOrgJson);
 		    Organization bean = new Organization();
 		    bean.setId(sourceOrgJson.getString("pid"));// 组织结构id
