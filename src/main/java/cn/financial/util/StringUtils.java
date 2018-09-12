@@ -149,7 +149,7 @@ public class StringUtils {
         		return "";
         	}
     		Double d = Double.parseDouble(value);
-    		BigDecimal bg = new BigDecimal(d).setScale(2, RoundingMode.UP);
+    		BigDecimal bg = new BigDecimal(d).setScale(2, RoundingMode.HALF_UP);
         	return formatNumber(bg.doubleValue(), "0.##");			
 		} catch (Exception e) {
 			return "";
@@ -157,7 +157,7 @@ public class StringUtils {
     }
     
     public static void main(String[] args) {
-		System.out.println(formatNumber("4444.33333"));
+		System.out.println(formatNumber("0.01"));
 	}
     
 }
