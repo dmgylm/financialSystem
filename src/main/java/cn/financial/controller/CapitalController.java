@@ -424,6 +424,7 @@ public class CapitalController {
                 }
             }
             boolean insertFlag = true;//上传数据是否有错
+            if(isImport){
             if(uploadFile.getOriginalFilename().contains(".")){
             String name=uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().indexOf("."));
             //得到账户性质项目分类数据 如果上传的不包含在里面 则是不能上传
@@ -443,7 +444,6 @@ public class CapitalController {
                   List<String []> list=ExcelUtil.read(uploadFile.getInputStream(), row);//读取excel表格数据
                   List<Capital> listCapital=new ArrayList<>();
                   try {
-                     if(isImport){
                          for (int i = 0; i < list.size(); i++){
                              String[] str=list.get(i);   //在excel得到第i条数据
                              Capital capital=new Capital();
@@ -670,11 +670,7 @@ public class CapitalController {
                              } else {
                                  ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
                              } 
-                          }
-                     }else{
-                         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
-                         result.setResultDesc("您当前没有权限进行此操作！");
-                     }
+                         }
                  } catch (Exception e) {
                      ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE,result);
                      this.logger.error(e.getMessage(), e);
@@ -696,6 +692,10 @@ public class CapitalController {
            ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
            result.setResultDesc("您上传的不是Excel文档！");
        }
+      }else{
+         ElementXMLUtils.returnValue(ElementConfig.RUN_ERROR,result);
+         result.setResultDesc("您当前没有权限进行此操作！");
+      }
           return result;
       }
         
