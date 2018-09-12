@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -301,7 +302,7 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 	@SuppressWarnings("unchecked")
 	public String jsonCalculationCollect(String reportType, String businessType,List<BusinessData> businessDataList){
 		//获取模板
-//		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/budget_new.txt"));
+//		JSONObject model =JSONObject.parseObject(JsonConvertProcess.readFileContent("C:/Users/mzj/Desktop/财务相关/财物报表相关/正式使用/summary.txt"));
 		JSONObject model = findModel(reportType,businessType);
 		if(model==null){
 			return null;
@@ -469,7 +470,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 						//当★大于1时
 						String[] moreDown = formula.split("[\\+\\-\\*\\/()]");
 						Map<String,Object> item = new HashMap<String, Object>();
-//						Double formulaRS = 0.0;
 						for (int j = 0; j < moreDown.length; j++) {
 							String[] setDown = moreDown[j].split("★");
 //							if(setDown.length==1){
@@ -483,10 +483,6 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 									Double amount = staticData.getDouble(logoValue);
 									moreDown[j] = moreDown[j].replaceAll("★", "_");
 									item.put(moreDown[j], amount);
-//									if(amount==null){
-//										amount =0.0;
-//									}
-//									formulaRS += amount;
 								}
 							}
 						}
@@ -557,14 +553,16 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 							String downKey = dt.next();
 							Double valve = downValve.getDouble(downKey);
 							if(item.containsKey(downKey)){
-								valve +=Double.parseDouble(item.get(downKey).toString());
+								valve = add(valve, Double.parseDouble(item.get(downKey).toString()));
+//								valve +=Double.parseDouble(item.get(downKey).toString());
 							}
 							item.put(downKey,df.format(valve));
 						}
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
 						if(item.containsKey(itemKey)){
-							valve +=Double.parseDouble(item.get(itemKey).toString());
+							valve = add(valve, Double.parseDouble(item.get(itemKey).toString()));
+//							valve +=Double.parseDouble(item.get(itemKey).toString());
 						}
 						item.put(itemKey, df.format(valve));
 					}
@@ -597,7 +595,8 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 							String downKey = dt.next();
 							Double valve = downValve.getDouble(downKey);
 							if(item.containsKey(downKey)){
-								valve +=(Double)item.get(downKey);
+								valve = add(valve, (Double)item.get(downKey));
+//								valve +=(Double)item.get(downKey);
 							}
 							item.put(downKey, valve);
 							partItem.put(downKey, valve);
@@ -605,7 +604,8 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 					}else{
 						Double valve = jsonValve.getDouble(itemKey);
 						if(item.containsKey(itemKey)){
-							valve +=(Double)item.get(itemKey);
+							valve = add(valve, (Double)item.get(itemKey));
+//							valve +=(Double)item.get(itemKey);
 						}
 						item.put(itemKey, valve);
 						partItem.put(itemKey, valve);
@@ -652,5 +652,9 @@ public class StatisticJsonServiceImpl implements StatisticJsonService {
 		return itemData;
 	}
 	
-	
+	public static double add(double value1,double value2){
+        BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
+        BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
+        return b1.add(b2).doubleValue();
+    }
 }

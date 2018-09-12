@@ -47,6 +47,11 @@ public class ExcelReckonUtils {
 		Map<Integer, Map<Integer, JSONObject>> trMap = jcp.assembleData(jsonObj);
 		trMap = jcp.sortTableRowMap(trMap);//排序行和列
 		HSSFWorkbook wb = generateExcelByFormula(trMap);
+//		try {
+//			wb.write(new FileOutputStream(new File("D:/testexcel.xls")));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		evaluator = wb.getCreationHelper().createFormulaEvaluator();
 		sheet = wb.getSheetAt(0);
 		jsonObj = computeExcelToJson(jsonObj);
@@ -214,7 +219,8 @@ public class ExcelReckonUtils {
 				System.out.println(111);
 			}
 			if(attr.indexOf(MODULE_KEY_SPLIT)>0) {
-				excelFormula = String.valueOf(oldValue);
+				return oldValue.toString();
+//				excelFormula = String.valueOf(oldValue);
 			}
 			formula = FormulaUtil.replaceFirst(formula,attr,excelFormula);
 		}
