@@ -1,5 +1,7 @@
 package cn.financial.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -146,7 +148,9 @@ public class StringUtils {
     		if(!isValid(value)) {
         		return "";
         	}
-        	return formatNumber(Double.parseDouble(value), "0.##");			
+    		Double d = Double.parseDouble(value);
+    		BigDecimal bg = new BigDecimal(d).setScale(2, RoundingMode.UP);
+        	return formatNumber(bg.doubleValue(), "0.##");			
 		} catch (Exception e) {
 			return "";
 		}
