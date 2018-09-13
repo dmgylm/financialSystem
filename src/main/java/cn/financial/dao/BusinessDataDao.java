@@ -93,5 +93,11 @@ public interface BusinessDataDao {
     List<BusinessData> businessDataYear(Map<Object, Object> map);
     
     List<BusinessData> listBusinessDataByIdAndDateList(Map<Object, Object> map);
-               
+    
+    /**
+     * 查询不包含此状态的数据
+     * @param map
+     * @return
+     */
+    List<BusinessData> businessDataStatus(Map<Object, Object> map);
 }

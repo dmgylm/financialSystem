@@ -77,7 +77,16 @@
        <include refid="query_businessData_where"></include>  
        ORDER BY businessData.updateTime DESC
        </select>
-  
+       
+       <!-- 查询不不包含某个状态的数据-->
+       <select id="businessDataStatus" parameterType="map" resultType="businessData">
+         SELECT * FROM businessData  WHERE delStatus=1 
+         <if test="uId !=null and uId!=''"> and uId = #{uId}</if>
+         <if test="year !=null and year!=''"> and year = #{year}</if>
+         <if test="month !=null and month!=''"> and month = #{month}</if>
+         <if test="status !=null and status!=''"> and status!=#{status}</if>
+       </select>
+       
        
      <!--   <select id="listBusinessDataBy" parameterType="map" resultType="businessData">
         SELECT 

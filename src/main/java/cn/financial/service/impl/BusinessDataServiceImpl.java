@@ -229,7 +229,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
      * @param 
      * @return
      */
-    public List<BusinessData> listBusinessData(Integer year,Integer month,Integer status) {
+    /*public List<BusinessData> listBusinessData(Integer year,Integer month,Integer status) {
      Map<Object, Object> map = new HashMap<>();
      map.put("sId", 1);
      map.put("year", year);
@@ -237,5 +237,11 @@ public class BusinessDataServiceImpl implements BusinessDataService {
      map.put("status", status);
      List<BusinessData> listBusinessData = businessDataService.businessDataExport(map);
      return listBusinessData;
+    }*/
+
+    @Override
+    public List<BusinessData> businessDataStatus(Map<Object, Object> map) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
