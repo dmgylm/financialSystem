@@ -229,7 +229,7 @@
     </Result>
      <Result name="MOBILE_ORGANIZATION_FAIL">
         <code>291</code>
-        <description>请在规定时间内进行移动</description>
+        <description>非法操作,有损益表未提交</description>
     </Result>
      <Result name="BUDGET_GENERATE">
         <code>292</code>

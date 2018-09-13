@@ -491,15 +491,15 @@ public class OrganizationController {
                 // 这里判断此节点下是否存在没有被停用的节点。
                 HashMap<Object, Object> mmp = new HashMap<Object, Object>();
                 mmp.put("id", request.getParameter("id"));
-                Calendar cal = Calendar.getInstance();
-    		    int day = cal.get(Calendar.DATE);
+//                Calendar cal = Calendar.getInstance();
+//    		    int day = cal.get(Calendar.DATE);
     		    //int day=12;
-                int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
-                int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
-                if(day<start_time||day>stop_time){
-                	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_DISABLE,result);
-                	return result;
-                }
+//                int start_time=SiteConst.MOVE_ORGANIZATION_START_TIME;
+//                int stop_time=SiteConst.MOVE_ORGANIZATION_STOP_TIME;
+//                if(day<start_time||day>stop_time){
+//                	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_DISABLE,result);
+//                	return result;
+//                }
                 List<Organization> list = organizationService.listOrganizationBy(null,null,null,id,null,null,null,null,null);
                 int orgType=list.get(0).getOrgType();//当前级别
                 Boolean boolean1 = organizationService.hasOrganizationSon(mmp);
@@ -636,23 +636,12 @@ public class OrganizationController {
     public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request) {
         ResultUtils result=new ResultUtils();
         
+        //判断是否可以移动,检查上个月的损益表,如果有损益表未提交, 则禁止移动
         if(businessDataAllSubmit()) {
-        	
-        }
-        
-        Calendar c = Calendar.getInstance();
-        int day = c.get(Calendar.DAY_OF_MONTH);
-        //int day = 11;
-        //判断当前时间是否允许移动组织架构
-        //10-19号允许移动
-		if (day < SiteConst.MOVE_ORGANIZATION_START_TIME
-				|| day > SiteConst.MOVE_ORGANIZATION_STOP_TIME) {
-        	ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
+        	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
   	       	return result;
         }
-		
-		
-		
+        
         User user = (User) request.getAttribute("user");
         
         result = organizationService.moveOrg(id,parentId,user.getId());
@@ -809,8 +798,12 @@ public class OrganizationController {
     	Map<Object, Object> params = new HashMap<Object, Object>();
     	params.put("year", year);
     	params.put("month", month);
-		businessDataService.listBusinessDataBy(params);
-		return false;
+    	params.put("status", 2);//2 表示已提交, 这里查询所有status!=2的数据
+		List<BusinessData> list = businessDataService.businessDataStatus(params);
+		if(list != null && list.size()>0) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
