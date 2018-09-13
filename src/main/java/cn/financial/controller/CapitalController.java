@@ -175,13 +175,10 @@ public class CapitalController {
                         }  
                     }
                 }
-                if(keyword!=null&&!keyword.equals("")){
-                    Map<Object, Object> mapKeyword = new HashMap<>();
-                    mapKeyword.put("orgName", keyword);
-                    List<Organization>  listAllOrganizationBy=organizationService.listAllOrganizationBy(map);
-                    for (int i = 0; i < listAllOrganizationBy.size(); i++) {
-                        
-                    }
+                List<Organization>  listOrganizationBy=organizationService.listOrganizationBy(keyword, null, null, null, null, null, null, null, null);
+                String[] codeKeyword=new String[listOrganizationBy.size()];
+                for (int i = 0; i < listOrganizationBy.size(); i++) {
+                    codeKeyword[i]=listOrganizationBy.get(i).getCode();
                 }
                 map.put("accountBank",accountBank);//开户行
                 map.put("accountNature",accountNature);//账户性质
@@ -189,7 +186,7 @@ public class CapitalController {
                 map.put("tradeTimeEnd",tradeTimeEnd);//交易结束日期
                 map.put("classify",classify);//项目分类
                 map.put("code", code);//根据权限的typeId查询相对应的数据
-                map.put("company",keyword);//关键字获取的公司名称查询
+                map.put("codeKeyword",codeKeyword);//关键字获取的公司名称查询
                 List<Capital> total = capitalService.capitalExport(map); //根据权限oId查询里面的权限的全部数据未经过分页
                 if(pageSize==null ||pageSize==0){
                     map.put("pageSize",10);

@@ -64,7 +64,7 @@
          <include refid="query_capital_where"></include>
          ORDER BY c.tradeTime DESC
        </select>
-
+       
        <!-- 查询组织架构的公司-->
        <select id="capitalCompany" parameterType="map" resultType="Capital">
             SELECT orgName as company from organization WHERE orgType=2 and status=1
@@ -129,37 +129,19 @@
       
       <!--定义一个sql -->
      <sql id="query_capital_where">
-     
-      <!--   <if test=" plate!=null and plate!=''">
-             and c.plate LIKE CONCAT('%',#{plate},'%')
-             and c.plate =#{plate}
-        </if>
-        <if test=" bu!=null and bu!=''">
-             and c.bu =#{bu}
-        </if>
-        <if test=" regionName!=null and regionName!=''">
-             and c.regionName=#{regionName}
-        </if>
-        <if test=" province!=null and province!=''">
-             and c.province =#{province}
-        </if>
-        <if test=" city!=null and city!=''">
-             and c.city=#{city}
-        </if>
-         <if test="accountName!=null and accountName!=''">
-             and  c.accountName =#{accountName}
-        </if>
-         -->
-         
           <if test="code!=null and code!=''">
-            and c.oId in (SELECT id from organization WHERE 1=1 and
-           <foreach collection="code" item="code" index="index"  separator="OR">
-             code LIKE CONCAT(#{code},'%')
+            and(
+             <foreach collection="code" item="code" index="index"  separator="OR">
+             o.code LIKE CONCAT(#{code},'%')
            </foreach>
            )
-           <if test=" company!=null and company!=''">
-            and o.orgName LIKE CONCAT('%',#{company},'%')
-           </if> 
+         </if> 
+          <if test="codeKeyword!=null and codeKeyword!=''">
+           and(
+             <foreach collection="codeKeyword" item="codeKeyword" index="index"  separator="OR">
+             o.code LIKE CONCAT(#{codeKeyword},'%')
+           </foreach>
+           )
          </if> 
         <if test="accountBank!=null and accountBank!=''">
              and c.accountBank LIKE CONCAT('%',#{accountBank},'%')
