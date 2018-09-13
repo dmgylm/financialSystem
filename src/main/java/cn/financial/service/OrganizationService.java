@@ -19,6 +19,15 @@ import cn.financial.model.response.ResultUtils;
  */
 public interface OrganizationService {
 
+	/**
+	 * 新增组织架构(事务方式,包含组织架构入库及预算表数据处理)
+	 * @param orgName
+	 * @param orgType
+	 * @param parentOrgId
+	 * @param userId
+	 * @return
+	 */
+	ResultUtils addOrgAndBusiniseData(String orgName,Integer orgType,String parentOrgId,String userId);
     /**
      * 接口（新增组织结构）
      * 

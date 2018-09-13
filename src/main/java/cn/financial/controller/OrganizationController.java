@@ -116,48 +116,8 @@ public class OrganizationController {
 			HttpServletResponse response) {
     	ResultUtils result = new ResultUtils();
 		try {
-			Organization bean = new Organization();
-			String orgId = UuidUtil.getUUID();
-			bean.setId(orgId);// 组织结构id
-			bean.setOrgName(orgName);
-			bean.setOrgType(orgType);
-			bean.setParentId(parentOrgId);
 			User user = (User) request.getAttribute("user");
-			bean.setuId(user.getId());// 提交人id
-
-			// 新增时检查数据合法性
-			result = organizationService.checkOrgData(bean,parentOrgId,false);
-			// 数据不通过, 则直接返回检查结果
-			if (!"200".equals(result.getResultCode())) {
-				return result;
-			}
-			int saveResult = organizationService
-					.saveOrganization(bean, parentOrgId);
-			if (saveResult == 1) {// 1 为保存成功
-				// 获取模板数据,并生成预算数据
-				if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
-					JSONObject subOrgJson = organizationService.treeByIdForSon(parentOrgId);
-					JSONArray childrens = subOrgJson.getJSONArray("children");
-					JSONObject curOrg = null;
-					for(int i=0;childrens!=null && i<childrens.size();i++) {
-						JSONObject node = childrens.getJSONObject(i);
-						if(orgName.equals(node.getString("name"))) {
-							curOrg = node;
-							break ;
-						}
-					}
-					String orgPlateId = curOrg.getString("orgPlateId");
-					DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
-					Organization department = organizationService.getOrgById(orgId);
-					Calendar c = Calendar.getInstance();
-					int year = c.get(Calendar.YEAR);
-					businessDataService.createBusinessData(department , year, dataModule);
-					// 预算生成成功, 则向组织节点发送消息
-					Organization company = organizationService.getOrgById(bean.getCompany());
-					businessDataService.createBunsinessDataMessage(year, company , department);
-					ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
-				}
-			}
+			result = organizationService.addOrgAndBusiniseData(orgName, orgType, parentOrgId, user.getId());
 			redisCacheService.removeAll("organizationValue");
 			//清除该组织架构节点是否拥有编辑表单权限
 			redisCacheService.removeAll("userOrganization");
@@ -676,6 +636,10 @@ public class OrganizationController {
     public ResultUtils moveOrganization(String id,String parentId,HttpServletRequest request) {
         ResultUtils result=new ResultUtils();
         
+        if(businessDataAllSubmit()) {
+        	
+        }
+        
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH);
         //int day = 11;
@@ -686,6 +650,9 @@ public class OrganizationController {
         	ElementXMLUtils.returnValue(ElementConfig.NAMELY_NOSAME,result);
   	       	return result;
         }
+		
+		
+		
         User user = (User) request.getAttribute("user");
         
         result = organizationService.moveOrg(id,parentId,user.getId());
@@ -834,7 +801,19 @@ public class OrganizationController {
         return result;
     }
 
-    /**
+    private boolean businessDataAllSubmit() {
+    	Calendar c = Calendar.getInstance();
+    	c.add(Calendar.MONTH, -1);
+    	int year = c.get(Calendar.YEAR);
+    	int month = c.get(Calendar.MONTH) + 1;
+    	Map<Object, Object> params = new HashMap<Object, Object>();
+    	params.put("year", year);
+    	params.put("month", month);
+		businessDataService.listBusinessDataBy(params);
+		return false;
+	}
+
+	/**
      * 根据条件判断是否该节点存在子节点
      * @param request
      * @param response

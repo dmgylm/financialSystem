@@ -72,7 +72,56 @@ public class OrganizationServiceImpl implements OrganizationService {
 	@Autowired
 	private BusinessDataInfoService businessDataInfoService;
     
-    
+	@Transactional(rollbackFor=Exception.class)
+    public ResultUtils addOrgAndBusiniseData(String orgName,Integer orgType,String parentOrgId,String userId){
+    	ResultUtils result = new ResultUtils();
+    	try {
+    		Organization bean = new Organization();
+    		String orgId = UuidUtil.getUUID();
+    		bean.setId(orgId);// 组织结构id
+    		bean.setOrgName(orgName);
+    		bean.setOrgType(orgType);
+    		bean.setParentId(parentOrgId);
+    		bean.setuId(userId);// 提交人id
+
+    		// 新增时检查数据合法性
+    		result = checkOrgData(bean,parentOrgId,false);
+    		// 数据不通过, 则直接返回检查结果
+    		if (!"200".equals(result.getResultCode())) {
+    			return result;
+    		}
+    		int saveResult = saveOrganization(bean, parentOrgId);
+    		if (saveResult == 1) {// 1 为保存成功
+    			// 获取模板数据,并生成预算数据
+    			if(Organization.ORG_TYPE_DEPARTMENT == orgType) {
+    				JSONObject subOrgJson = treeByIdForSon(parentOrgId);
+    				JSONArray childrens = subOrgJson.getJSONArray("children");
+    				JSONObject curOrg = null;
+    				for(int i=0;childrens!=null && i<childrens.size();i++) {
+    					JSONObject node = childrens.getJSONObject(i);
+    					if(orgName.equals(node.getString("name"))) {
+    						curOrg = node;
+    						break ;
+    					}
+    				}
+    				String orgPlateId = curOrg.getString("orgPlateId");
+    				DataModule dataModule = dataModuleServiceImpl.getDataModule(DataModule.REPORT_TYPE_BUDGET, orgPlateId);
+    				Organization department = getOrgById(orgId);
+    				Calendar c = Calendar.getInstance();
+    				int year = c.get(Calendar.YEAR);
+    				businessDataService.createBusinessData(department , year, dataModule);
+    				// 预算生成成功, 则向组织节点发送消息
+    				Organization company = getOrgById(bean.getCompany());
+    				businessDataService.createBunsinessDataMessage(year, company , department);
+    				ElementXMLUtils.returnValue(ElementConfig.BUDGET_GENERATE, result);
+    			}
+    		}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ElementXMLUtils.returnValue(ElementConfig.RUN_FAILURE, result);
+		}
+    	return result;
+    }
     
  
     /**
