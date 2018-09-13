@@ -229,13 +229,8 @@ public class BusinessDataServiceImpl implements BusinessDataService {
      map.put("sId", 1);
      map.put("year", year);
      map.put("month", month);
-     List<BusinessData> total = businessDataService.businessDataExport(map);
-     List<BusinessData> list=new ArrayList<>();
-     for (int i = 0; i < total.size(); i++) {
-      if(total.get(i).getStatus()==status){
-        list.add(total.get(i));
-       }
-     }
-     return list;
+     map.put("status", status);
+     List<BusinessData> listBusinessData = businessDataService.businessDataExport(map);
+     return listBusinessData;
     }
 }

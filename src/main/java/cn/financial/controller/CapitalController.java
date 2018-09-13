@@ -124,9 +124,9 @@ public class CapitalController {
                 String tradeTimeBeg,String tradeTimeEnd,String classify,Integer page,Integer pageSize) {
             CapitalResult capitalResult=new CapitalResult();
             try {
-                // if(keyword!=null&&!keyword.equals("")){
-                //   keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-              // }
+                 if(keyword!=null&&!keyword.equals("")){
+                  keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
+                }
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
@@ -173,6 +173,14 @@ public class CapitalController {
                         }else{
                             code.add(str);
                         }  
+                    }
+                }
+                if(keyword!=null&&!keyword.equals("")){
+                    Map<Object, Object> mapKeyword = new HashMap<>();
+                    mapKeyword.put("orgName", keyword);
+                    List<Organization>  listAllOrganizationBy=organizationService.listAllOrganizationBy(map);
+                    for (int i = 0; i < listAllOrganizationBy.size(); i++) {
+                        
                     }
                 }
                 map.put("accountBank",accountBank);//开户行
