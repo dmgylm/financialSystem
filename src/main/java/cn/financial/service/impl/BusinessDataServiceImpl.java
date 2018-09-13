@@ -1,5 +1,6 @@
 package cn.financial.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -220,20 +221,21 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	
 	 /**
      * 判断损益数据是否全部是已提交状态
-     * @param list
+     * @param 
      * @return
      */
-    public Boolean isStatus() {
-     boolean isStatus = true;//是否全部是已提交状态
+    public List<BusinessData> listBusinessData(Integer year,Integer month,Integer status) {
      Map<Object, Object> map = new HashMap<>();
      map.put("sId", 1);
+     map.put("year", year);
+     map.put("month", month);
      List<BusinessData> total = businessDataService.businessDataExport(map);
+     List<BusinessData> list=new ArrayList<>();
      for (int i = 0; i < total.size(); i++) {
-      if(total.get(i).getStatus()!=BusinessData.ORGNUM){
-          isStatus=false;
-          break;
+      if(total.get(i).getStatus()==status){
+        list.add(total.get(i));
        }
      }
-     return isStatus;
+     return list;
     }
 }
