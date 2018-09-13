@@ -124,9 +124,10 @@ public class CapitalController {
                 String tradeTimeBeg,String tradeTimeEnd,String classify,Integer page,Integer pageSize) {
             CapitalResult capitalResult=new CapitalResult();
             try {
-                 if(keyword!=null&&!keyword.equals("")){
+               /*  if(keyword!=null&&!keyword.equals("")){
                   keyword= new String(keyword.getBytes("iso8859-1"),"utf-8");
-                }
+                  
+                }*/
                 Map<Object, Object> map = new HashMap<>();
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
