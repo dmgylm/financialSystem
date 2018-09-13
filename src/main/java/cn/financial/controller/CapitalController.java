@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.financial.util.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +48,6 @@ import cn.financial.service.OrganizationService;
 import cn.financial.service.UserOrganizationService;
 import cn.financial.service.impl.BusinessDataServiceImpl;
 import cn.financial.service.impl.CapitalServiceImpl;
-import cn.financial.util.ElementConfig;
-import cn.financial.util.ElementXMLUtils;
-import cn.financial.util.ExcelUtil;
-import cn.financial.util.SiteConst;
-import cn.financial.util.TimeUtils;
-import cn.financial.util.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -87,6 +83,8 @@ public class CapitalController {
         
         @Autowired
         private  OrganizationService organizationService; //组织架构表
+
+        private Integer editorCountMax=FinanceConfig.EDITORCOUNT_MAX;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
@@ -202,14 +200,15 @@ public class CapitalController {
                 List<Capital> list = capitalService.listCapitalBy(map); //根据权限oId查询里面的权限数据(分页数据)
                 Date  newTime=new Date();
                 for (int i = 0; i < list.size(); i++) {
-                    Date begTime=list.get(i).getCreateTime(); //得到开始时间
-                    Date endTime=list.get(i).getUpdateTime(); //得到更新时间
-                    Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+//                    Date begTime=list.get(i).getCreateTime(); //得到开始时间
+//                    Date endTime=list.get(i).getUpdateTime(); //得到更新时间
+//                    Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
                     Integer editor=list.get(i).getEditor();
-                    if(num<=7 && endTime==null){
-                        editor=1;//可编辑数据
+                    if(list.get(i)!=null&&list.get(i).getEditor()!=null&&list.get(i).getEditor()!=null&&list.get(i).getEditor()>editorCountMax){
+                        list.get(i).setEditor(0);
+                    }else{
+                        list.get(i).setEditor(1);
                     }
-                    list.get(i).setEditor(editor);
                }
                 ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalResult);
                 capitalResult.setData(list);
@@ -240,7 +239,7 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 boolean isImport=true;//是否可编辑
                 for (int i = 0; i < userOrganization.size(); i++) {
                     Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
@@ -261,15 +260,16 @@ public class CapitalController {
                     capitalByIdResult.setResultDesc("当前组织架构数据已被停用！不能进行编辑！");    
                   }else{
                     if(id!=null&&!id.equals("")){
-                        Date  newTime=new Date();
-                        Date begTime=capital.getCreateTime(); //得到开始时间
-                        Date endTime=capital.getUpdateTime(); //得到更新时间
-                        Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
+//                        Date  newTime=new Date();
+//                        Date begTime=capital.getCreateTime(); //得到开始时间
+//                        Date endTime=capital.getUpdateTime(); //得到更新时间
+//                        Integer num=TimeUtils.daysBetween(begTime, newTime); //比较开始到现在的时间差
                         Integer editor=capital.getEditor();
-                        if(num<=7||endTime==null){
-                            editor=1;//可编辑数据
+                        if(capital!=null&&capital.getEditor()!=null&&capital.getEditor()!=null&&capital.getEditor()>editorCountMax){
+                            capital.setEditor(0);
+                        }else{
+                            capital.setEditor(1);
                         }
-                        capital.setEditor(editor);
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,capitalByIdResult);
                         capitalByIdResult.setData(capital);                  
                     }else{
@@ -308,7 +308,7 @@ public class CapitalController {
             try {
                 User user = (User) request.getAttribute("user");
                 String uId = user.getId();
-                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据 
+                List<JSONObject> userOrganization= userOrganizationService.userOrganizationList(uId); //判断 权限的数据
                 boolean isImport=true;//是否可编辑
                 for (int i = 0; i < userOrganization.size(); i++) {
                     Integer orgType=Integer.parseInt(userOrganization.get(i).getString("orgType"));
@@ -331,8 +331,14 @@ public class CapitalController {
                     if(id!=null&&!id.equals("")){
                         Capital capital =new Capital();
                         capital.setId(id);
+                        Capital query = capitalService.selectCapitalById(id);
+                        if(query!=null&&query.getEditor()!=null&&query.getEditor()!=null&&query.getEditor()>editorCountMax){
+                            ElementXMLUtils.returnValue(ElementConfig.EDITORMAX_ERROR,result);
+                            return result;
+                        }
                         capital.setClassify(classify); //修改项目分类
                         capital.setRemarks(remarks);  //备注
+                        capital.setEditor(query.getEditor()+1);
                         Integer i = capitalService.updateCapital(capital);
                         if (i == 1) {
                            ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY,result);

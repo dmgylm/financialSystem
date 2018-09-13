@@ -86,8 +86,9 @@ public class Capital {
          @ApiModelProperty(value="状态（0 已经删除不存在了 1存在）",name="status")
     	 private Integer status; //状态（0 已经删除不存在了 1存在）
     	 
-         @ApiModelProperty(value="是否可以编辑（默认为0   0 不可编辑  1可以编辑）",name="editor")
+         @ApiModelProperty(value="编辑次数  前端这个字段表示是否可编辑  后台代表编辑次数）",name="editor")
     	 private Integer editor; //是否可以编辑（默认为0   0 不可编辑  1可以编辑）
+
     	 
     	 public Capital() {
              super();

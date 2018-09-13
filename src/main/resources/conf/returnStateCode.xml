@@ -299,4 +299,8 @@
         <code>308</code>
         <description>该节点不能移动到其它事业板块下</description>
     </Result>
+    <Result name="EDITORMAX_ERROR">
+        <code>309</code>
+        <description>资金流水编辑超过最大次数</description>
+    </Result>
 </StateCode>

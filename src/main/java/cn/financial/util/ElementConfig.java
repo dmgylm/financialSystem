@@ -304,4 +304,10 @@ public class ElementConfig {
     public static final String USER_QUIT ="USER_QUIT";
 
 	public static final String ORG_PALTE_MOVE_PLATE = "ORG_PALTE_MOVE_PLATE";
+
+    /**
+     * 资金流水编辑超过最大次数
+     */
+
+    public static final String EDITORMAX_ERROR="EDITORMAX_ERROR";
 }
