@@ -72,8 +72,8 @@ public class QuartzJob implements Job{
 		List<Organization> orgCompany = organizationService.getCompany();// 获取所有公司
 		List<BusinessDataBuild> listCreateBd=buildService.listBusinessDataBuild(0);//获取未生成的损益
 		List<Map<String,Object>> saveOrg=new ArrayList<>();//保存同公司部门
-		int year = 2016;//Calendar.getInstance().get(Calendar.YEAR);
-		int month = 12;//Calendar.getInstance().get(Calendar.MONTH)+1;
+		int year =Calendar.getInstance().get(Calendar.YEAR);
+		int month = Calendar.getInstance().get(Calendar.MONTH);//本月生成上月的损益
 		try {
 			
 			
