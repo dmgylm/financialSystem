@@ -164,6 +164,9 @@
         <if test="sId!=null and sId!=''">
             and businessData.sId = #{sId}
         </if>
+        <if test="status!=null and status!=''">
+            and businessData.status = #{status}
+        </if>
          <!-- <if test="typeId!=null and typeId!=''">
           and businessData.typeId in 
             <foreach collection="typeId" item="typeId" index="index" open="(" separator="," close=")" >
