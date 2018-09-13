@@ -217,4 +217,23 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	         }
 	      return isImport;
     }
+	
+	 /**
+     * 判断损益数据是否全部是已提交状态
+     * @param list
+     * @return
+     */
+    public Boolean isStatus() {
+     boolean isStatus = true;//是否全部是已提交状态
+     Map<Object, Object> map = new HashMap<>();
+     map.put("sId", 1);
+     List<BusinessData> total = businessDataService.businessDataExport(map);
+     for (int i = 0; i < total.size(); i++) {
+      if(total.get(i).getStatus()!=BusinessData.ORGNUM){
+          isStatus=false;
+          break;
+       }
+     }
+     return isStatus;
+    }
 }
