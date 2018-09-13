@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.financial.dao.CapitalDao;
 import cn.financial.model.Capital;
 import cn.financial.service.CapitalService;
@@ -32,12 +34,14 @@ public class CapitalServiceImpl implements CapitalService{
      * 新增资金表数据
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer insertCapital(Capital capital) {
         // TODO Auto-generated method stub
         return capitalDao.insertCapital(capital);
     }
     
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer batchInsertCapital(List<Capital> listCapital) {
         // TODO Auto-generated method stub
         Integer a=0;
@@ -51,6 +55,7 @@ public class CapitalServiceImpl implements CapitalService{
      * 修改资金表数据
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer updateCapital(Capital capital) {
         // TODO Auto-generated method stub
         return capitalDao.updateCapital(capital);
@@ -88,9 +93,10 @@ public class CapitalServiceImpl implements CapitalService{
     }
 
     /**
-     * 修改资金表数据 
+     * 删除资金表数据 
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Integer deleteCapital(String id) {
         // TODO Auto-generated method stub
         return capitalDao.deleteCapital(id);

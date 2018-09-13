@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -52,6 +53,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * 新增损益数据
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer insertBusinessData(BusinessData businessData) {
 		return businessDataDao.insertBusinessData(businessData);
 	}
@@ -60,6 +62,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * 修改损益数据
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer updateBusinessData(BusinessData businessData) {
 		return businessDataDao.updateBusinessData(businessData);
 	}
@@ -67,6 +70,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * 修改损益状态
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer updateBusinessDataDelStatus(BusinessData businessData) {
 		return businessDataDao.updateBusinessDataDelStatus(businessData);
 	}
@@ -99,6 +103,7 @@ public class BusinessDataServiceImpl implements BusinessDataService {
 	 * 删除损益数据
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer deleteBusinessData(String id) {
 		return businessDataDao.deleteBusinessData(id);
 	}

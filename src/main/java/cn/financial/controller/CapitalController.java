@@ -359,7 +359,6 @@ public class CapitalController {
         /***
          * 导入上传
          */
-        @Transactional(rollbackFor = Exception.class)
         @RequiresPermissions("capital:import")
         @RequestMapping(value="/excelImport",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,method = RequestMethod.POST)
         @ApiOperation(value="资金流水上传", notes="资金流水表上传数据",response=ResultUtils.class)

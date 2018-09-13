@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -30,20 +31,24 @@ public class BusinessDataInfoServiceImpl implements BusinessDataInfoService {
 	private BusinessDataInfoDao businessDataInfoDao;
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer insertBusinessDataInfo(BusinessDataInfo businessData) {
 		return businessDataInfoDao.insertBusinessDataInfo(businessData);
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer deleteBusinessDataInfo(String id) {
 		return businessDataInfoDao.deleteBusinessDataInfo(id);
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer updateBusinessDataInfo(BusinessDataInfo businessData) {
 		return businessDataInfoDao.updateBusinessDataInfo(businessData);
 	}
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Integer updateBusinessDataInfoDelStatus(BusinessDataInfo businessData) {
 		return businessDataInfoDao.updateBusinessDataInfoDelStatus(businessData);
 	}
