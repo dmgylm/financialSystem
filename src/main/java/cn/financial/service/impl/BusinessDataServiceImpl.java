@@ -242,6 +242,6 @@ public class BusinessDataServiceImpl implements BusinessDataService {
     @Override
     public List<BusinessData> businessDataStatus(Map<Object, Object> map) {
         // TODO Auto-generated method stub
-        return null;
+        return businessDataDao.businessDataStatus(map);
     }
 }
