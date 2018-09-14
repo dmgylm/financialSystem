@@ -165,7 +165,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             organization.setCode(code); // 该组织机构节点的序号，两位的，比如（01；0101，0102）
             organization.setHis_permission(code); // 新增时，历史权限id就是此节点的code
             organization.setOrgkey(UuidUtil.getUUID());// 与模版对应的一个唯一值
-            organization.setOrgPlateId(org.get(0).getOrgPlateId());// 板块Id
+            organization.setOrgPlateId(organization.getOrgType()!=4?org.get(0).getOrgPlateId():organization.getOrgkey());// 板块Id
             return organizationDAO.saveOrganization(organization);
         } else {
             return 0;
