@@ -250,7 +250,8 @@ public class BusinessDataController {
                         JSONObject joTemp = JSONObject.parseObject(dm.getModuleData());
                         JSONObject joInfo = JSONObject.parseObject(busInfo.getInfo());
                         //JsonConvertProcess.mergeJson(joTemp, joInfo);
-                        HtmlGenerate htmlGenerate = new HtmlGenerate();
+                        //传入年份,需要限制已发生月份数据不能更改
+                        HtmlGenerate htmlGenerate = new HtmlGenerate(businessData.getYear());
                         htmlGenerate.disableBudgetInput();
                         String html = htmlGenerate.generateHtml(JsonConvertProcess.mergeJson(joTemp, joInfo), htmlType);
                         ElementXMLUtils.returnValue(ElementConfig.RUN_SUCCESSFULLY, htmlResult);

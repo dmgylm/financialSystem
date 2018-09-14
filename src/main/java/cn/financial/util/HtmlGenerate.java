@@ -38,9 +38,19 @@ public class HtmlGenerate {
 		this.isPreviewNeedId = isPreviewNeedId;
 	}
 	
+	/**
+	 * 显示页面是否需要在td中添加id属性
+	 * @param isPreviewNeedId
+	 */
+	public HtmlGenerate(Integer reportYear){
+		this.reportYear = reportYear;
+	}
+	
 	
 	
 	private boolean isPreviewNeedId = false;
+	
+	private Integer reportYear;
 	
 	/**
 	 * 预算编辑是否需要禁止输入
@@ -362,12 +372,19 @@ public class HtmlGenerate {
 		if(!isDisableBudgetInput) {//不需要禁用预算编辑,则直接返回flase
 			return false;
 		}
+		int currentYear = TimeUtils.getCurrentYear();
+		//如果预算报表的年份大于当前年份, 则不需要禁用
+		if (reportYear != null && reportYear > currentYear) {
+			return false;
+		}
 		String month = JsonConvertProcess.getMonthForKey(key);
 		Integer monthInt = null;
 		try {
 			monthInt = Integer.parseInt(month);
 		} catch (Exception e) {
 		}
+		
+		
 		
 		int disableMonth = TimeUtils.getCurrentMonth();
 		int today = TimeUtils.getCurrentDayOfMonth();
@@ -376,7 +393,7 @@ public class HtmlGenerate {
 		}
 		return monthInt != null && monthInt <= disableMonth;
 	}
-
+	
 	/**
 	 * 模板页面生成
 	 * @param td
