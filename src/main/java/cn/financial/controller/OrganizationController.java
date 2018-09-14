@@ -791,13 +791,13 @@ public class OrganizationController {
     }
 
     private boolean businessDataAllSubmit() {
-    	Calendar c = Calendar.getInstance();
-    	c.add(Calendar.MONTH, -1);
-    	int year = c.get(Calendar.YEAR);
-    	int month = c.get(Calendar.MONTH) + 1;
+//    	Calendar c = Calendar.getInstance();
+//    	c.add(Calendar.MONTH, -1);
+//    	int year = c.get(Calendar.YEAR);
+//    	int month = c.get(Calendar.MONTH) + 1;
     	Map<Object, Object> params = new HashMap<Object, Object>();
-    	params.put("year", year);
-    	params.put("month", month);
+//    	params.put("year", year);
+//    	params.put("month", month);
     	params.put("status", 2);//2 表示已提交, 这里查询所有status!=2的数据
 		List<BusinessData> list = businessDataService.businessDataStatus(params);
 		if(list != null && list.size()>0) {
