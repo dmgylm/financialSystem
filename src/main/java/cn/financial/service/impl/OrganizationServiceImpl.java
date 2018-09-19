@@ -692,7 +692,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setHis_permission(org.get(0).getHis_permission() + "," + code);
         organization.setOrgkey(org.get(0).getOrgkey());
         organization.setOrgType(org.get(0).getOrgType());
-        organization.setOrgPlateId(orgParent.get(0).getOrgPlateId());
+        organization.setOrgPlateId(organization.getOrgType()!=4?org.get(0).getOrgPlateId():organization.getOrgkey());
         Integer saveInteger = organizationDAO.saveOrganization(organization);
         
         icMap.put(code, new_id);//新节点的code和id        
@@ -1303,7 +1303,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 		Integer orgTypeInt = Integer.parseInt(orgType);
 		bean.setOrgType(orgTypeInt);
 		bean.setHis_permission(his_permission+","+nodeCode);
-		bean.setOrgPlateId(orgPlateId);
+		bean.setOrgPlateId(bean.getOrgType()!=4?orgPlateId:bean.getOrgkey());
 		bean.setParentId(parentCode);
 		bean.setuId(userId);
 		organizationDAO.saveOrganization(bean);
