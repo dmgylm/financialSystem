@@ -637,7 +637,7 @@ public class OrganizationController {
         ResultUtils result=new ResultUtils();
         
         //判断是否可以移动,检查上个月的损益表,如果有损益表未提交, 则禁止移动
-        if(businessDataAllSubmit()) {
+        if(!businessDataAllSubmit()) {
         	ElementXMLUtils.returnValue(ElementConfig.MOBILE_ORGANIZATION_FAIL,result);
   	       	return result;
         }
