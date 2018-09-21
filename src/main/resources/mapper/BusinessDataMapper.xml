@@ -80,7 +80,7 @@
        
        <!-- 查询不不包含某个状态的数据-->
        <select id="businessDataStatus" parameterType="map" resultType="businessData">
-         SELECT * FROM businessData  WHERE delStatus=1 
+         SELECT * FROM businessData  WHERE delStatus=1 AND sid=1 <!-- 1 表示损益 -->
          <if test="uId !=null and uId!=''"> and uId = #{uId}</if>
          <if test="year !=null and year!=''"> and year = #{year}</if>
          <if test="month !=null and month!=''"> and month = #{month}</if>
