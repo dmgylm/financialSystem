@@ -21,6 +21,8 @@ public class AnalysisTest {
 		String json = aef.analysisExcel();
 //		System.out.println(json);
 		HtmlGenerate hg = new HtmlGenerate();
+
+
 		String html = hg.generateHtml(json,HtmlGenerate.HTML_TYPE_TEMPLATE);
 		System.out.println(html);
 		Integer firstRowNum = 3;//横向标题前缀
